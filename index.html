@@ -7,10 +7,14 @@
 <meta name="description" content="Letícia Calisto, criadora de conteúdo UGC. Vídeos e fotos autênticas que geram desejo, confiança e vendas para marcas.">
 <meta name="theme-color" content="#f3eee9">
 
-<!-- Fontes do Google Fonts: Fraunces para os títulos, Plus Jakarta Sans para o corpo -->
+<!-- Fontes do Google Fonts. O título da capa mistura League Spartan em caixa
+     alta com Allura, cursiva. Fraunces segue nos títulos das demais seções.
+     Nos textos gerais a primeira opção é a Avenir Next Arabic, que só aparece
+     em quem tiver a fonte instalada, porque é paga e não pode ser incorporada
+     aqui; a Mulish, gratuita e bem parecida, atende todo o resto -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Allura&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&family=League+Spartan:wght@400;500;600;700;800&family=Mulish:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
 <style>
 /* =========================================================
@@ -22,7 +26,7 @@
   --creme-escuro:#e8e0d7;
   --tinta:#14110d;
   --tinta-suave:#4a443c;
-  --azul:#0049a4;
+  --azul:#545454;
   --laranja:#df7900;
   --branco:#fffdfb;
 
@@ -34,17 +38,30 @@
   --raio-g:24px;
 
   --serif:"Fraunces", Georgia, "Times New Roman", serif;
-  --sans:"Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  /* Fonte de todos os textos gerais do site. A Avenir Next Arabic vem primeiro
+     e é usada por quem tem a fonte instalada no aparelho. Como ela é paga e não
+     pode ser embutida no site, a Mulish entra logo atrás para todo mundo mais. */
+  --sans:"Avenir Next Arabic", "Avenir Next", "Avenir", "Mulish", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  /* Fontes do título da capa: a de impacto e a cursiva */
+  --titulo-impacto:"League Spartan", system-ui, "Segoe UI", Arial, sans-serif;
+  --titulo-cursiva:"Allura", "Segoe Script", cursive;
 
   --altura-topo:76px;
-  --largura:1180px;
+  /* Largura máxima do conteúdo. Foi ampliada junto com o respiro lateral, para
+     dar mais margem nas beiradas sem encolher nada do que está dentro. */
+  --largura:1440px;
 }
 
 *,*::before,*::after{box-sizing:border-box;}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
 body{
   margin:0;
-  background:var(--creme);
+  /* Listrado vertical no fundo, de propósito quase imperceptível. Para deixar
+     mais visível, aumente o .016; para sumir de vez, troque por 0. A largura de
+     cada faixa é o 26px. */
+  background-color:var(--creme);
+  background-image:repeating-linear-gradient(90deg,
+    rgba(20,17,13,.016) 0 26px, rgba(20,17,13,0) 26px 52px);
   color:var(--tinta);
   font-family:var(--sans);
   font-size:clamp(16px,1.05vw,17px);
@@ -77,7 +94,9 @@ em,.italico{font-style:italic;font-weight:400;}
 /* =========================================================
    ESTRUTURA GERAL
    ========================================================= */
-.container{width:100%;max-width:var(--largura);margin:0 auto;padding-inline:clamp(20px,5vw,44px);}
+/* O respiro lateral do site. Aumente o 76px para afastar mais o conteúdo das
+   beiradas; o 22px é o mínimo, usado no celular. */
+.container{width:100%;max-width:var(--largura);margin:0 auto;padding-inline:clamp(22px,5vw,76px);}
 section{padding-block:clamp(64px,9vw,120px);scroll-margin-top:calc(var(--altura-topo) + 12px);}
 
 .rotulo{
@@ -86,19 +105,25 @@ section{padding-block:clamp(64px,9vw,120px);scroll-margin-top:calc(var(--altura-
   color:var(--azul);margin-bottom:18px;
 }
 .rotulo::before{content:"";width:26px;height:1px;background:var(--laranja);display:block;}
+/* A barrinha e o pin de localização da etiqueta da capa. O pin usa a mesma cor
+   do texto, então ele acompanha qualquer troca de cor. */
+.rotulo__barra{opacity:.45;font-weight:400;}
+.rotulo__local{display:inline-flex;align-items:center;gap:5px;}
+.rotulo__pin{width:1.15em;height:1.15em;flex:none;fill:currentColor;}
 .subtitulo{color:var(--tinta-suave);max-width:56ch;margin-top:18px;font-size:1.02rem;}
 .cabecalho-secao{max-width:720px;margin-bottom:clamp(38px,5vw,58px);}
 
 /* Botões */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:10px;
-  padding:15px 30px;border-radius:100px;border:1.5px solid transparent;
+  /* Botões retangulares, com os cantos levemente arredondados */
+  padding:15px 30px;border-radius:12px;border:1.5px solid transparent;
   font-weight:600;font-size:.96rem;text-decoration:none;cursor:pointer;
   transition:transform .25s ease, background-color .25s ease, border-color .25s ease, box-shadow .25s ease;
 }
 .btn:hover{transform:translateY(-2px);}
-.btn--principal{background:var(--azul);color:#fff;box-shadow:0 10px 26px rgba(0,73,164,.24);}
-.btn--principal:hover{background:#003a85;}
+.btn--principal{background:var(--azul);color:#fff;box-shadow:0 10px 26px rgba(84,84,84,.24);}
+.btn--principal:hover{background:#3d3d3d;}
 .btn--vazado{background:transparent;color:var(--tinta);border-color:rgba(20,17,13,.28);}
 .btn--vazado:hover{border-color:var(--tinta);background:rgba(20,17,13,.04);}
 
@@ -153,25 +178,91 @@ section{padding-block:clamp(64px,9vw,120px);scroll-margin-top:calc(var(--altura-
 /* =========================================================
    2. HERO
    ========================================================= */
-.hero{padding-top:calc(var(--altura-topo) + clamp(44px,7vw,88px));padding-bottom:clamp(56px,7vw,96px);}
-.hero__grade{display:grid;grid-template-columns:1.08fr .92fr;gap:clamp(34px,5vw,72px);align-items:center;}
-.hero h1{margin-bottom:22px;}
-.hero h1 .italico{color:var(--azul);}
-.hero__texto{max-width:52ch;color:var(--tinta-suave);font-size:clamp(1.02rem,1.4vw,1.15rem);}
-.hero__acoes{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px;}
-.hero__meta{
-  display:flex;flex-wrap:wrap;gap:12px 26px;margin-top:38px;padding-top:26px;
-  border-top:1px solid var(--borda);font-size:.88rem;color:var(--tinta-suave);
+/* A capa é baixa de propósito: quem manda na altura é a altura da foto,
+   definida em .hero__foto logo abaixo. */
+/* O padding de cima soma a altura do menu fixo (que flutua sobre a página) com
+   um respiro. Diminuir o respiro sobe o conteúdo inteiro sem mexer em tamanho
+   nenhum; ele não pode chegar a zero, senão a etiqueta entra embaixo do menu. */
+.hero{--capa-base:clamp(30px,3.6vw,56px);padding-top:calc(var(--altura-topo) + clamp(6px,.9vw,12px));padding-bottom:var(--capa-base);}
+/* A coluna do texto reserva o necessário para o título de 80px caber em duas
+   linhas, e todo o resto da largura vai para a foto */
+.hero__grade{display:grid;grid-template-columns:1.25fr 1fr;gap:clamp(16px,2.2vw,30px);align-items:center;}
+/* Título da capa: duas letras conversando. A parte de impacto é grande e
+   ocupa a largura da coluna; a cursiva fecha a frase, menor, subindo um pouco
+   por cima da linha anterior. As quebras de linha vêm dos <br> do campo
+   titulo.impacto, no CONFIG. */
+.hero h1{margin-bottom:20px;letter-spacing:normal;}
+.titulo__impacto{
+  display:block;font-family:var(--titulo-impacto);font-weight:700;
+  text-transform:uppercase;letter-spacing:-.02em;line-height:.96;
+  /* Chega a 80px nas telas grandes e encolhe sozinho nas menores */
+  font-size:clamp(2rem,5.7vw,5rem);
+  color:#cfc8c3;
 }
-.hero__meta strong{color:var(--tinta);font-weight:600;}
-.hero__visual{position:relative;}
-.hero__selo{
-  position:absolute;left:-18px;bottom:26px;background:var(--branco);
-  border:1px solid var(--borda);border-radius:var(--raio-g);padding:18px 22px;
-  box-shadow:var(--sombra-forte);max-width:235px;
+.titulo__cursiva{
+  display:block;font-family:var(--titulo-cursiva);font-weight:400;
+  /* A Allura desenha as letras bem menores do que o tamanho declarado, por ser
+     manuscrita e de corpo baixo. Por isso o número aqui parece alto: na tela
+     ela aparece bem menor que a League Spartan. */
+  font-size:clamp(2.6rem,5.8vw,4.6rem);line-height:.9;color:var(--azul);
+  /* A margem negativa encaixa a cursiva na linha de cima; o padding embaixo
+     dá espaço para o rabinho das letras não ser cortado */
+  margin-top:-.06em;margin-left:.04em;padding-bottom:.12em;
 }
-.hero__selo strong{display:block;font-family:var(--serif);font-size:1.9rem;line-height:1;color:var(--azul);margin-bottom:6px;}
-.hero__selo span{font-size:.83rem;color:var(--tinta-suave);line-height:1.4;display:block;}
+.hero h1 em,.hero h1 .italico{color:var(--azul);}
+/* Texto de apoio da capa: mesma fonte dos textos gerais do site */
+.hero__texto{max-width:44ch;color:var(--tinta-suave);font-size:clamp(.88rem,.95vw,.97rem);line-height:1.6;}
+/* Linha dos números, com a barrinha separando */
+.hero__meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 13px;margin-top:24px;font-size:clamp(.92rem,1vw,1rem);font-weight:700;color:var(--tinta);}
+.hero__meta .separador{color:var(--laranja);font-weight:400;}
+.hero__acoes{display:flex;flex-wrap:wrap;gap:14px;margin-top:26px;}
+
+/* Foto da capa: sem moldura, puxada para a direita e descendo até encostar na
+   faixa branca de marcas, por causa da margem negativa embaixo.
+   O enquadramento (da cabeça até a cintura) vem da proporção 3/4 em aspect-ratio:
+   como ela é fixa, o corte fica igual no computador e no celular. Foto mais
+   estreita mostra mais corpo; foto mais larga aproxima mais o rosto. */
+.hero__visual{
+  position:relative;align-self:end;
+  /* Afasta a foto da borda direita. Aumentar este valor traz a foto mais para a
+     esquerda e abre espaço para o balão do lado direito. A coluna da foto
+     cresceu junto, para ela andar sem encolher. */
+  margin-right:clamp(10px,6.6vw,95px);
+  margin-bottom:calc(-1 * var(--capa-base));
+}
+.hero__foto{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;}
+
+/* Flutuação lenta: sobe e desce 6px. Cada balão usa um tempo diferente, para
+   um não acompanhar o outro. */
+@keyframes flutuar{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-6px);}
+}
+
+/* Balões de feedback que flutuam sobre a foto: um embaixo à esquerda e outro
+   em cima à direita. Os valores de left, right, top e bottom são o que move
+   cada um; os negativos fazem o balão passar da borda da foto. */
+.balao{
+  position:absolute;z-index:3;margin:0;
+  display:flex;align-items:center;gap:10px;
+  width:clamp(180px,18vw,232px);
+  background:var(--branco);border:1px solid var(--borda);border-radius:14px;
+  padding:10px 13px;
+  box-shadow:0 2px 5px rgba(20,17,13,.05), 0 14px 30px rgba(20,17,13,.12);
+  animation:flutuar 7.4s ease-in-out infinite;
+}
+.balao--1{left:-38%;bottom:11%;}
+.balao--2{right:-26%;top:12%;animation-duration:8.8s;animation-delay:-2.6s;}
+/* Mesmo right do balão de cima, para os dois ficarem alinhados pela direita */
+.balao--3{right:-26%;top:29%;animation-duration:8s;animation-delay:-5.1s;}
+/* A bolinha com a logo da marca */
+.balao__logo{
+  flex:none;width:34px;height:34px;border-radius:50%;
+  background:#fff;border:1px solid var(--borda);
+  display:grid;place-items:center;overflow:hidden;
+}
+.balao__logo img{width:74%;height:74%;object-fit:contain;}
+.balao__texto{margin:0;font-size:.74rem;line-height:1.4;color:var(--tinta);font-weight:500;}
 
 /* Blocos em gradiente que simulam as fotos e os vídeos */
 .visual{
@@ -192,10 +283,14 @@ section{padding-block:clamp(64px,9vw,120px);scroll-margin-top:calc(var(--altura-
 /* =========================================================
    3. FAIXA DE MARCAS
    ========================================================= */
-.faixa{border-block:1px solid var(--borda);background:var(--branco);padding-block:clamp(26px,3.4vw,38px);overflow:hidden;}
+/* Tarja fina e escura que desliza para a esquerda sem parar. O cinza dela é de
+   propósito mais fechado que o --azul do resto do site, para a tarja pesar
+   como uma linha de separação entre a capa e o conteúdo. */
+.faixa{background:#414141;padding-block:13px;overflow:hidden;}
+/* Estilo do título, caso você queira voltar a mostrá-lo acima da tarja */
 .faixa__titulo{
   text-align:center;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--tinta-suave);font-weight:700;margin-bottom:22px;padding-inline:20px;
+  color:#fff;font-weight:700;margin:0 0 10px;padding-inline:20px;
 }
 .marquise{
   position:relative;display:flex;overflow:hidden;
@@ -204,18 +299,22 @@ section{padding-block:clamp(64px,9vw,120px);scroll-margin-top:calc(var(--altura-
 }
 .marquise__trilho{display:flex;width:max-content;animation:correr 38s linear infinite;}
 .marquise:hover .marquise__trilho,.marquise:focus-within .marquise__trilho{animation-play-state:paused;}
-.marquise__grupo{display:flex;align-items:center;gap:clamp(34px,5vw,70px);padding-right:clamp(34px,5vw,70px);list-style:none;margin:0;}
+.marquise__grupo{display:flex;align-items:center;gap:clamp(20px,2.4vw,32px);padding-right:clamp(20px,2.4vw,32px);list-style:none;margin:0;}
 .marquise__grupo li{
-  font-family:var(--serif);font-size:clamp(1.2rem,2.2vw,1.7rem);
-  white-space:nowrap;color:var(--tinta);opacity:.72;
+  display:flex;align-items:center;gap:clamp(20px,2.4vw,32px);
+  font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  white-space:nowrap;color:#fff;
 }
-.marquise__grupo li:nth-child(even){font-style:italic;color:var(--azul);opacity:.88;}
+/* O losango que separa um serviço do outro */
+.marquise__grupo li::after{content:"◆";font-size:.6rem;color:var(--laranja);letter-spacing:0;}
 @keyframes correr{from{transform:translateX(0);}to{transform:translateX(-50%);}}
 
 /* =========================================================
    4. SOBRE
    ========================================================= */
 .sobre__grade{display:grid;grid-template-columns:.85fr 1.15fr;gap:clamp(34px,5.5vw,78px);align-items:center;}
+/* Limite de largura da leitura: linha comprida demais cansa a vista */
+.sobre__texto p{max-width:62ch;}
 .sobre__texto p + p{margin-top:18px;color:var(--tinta-suave);}
 .sobre__lista{list-style:none;margin:32px 0 0;padding:0;display:grid;gap:14px;}
 .sobre__lista li{display:flex;gap:13px;align-items:flex-start;font-size:.97rem;}
@@ -326,13 +425,13 @@ section{padding-block:clamp(64px,9vw,120px);scroll-margin-top:calc(var(--altura-
   border:1.5px solid var(--borda);background:var(--branco);color:var(--tinta);
   font-family:inherit;font-size:.98rem;transition:border-color .2s ease, box-shadow .2s ease;
 }
-.campo input:focus,.campo textarea:focus{outline:none;border-color:var(--azul);box-shadow:0 0 0 3px rgba(0,73,164,.14);}
+.campo input:focus,.campo textarea:focus{outline:none;border-color:var(--azul);box-shadow:0 0 0 3px rgba(84,84,84,.16);}
 .campo textarea{resize:vertical;min-height:132px;}
 .formulario .btn{width:100%;}
 .aviso-form{
   margin-top:18px;padding:15px 18px;border-radius:var(--raio);
-  background:rgba(0,73,164,.09);border:1px solid rgba(0,73,164,.24);
-  color:#003a85;font-size:.92rem;font-weight:500;
+  background:rgba(84,84,84,.09);border:1px solid rgba(84,84,84,.24);
+  color:#3d3d3d;font-size:.92rem;font-weight:500;
 }
 .aviso-form[hidden]{display:none;}
 .erro-campo{color:#9c1f0c;font-size:.83rem;font-weight:600;margin-top:7px;display:block;}
@@ -366,7 +465,14 @@ section{padding-block:clamp(64px,9vw,120px);scroll-margin-top:calc(var(--altura-
    ========================================================= */
 @media (max-width:980px){
   .hero__grade,.sobre__grade,.contato__grade{grid-template-columns:1fr;}
-  .hero__visual,.sobre__visual{max-width:460px;}
+  /* No celular a foto fica embaixo do texto, ainda encostando na faixa branca,
+     e os balões se recolhem para dentro para não saírem da tela */
+  .hero__visual{max-width:380px;margin-right:0;margin-left:auto;}
+  .balao{width:min(215px,72%);}
+  .balao--1{left:-7%;bottom:5%;}
+  .balao--2{right:-4%;top:2%;}
+  .balao--3{right:-4%;top:23%;}
+  .sobre__visual{max-width:420px;}
   .servicos__grade,.numeros,.galeria,.depoimentos__grade{grid-template-columns:repeat(2,1fr);}
 }
 @media (max-width:860px){
@@ -387,13 +493,11 @@ section{padding-block:clamp(64px,9vw,120px);scroll-margin-top:calc(var(--altura-
   .menu a{display:block;padding:16px 0;font-size:1.05rem;color:var(--tinta);}
   .menu a::after{display:none;}
   .menu .btn{width:100%;padding:15px 24px;}
-  .hero__selo{left:auto;right:14px;bottom:-20px;}
 }
 @media (max-width:620px){
   .galeria,.depoimentos__grade,.servicos__grade{grid-template-columns:1fr;}
   .numeros{grid-template-columns:repeat(2,1fr);gap:24px 18px;}
   .hero__acoes .btn{width:100%;}
-  .hero__selo{position:static;margin-top:18px;max-width:none;box-shadow:var(--sombra);}
   .rodape__base{flex-direction:column;}
 }
 
@@ -432,9 +536,11 @@ section{padding-block:clamp(64px,9vw,120px);scroll-margin-top:calc(var(--altura-
     </div>
   </section>
 
-  <!-- ===== 3. FAIXA DE MARCAS ===== -->
+  <!-- ===== 3. TARJA CORRIDA DE SERVIÇOS ===== -->
   <section class="faixa" aria-labelledby="titulo-marcas">
-    <h2 class="faixa__titulo" id="titulo-marcas"></h2>
+    <!-- O título fica só para leitores de tela: na tela a tarja é a própria
+         lista. Para mostrá-lo de novo, troque a classe por faixa__titulo. -->
+    <h2 class="oculto-visual" id="titulo-marcas"></h2>
     <div class="marquise">
       <div class="marquise__trilho" id="marcas-trilho"></div>
     </div>
@@ -514,14 +620,14 @@ section{padding-block:clamp(64px,9vw,120px);scroll-margin-top:calc(var(--altura-
    imagem: "fotos/meu-video.jpg", e o bloco de gradiente vira a sua foto
    automaticamente (lembre de preencher também o campo alt). */
 const GRADIENTES = {
-  azulProfundo: "linear-gradient(150deg, #0049a4 0%, #1b3a6b 55%, #14110d 100%)",
-  azulCreme:    "linear-gradient(145deg, #0049a4 0%, #6f93c4 48%, #f3eee9 100%)",
+  grafiteProfundo: "linear-gradient(150deg, #545454 0%, #3d3d3d 55%, #14110d 100%)",
+  grafiteCreme: "linear-gradient(145deg, #545454 0%, #a09a95 48%, #f3eee9 100%)",
   laranjaSol:   "linear-gradient(150deg, #df7900 0%, #e9a44e 52%, #f3eee9 100%)",
   laranjaTinta: "linear-gradient(160deg, #df7900 0%, #a8500b 50%, #14110d 100%)",
   cremeSuave:   "linear-gradient(145deg, #f3eee9 0%, #e0d4c6 55%, #c9b7a4 100%)",
-  tintaNoite:   "linear-gradient(150deg, #14110d 0%, #2e2a24 50%, #0049a4 100%)",
-  duoQuente:    "linear-gradient(140deg, #0049a4 0%, #df7900 100%)",
-  areiaAzul:    "linear-gradient(145deg, #e8e0d7 0%, #b9c6da 50%, #0049a4 100%)",
+  tintaNoite:   "linear-gradient(150deg, #14110d 0%, #2e2a24 50%, #545454 100%)",
+  duoQuente:    "linear-gradient(140deg, #545454 0%, #df7900 100%)",
+  areiaGrafite: "linear-gradient(145deg, #e8e0d7 0%, #b5b0ab 50%, #545454 100%)",
   vinhoSuave:   "linear-gradient(155deg, #df7900 0%, #8d3b1c 55%, #14110d 100%)"
 };
 
@@ -561,47 +667,77 @@ const CONFIG = {
   ],
   botaoMenu: "Fale comigo",
 
-  /* EDITE AQUI: o texto da primeira dobra (a parte que aparece ao abrir o site).
-     Use <em>palavra</em> para deixar uma palavra em itálico azul no título. */
+  /* EDITE AQUI: o texto da primeira dobra (a parte que aparece ao abrir o site) */
   hero: {
-    rotulo: "Conteúdo UGC para marcas",
-    tituloLinha1: "Conteúdo que faz",
-    tituloDestaque: "a sua marca",
-    tituloLinha2: "vender todo dia",
-    texto: "Sou Letícia Calisto, criadora de conteúdo UGC. Produzo vídeos e fotos com cara de recomendação de amiga, o formato que mais converte hoje, para marcas que querem parar de ser ignoradas no feed e começar a vender de verdade.",
-    botaoPrincipal: "Fale comigo",
-    botaoSecundario: "Ver portfólio",
-    /* Estes três itens aparecem em uma linha fina abaixo dos botões */
+    /* A etiqueta pequena acima do título. O local aparece depois da barrinha,
+       precedido pelo pin de localização. */
+    rotulo: "UGC Creator",
+    rotuloLocal: "Florianópolis, SC",
+    /* O título da capa tem duas partes: impacto sai em caixa alta na League
+       Spartan e cursiva sai na letra manuscrita, fechando a frase.
+       Os <br> são as quebras de linha da parte de impacto. */
+    titulo: {
+      /* Pode escrever normal: o site coloca em caixa alta sozinho */
+      impacto: "Conteúdo que<br>faz sua marca",
+      cursiva: "ser escolhida"
+    },
+    texto: "Do primeiro segundo à decisão de compra, cada detalhe pensado para conectar, envolver e converter.",
+    /* Os números que aparecem logo acima do botão, separados pela barrinha */
     destaques: [
-      "Entrega em até 7 dias",
-      "Roteiro, gravação e edição inclusos",
-      "Direitos de uso para anúncios"
+      "+400 vídeos",
+      "+100 marcas",
+      "+20 nichos"
     ],
-    /* Bloco colorido que simula a foto principal */
-    gradiente: "azulCreme",
-    alt: "Letícia Calisto sentada, de blazer bege, olhando para a câmera",
-    /* Foto recortada em PNG com fundo transparente: o gradiente acima aparece
-       atrás dela. Para trocar a foto, coloque o novo arquivo na pasta imagens
-       e escreva o nome dele aqui. */
-    imagem: "imagens/capa.png",
-    prioritaria: true,
-    seloNumero: "+40",
-    seloTexto: "campanhas entregues para marcas de beleza, moda e alimentação"
+    botaoPrincipal: "Quero criar com a Letícia",
+    /* Foto da capa, já recortada rente à figura e com uma folga acima da cabeça.
+       A versão original, grande e com fundo transparente, continua guardada em
+       imagens/capa.png. Para usar outra foto, coloque o arquivo na pasta
+       imagens e escreva o nome dele aqui. */
+    foto: "imagens/capa-web.png",
+    alt: "Letícia Calisto sorrindo, de vestido listrado azul e branco, olhando para a câmera",
+    /* Enquadramento. O segundo número é o que sobe e desce a foto: 0% encosta o
+       topo da foto no topo da capa, que é o que garante que a cabeça nunca seja
+       cortada. Aumente para 10% ou 20% se quiser mostrar mais o corpo. */
+    posicaoFoto: "50% 0%",
+    /* Os balões de feedback que flutuam sobre a foto. O primeiro fica embaixo à
+       esquerda e o segundo em cima à direita. A logo da marca aparece na
+       bolinha ao lado do texto; o campo alt descreve a logo para quem usa
+       leitor de tela. Se quiser um terceiro balão, avise que eu crio a posição
+       dele. */
+    feedbacks: [
+      {
+        texto: "Sobre os vídeos de UGC, o da Letícia Calisto é o que está performando melhor",
+        logo: "imagens/full-english-logo.png",
+        alt: "Logo da Full English"
+      },
+      {
+        texto: "Lê, eu amei, você entendeu a essência do nosso produto como ninguém mais!!",
+        logo: "imagens/webhoje-logo.png",
+        alt: "Logo da Webhoje"
+      },
+      {
+        texto: "Simplesmente o melhor conteúdo que contratamos",
+        logo: "imagens/espaco-laser-logo.png",
+        alt: "Logo do Espaço Laser"
+      }
+    ]
   },
 
-  /* EDITE AQUI: os nomes das marcas com quem você já trabalhou.
-     Coloque os nomes reais, um dentro de cada aspas, separados por vírgula. */
-  faixaMarcas: {
-    titulo: "Marcas que já confiaram no meu conteúdo",
-    nomes: [
-      "Bloom Beauty",
-      "Casa Nogueira",
-      "Verde Vivo",
-      "Studio Amora",
-      "Fit Rotina",
-      "Doce Canela",
-      "Aurora Skin",
-      "Trilha Norte"
+  /* EDITE AQUI: os itens da tarja escura que desliza logo abaixo da capa.
+     Pode acrescentar ou tirar itens à vontade: a tarja se ajusta sozinha. */
+  faixaServicos: {
+    /* Este título não aparece na tela, serve para leitores de tela */
+    titulo: "Serviços em destaque",
+    itens: [
+      "UGC de conversão",
+      "Storytelling criativo",
+      "Publipost",
+      "Criativos de alta performance",
+      "Consultoria UGC",
+      "Roteiros estratégicos",
+      "Fotos lifestyle",
+      "Conteúdo e-commerce",
+      "TikTokShop"
     ]
   },
 
@@ -641,7 +777,7 @@ const CONFIG = {
         nicho: "Beleza",
         descricao: "Vídeo em formato depoimento mostrando textura, aplicação e resultado do produto.",
         resultado: "312 mil visualizações",
-        gradiente: "azulCreme",
+        gradiente: "grafiteCreme",
         alt: "Bloco colorido representando um vídeo de rotina de skincare",
         imagem: ""
       },
@@ -668,7 +804,7 @@ const CONFIG = {
         nicho: "Moda",
         descricao: "Fotos de lifestyle com luz natural para catálogo e redes sociais da marca.",
         resultado: "24 fotos aprovadas",
-        gradiente: "areiaAzul",
+        gradiente: "areiaGrafite",
         alt: "Bloco colorido representando fotos de uma campanha de inverno",
         imagem: ""
       },
@@ -704,7 +840,7 @@ const CONFIG = {
         nicho: "Fitness",
         descricao: "Sequência dinâmica mostrando o produto em uso durante o treino.",
         resultado: "146 mil visualizações",
-        gradiente: "azulProfundo",
+        gradiente: "grafiteProfundo",
         alt: "Bloco colorido representando um vídeo de treino em casa",
         imagem: ""
       },
@@ -774,7 +910,7 @@ const CONFIG = {
         texto: "A Letícia entendeu o nosso produto melhor do que a gente conseguia explicar. O vídeo virou o criativo com melhor desempenho da campanha e ficou rodando por três meses.",
         nome: "Marina Ribeiro",
         empresa: "Head de marketing, Bloom Beauty",
-        corAvatar: "azulProfundo"
+        corAvatar: "grafiteProfundo"
       },
       {
         texto: "Prazo cumprido, comunicação impecável e um material lindo. Recebemos os arquivos prontos para postar e ainda com sugestões de legenda. Virou parceria fixa.",
@@ -868,29 +1004,52 @@ const CONFIG = {
     '<li><a class="btn btn--principal" href="#contato">' + escapar(CONFIG.botaoMenu) + '</a></li>';
 
   /* ---------- 2. Hero ---------- */
+  /* O pin é desenho, então fica escondido de quem usa leitor de tela: o nome da
+     cidade já está escrito ao lado. */
+  const pin =
+    '<svg class="rotulo__pin" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+    '<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 ' +
+    '9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>';
+
   $("hero-conteudo").innerHTML =
-    '<p class="rotulo">' + escapar(CONFIG.hero.rotulo) + '</p>' +
-    '<h1 id="titulo-hero">' + escapar(CONFIG.hero.tituloLinha1) + ' ' +
-      '<span class="italico">' + escapar(CONFIG.hero.tituloDestaque) + '</span> ' +
-      escapar(CONFIG.hero.tituloLinha2) + '</h1>' +
+    '<p class="rotulo">' +
+      '<span>' + escapar(CONFIG.hero.rotulo) + '</span>' +
+      '<span class="rotulo__barra" aria-hidden="true">|</span>' +
+      '<span class="rotulo__local">' + pin + escapar(CONFIG.hero.rotuloLocal) + '</span>' +
+    '</p>' +
+    '<h1 id="titulo-hero">' +
+      '<span class="titulo__impacto">' + CONFIG.hero.titulo.impacto + '</span>' +
+      '<span class="titulo__cursiva">' + CONFIG.hero.titulo.cursiva + '</span>' +
+    '</h1>' +
     '<p class="hero__texto">' + escapar(CONFIG.hero.texto) + '</p>' +
+    '<p class="hero__meta">' + CONFIG.hero.destaques.map(function(d, i){
+      return (i ? '<span class="separador" aria-hidden="true">|</span>' : "") +
+             '<span>' + escapar(d) + '</span>';
+    }).join("") + '</p>' +
     '<div class="hero__acoes">' +
       '<a class="btn btn--principal" href="#contato">' + escapar(CONFIG.hero.botaoPrincipal) + '</a>' +
-      '<a class="btn btn--vazado" href="#portfolio">' + escapar(CONFIG.hero.botaoSecundario) + '</a>' +
-    '</div>' +
-    '<p class="hero__meta">' + CONFIG.hero.destaques.map(function(d){
-      return '<span><strong>' + escapar(d) + '</strong></span>';
-    }).join("") + '</p>';
+    '</div>';
 
+  /* A foto da capa carrega com prioridade alta por ser a primeira coisa da tela.
+     Os balões de feedback vêm depois dela, flutuando por cima. */
   $("hero-visual").innerHTML =
-    blocoVisual(CONFIG.hero, "retrato") +
-    '<div class="hero__selo"><strong>' + escapar(CONFIG.hero.seloNumero) + '</strong>' +
-    '<span>' + escapar(CONFIG.hero.seloTexto) + '</span></div>';
+    CONFIG.hero.feedbacks.map(function(f, i){
+      return '<figure class="balao balao--' + (i + 1) + '">' +
+               '<span class="balao__logo">' +
+                 '<img src="' + escapar(f.logo) + '" alt="' + escapar(f.alt) + '" loading="lazy">' +
+               '</span>' +
+               '<blockquote class="balao__texto">' + escapar(f.texto) + '</blockquote>' +
+             '</figure>';
+    }).join("") +
+    '<img class="hero__foto" src="' + escapar(CONFIG.hero.foto) + '"' +
+    ' alt="' + escapar(CONFIG.hero.alt) + '"' +
+    ' style="object-position:' + escapar(CONFIG.hero.posicaoFoto) + '"' +
+    ' loading="eager" fetchpriority="high">';
 
-  /* ---------- 3. Faixa de marcas ---------- */
-  $("titulo-marcas").textContent = CONFIG.faixaMarcas.titulo;
+  /* ---------- 3. Tarja corrida de serviços ---------- */
+  $("titulo-marcas").textContent = CONFIG.faixaServicos.titulo;
   const grupoMarcas = '<ul class="marquise__grupo">' +
-    CONFIG.faixaMarcas.nomes.map(function(n){ return '<li>' + escapar(n) + '</li>'; }).join("") +
+    CONFIG.faixaServicos.itens.map(function(n){ return '<li>' + escapar(n) + '</li>'; }).join("") +
     '</ul>';
   /* A segunda cópia é escondida dos leitores de tela: existe só para a animação */
   $("marcas-trilho").innerHTML = grupoMarcas +
