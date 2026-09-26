@@ -2,9 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<!-- Largura travada em 1440px: no celular o navegador encolhe a página inteira
-     em vez de reorganizar o layout. -->
-<meta name="viewport" content="width=1440">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Letícia Calisto | Criadora de conteúdo UGC</title>
 <meta name="description" content="Letícia Calisto, criadora de conteúdo UGC. Vídeos e fotos autênticas que geram desejo, confiança e vendas para marcas.">
 <meta name="theme-color" content="#f3eee9">
@@ -68,14 +66,9 @@
 }
 
 *,*::before,*::after{box-sizing:border-box;}
-/* O overflow-x aqui é o que permite arrastar a página para o lado numa janela
-   estreita. Sem ele, o navegador cortaria o que passa dos 1440px do body. */
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;overflow-x:auto;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
 body{
   margin:0;
-  /* A largura fixa do site. É ela que faz o desenho ser sempre o mesmo,
-     independente do tamanho da tela. */
-  min-width:var(--largura);
   /* Listrado vertical no fundo, de propósito quase imperceptível. Para deixar
      mais visível, aumente o .016; para sumir de vez, troque por 0. A largura de
      cada faixa é o 26px. */
@@ -172,6 +165,13 @@ section{padding-block:clamp(64px,9vw,120px);scroll-margin-top:calc(var(--altura-
   min-height:var(--altura-barra);padding:6px 20px;font-size:.86rem;white-space:nowrap;overflow:hidden;
 }
 .topo__barra[hidden]{display:none;}
+/* No computador o trilho não interfere; no celular ele rola (ver RESPONSIVO) */
+.barra__trilho{display:contents;}
+.so-cel{display:none;}
+.nichos-lista,.nichos__mais,.nicho--todos,.dica-deslize{display:none;}
+ul.canais--cel{display:none;}
+@keyframes caseProx{from{opacity:0;transform:translateX(70px);}to{opacity:1;transform:none;}}
+@keyframes caseAnt{from{opacity:0;transform:translateX(-70px);}to{opacity:1;transform:none;}}
 .barra__tag{
   background:var(--tinta);color:#a8c7a1;border-radius:100px;padding:4px 12px;
   font-size:.66rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
@@ -669,7 +669,7 @@ section{padding-block:clamp(64px,9vw,120px);scroll-margin-top:calc(var(--altura-
 /* O carrossel. O porVista é quantos vídeos aparecem de uma vez: mude os
    números nas telas menores, mais abaixo, no bloco RESPONSIVO. */
 .carrossel{
-  --porVista:5;--vao:clamp(12px,1.5vw,18px);
+  --porVista:5;--porVistaH:2.5;--vao:clamp(12px,1.5vw,18px);
   overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;
   scroll-behavior:smooth;
 }
@@ -682,7 +682,7 @@ section{padding-block:clamp(64px,9vw,120px);scroll-margin-top:calc(var(--altura-
 .carrossel--duplo .carrossel__trilho{grid-template-rows:repeat(2,1fr);}
 /* Nicho com vÃ­deo deitado (16:9): o card Ã© largo, com o dobro da largura de um vertical */
 .carrossel--horizontal .carrossel__trilho{
-  grid-auto-columns:calc((100% - 4 * var(--vao)) / 5 * 2 + var(--vao));align-items:start;
+  grid-auto-columns:calc((100% - (var(--porVistaH) - 1) * var(--vao)) / var(--porVistaH));align-items:start;
 }
 .carrossel .video--horizontal{aspect-ratio:16/9;}
 .carrossel .video--horizontal .video__previa{left:0;width:100%;transform:none;}
@@ -1128,12 +1128,166 @@ a.video:hover,button.video:hover{transform:translateY(-6px);box-shadow:var(--som
 .revelar{opacity:0;transform:translateY(22px);transition:opacity .8s cubic-bezier(.22,.61,.36,1),transform .8s cubic-bezier(.22,.61,.36,1);}
 .revelar.visivel{opacity:1;transform:none;}
 /* =========================================================
-   LARGURA FIXA
-   =========================================================
-   O site não é responsivo: mostra o mesmo desenho de 1440px em
-   qualquer tela, encolhendo no celular em vez de reorganizar.
-   As regras que adaptavam o layout foram guardadas em
-   css/responsivo-desativado.css, com as instruções para voltar. */
+   RESPONSIVO
+   Quantos vídeos aparecem de uma vez no carrossel dos nichos:
+   5 no computador e 3 nas telas menores (--porVistaH é o mesmo
+   para os vídeos deitados).
+   ========================================================= */
+@keyframes barraRola{
+  from{transform:translateX(100vw);}
+  to{transform:translateX(-100%);}
+}
+@media (max-width:1180px){
+  .carrossel{--porVista:4;--porVistaH:2;}
+}
+@media (max-width:980px){
+  .contato__grade,.case__grade{grid-template-columns:1fr;}
+  /* Os dois celulares não passam de 400px juntos para não virarem um paredão */
+  .case__fones{max-width:400px;margin-inline:auto;}
+  /* Capa e Sobre continuam em duas colunas (texto e foto lado a lado) */
+  .hero__grade{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px;}
+  .hero__visual{margin-right:0;}
+  .hero h1{margin-bottom:12px;}
+  .hero__texto{font-size:.85rem;}
+  .hero__meta{margin-top:14px;font-size:.82rem;gap:4px 8px;}
+  .hero__acoes{margin-top:16px;}
+  /* Os balões se recolhem para dentro da foto para não saírem da tela */
+  .balao{width:min(215px,80%);}
+  .balao--1{left:-7%;bottom:5%;}
+  .balao--2{right:-4%;top:2%;}
+  .balao--3{right:-4%;top:23%;}
+  .sobre__grade{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:18px;padding-inline:clamp(16px,4vw,40px);}
+  .sobre__corpo{margin-top:12px;}
+  .sobre__corpo p{font-size:.82rem;line-height:1.5;}
+  .sobre__corpo p + p{margin-top:10px;}
+  .sobre__selos{margin-top:18px;gap:8px;}
+  .sobre__selos li{padding:7px 14px;font-size:.78rem;}
+  .servicos__grade,.numeros,.depoimentos__grade{grid-template-columns:repeat(2,1fr);}
+  .carrossel{--porVista:3;--porVistaH:1.5;}
+}
+@media (max-width:860px){
+  .hamburguer{display:block;}
+  .menu{
+    position:fixed;top:var(--altura-topo);left:0;right:0;
+    flex-direction:column;align-items:stretch;gap:0;
+    background:var(--creme);border-bottom:1px solid var(--borda);
+    padding:10px clamp(20px,5vw,44px) 28px;
+    box-shadow:0 20px 40px rgba(20,17,13,.1);
+    transform:translateY(-14px);opacity:0;visibility:hidden;pointer-events:none;
+    transition:opacity .28s ease, transform .28s ease, visibility .28s;
+    max-height:calc(100vh - var(--altura-topo));overflow-y:auto;
+  }
+  .menu.aberto{transform:none;opacity:1;visibility:visible;pointer-events:auto;}
+  .menu li{border-bottom:1px solid var(--borda);}
+  .menu li:last-child{border-bottom:none;padding-top:18px;}
+  .menu a{display:block;padding:16px 0;font-size:1.05rem;color:var(--tinta);}
+  .menu a::after{display:none;}
+  .menu .btn{width:100%;padding:15px 24px;}
+}
+@media (max-width:620px){
+  .depoimentos__grade,.servicos__grade{grid-template-columns:1fr;}
+  .carrossel{--porVista:3;--porVistaH:1;}
+  .numeros{grid-template-columns:repeat(2,1fr);gap:24px 18px;}
+  /* Capa compacta: tudo continua lado a lado, só que menor e ainda legível */
+  .topo .btn--topo{display:none;}
+  .topo__interno{gap:10px;}
+  /* A tarja verde do topo: uma faixa só, com o texto rolando da esquerda para
+     a direita para dar tempo de ler tudo. Para inverter o sentido, troque o
+     from e o to da animação. */
+  .topo__barra{justify-content:flex-start;padding:6px 0;}
+  .barra__trilho{display:flex;align-items:center;gap:16px;width:max-content;animation:barraRola 20s linear infinite;}
+  .barra__texto::before{margin-right:16px;}
+  /* Capa compacta: tudo continua lado a lado, só que menor e ainda legível.
+     A foto ganha mais largura que o texto. */
+  .hero__grade{grid-template-columns:minmax(0,.78fr) minmax(0,1.85fr);gap:0;}
+  .hero__visual{margin-right:-15vw;}
+  .hero .rotulo{font-size:.58rem;letter-spacing:.08em;flex-wrap:wrap;gap:3px 6px;margin-bottom:8px;}
+  .hero .rotulo::before{width:12px;}
+  .hero .titulo__impacto{font-size:clamp(.9rem,4.2vw,1.4rem);}
+  .hero .titulo__cursiva{font-size:clamp(1.4rem,6.6vw,2.4rem);}
+  .hero__texto{font-size:.7rem;line-height:1.45;}
+  .hero__meta{font-size:.64rem;margin-top:10px;}
+  .hero__acoes{margin-top:12px;}
+  .hero__acoes .btn{width:100%;padding:8px 10px;font-size:.68rem;border-radius:9px;}
+  .balao{display:none;}
+  .hero .so-pc{display:none;}
+  .hero .so-cel{display:inline;}
+  /* Sobre mim: igual ao computador (foto à esquerda, texto à direita), só que
+     sem as margens laterais */
+  #sobre .rotulo{font-size:.6rem;margin-bottom:8px;}
+  .titulo__manuscrita{font-size:clamp(1.2rem,5.5vw,1.8rem);}
+  .sobre__grade{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:12px;padding-inline:18px;align-items:stretch;}
+  /* A foto acompanha a altura do texto e corta as laterais para preencher */
+  #sobre .sobre__visual,#sobre .sobre__visual .visual{height:100%;}
+  #sobre .sobre__visual .visual{aspect-ratio:auto;}
+  #sobre .sobre__selos li:not(.destaque){display:none;}
+  .faixa{padding-block:5px;}
+  .marquise__grupo li{font-size:.66rem;}
+  /* Todos os títulos com risquinho dos dois lados, no mesmo tamanho */
+  .rotulo--centro{font-size:.6rem;letter-spacing:.07em;gap:6px;white-space:nowrap;}
+  .rotulo--centro::before,.rotulo--centro::after{width:12px;}
+  #sobre .sobre__corpo p{font-size:.62rem;line-height:1.45;}
+  #sobre .sobre__corpo p + p{margin-top:8px;}
+  #sobre .sobre__corpo{margin-top:6px;}
+  #sobre .sobre__selos{margin-top:12px;gap:6px;}
+  #sobre .sobre__selos li{padding:5px 10px;font-size:.6rem;}
+  #sobre .sobre__visual .visual{border-radius:20px;}
+  #sobre .titulo__manuscrita{font-size:clamp(1.2rem,4.6vw,2rem);}
+  .rodape__base{flex-direction:column;}
+
+  /* Resultados: o vídeo primeiro; o 01/03 e as setas ficam embaixo. A seção
+     inteira desliza para o lado quando troca de case (ver também o arrastar). */
+  .case__fones .pilha{order:1;}
+  .case__fones .pilha__topo{order:2;}
+  .case__fones .pilha__ver{order:3;}
+  .case__grade.case--prox{animation:caseProx .45s ease both;}
+  .case__grade.case--ant{animation:caseAnt .45s ease both;}
+  /* Nichos: balões lado a lado, deslizando com o dedo; embaixo, cada nicho com
+     seu carrossel de 3 vídeos (a lista é montada pelo JS). */
+  .nichos{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:4px;}
+  .nichos::-webkit-scrollbar{display:none;}
+  .nicho{flex:none;white-space:nowrap;}
+  .nicho--todos{display:inline-block;}
+  #conteudo-topo,#carrossel{display:none;}
+  .nichos-lista{display:block;}
+  .nl{margin-bottom:26px;padding-block:0;}
+  .nl--oculto{display:none;}
+  .nl__topo{display:flex;align-items:baseline;gap:10px;margin-bottom:12px;}
+  .nl__topo .titulo__impacto{font-size:1.25rem;color:var(--azul);}
+  .nichos__mais{display:block;margin:0 auto 26px;border:1px solid var(--borda);border-radius:100px;background:var(--branco);padding:9px 26px;font:inherit;font-size:.82rem;font-weight:600;color:var(--tinta);cursor:pointer;}
+  .nichos__mais[hidden]{display:none;}
+  /* Sem rolamento horizontal: o que passa da tela (a foto da capa) é cortado */
+  html,body{max-width:100%;overflow-x:clip;}
+  .hero{overflow-x:clip;}
+  /* O título do contato ganha o mesmo risquinho vinho dos outros */
+  .contato__titulo{display:flex;align-items:center;gap:10px;}
+  .contato__titulo::before{content:"";width:26px;height:1px;background:var(--laranja);flex:none;}
+  /* Serviços: sem a palavra repetida ao fundo, foto mais apagada e os cartões
+     entrando devagar, um por vez */
+  .servicos__fundo-titulo{display:none;}
+  .retrato-recortado{opacity:.45;}
+  /* Os cartões aparecem com fade na mesma velocidade em que a página desce:
+     o JS (ver "Fade dos cartões") preenche o --fade de 0 a 1 conforme a rolagem */
+  .servico-cartao.revelar{opacity:var(--fade,0) !important;transform:translateY(calc((1 - var(--fade,0)) * 24px)) !important;transition:none !important;}
+  .dica-deslize{display:block;text-align:center;font-size:.78rem;color:var(--tinta-suave);margin:-6px 0 14px;}
+  /* Contato: primeiro o texto, depois o formulário, sem foto; os ícones ficam
+     lado a lado embaixo do formulário */
+  .contato__grade{gap:22px;}
+  .contato__lado{order:1;}
+  #contato-formulario{order:2;}
+  .contato__foto{display:none;}
+  .contato__texto{max-width:none;}
+  .contato__texto .canais{display:none;}
+  #contato-formulario{margin:0;flex-direction:column;gap:18px;}
+  ul.canais--cel{display:flex;flex-direction:row;justify-content:center;gap:28px;margin:0;}
+  .canais--cel a{gap:0;}
+  .canais--cel span{display:none;}
+  .canais--cel svg{width:30px;height:30px;}
+  /* FAQ: uma pergunta por vez, passando de lado */
+  .rodape__faq-lista{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;gap:0;}
+  .rodape__faq-lista::-webkit-scrollbar{display:none;}
+  .rodape__faq-lista li{flex:0 0 100%;scroll-snap-align:start;padding-inline:6px;}
+}
 
 
 /* =========================================================
@@ -2691,12 +2845,13 @@ if(IDIOMA === "en"){
       return;
     }
     const doisDigitos = function(n){ return (n < 10 ? "0" : "") + n; };
-    barra.innerHTML =
+    barra.innerHTML = '<div class="barra__trilho">' +
       '<span class="barra__tag">' + escapar(bf.tag) + '</span>' +
       '<span class="barra__conta">' + (bf.faltam ? escapar(bf.faltam) + " " : "") +
         '<b id="bf-dias"></b> <span id="bf-rotulo"></span> ' + escapar(bf.depois) + '</span>' +
       '<span class="barra__texto">' + escapar(bf.texto) + '</span>' +
-      '<a class="barra__link" href="#contato" data-rastrear="cta_black_friday">' + escapar(bf.link) + ' &rarr;</a>';
+      '<a class="barra__link" href="#contato" data-rastrear="cta_black_friday">' + escapar(bf.link) + ' &rarr;</a>' +
+      '</div>';
     barra.hidden = false;
     const atualizar = function(){
       let resto = Math.max(0, alvo - new Date());
@@ -2714,6 +2869,10 @@ if(IDIOMA === "en"){
   /* ---------- 2. Hero ---------- */
   /* O pin é desenho, então fica escondido de quem usa leitor de tela: o nome da
      cidade já está escrito ao lado. */
+  /* Texto completo no computador e versão curta no celular */
+  const dupla = function(longo, curto){
+    return '<span class="so-pc">' + escapar(longo) + '</span><span class="so-cel">' + escapar(curto) + '</span>';
+  };
   const pin =
     '<svg class="rotulo__pin" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
     '<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 ' +
@@ -2721,9 +2880,9 @@ if(IDIOMA === "en"){
 
   $("hero-conteudo").innerHTML =
     '<p class="rotulo">' +
-      '<span>' + escapar(CONFIG.hero.rotulo) + '</span>' +
+      '<span>' + dupla(CONFIG.hero.rotulo, CONFIG.hero.rotulo.split(" ")[0]) + '</span>' +
       '<span class="rotulo__barra" aria-hidden="true">|</span>' +
-      '<span class="rotulo__local">' + pin + escapar(CONFIG.hero.rotuloLocal) + '</span>' +
+      '<span class="rotulo__local">' + pin + dupla(CONFIG.hero.rotuloLocal, CONFIG.hero.rotuloLocal.split(",").pop().trim()) + '</span>' +
     '</p>' +
     '<h1 id="titulo-hero">' +
       '<span class="titulo__impacto">' + CONFIG.hero.titulo.impacto + '</span>' +
@@ -2735,7 +2894,7 @@ if(IDIOMA === "en"){
              '<span>' + escapar(d) + '</span>';
     }).join("") + '</p>' +
     '<div class="hero__acoes">' +
-      '<a class="btn btn--principal" href="#contato" data-rastrear="cta_fale_comigo">' + escapar(CONFIG.hero.botaoPrincipal) + '</a>' +
+      '<a class="btn btn--principal" href="#contato" data-rastrear="cta_fale_comigo">' + dupla(CONFIG.hero.botaoPrincipal, IDIOMA === "en" ? "Let's create!" : "Vamos criar!") + '</a>' +
     '</div>';
 
   /* A foto da capa carrega com prioridade alta por ser a primeira coisa da tela.
@@ -2946,7 +3105,15 @@ if(IDIOMA === "en"){
 
   const mostrarCase = function(indice){
     const total = cases.length;
+    const antes = casesAtivo;
     casesAtivo = (indice + total) % total;
+    /* No celular a seção inteira desliza para o lado, como um story */
+    const grade = casesPilha.parentNode;
+    grade.classList.remove("case--prox", "case--ant");
+    if(antes !== casesAtivo){
+      void grade.offsetWidth;
+      grade.classList.add(((casesAtivo - antes + total) % total) === 1 ? "case--prox" : "case--ant");
+    }
     pararPlayers();
     cardsPilha.forEach(function(card, i){
       card.setAttribute("data-pos", String((i - casesAtivo + total) % total));
@@ -2960,6 +3127,16 @@ if(IDIOMA === "en"){
 
   $("pilha-anterior").addEventListener("click", function(){ mostrarCase(casesAtivo - 1); });
   $("pilha-proxima").addEventListener("click", function(){ mostrarCase(casesAtivo + 1); });
+  /* Arrastar para o lado troca de case (celular) */
+  (function(){
+    const grade = casesPilha.parentNode;
+    let x0 = 0, y0 = 0;
+    grade.addEventListener("touchstart", function(e){ x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    grade.addEventListener("touchend", function(e){
+      const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+      if(Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) mostrarCase(casesAtivo + (dx < 0 ? 1 : -1));
+    }, { passive: true });
+  })();
   /* Clicar num card que está por trás o traz para a frente */
   cardsPilha.forEach(function(card, i){
     card.addEventListener("click", function(){ if(i !== casesAtivo) mostrarCase(i); });
@@ -3235,6 +3412,41 @@ if(IDIOMA === "en"){
     }, true);
   }
 
+  /* O HTML dos cards de um nicho, usado tanto pelo carrossel do computador
+     quanto pela lista de nichos do celular */
+  const htmlVideos = function(nicho){
+    return     nicho.videos.map(function(v){
+          const idYoutube = idDoYoutube(v.link);
+          const capa = v.capa || (idYoutube ? capaYoutube(idYoutube) : "");
+          const fundo = capa
+            ? '<img src="' + escapar(capa) + '" alt=""' +
+              (idYoutube ? ' data-capa-alternativa="' + escapar(capaAlternativa(idYoutube)) + '"' : "") +
+              ' loading="lazy">'
+            : '<span class="video__fundo" style="background:' + gradiente(v.gradiente) + '"></span>';
+          const miolo =
+            fundo +
+            (v.marca ? '<span class="video__marca">' + escapar(v.marca) + '</span>' : "") +
+            '<span class="video__play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + SETAS.play + '"/></svg></span>' +
+            /* Só a linha leve com o conteúdo (ex.: "Tratamento"); sem nicho e sem
+               repetir a marca, que já está no balão de cima. Vídeo sem essa
+               descrição no doc de origem não ganha nenhuma legenda embaixo. */
+            (v.conteudo ? '<span class="video__base"><span>' + escapar(v.conteudo) + '</span></span>' : "");
+          /* Vídeo do YouTube: o card vira um botão que abre a janela por cima da
+             página. Outro link (Instagram, TikTok...): abre numa aba nova, como
+             antes. Sem link: o card é só figura. */
+          if(idYoutube){
+            const tituloVideo = v.marca ? (v.marca + (v.conteudo ? " — " + v.conteudo : "")) : "";
+            return '<button type="button" class="video' + (nicho.horizontal ? ' video--horizontal' : '') + '" data-youtube="' + escapar(idYoutube) + '"' +
+              (tituloVideo ? ' data-titulo="' + escapar(tituloVideo) + '"' : "") +
+              (String(v.link).indexOf("/shorts/") > -1 ? ' data-vertical="1"' : "") +
+              ' aria-haspopup="dialog">' + miolo + '</button>';
+          }
+          return v.link
+            ? '<a class="video" href="' + escapar(v.link) + '" target="_blank" rel="noopener">' + miolo + '</a>'
+            : '<div class="video">' + miolo + '</div>';
+        }).join("");
+  };
+
   /* Desenha os vídeos do nicho escolhido. A página não se mexe: só o título,
      a contagem e os cards mudam de conteúdo. */
   const mostrarNicho = function(indice){
@@ -3257,36 +3469,7 @@ if(IDIOMA === "en"){
 
     carrossel.classList.toggle("carrossel--duplo", !!nicho.duasLinhas);
     carrossel.classList.toggle("carrossel--horizontal", !!nicho.horizontal);
-    trilho.innerHTML = nicho.videos.map(function(v){
-      const idYoutube = idDoYoutube(v.link);
-      const capa = v.capa || (idYoutube ? capaYoutube(idYoutube) : "");
-      const fundo = capa
-        ? '<img src="' + escapar(capa) + '" alt=""' +
-          (idYoutube ? ' data-capa-alternativa="' + escapar(capaAlternativa(idYoutube)) + '"' : "") +
-          ' loading="lazy">'
-        : '<span class="video__fundo" style="background:' + gradiente(v.gradiente) + '"></span>';
-      const miolo =
-        fundo +
-        (v.marca ? '<span class="video__marca">' + escapar(v.marca) + '</span>' : "") +
-        '<span class="video__play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + SETAS.play + '"/></svg></span>' +
-        /* Só a linha leve com o conteúdo (ex.: "Tratamento"); sem nicho e sem
-           repetir a marca, que já está no balão de cima. Vídeo sem essa
-           descrição no doc de origem não ganha nenhuma legenda embaixo. */
-        (v.conteudo ? '<span class="video__base"><span>' + escapar(v.conteudo) + '</span></span>' : "");
-      /* Vídeo do YouTube: o card vira um botão que abre a janela por cima da
-         página. Outro link (Instagram, TikTok...): abre numa aba nova, como
-         antes. Sem link: o card é só figura. */
-      if(idYoutube){
-        const tituloVideo = v.marca ? (v.marca + (v.conteudo ? " — " + v.conteudo : "")) : "";
-        return '<button type="button" class="video' + (nicho.horizontal ? ' video--horizontal' : '') + '" data-youtube="' + escapar(idYoutube) + '"' +
-          (tituloVideo ? ' data-titulo="' + escapar(tituloVideo) + '"' : "") +
-          (String(v.link).indexOf("/shorts/") > -1 ? ' data-vertical="1"' : "") +
-          ' aria-haspopup="dialog">' + miolo + '</button>';
-      }
-      return v.link
-        ? '<a class="video" href="' + escapar(v.link) + '" target="_blank" rel="noopener">' + miolo + '</a>'
-        : '<div class="video">' + miolo + '</div>';
-    }).join("");
+    trilho.innerHTML = htmlVideos(nicho);
 
     carrossel.scrollLeft = 0;
     observarCards();
@@ -3301,10 +3484,61 @@ if(IDIOMA === "en"){
     requestAnimationFrame(atualizarSetas);
   };
 
+  /* No celular os vídeos do nicho viram uma grade de 3 colunas, de 5 em 5, com
+     "Ver mais" embaixo. Clicar num nicho mostra só ele e leva a tela até os vídeos. */
+  const celularNichos = window.matchMedia("(max-width: 620px)");
   botoesNicho.forEach(function(botao){
-    botao.addEventListener("click", function(){ mostrarNicho(Number(botao.dataset.indice)); });
+    botao.addEventListener("click", function(){
+      mostrarNicho(Number(botao.dataset.indice));
+      if(celularNichos.matches) $("conteudo-topo").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   });
   mostrarNicho(0);
+
+  /* ----- Celular: os nichos um embaixo do outro, cada um com seu carrossel de
+     3 vídeos (arrastando para o lado). Aparecem 5 nichos e "Mostrar mais"
+     abre mais 5. Clicar num balão mostra só aquele nicho; "Todos" volta. ----- */
+  $("nichos").insertAdjacentHTML("beforebegin", '<p class="dica-deslize">' + (IDIOMA === "en" ? "Swipe sideways to see more" : "Deslize para o lado para ver mais") + '</p>');
+  const listaNichos = document.createElement("div");
+  listaNichos.className = "nichos-lista";
+  listaNichos.innerHTML = CONFIG.conteudo.nichos.map(function(n, i){
+    return '<section class="nl" data-indice="' + i + '">' +
+      '<div class="nl__topo"><h3 class="titulo__impacto">' + escapar(n.nome) + '</h3>' +
+      '<span class="conteudo__contagem">' + (n.videos.length < 10 ? "0" : "") + n.videos.length + '</span></div>' +
+      '<div class="carrossel' + (n.horizontal ? ' carrossel--horizontal' : '') + '"><div class="carrossel__trilho">' + htmlVideos(n) + '</div></div>' +
+    '</section>';
+  }).join("");
+  const botaoMaisNichos = document.createElement("button");
+  botaoMaisNichos.type = "button";
+  botaoMaisNichos.className = "nichos__mais";
+  botaoMaisNichos.textContent = IDIOMA === "en" ? "Show more" : "Mostrar mais";
+  carrossel.parentNode.insertBefore(listaNichos, carrossel);
+  carrossel.parentNode.insertBefore(botaoMaisNichos, carrossel);
+  const botaoTodos = document.createElement("button");
+  botaoTodos.type = "button";
+  botaoTodos.className = "nicho nicho--todos";
+  botaoTodos.textContent = IDIOMA === "en" ? "All" : "Todos";
+  $("nichos").insertBefore(botaoTodos, $("nichos").firstChild);
+  let nichoUnico = -1, nichosVisiveis = 5;
+  const aplicarLista = function(){
+    const secoes = listaNichos.children;
+    for(let i = 0; i < secoes.length; i++){
+      secoes[i].classList.toggle("nl--oculto", nichoUnico >= 0 ? i !== nichoUnico : i >= nichosVisiveis);
+    }
+    botaoMaisNichos.hidden = nichoUnico >= 0 || nichosVisiveis >= secoes.length;
+    botaoTodos.setAttribute("aria-pressed", String(nichoUnico < 0));
+    botoesNicho.forEach(function(b){ b.setAttribute("aria-pressed", String(Number(b.dataset.indice) === nichoUnico)); });
+  };
+  botaoMaisNichos.addEventListener("click", function(){ nichosVisiveis += 5; aplicarLista(); });
+  botaoTodos.addEventListener("click", function(){ nichoUnico = -1; aplicarLista(); });
+  botoesNicho.forEach(function(b){
+    b.addEventListener("click", function(){
+      nichoUnico = Number(b.dataset.indice);
+      aplicarLista();
+      if(celularNichos.matches) listaNichos.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+  aplicarLista();
 
   /* Se a capa em qualidade máxima não existir para aquele vídeo específico
      (raro, alguns vídeos mais antigos não têm), troca sozinha pela versão que
@@ -3608,7 +3842,13 @@ if(IDIOMA === "en"){
       }).join("") +
       '<button class="btn btn--principal" type="submit">' + escapar(CONFIG.contato.botao) + '</button>' +
       '<p class="aviso-form" id="aviso-form" role="status" hidden></p>' +
-    '</form>';
+    '</form>' +
+    /* Só aparece no celular: os canais em ícones, embaixo do formulário */
+    '<ul class="canais canais--cel">' +
+      canalContato("instagram", escapar(c.instagramLink), "Instagram " + c.instagramUsuario, true, "contact_instagram", c.instagramUsuario) +
+      canalContato("whatsapp", linkWhats, "WhatsApp " + c.telefoneVisivel, true, "contact_whatsapp", c.telefoneVisivel) +
+      canalContato("email", linkEmail, "E-mail " + c.email, false, "contact_email", c.email) +
+    '</ul>';
 
   const form = $("form-contato");
   const aviso = $("aviso-form");
@@ -3833,6 +4073,27 @@ if(IDIOMA === "en"){
       }).join("") +
     '</ul>';
 
+  /* No celular as dúvidas viram um carrossel: uma por vez, passando sozinhas a
+     cada 3 segundos (ou arrastando com o dedo). */
+  (function(){
+    const lista = document.querySelector(".rodape__faq-lista");
+    const celular = window.matchMedia("(max-width: 620px)");
+    let pausado = false, retomar = 0;
+    const pausar = function(){
+      pausado = true;
+      clearTimeout(retomar);
+      retomar = setTimeout(function(){ pausado = false; }, 6000);
+    };
+    lista.addEventListener("touchstart", pausar, { passive: true });
+    lista.addEventListener("pointerdown", pausar);
+    setInterval(function(){
+      if(!celular.matches || pausado || document.hidden) return;
+      const largura = lista.clientWidth;
+      const proximo = Math.round(lista.scrollLeft / largura) + 1;
+      lista.scrollTo({ left: proximo * largura >= lista.scrollWidth - 2 ? 0 : proximo * largura, behavior: "smooth" });
+    }, 3000);
+  })();
+
   $("rodape-base").innerHTML =
     '<span>&copy; ' + new Date().getFullYear() + ' ' + escapar(CONFIG.marca.nomeCompleto) + '. ' +
     escapar(CONFIG.rodape.direitos) + '</span>' +
@@ -3897,6 +4158,29 @@ if(IDIOMA === "en"){
   };
   window.addEventListener("scroll", aoRolar, { passive: true });
   aoRolar();
+
+  /* ---------- Fade dos cartões de serviço (celular) ----------
+     Cada cartão vai de invisível a visível conforme sobe na tela. */
+  (function(){
+    const cartoes = Array.prototype.slice.call(document.querySelectorAll(".servico-cartao"));
+    const celular = window.matchMedia("(max-width: 620px)");
+    let agendado = false;
+    const atualizar = function(){
+      agendado = false;
+      if(!celular.matches) return;
+      const alt = window.innerHeight;
+      cartoes.forEach(function(c){
+        const topo = c.getBoundingClientRect().top;
+        const p = Math.min(1, Math.max(0, (alt * 0.92 - topo) / (alt * 0.28)));
+        c.style.setProperty("--fade", p.toFixed(3));
+      });
+    };
+    window.addEventListener("scroll", function(){
+      if(!agendado){ agendado = true; requestAnimationFrame(atualizar); }
+    }, { passive: true });
+    window.addEventListener("resize", atualizar);
+    atualizar();
+  })();
 
   /* ---------- Animação suave de entrada conforme a página rola ---------- */
   const alvos = document.querySelectorAll(".revelar");
