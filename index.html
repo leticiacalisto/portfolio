@@ -639,6 +639,10 @@ section{padding-block:clamp(64px,9vw,120px);scroll-margin-top:calc(var(--altura-
 }
 .nicho:hover{border-color:rgba(20,17,13,.35);background:#fff;}
 .nicho[aria-pressed="true"]{background:var(--tinta);border-color:var(--tinta);color:var(--creme);}
+/* Black Friday: o verde da tarja do topo, sÃ³ que mais clarinho */
+.nicho--verde{background:#dfece0;border-color:#c3d9c0;}
+.nicho--verde:hover{background:#eaf3e8;border-color:#a8c7a1;}
+.nicho--verde[aria-pressed="true"]{background:#a8c7a1;border-color:#a8c7a1;color:var(--tinta);}
 /* O nome do nicho, a contagem de vídeos e as setas */
 .conteudo__topo{
   display:flex;align-items:flex-end;justify-content:space-between;gap:24px;
@@ -686,7 +690,7 @@ a.video:hover,button.video:hover{transform:translateY(-6px);box-shadow:var(--som
 .video img,.video__fundo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
 .video__previa{
   position:absolute;top:0;left:50%;height:100%;width:316%;transform:translateX(-50%);
-  border:0;pointer-events:none;opacity:0;transition:opacity .35s ease;z-index:1;
+  border:0;pointer-events:none;opacity:0;transition:opacity .12s ease;z-index:1;
 }
 .video__previa.visivel{opacity:1;}
 /* Durante a prévia o botão de play sai da frente */
@@ -694,7 +698,8 @@ a.video:hover,button.video:hover{transform:translateY(-6px);box-shadow:var(--som
 .video__marca{
   position:absolute;top:12px;left:12px;z-index:2;
   background:rgba(255,253,251,.94);color:var(--tinta);
-  padding:5px 12px;border-radius:100px;font-size:.66rem;font-weight:700;
+  max-width:calc(100% - 24px);text-align:left;line-height:1.3;
+  padding:5px 12px;border-radius:14px;font-size:.66rem;font-weight:700;
   letter-spacing:.09em;text-transform:uppercase;
 }
 .video__play{
@@ -933,16 +938,18 @@ a.video:hover,button.video:hover{transform:translateY(-6px);box-shadow:var(--som
    ========================================================= */
 /* O título da seção usa as letras da capa: League Spartan em caixa alta, só que
    bem menor, e a cursiva embaixo */
-#depoimentos .cabecalho-secao{margin-bottom:clamp(24px,3vw,36px);}
-.dep__titulo{margin:0;font-weight:400;letter-spacing:normal;}
+#depoimentos{padding-block:clamp(26px,3.2vw,42px);}
+#depoimentos .cabecalho-secao{margin-bottom:clamp(14px,1.8vw,22px);max-width:none;}
+#depoimentos .rotulo{margin-bottom:8px;}
+.dep__titulo{margin:0;font-weight:400;letter-spacing:normal;display:flex;align-items:baseline;flex-wrap:wrap;column-gap:.35em;}
 .dep__impacto{
-  display:block;font-family:var(--titulo-impacto);font-weight:700;text-transform:uppercase;
+  display:inline-block;font-family:var(--titulo-impacto);font-weight:700;text-transform:uppercase;
   font-size:clamp(1.5rem,2.6vw,2.3rem);line-height:.96;letter-spacing:-.02em;color:#cfc8c3;
 }
 .dep__cursiva{
-  display:block;font-family:var(--titulo-cursiva);font-weight:400;
+  display:inline-block;font-family:var(--titulo-cursiva);font-weight:400;
   font-size:clamp(2.2rem,3.8vw,3.2rem);line-height:.9;color:var(--azul);
-  margin-top:-.04em;margin-left:.04em;padding-bottom:.12em;
+  padding-bottom:.12em;
 }
 /* Quatro colunas, uma por categoria, com os cards empilhados */
 .depoimentos__grade{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(18px,2.4vw,32px);align-items:stretch;}
@@ -1021,16 +1028,19 @@ a.video:hover,button.video:hover{transform:translateY(-6px);box-shadow:var(--som
 .formulario{
   flex:1;
   background:var(--creme);border:1px solid var(--borda);border-radius:var(--raio-g);padding:clamp(18px,2vw,24px);
-  height:100%;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto minmax(64px,1fr) auto;gap:10px 12px;
+  height:100%;display:grid;grid-template-columns:repeat(10,1fr);grid-template-rows:auto auto auto minmax(64px,1fr) auto;gap:12px 14px;
 }
-.formulario h3{grid-column:1/-1;font-size:1.05rem;margin:0 0 2px !important;}
+.formulario .campo{grid-column:span 5;}
+.formulario .campo--inteiro{grid-column:1/-1;}
 .formulario .campo--largo,.formulario .btn,.formulario .aviso-form{grid-column:1/-1;}
-.campo--largo{display:flex;flex-direction:column;}
-.campo--largo textarea{flex:1;}
+/* Precisa do .campo junto: o .campo{display:block} vem depois e ganharia,
+   e aÃ­ a caixa de texto nÃ£o crescia para ocupar o espaÃ§o atÃ© o botÃ£o */
+.campo.campo--largo{display:flex;flex-direction:column;}
+.campo--largo textarea{flex:1;min-height:64px;}
 .campo{display:block;margin:0;}
-.campo span{display:block;font-size:.76rem;font-weight:600;margin-bottom:4px;}
+.campo span{display:block;font-size:.7rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;}
 .campo input,.campo textarea{
-  width:100%;padding:8px 12px;border-radius:10px;
+  width:100%;padding:11px 16px;border-radius:14px;
   border:1.5px solid var(--borda);background:var(--branco);color:var(--tinta);
   font-family:inherit;font-size:.88rem;transition:border-color .2s ease, box-shadow .2s ease;
 }
@@ -1717,178 +1727,266 @@ const CONFIG = {
     texto: "Navegue por nichos",
     nichos: [
       {
-        nome: "Vídeos em destaque",
-        descricao: "Uma amostra do que faço em cada frente",
-        duasLinhas: true,
+        nome: "Casa e Decor",
         videos: [
-          { marca: "Bioderma", conteudo: "", capa: "", link: "https://youtube.com/shorts/vR5HX_bbTt0", gradiente: "cremeSuave" },
-          { marca: "Deva Curl", conteudo: "Tratamento", capa: "", link: "https://youtube.com/shorts/Ju7bWIX64kw", gradiente: "grafiteCreme" },
-          { marca: "Hoomy", conteudo: "Enxoval", capa: "", link: "https://youtube.com/shorts/LOe4mDlrkls", gradiente: "laranjaSol" },
-          { marca: "Rosa Selvagem", conteudo: "Clareamento", capa: "", link: "https://youtube.com/shorts/RUU0jEbandQ", gradiente: "tintaNoite" },
-          { marca: "Dew Drops", conteudo: "Beleza", capa: "", link: "https://youtube.com/shorts/QNkr1z0IKPY", gradiente: "cremeSuave" },
-          { marca: "Averara", conteudo: "Roupas", capa: "", link: "https://youtube.com/shorts/fIu8thaTio8", gradiente: "grafiteCreme" },
-          { marca: "Marqo", conteudo: "Plataforma de Gestão", capa: "", link: "https://youtube.com/shorts/To9O4IuSsMY", gradiente: "laranjaSol" },
-          { marca: "Kylie Cosmetics", conteudo: "Lip Combo", capa: "", link: "https://youtube.com/shorts/pahmEioYKqA", gradiente: "tintaNoite" },
-          { marca: "Hotel Renar", conteudo: "Hotelaria", capa: "", link: "https://youtube.com/shorts/lDdNToQ_mHQ", gradiente: "cremeSuave" },
-          { marca: "Nowbank", conteudo: "Finanças", capa: "", link: "https://youtube.com/shorts/9XqZH_HLMHY", gradiente: "grafiteCreme" }
+          { marca: "Hoomy", conteudo: "Cama e Banho", capa: "", link: "https://youtube.com/shorts/Mme7pbP79jM", gradiente: "grafiteCreme" },
+          { marca: "Pra Casa", conteudo: "Reforma", capa: "", link: "https://youtube.com/shorts/X08y9ufl6ng", gradiente: "laranjaSol" },
+          { marca: "Sottile", conteudo: "Cozinha", capa: "", link: "https://youtube.com/shorts/o5YCA0164T8", gradiente: "tintaNoite" },
+          { marca: "Havan", conteudo: "Decoração", capa: "", link: "https://youtube.com/shorts/rt-S0QZH95w", gradiente: "cremeSuave" },
+          { marca: "Hoomy", conteudo: "Cama e Banho", capa: "", link: "https://youtube.com/shorts/LOe4mDlrkls", gradiente: "grafiteCreme" },
+          { marca: "Mercado Livre", conteudo: "Iluminação", capa: "", link: "https://youtube.com/shorts/d9lhuE5VyUI", gradiente: "laranjaSol" },
+          { marca: "Pra Casa", conteudo: "Reforma", capa: "", link: "https://youtube.com/shorts/BzEs-kqCMRg", gradiente: "tintaNoite" },
+          { marca: "Sottile", conteudo: "Cama", capa: "", link: "https://youtube.com/shorts/GyjxybwN4Bw", gradiente: "cremeSuave" },
+          { marca: "Hoomy", conteudo: "Cama e Banho", capa: "", link: "https://youtube.com/shorts/XkqpAZxS3IY", gradiente: "grafiteCreme" },
+          { marca: "Alastra Uniformes", conteudo: "Cozinha", capa: "", link: "https://youtube.com/shorts/jSUbrZ5fzkY", gradiente: "laranjaSol" },
+          { marca: "Hoomy", conteudo: "Cama e Banho", capa: "", link: "https://youtube.com/shorts/hkGMRvpbHnI", gradiente: "tintaNoite" },
+          { marca: "Óticas 39", conteudo: "Cozinha", capa: "", link: "https://youtube.com/shorts/N2NQbXMH8oY", gradiente: "cremeSuave" }
         ]
       },
       {
-        nome: "Casa e decor",
-        descricao: "Ambientes, achados e organização da casa",
+        nome: "Black Friday",
+        cor: "verde",
         videos: [
-          { marca: "AGL Brasil", conteudo: "Automação", capa: "", link: "https://youtube.com/shorts/EDZtTPjUV3U", gradiente: "cremeSuave" },
-          { marca: "Azulim", conteudo: "Limpeza", capa: "", link: "https://youtube.com/shorts/QUD5bFkoaWE", gradiente: "grafiteCreme" },
-          { marca: "Hoomy", conteudo: "Enxoval", capa: "", link: "https://youtube.com/shorts/LOe4mDlrkls", gradiente: "laranjaSol" },
-          { marca: "Hoomy", conteudo: "Enxoval", capa: "", link: "https://youtube.com/shorts/hkGMRvpbHnI", gradiente: "tintaNoite" },
-          { marca: "Hoomy", conteudo: "Enxoval", capa: "", link: "https://youtube.com/shorts/XkqpAZxS3IY", gradiente: "cremeSuave" },
-          { marca: "Hoomy", conteudo: "Enxoval", capa: "", link: "https://youtube.com/shorts/Mme7pbP79jM", gradiente: "grafiteCreme" }
+          { marca: "Mercado Livre", conteudo: "", capa: "", link: "https://youtube.com/shorts/d9lhuE5VyUI", gradiente: "cremeSuave" },
+          { marca: "Continente Shopping", conteudo: "", capa: "", link: "https://youtube.com/shorts/VwBuukRlEe8", gradiente: "grafiteCreme" }
         ]
       },
       {
-        nome: "Educação e negócios",
-        descricao: "Cursos, ferramentas e trabalho",
+        nome: "Tech e Aplicativos",
         videos: [
-          { marca: "Aloud", conteudo: "Aulas de Inglês", capa: "", link: "https://youtube.com/shorts/ANP16s3w6aY", gradiente: "cremeSuave" },
-          { marca: "Nowbank", conteudo: "Finanças", capa: "", link: "https://youtube.com/shorts/9XqZH_HLMHY", gradiente: "grafiteCreme" }
+          { marca: "IAbitos", conteudo: "App", capa: "", link: "https://youtube.com/shorts/aRJngn39Fok", gradiente: "cremeSuave" },
+          { marca: "Dona App", conteudo: "App", capa: "", link: "https://youtube.com/shorts/3NpMoMAmUVY", gradiente: "grafiteCreme" },
+          { marca: "Bible Guide", conteudo: "App (inglês)", capa: "", link: "https://youtube.com/shorts/W6W8Phe8NQ0", gradiente: "laranjaSol" },
+          { marca: "Wame", conteudo: "IA", capa: "", link: "https://youtube.com/shorts/9VPGiCVDX4Y", gradiente: "tintaNoite" },
+          { marca: "Marqo", conteudo: "Plataforma de Gestão", capa: "", link: "https://youtube.com/shorts/To9O4IuSsMY", gradiente: "cremeSuave" },
+          { marca: "Dealism", conteudo: "IA", capa: "", link: "https://youtube.com/shorts/pbDhSoN03KE", gradiente: "grafiteCreme" },
+          { marca: "IAbitos", conteudo: "App", capa: "", link: "https://youtube.com/shorts/szxuBMMBsVY", gradiente: "laranjaSol" },
+          { marca: "Wame", conteudo: "IA", capa: "", link: "https://youtube.com/shorts/oYqh9K8lSqY", gradiente: "tintaNoite" },
+          { marca: "Wame", conteudo: "IA", capa: "", link: "https://youtube.com/shorts/yNKG2fSyHK0", gradiente: "cremeSuave" },
+          { marca: "Dealism", conteudo: "IA", capa: "", link: "https://youtube.com/shorts/OayqBv0SNg0", gradiente: "grafiteCreme" }
         ]
       },
       {
-        nome: "Haircare",
-        descricao: "Cabelo: rotina, produto e resultado",
+        nome: "Cabelo",
         videos: [
-          { marca: "Alta Moda", conteudo: "Educacional", capa: "", link: "https://youtube.com/shorts/Bx62dggVujo", gradiente: "cremeSuave" },
-          { marca: "AMOBELEZA + Keune", conteudo: "Penteado", capa: "", link: "https://youtube.com/shorts/9H_IChS0cC0", gradiente: "grafiteCreme" },
-          { marca: "B. Hullmann", conteudo: "Finalização", capa: "", link: "https://youtube.com/shorts/N4npfZORbrw", gradiente: "laranjaSol" },
-          { marca: "Deva Curl", conteudo: "Tratamento", capa: "", link: "https://youtube.com/shorts/Ju7bWIX64kw", gradiente: "tintaNoite" },
-          { marca: "Deva Curl", conteudo: "Tratamento", capa: "", link: "https://youtube.com/shorts/hk1CD1Kn6as", gradiente: "cremeSuave" },
-          { marca: "Dove", conteudo: "Tratamento", capa: "", link: "https://youtube.com/shorts/SISK7DR5RZw", gradiente: "grafiteCreme" },
-          { marca: "Ecosmetics", conteudo: "Tratamento", capa: "", link: "https://youtube.com/shorts/lSOrufpZf1I", gradiente: "laranjaSol" },
-          { marca: "LuxaOro", conteudo: "Tratamento", capa: "", link: "https://youtube.com/shorts/r4rVZYOIDxo", gradiente: "tintaNoite" }
+          { marca: "AMOBELEZA + Keune", conteudo: "", capa: "", link: "https://youtube.com/shorts/9H_IChS0cC0", gradiente: "cremeSuave" },
+          { marca: "Ecosmetics", conteudo: "", capa: "", link: "https://youtube.com/shorts/lSOrufpZf1I", gradiente: "grafiteCreme" },
+          { marca: "BHullmann", conteudo: "", capa: "", link: "https://youtube.com/shorts/N4npfZORbrw", gradiente: "laranjaSol" },
+          { marca: "The Therapy", conteudo: "", capa: "", link: "https://youtube.com/shorts/X3dyvGClJkA", gradiente: "tintaNoite" },
+          { marca: "Nuuvi", conteudo: "", capa: "", link: "https://youtube.com/shorts/CSp5kaePrDA", gradiente: "cremeSuave" },
+          { marca: "Le Cosmetique + Lola", conteudo: "", capa: "", link: "https://youtube.com/shorts/ACNktiHjHpE", gradiente: "grafiteCreme" },
+          { marca: "L’Oreal Paris", conteudo: "", capa: "", link: "https://youtube.com/shorts/G2mFAHK_F2U", gradiente: "laranjaSol" },
+          { marca: "Deva Curl", conteudo: "", capa: "", link: "https://youtube.com/shorts/Ju7bWIX64kw", gradiente: "tintaNoite" },
+          { marca: "Dove", conteudo: "", capa: "", link: "https://youtube.com/shorts/SISK7DR5RZw", gradiente: "cremeSuave" },
+          { marca: "L’Oreal Professional", conteudo: "", capa: "", link: "https://youtube.com/shorts/Q5eO7eF1ohg", gradiente: "grafiteCreme" },
+          { marca: "Le Cosmetique + Haskell", conteudo: "", capa: "", link: "https://youtube.com/shorts/y-R9-4otNg8", gradiente: "laranjaSol" },
+          { marca: "Alta Moda", conteudo: "", capa: "", link: "https://youtube.com/shorts/Bx62dggVujo", gradiente: "tintaNoite" },
+          { marca: "Deva Curl", conteudo: "", capa: "", link: "https://youtube.com/shorts/hk1CD1Kn6as", gradiente: "cremeSuave" },
+          { marca: "Le Cosmetique + Haskell", conteudo: "", capa: "", link: "https://youtube.com/shorts/zWKIh8YEJDs", gradiente: "grafiteCreme" },
+          { marca: "LuxaOro", conteudo: "", capa: "", link: "https://youtube.com/shorts/r4rVZYOIDxo", gradiente: "laranjaSol" }
         ]
       },
       {
         nome: "Skincare",
-        descricao: "Rotina e cuidado com a pele",
         videos: [
-          { marca: "ASK", conteudo: "", capa: "", link: "https://youtube.com/shorts/stT__sEcccg", gradiente: "cremeSuave" },
-          { marca: "ASK", conteudo: "", capa: "", link: "https://youtube.com/shorts/J6wz7gl7j1U", gradiente: "grafiteCreme" },
+          { marca: "Simple Organic", conteudo: "", capa: "", link: "https://youtube.com/shorts/cyUYr5WBUP8", gradiente: "cremeSuave" },
+          { marca: "ASK", conteudo: "", capa: "", link: "https://youtube.com/shorts/stT__sEcccg", gradiente: "grafiteCreme" },
+          { marca: "L’Oreal Paris", conteudo: "", capa: "", link: "https://youtube.com/shorts/WYReO9O6u9U", gradiente: "laranjaSol" },
+          { marca: "Korres", conteudo: "", capa: "", link: "https://youtube.com/shorts/N4grKKfacKg", gradiente: "tintaNoite" },
+          { marca: "Puhra", conteudo: "", capa: "", link: "https://youtube.com/shorts/pEImE_-HM24", gradiente: "cremeSuave" },
+          { marca: "Bioderma", conteudo: "", capa: "", link: "https://youtube.com/shorts/vR5HX_bbTt0", gradiente: "grafiteCreme" },
           { marca: "Bearry Derm", conteudo: "", capa: "", link: "https://youtube.com/shorts/9BsEzC2dCgI", gradiente: "laranjaSol" },
-          { marca: "Bioderma", conteudo: "", capa: "", link: "https://youtube.com/shorts/vR5HX_bbTt0", gradiente: "tintaNoite" },
-          { marca: "Bioderma", conteudo: "", capa: "", link: "https://youtube.com/shorts/ooXs_t5mnUo", gradiente: "cremeSuave" },
-          { marca: "Bioderma", conteudo: "", capa: "", link: "https://youtube.com/shorts/T5m_E6YlpwQ", gradiente: "grafiteCreme" },
-          { marca: "Bisyou", conteudo: "", capa: "", link: "https://youtube.com/shorts/bGKmHk3_ir8", gradiente: "laranjaSol" },
           { marca: "État Pur", conteudo: "", capa: "", link: "https://youtube.com/shorts/druK8uQDc9k", gradiente: "tintaNoite" },
-          { marca: "État Pur", conteudo: "", capa: "", link: "https://youtube.com/shorts/IPvZRdj1x4E", gradiente: "cremeSuave" },
-          { marca: "Korres", conteudo: "", capa: "", link: "https://youtube.com/shorts/CG1o45J2tEA", gradiente: "grafiteCreme" },
-          { marca: "Korres", conteudo: "", capa: "", link: "https://youtube.com/shorts/N4grKKfacKg", gradiente: "laranjaSol" }
+          { marca: "Bioderma", conteudo: "", capa: "", link: "https://youtube.com/shorts/ooXs_t5mnUo", gradiente: "cremeSuave" },
+          { marca: "L’Oreal Paris", conteudo: "", capa: "", link: "https://youtube.com/shorts/iPZQsdigkMc", gradiente: "grafiteCreme" },
+          { marca: "Korres", conteudo: "", capa: "", link: "https://youtube.com/shorts/CG1o45J2tEA", gradiente: "laranjaSol" },
+          { marca: "État Pur", conteudo: "", capa: "", link: "https://youtube.com/shorts/IPvZRdj1x4E", gradiente: "tintaNoite" },
+          { marca: "ASK", conteudo: "", capa: "", link: "https://youtube.com/shorts/J6wz7gl7j1U", gradiente: "cremeSuave" },
+          { marca: "Bioderma", conteudo: "", capa: "", link: "https://youtube.com/shorts/T5m_E6YlpwQ", gradiente: "grafiteCreme" },
+          { marca: "Bisyou", conteudo: "", capa: "", link: "https://youtube.com/shorts/bGKmHk3_ir8", gradiente: "laranjaSol" }
         ]
       },
       {
-        nome: "Bodycare",
-        descricao: "Cuidado com o corpo, do banho ao pós",
+        nome: "Corporal",
         videos: [
-          { marca: "Bioderma", conteudo: "Tratamento", capa: "", link: "https://youtube.com/shorts/gW2kS6qiBQc", gradiente: "cremeSuave" },
-          { marca: "Bioderma", conteudo: "Tratamento", capa: "", link: "https://youtube.com/shorts/hoJEFsa8_5M", gradiente: "grafiteCreme" },
-          { marca: "Ecosmetics", conteudo: "Tratamento", capa: "", link: "https://youtube.com/shorts/d-kBK22R16A", gradiente: "laranjaSol" },
-          { marca: "Mood Care", conteudo: "Perfumaria", capa: "", link: "https://youtube.com/shorts/nSYDzb2gpyk", gradiente: "tintaNoite" },
-          { marca: "Hinodê", conteudo: "Tratamento", capa: "", link: "https://youtube.com/shorts/xWIRTvLc-4c", gradiente: "cremeSuave" },
-          { marca: "La San Day", conteudo: "Tratamento", capa: "", link: "https://youtube.com/shorts/MuMdarOFye4", gradiente: "grafiteCreme" },
-          { marca: "Rosa Selvagem", conteudo: "Clareamento", capa: "", link: "https://youtube.com/shorts/RUU0jEbandQ", gradiente: "laranjaSol" },
-          { marca: "Rosa Selvagem", conteudo: "Clareamento", capa: "", link: "https://youtube.com/shorts/JQFILu2w-EY", gradiente: "tintaNoite" }
+          { marca: "Theoric", conteudo: "Hidratante", capa: "", link: "https://youtube.com/shorts/afcOOCXx5OE", gradiente: "cremeSuave" },
+          { marca: "Mood Care", conteudo: "Perfumaria", capa: "", link: "https://youtube.com/shorts/nSYDzb2gpyk", gradiente: "grafiteCreme" },
+          { marca: "Touché", conteudo: "Desodorante", capa: "", link: "https://youtube.com/shorts/hkMu5K9vZ5Y", gradiente: "laranjaSol" },
+          { marca: "Bioderma", conteudo: "Tratamento", capa: "", link: "https://youtube.com/shorts/gW2kS6qiBQc", gradiente: "tintaNoite" },
+          { marca: "Aurum", conteudo: "Perfumaria", capa: "", link: "https://youtube.com/shorts/kMq8QOkJY1E", gradiente: "cremeSuave" },
+          { marca: "Ecosmetics", conteudo: "Hidratante", capa: "", link: "https://youtube.com/shorts/d-kBK22R16A", gradiente: "grafiteCreme" },
+          { marca: "Maré Beauty + Rosa Selvagem", conteudo: "Clareamento", capa: "", link: "https://youtube.com/shorts/JQFILu2w-EY", gradiente: "laranjaSol" },
+          { marca: "Hinodê", conteudo: "Cuidado Geral", capa: "", link: "https://youtube.com/shorts/xWIRTvLc-4c", gradiente: "tintaNoite" },
+          { marca: "Bioderma", conteudo: "Tratamento", capa: "", link: "https://youtube.com/shorts/hoJEFsa8_5M", gradiente: "cremeSuave" },
+          { marca: "La San Day", conteudo: "Hidratante", capa: "", link: "https://youtube.com/shorts/MuMdarOFye4", gradiente: "grafiteCreme" },
+          { marca: "Bianco", conteudo: "Dentes", capa: "", link: "https://youtube.com/shorts/2cUp_pDB46o", gradiente: "laranjaSol" },
+          { marca: "Maré Beauty + Rosa Selvagem", conteudo: "Clareamento", capa: "", link: "https://youtube.com/shorts/RUU0jEbandQ", gradiente: "tintaNoite" },
+          { marca: "Le Cosmetique", conteudo: "Cuidado Geral", capa: "", link: "https://youtube.com/shorts/njl41atCe4k", gradiente: "cremeSuave" }
         ]
       },
       {
-        nome: "Casal",
-        descricao: "Rotina e cumplicidade a dois",
+        nome: "Moda",
         videos: [
-          { marca: "ASK", conteudo: "", capa: "", link: "https://youtube.com/shorts/7VKEAW1LAmI", gradiente: "cremeSuave" },
-          { marca: "Havan", conteudo: "", capa: "", link: "https://youtube.com/shorts/rt-S0QZH95w", gradiente: "grafiteCreme" }
+          { marca: "Averara", conteudo: "Roupas", capa: "", link: "https://youtube.com/shorts/fIu8thaTio8", gradiente: "cremeSuave" },
+          { marca: "Salvatore", conteudo: "Roupas", capa: "", link: "https://youtube.com/shorts/XrN9759Kx7E", gradiente: "grafiteCreme" },
+          { marca: "Wishin", conteudo: "Bolsa", capa: "", link: "https://youtube.com/shorts/E3rIurPyqBo", gradiente: "laranjaSol" },
+          { marca: "Platô", conteudo: "Roupas", capa: "", link: "https://youtube.com/shorts/qM-HZ2fSXmk", gradiente: "tintaNoite" },
+          { marca: "Wishin", conteudo: "Sapato", capa: "", link: "https://youtube.com/shorts/mVC-4GKUC48", gradiente: "cremeSuave" }
         ]
       },
       {
-        nome: "Saúde e suplementação",
-        descricao: "Suplementos e hábitos do dia a dia",
+        nome: "Acessórios",
         videos: [
-          { marca: "Astana", conteudo: "Cabelo e Unhas", capa: "", link: "https://youtube.com/shorts/6Wc_H12-DUY", gradiente: "cremeSuave" },
-          { marca: "Bloomie", conteudo: "Sono", capa: "", link: "https://youtube.com/shorts/WWvYqJA_uz8", gradiente: "grafiteCreme" },
-          { marca: "Dew Drops", conteudo: "Beleza", capa: "", link: "https://youtube.com/shorts/QNkr1z0IKPY", gradiente: "laranjaSol" },
-          { marca: "Dew Drops", conteudo: "Beleza", capa: "", link: "https://youtube.com/shorts/Uv7IO4q-vUM", gradiente: "tintaNoite" },
-          { marca: "Dew Drops", conteudo: "Beleza", capa: "", link: "https://youtube.com/shorts/TpkBGJlxq84", gradiente: "cremeSuave" },
-          { marca: "Dew Drops", conteudo: "Beleza", capa: "", link: "https://youtube.com/shorts/pGgXwzI11X4", gradiente: "grafiteCreme" },
-          { marca: "La San Day", conteudo: "Cabelo e Unhas", capa: "", link: "https://youtube.com/shorts/jNOmNwMERP0", gradiente: "laranjaSol" },
-          { marca: "Gummy Hair", conteudo: "Cabelo e Unhas", capa: "", link: "https://youtube.com/shorts/akLlx77nLyo", gradiente: "tintaNoite" }
-        ]
-      },
-      {
-        nome: "Moda e acessórios",
-        descricao: "Looks, peças e combinações",
-        videos: [
-          { marca: "Averara", conteudo: "Roupas", capa: "", link: "https://youtube.com/shorts/fIu8thaTio8", gradiente: "cremeSuave" }
-        ]
-      },
-      {
-        nome: "Tech e aplicativos",
-        descricao: "Aparelhos e apps testados na prática",
-        videos: [
-          { marca: "Bible Guide", conteudo: "App (inglês)", capa: "", link: "https://youtube.com/shorts/W6W8Phe8NQ0", gradiente: "cremeSuave" },
-          { marca: "Dealism", conteudo: "IA", capa: "", link: "https://youtube.com/shorts/pbDhSoN03KE", gradiente: "grafiteCreme" },
-          { marca: "Dealism", conteudo: "IA", capa: "", link: "https://youtube.com/shorts/OayqBv0SNg0", gradiente: "laranjaSol" },
-          { marca: "IAbitos", conteudo: "App", capa: "", link: "https://youtube.com/shorts/aRJngn39Fok", gradiente: "tintaNoite" },
-          { marca: "IAbitos", conteudo: "App", capa: "", link: "https://youtube.com/shorts/szxuBMMBsVY", gradiente: "cremeSuave" },
-          { marca: "Marqo", conteudo: "Plataforma de Gestão", capa: "", link: "https://youtube.com/shorts/To9O4IuSsMY", gradiente: "grafiteCreme" }
-        ]
-      },
-      {
-        nome: "Datas comemorativas",
-        descricao: "Campanhas de data e presentes",
-        videos: [
-          { marca: "Ecosmetics", conteudo: "Dia das Mães", capa: "", link: "https://youtube.com/shorts/mgfcwChGbmc", gradiente: "cremeSuave" }
-        ]
-      },
-      {
-        nome: "Fitness",
-        descricao: "Treino, rotina e constância",
-        videos: [
-          { marca: "Elemento Puro", conteudo: "Suplementos", capa: "", link: "https://youtube.com/shorts/-riKsSrIWEI", gradiente: "cremeSuave" }
-        ]
-      },
-      {
-        nome: "Experiências",
-        descricao: "Visitas e testes para contar como foi",
-        videos: [
-          { marca: "Espaço Laser", conteudo: "Estética", capa: "", link: "https://youtube.com/shorts/L9EYdjZx16k", gradiente: "cremeSuave" }
-        ]
-      },
-      {
-        nome: "Loja física",
-        descricao: "Visitas, experiências e bastidores",
-        videos: [
-          { marca: "Havan", conteudo: "", capa: "", link: "https://youtube.com/shorts/rt-S0QZH95w", gradiente: "cremeSuave" }
-        ]
-      },
-      {
-        nome: "Viagem e turismo",
-        descricao: "Lugares, hospedagens e roteiros",
-        videos: [
-          { marca: "Hotel Renar", conteudo: "Hotelaria", capa: "", link: "https://youtube.com/shorts/lDdNToQ_mHQ", gradiente: "cremeSuave" }
+          { marca: "Saint Germain", conteudo: "", capa: "", link: "https://youtube.com/shorts/-TCVrwDuQnk", gradiente: "cremeSuave" },
+          { marca: "Vivara", conteudo: "", capa: "", link: "https://youtube.com/shorts/zQOAPO6gdfY", gradiente: "grafiteCreme" },
+          { marca: "Euro Relógios", conteudo: "", capa: "", link: "https://youtube.com/shorts/Pz1aZ1jc5w0", gradiente: "laranjaSol" },
+          { marca: "Prestige", conteudo: "", capa: "", link: "https://youtube.com/shorts/r5Z7bzgi5Yc", gradiente: "tintaNoite" },
+          { marca: "Foco Laser Design", conteudo: "", capa: "", link: "https://youtube.com/shorts/DuDENbMKJCo", gradiente: "cremeSuave" }
         ]
       },
       {
         nome: "Make",
-        descricao: "Produtos, textura e resultado na pele",
         videos: [
-          { marca: "Kylie Cosmetics", conteudo: "Lip Combo", capa: "", link: "https://youtube.com/shorts/pahmEioYKqA", gradiente: "cremeSuave" },
-          { marca: "Kylie Cosmetics", conteudo: "Lip Combo", capa: "", link: "https://youtube.com/shorts/N_-vPiyH0d8", gradiente: "grafiteCreme" },
-          { marca: "Beyoung", conteudo: "Primer", capa: "", link: "https://youtube.com/shorts/IhUtCbU4JBQ", gradiente: "laranjaSol" }
+          { marca: "OX Mari Maria", conteudo: "", capa: "", link: "https://youtube.com/shorts/OGiclU69jY8", gradiente: "cremeSuave" },
+          { marca: "Le Cosmetique + Usté", conteudo: "", capa: "", link: "https://youtube.com/shorts/C5f5zRCL7_4", gradiente: "grafiteCreme" },
+          { marca: "Kylie Cosmetics", conteudo: "", capa: "", link: "https://youtube.com/shorts/pahmEioYKqA", gradiente: "laranjaSol" },
+          { marca: "TikBalm", conteudo: "", capa: "", link: "https://youtube.com/shorts/mN9jAEP9htc", gradiente: "tintaNoite" },
+          { marca: "Le Cosmetique + Oceane", conteudo: "", capa: "", link: "https://youtube.com/shorts/ZdvOJ95WWGE", gradiente: "cremeSuave" },
+          { marca: "Maré Beauty + Beyoung", conteudo: "", capa: "", link: "https://youtube.com/shorts/IhUtCbU4JBQ", gradiente: "grafiteCreme" },
+          { marca: "Le Cosmetique + Oceane", conteudo: "", capa: "", link: "https://youtube.com/shorts/VlZmnJBMoEU", gradiente: "laranjaSol" },
+          { marca: "Le Cosmetique + Vizzela", conteudo: "", capa: "", link: "https://youtube.com/shorts/9Npw7NNH-ZE", gradiente: "tintaNoite" },
+          { marca: "Kylie Cosmetics", conteudo: "", capa: "", link: "https://youtube.com/shorts/N_-vPiyH0d8", gradiente: "cremeSuave" }
         ]
       },
       {
-        nome: "Grupo de promoções",
-        descricao: "Achados e ofertas para a comunidade",
+        nome: "Educação e Negócios",
         videos: [
-          { marca: "Lobão das Promoções", conteudo: "", capa: "", link: "https://youtube.com/shorts/lRMztHoKEjk", gradiente: "cremeSuave" },
-          { marca: "Lobão das Promoções", conteudo: "", capa: "", link: "https://youtube.com/shorts/GDAjiN53374", gradiente: "grafiteCreme" }
+          { marca: "Quitou BR", conteudo: "Finanças", capa: "", link: "https://youtube.com/shorts/lFbdrRNOSEI", gradiente: "cremeSuave" },
+          { marca: "Aloud", conteudo: "Idiomas", capa: "", link: "https://youtube.com/shorts/ANP16s3w6aY", gradiente: "grafiteCreme" },
+          { marca: "Nowbank", conteudo: "Finanças", capa: "", link: "https://youtube.com/shorts/9XqZH_HLMHY", gradiente: "laranjaSol" },
+          { marca: "Full English", conteudo: "Idiomas", capa: "", link: "https://youtube.com/shorts/AuEYIakEkik", gradiente: "tintaNoite" },
+          { marca: "Full English", conteudo: "Idiomas", capa: "", link: "https://youtube.com/shorts/lCoQWnWP6nY", gradiente: "cremeSuave" },
+          { marca: "Full English", conteudo: "Idiomas", capa: "", link: "https://youtube.com/shorts/XLyq695zPps", gradiente: "grafiteCreme" },
+          { marca: "Full English", conteudo: "Idiomas", capa: "", link: "https://youtube.com/shorts/h4QRcWV9Na0", gradiente: "laranjaSol" }
+        ]
+      },
+      {
+        nome: "Grupo de Promoções",
+        videos: [
+          { marca: "Up Desconta", conteudo: "", capa: "", link: "https://youtube.com/shorts/LCsSUhnvqYo", gradiente: "cremeSuave" },
+          { marca: "Lobão das Promoções", conteudo: "", capa: "", link: "https://youtube.com/shorts/GDAjiN53374", gradiente: "grafiteCreme" },
+          { marca: "Up Desconta", conteudo: "", capa: "", link: "https://youtube.com/shorts/Ac1Eonk21iA", gradiente: "laranjaSol" },
+          { marca: "Lobão das Promoções", conteudo: "", capa: "", link: "https://youtube.com/shorts/lRMztHoKEjk", gradiente: "tintaNoite" },
+          { marca: "Up Desconta", conteudo: "", capa: "", link: "https://youtube.com/shorts/8EwYM86kX_8", gradiente: "cremeSuave" }
+        ]
+      },
+      {
+        nome: "Fitness e Alimentação Saudável",
+        videos: [
+          { marca: "Elemento Puro", conteudo: "Suplementos", capa: "", link: "https://youtube.com/shorts/-riKsSrIWEI", gradiente: "cremeSuave" },
+          { marca: "Briv", conteudo: "Snacks", capa: "", link: "https://youtube.com/shorts/VjkzwV94h54", gradiente: "grafiteCreme" },
+          { marca: "Squadz Muscle", conteudo: "Suplementos", capa: "", link: "https://youtube.com/shorts/N-ihlkuI4AY", gradiente: "laranjaSol" },
+          { marca: "Pinati", conteudo: "", capa: "", link: "https://youtube.com/shorts/LYPosWCe-2M", gradiente: "tintaNoite" },
+          { marca: "Pops Food", conteudo: "Snacks", capa: "", link: "https://youtube.com/shorts/TjrvOZDnfl4", gradiente: "cremeSuave" },
+          { marca: "Max Titanium + Dr. Peannut", conteudo: "", capa: "", link: "https://youtube.com/shorts/SWd0u8DnaYE", gradiente: "grafiteCreme" },
+          { marca: "Pops Food", conteudo: "Snacks", capa: "", link: "https://youtube.com/shorts/RWKohDiECko", gradiente: "laranjaSol" }
+        ]
+      },
+      {
+        nome: "Saúde",
+        videos: [
+          { marca: "Bloomie", conteudo: "Sono", capa: "", link: "https://youtube.com/shorts/WWvYqJA_uz8", gradiente: "cremeSuave" },
+          { marca: "ConstLivre", conteudo: "Saúde Intestinal", capa: "", link: "https://youtube.com/shorts/yeW0a6PiuqM", gradiente: "grafiteCreme" },
+          { marca: "Maré Beauty + Gummy Hair", conteudo: "Cabelo e Unhas", capa: "", link: "https://youtube.com/shorts/akLlx77nLyo", gradiente: "laranjaSol" },
+          { marca: "Astana", conteudo: "Cabelo e Unhas", capa: "", link: "https://youtube.com/shorts/6Wc_H12-DUY", gradiente: "tintaNoite" },
+          { marca: "Dew Drops", conteudo: "Beleza", capa: "", link: "https://youtube.com/shorts/pGgXwzI11X4", gradiente: "cremeSuave" },
+          { marca: "Dew Drops", conteudo: "Beleza", capa: "", link: "https://youtube.com/shorts/QNkr1z0IKPY", gradiente: "grafiteCreme" },
+          { marca: "La San Day", conteudo: "Cabelo e Unhas", capa: "", link: "https://youtube.com/shorts/jNOmNwMERP0", gradiente: "laranjaSol" },
+          { marca: "Dew Drops", conteudo: "Beleza", capa: "", link: "https://youtube.com/shorts/Uv7IO4q-vUM", gradiente: "tintaNoite" },
+          { marca: "Dew Drops", conteudo: "Beleza", capa: "", link: "https://youtube.com/shorts/TpkBGJlxq84", gradiente: "cremeSuave" }
+        ]
+      },
+      {
+        nome: "Viagem e Turismo",
+        videos: [
+          { marca: "Hotel Renar", conteudo: "", capa: "", link: "https://youtube.com/shorts/lDdNToQ_mHQ", gradiente: "cremeSuave" },
+          { marca: "Top Viagem", conteudo: "", capa: "", link: "https://youtube.com/shorts/wmg2dk3HVA8", gradiente: "grafiteCreme" },
+          { marca: "Colline de France", conteudo: "", capa: "", link: "https://youtube.com/shorts/RifTa94B8hA", gradiente: "laranjaSol" },
+          { marca: "Pousada + Voo de Balão", conteudo: "", capa: "", link: "https://youtube.com/shorts/EVrDAtWTOEk", gradiente: "tintaNoite" }
+        ]
+      },
+      {
+        nome: "Casal",
+        videos: [
+          { marca: "L’Oreal Paris", conteudo: "", capa: "", link: "https://youtube.com/shorts/idmVVU-isFk", gradiente: "cremeSuave" },
+          { marca: "Havan", conteudo: "", capa: "", link: "https://youtube.com/shorts/rt-S0QZH95w", gradiente: "grafiteCreme" },
+          { marca: "ASK", conteudo: "", capa: "", link: "https://youtube.com/shorts/7VKEAW1LAmI", gradiente: "laranjaSol" }
+        ]
+      },
+      {
+        nome: "Experiências",
+        videos: [
+          { marca: "Marcia Gomes Cabeleireiros", conteudo: "", capa: "", link: "https://youtube.com/shorts/k09gH97FQs8", gradiente: "cremeSuave" },
+          { marca: "Continente Shopping", conteudo: "", capa: "", link: "https://youtube.com/shorts/zqvNCMPQfCA", gradiente: "grafiteCreme" },
+          { marca: "FarmaSesi + Nina Secrets", conteudo: "", capa: "", link: "https://youtube.com/shorts/JZdRnPEfo4Y", gradiente: "laranjaSol" },
+          { marca: "Espaço Laser", conteudo: "Estética", capa: "", link: "https://youtube.com/shorts/L9EYdjZx16k", gradiente: "tintaNoite" },
+          { marca: "Continente Shopping", conteudo: "", capa: "", link: "https://youtube.com/shorts/8g8LtEzCFQU", gradiente: "cremeSuave" }
+        ]
+      },
+      {
+        nome: "Entretenimento e Presentes",
+        videos: [
+          { marca: "Party Games", conteudo: "Jogo", capa: "", link: "https://youtube.com/shorts/ct6PjRujPHU", gradiente: "cremeSuave" },
+          { marca: "Sob Investigação", conteudo: "Jogo", capa: "", link: "https://youtube.com/shorts/VweCM4UecXg", gradiente: "grafiteCreme" },
+          { marca: "LM Editora", conteudo: "Presente", capa: "", link: "https://youtube.com/shorts/nx0hSuVPPbs", gradiente: "laranjaSol" },
+          { marca: "Flico", conteudo: "Presente", capa: "", link: "https://youtube.com/shorts/Y-uDn4K1Ol0", gradiente: "tintaNoite" },
+          { marca: "Flico", conteudo: "Presente", capa: "", link: "https://youtube.com/shorts/BaeMsnzQq_4", gradiente: "cremeSuave" },
+          { marca: "Flico", conteudo: "Presente", capa: "", link: "https://youtube.com/shorts/CdzTY7ezUt8", gradiente: "grafiteCreme" },
+          { marca: "Flico", conteudo: "Presente", capa: "", link: "https://youtube.com/shorts/amCZlnPFsDk", gradiente: "laranjaSol" }
+        ]
+      },
+      {
+        nome: "Limpeza",
+        videos: [
+          { marca: "Coala", conteudo: "Limpeza", capa: "", link: "https://youtube.com/shorts/yv9pay2ZOuA", gradiente: "cremeSuave" },
+          { marca: "Azulim", conteudo: "Limpeza", capa: "", link: "https://youtube.com/shorts/QUD5bFkoaWE", gradiente: "grafiteCreme" },
+          { marca: "Coala", conteudo: "Limpeza", capa: "", link: "https://youtube.com/shorts/iGfOlPTW1sg", gradiente: "laranjaSol" }
+        ]
+      },
+      {
+        nome: "Storytelling",
+        videos: [
+          { marca: "Elemento Puro", conteudo: "Suplementos", capa: "", link: "https://youtube.com/shorts/-riKsSrIWEI", gradiente: "cremeSuave" },
+          { marca: "Theoric", conteudo: "", capa: "", link: "https://youtube.com/shorts/afcOOCXx5OE", gradiente: "grafiteCreme" },
+          { marca: "Ecosmetics", conteudo: "", capa: "", link: "https://youtube.com/shorts/lSOrufpZf1I", gradiente: "laranjaSol" },
+          { marca: "L’Oreal Paris", conteudo: "", capa: "", link: "https://youtube.com/shorts/idmVVU-isFk", gradiente: "tintaNoite" },
+          { marca: "LM Editora", conteudo: "Presente", capa: "", link: "https://youtube.com/shorts/nx0hSuVPPbs", gradiente: "cremeSuave" },
+          { marca: "Mood Care", conteudo: "", capa: "", link: "https://youtube.com/shorts/nSYDzb2gpyk", gradiente: "grafiteCreme" }
+        ]
+      },
+      {
+        nome: "E-commerce",
+        videos: [
+          { marca: "AMOBELEZA + Keune", conteudo: "", capa: "", link: "https://youtube.com/shorts/9H_IChS0cC0", gradiente: "cremeSuave" },
+          { marca: "Glam", conteudo: "", capa: "", link: "https://youtube.com/shorts/U2sqZsexjXg", gradiente: "grafiteCreme" },
+          { marca: "Mercado Livre", conteudo: "", capa: "", link: "https://youtube.com/shorts/d9lhuE5VyUI", gradiente: "laranjaSol" },
+          { marca: "Maré Beauty + Gummy Hair", conteudo: "", capa: "", link: "https://youtube.com/shorts/akLlx77nLyo", gradiente: "tintaNoite" },
+          { marca: "Maré Beauty + Rosa Selvagem", conteudo: "", capa: "", link: "https://youtube.com/shorts/JQFILu2w-EY", gradiente: "cremeSuave" },
+          { marca: "Maré Beauty + Rosa Selvagem", conteudo: "", capa: "", link: "https://youtube.com/shorts/RUU0jEbandQ", gradiente: "grafiteCreme" },
+          { marca: "Maré Beauty + Beyoung", conteudo: "", capa: "", link: "https://youtube.com/shorts/IhUtCbU4JBQ", gradiente: "laranjaSol" }
+        ]
+      },
+      {
+        nome: "YouTube",
+        videos: [
+          { marca: "Full English", conteudo: "", capa: "", link: "https://youtu.be/ni9_cndmtDs", gradiente: "cremeSuave" }
+        ]
+      },
+      {
+        nome: "Natal",
+        videos: [
+          { marca: "Ecosmetics", conteudo: "Natal", capa: "", link: "https://youtube.com/shorts/5LVMV1OFFZ0", gradiente: "cremeSuave" },
+          { marca: "Continente Shopping", conteudo: "Natal", capa: "", link: "https://youtube.com/shorts/8g8LtEzCFQU", gradiente: "grafiteCreme" }
         ]
       }
     ]
@@ -2051,12 +2149,12 @@ const CONFIG = {
        text, email ou textarea; quem tem obrigatorio:true precisa ser
        preenchido para a mensagem ser enviada. */
     campos: [
-      { id: "nome",      rotulo: "Nome",                     tipo: "text",     obrigatorio: true },
-      { id: "email",     rotulo: "E-mail",                   tipo: "email",    obrigatorio: true },
-      { id: "marca",     rotulo: "Marca/empresa",            tipo: "text",     obrigatorio: false },
-      { id: "orcamento", rotulo: "Orçamento estimado",       tipo: "text",     obrigatorio: false },
-      { id: "projeto",   rotulo: "Me conta sobre o projeto", tipo: "textarea", obrigatorio: true,
-        exemplo: "Conte qual é o produto, o formato que você imagina e o prazo desejado." }
+      { id: "nome",      rotulo: "Nome",                tipo: "text",     obrigatorio: true,  exemplo: "Seu nome" },
+      { id: "email",     rotulo: "E-mail",              tipo: "email",    obrigatorio: true,  exemplo: "voce@marca.com" },
+      { id: "marca",     rotulo: "Marca / empresa",     tipo: "text",     obrigatorio: false, exemplo: "Nome da marca", tamanho: "inteiro" },
+      { id: "orcamento", rotulo: "Orçamento estimado",  tipo: "text",     obrigatorio: false, exemplo: "Ex: R$ 1.000 a R$ 5.000", tamanho: "inteiro" },
+      { id: "projeto",   rotulo: "Conta sobre o projeto", tipo: "textarea", obrigatorio: true,
+        exemplo: "Categoria, formato, prazo, objetivo da campanha..." }
     ],
     botao: "Enviar mensagem",
     /* Mensagem que aparece na tela depois de enviar o formulário */
@@ -2107,23 +2205,22 @@ const CONFIG = {
      pessoa fechar, vira um balão no canto de baixo, à direita. */
   ideia: {
     atraso: 10,
-    balao: "Ideia grátis",
-    titulo: "Receba uma ideia de conteúdo gratuita!",
-    subtitulo: "Conte um pouco sobre a sua marca e eu envio uma ideia de vídeo pensada para ela.",
+    balao: "Tabela e pacotes",
+    titulo: "Quer receber minha tabela de investimento + opções de pacotes UGC?",
+    subtitulo: "Preencha seus dados e eu te envio tudo por WhatsApp. 💌",
     campos: [
-      { id: "nome",     rotulo: "Nome",     tipo: "text",  autocomplete: "name" },
-      { id: "marca",    rotulo: "Marca",    tipo: "text",  autocomplete: "organization" },
-      { id: "email",    rotulo: "E-mail",   tipo: "email", autocomplete: "email" },
-      { id: "whatsapp", rotulo: "WhatsApp", tipo: "tel",   autocomplete: "tel" }
+      { id: "nome",     rotulo: "Seu nome",      tipo: "text",  autocomplete: "name" },
+      { id: "marca",    rotulo: "Nome da marca", tipo: "text",  autocomplete: "organization" },
+      { id: "whatsapp", rotulo: "WhatsApp",      tipo: "tel",   autocomplete: "tel" }
     ],
-    botao: "Enviar",
+    botao: "QUERO RECEBER",
     enviando: "Enviando…",
-    sucesso: "Recebido! Em breve envio a sua ideia por e-mail ou WhatsApp.",
+    sucesso: "Recebido! Em breve te envio a tabela de investimento e os pacotes por WhatsApp.",
     erro: "Não consegui enviar agora. Tente de novo ou chame no WhatsApp.",
     obrigatorio: "Preencha este campo.",
     emailInvalido: "Confira o seu e-mail.",
     fechar: "Fechar",
-    assunto: "Pedido de ideia de conteúdo gratuita pelo site"
+    assunto: "Pedido de tabela de investimento e pacotes UGC pelo site"
   },
 
   rodape: {
@@ -2176,6 +2273,16 @@ const T = UI[IDIOMA];
 
 const TERMOS = {
   /* nichos */
+  "Casa e Decor": "Home & Decor", "Tech e Aplicativos": "Tech & Apps", "Cabelo": "Hair",
+  "Corporal": "Body", "Moda": "Fashion", "Acessórios": "Accessories",
+  "Educação e Negócios": "Education & Business", "Grupo de Promoções": "Deals Group",
+  "Fitness e Alimentação Saudável": "Fitness & Healthy Eating", "Saúde": "Health",
+  "Viagem e Turismo": "Travel & Tourism", "Entretenimento e Presentes": "Entertainment & Gifts",
+  "Limpeza": "Cleaning", "Natal": "Christmas",
+  "Reforma": "Renovation", "Cozinha": "Kitchen", "Cama e Banho": "Bed & bath", "Decoração": "Decor",
+  "Iluminação": "Lighting", "Cama": "Bed", "Hidratante": "Moisturizer", "Desodorante": "Deodorant",
+  "Dentes": "Teeth", "Cuidado Geral": "General care", "Bolsa": "Bag", "Sapato": "Shoes",
+  "Jogo": "Game", "Presente": "Gift", "Idiomas": "Languages", "Saúde Intestinal": "Gut health",
   "Vídeos em destaque": "Featured videos", "Casa e decor": "Home & decor",
   "Educação e negócios": "Education & business", "Casal": "Couples",
   "Saúde e suplementação": "Health & supplements", "Moda e acessórios": "Fashion & accessories",
@@ -2393,9 +2500,10 @@ const CONFIG_EN = {
     altFoto: "Letícia sitting, looking at the camera",
     tituloFormulario: "Send me a message",
     campos: [
-      { rotulo: "Name" }, { rotulo: "Email" }, { rotulo: "Brand/company" },
-      { rotulo: "Estimated budget" },
-      { rotulo: "Tell me about the project", exemplo: "Tell me what the product is, the format you have in mind and the deadline." }
+      { rotulo: "Name", exemplo: "Your name" }, { rotulo: "Email", exemplo: "you@brand.com" },
+      { rotulo: "Brand / company", exemplo: "Brand name" },
+      { rotulo: "Estimated budget", exemplo: "E.g. US$ 200 to US$ 1,000" },
+      { rotulo: "Tell me about the project", exemplo: "Category, format, deadline, campaign goal..." }
     ],
     botao: "Send message",
     confirmacao: "Thank you for reaching out! Your message was sent and I'll reply within 24 business hours.",
@@ -2407,20 +2515,20 @@ const CONFIG_EN = {
     assuntoEmail: "UGC content proposal from the website"
   },
   ideia: {
-    balao: "Free idea",
-    titulo: "Get a free content idea!",
-    subtitulo: "Tell me a bit about your brand and I'll send you a video idea made for it.",
+    balao: "Rates & packages",
+    titulo: "Want my rate card + UGC package options?",
+    subtitulo: "Fill in your details and I'll send everything to you on WhatsApp. 💌",
     campos: [
-      { rotulo: "Name" }, { rotulo: "Brand" }, { rotulo: "Email" }, { rotulo: "WhatsApp" }
+      { rotulo: "Your name" }, { rotulo: "Brand name" }, { rotulo: "WhatsApp" }
     ],
-    botao: "Send",
+    botao: "I WANT IT",
     enviando: "Sending…",
-    sucesso: "Got it! I'll send you your idea by email or WhatsApp soon.",
+    sucesso: "Got it! I'll send you the rate card and packages on WhatsApp soon.",
     erro: "I couldn't send it right now. Please try again or message me on WhatsApp.",
     obrigatorio: "Please fill in this field.",
     emailInvalido: "Please check your email.",
     fechar: "Close",
-    assunto: "Free content idea request from the website"
+    assunto: "Rate card and UGC packages request from the website"
   },
   faq: {
     titulo: "FAQ - Frequently asked questions",
@@ -2852,7 +2960,7 @@ if(IDIOMA === "en"){
       ? "https://www.tiktok.com/player/v1/" + encodeURIComponent(v.tiktok) +
         "?autoplay=1&loop=1&music_info=0&description=0&rel=0&fullscreen_button=0&timestamp=0"
       : v.youtube
-        ? "https://www.youtube.com/embed/" + encodeURIComponent(v.youtube) + "?autoplay=1&rel=0&playsinline=1&modestbranding=1&vq=hd1080" + (/^https?:/.test(location.protocol) ? "&origin=" + encodeURIComponent(location.origin) : "")
+        ? "https://www.youtube.com/embed/" + encodeURIComponent(v.youtube) + "?autoplay=1&rel=0&playsinline=1&modestbranding=1&vq=hd1080&cc_load_policy=0&hl=pt" + (/^https?:/.test(location.protocol) ? "&origin=" + encodeURIComponent(location.origin) : "")
         : "https://www.instagram.com/reel/" + encodeURIComponent(v.instagram) + "/embed/";
     frame.setAttribute("scrolling", "no");
     frame.referrerPolicy = "strict-origin-when-cross-origin";
@@ -2885,7 +2993,7 @@ if(IDIOMA === "en"){
     '<h2 class="conteudo__titulo" id="titulo-conteudo">' + escapar(CONFIG.conteudo.titulo) + '</h2>';
 
   $("nichos").innerHTML = CONFIG.conteudo.nichos.map(function(n, i){
-    return '<button type="button" class="nicho" data-indice="' + i + '"' +
+    return '<button type="button" class="nicho' + (n.cor === "verde" ? ' nicho--verde' : '') + '" data-indice="' + i + '"' +
            ' aria-pressed="' + (i === 0 ? "true" : "false") + '">' + escapar(n.nome) + '</button>';
   }).join("");
 
@@ -2941,11 +3049,11 @@ if(IDIOMA === "en"){
       frame.referrerPolicy = "strict-origin-when-cross-origin";
       frame.src = "https://www.youtube.com/embed/" + encodeURIComponent(id) +
         "?autoplay=1&mute=1&controls=0&loop=1&playlist=" + encodeURIComponent(id) +
-        "&playsinline=1&rel=0&modestbranding=1&disablekb=1&iv_load_policy=3&fs=0&origin=" +
+        "&playsinline=1&rel=0&modestbranding=1&disablekb=1&iv_load_policy=3&cc_load_policy=0&fs=0&origin=" +
         encodeURIComponent(location.origin);
       /* Só aparece quando o player carregou, para não piscar preto por cima da capa */
       frame.addEventListener("load", function(){
-        window.setTimeout(function(){ frame.classList.add("visivel"); }, 500);
+        frame.classList.add("visivel");
       });
       card.insertBefore(frame, card.firstChild.nextSibling);
       card.classList.add("com-previa");
@@ -2956,7 +3064,7 @@ if(IDIOMA === "en"){
       const card = evento.target.closest ? evento.target.closest(".video[data-vertical]") : null;
       if(!card || card === cardPrevia) return;
       pararPrevia();
-      espera = window.setTimeout(function(){ iniciarPrevia(card); }, 350);
+      iniciarPrevia(card);
     });
     trilho.addEventListener("mouseout", function(evento){
       if(!cardPrevia && !espera) return;
@@ -3167,7 +3275,7 @@ if(IDIOMA === "en"){
        (rel, branding) da tela de "vídeos relacionados" no final. */
     lightboxPlayer.innerHTML =
       '<iframe src="https://www.youtube.com/embed/' + encodeURIComponent(id) +
-        '?autoplay=1&playsinline=1&rel=0&modestbranding=1&vq=hd1080"' +
+        '?autoplay=1&playsinline=1&rel=0&modestbranding=1&vq=hd1080&cc_load_policy=0&hl=pt"' +
         ' title="Vídeo" allow="autoplay; encrypted-media; picture-in-picture; fullscreen"' +
         ' allowfullscreen></iframe>';
   };
@@ -3409,15 +3517,15 @@ if(IDIOMA === "en"){
      acrescentar ou tirar um campo ser só mexer lá em cima. */
   $("contato-formulario").innerHTML =
     '<form class="formulario" id="form-contato" novalidate>' +
-      '<h3 style="margin-bottom:22px">' + escapar(CONFIG.contato.tituloFormulario) + '</h3>' +
       CONFIG.contato.campos.map(function(campo){
         const id = "campo-" + campo.id;
         const obrigatorio = campo.obrigatorio ? " required" : "";
         const corpo = campo.tipo === "textarea"
           ? '<textarea id="' + id + '" name="' + campo.id + '"' + obrigatorio +
             (campo.exemplo ? ' placeholder="' + escapar(campo.exemplo) + '"' : "") + '></textarea>'
-          : '<input id="' + id + '" name="' + campo.id + '" type="' + campo.tipo + '"' + obrigatorio + '>';
-        return '<label class="campo' + (campo.tipo === "textarea" ? " campo--largo" : "") + '" for="' + id + '"><span>' + escapar(campo.rotulo) + '</span>' + corpo + '</label>';
+          : '<input id="' + id + '" name="' + campo.id + '" type="' + campo.tipo + '"' + obrigatorio +
+            (campo.exemplo ? ' placeholder="' + escapar(campo.exemplo) + '"' : "") + '>';
+        return '<label class="campo' + (campo.tipo === "textarea" ? " campo--largo" : "") + (campo.tamanho ? " campo--" + campo.tamanho : "") + '" for="' + id + '"><span>' + escapar(campo.rotulo) + '</span>' + corpo + '</label>';
       }).join("") +
       '<button class="btn btn--principal" type="submit">' + escapar(CONFIG.contato.botao) + '</button>' +
       '<p class="aviso-form" id="aviso-form" role="status" hidden></p>' +
@@ -3530,7 +3638,7 @@ if(IDIOMA === "en"){
         '</form>' +
       '</div>' +
       '<button type="button" class="ideia__balao" data-abrir>' +
-        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21h6v-1.5H9V21zm3-19a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg>' +
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.41 11.58l-9-9A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58s1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41s-.23-1.06-.59-1.42zM5.5 7A1.5 1.5 0 1 1 5.5 4a1.5 1.5 0 0 1 0 3z"/></svg>' +
         '<span>' + escapar(cfg.balao) + '</span>' +
       '</button>';
     document.body.appendChild(raiz);
@@ -3560,10 +3668,10 @@ if(IDIOMA === "en"){
       }
     });
 
-    /* Depois dos segundos combinados o popup abre. Quem já fechou ou já enviou
-       nesta visita vê direto o balão, sem ser interrompido de novo. */
+    /* Depois dos segundos combinados o popup abre sempre, tenha o visitante
+       clicado em outras coisas da página ou não. */
     window.setTimeout(function(){
-      estado(ler("ideia_minimizada") ? "balao" : "aberto");
+      estado("aberto");
     }, cfg.atraso * 1000);
 
     const form = $("ideia-form");
