@@ -8,20 +8,25 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;1,500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;1,500&family=League+Spartan:wght@500;600;700;800&family=Mulish:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
 <style>
   /* ===================== VARIÁVEIS DO DESIGN SYSTEM ===================== */
+  /* Paleta e fontes copiadas do site principal (leticiacalisto.com) */
   :root{
-    --coral: #D4572A;
-    --coral-escuro: #B8461F;
-    --creme: #F5F3EF;
-    --branco: #FFFFFF;
-    --grafite: #1A1816;
-    --texto-suave: #6B645C;
-    --borda: #DDD8D0;
+    --coral: #991A0E;
+    --coral-escuro: #730F06;
+    --creme: #F3EEE9;
+    --branco: #FFFDFB;
+    --grafite: #14110D;
+    --texto-suave: #4A443C;
+    --borda: rgba(20,17,13,.12);
     --verde-sucesso: #2D7A4F;
     --vermelho-erro: #C4453C;
+
+    --fonte-serif: "Fraunces", Georgia, "Times New Roman", serif;
+    --fonte-sans: "Avenir Next Arabic", "Avenir Next", "Avenir", "Mulish", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+    --fonte-impacto: "League Spartan", system-ui, "Segoe UI", Arial, sans-serif;
   }
 
   *,*::before,*::after{ box-sizing: border-box; }
@@ -29,9 +34,9 @@
   body{
     margin:0;
     min-height: 100vh;
-    background: var(--creme);
+    background: var(--branco);
     color: var(--grafite);
-    font-family: "Outfit", sans-serif;
+    font-family: var(--fonte-sans);
     display:flex;
     align-items:center;
     justify-content:center;
@@ -45,13 +50,14 @@
     margin: 0 auto;
     background: var(--branco);
     border-radius: 24px;
-    box-shadow: 0 20px 50px rgba(26,24,22,0.10);
+    box-shadow: 0 20px 50px rgba(20,17,13,0.10);
     padding: 40px 36px;
   }
 
   .logo{
-    font-family: "Fraunces", serif;
+    font-family: var(--fonte-serif);
     font-weight: 600;
+    letter-spacing: -.02em;
     font-size: 1.3rem;
     text-align:center;
     margin-bottom: 24px;
@@ -59,9 +65,9 @@
   .logo .ponto{ color: var(--coral); }
 
   h1{
-    font-family: "Fraunces", serif;
-    font-style: italic;
-    font-weight: 500;
+    font-family: var(--fonte-serif);
+    font-weight: 600;
+    letter-spacing: -.02em;
     font-size: 1.7rem;
     text-align:center;
     margin: 0 0 8px;
