@@ -1265,6 +1265,11 @@ a.video:hover,button.video:hover{transform:translateY(-6px);box-shadow:var(--som
   /* Serviços: sem a palavra repetida ao fundo, foto mais apagada e os cartões
      entrando devagar, um por vez */
   .servicos__fundo-titulo{display:none;}
+  /* Cartões centralizados, com respiro nas laterais e texto à direita */
+  .servicos__cartoes{align-items:center;}
+  .servico-cartao{width:100%;max-width:none;text-align:right;}
+  .servicos__cena{grid-template-columns:minmax(0,1fr);padding-inline:26px;}
+  .servicos__lado{grid-column:1;}
   .retrato-recortado{opacity:.45;}
   /* Os cartões aparecem com fade na mesma velocidade em que a página desce:
      o JS (ver "Fade dos cartões") preenche o --fade de 0 a 1 conforme a rolagem */
