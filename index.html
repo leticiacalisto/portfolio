@@ -155,12 +155,15 @@ section{padding-block:clamp(64px,9vw,120px);scroll-margin-top:calc(var(--altura-
    ========================================================= */
 .topo{
   position:fixed;inset:0 0 auto 0;z-index:100;
-  background:rgba(243,238,233,.88);
-  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
   border-bottom:1px solid transparent;
   transition:border-color .3s ease, box-shadow .3s ease;
 }
 .topo.rolou{border-bottom-color:var(--borda);box-shadow:0 6px 24px rgba(20,17,13,.05);}
+/* SÃ³ a faixa do menu Ã© translÃºcida; a tarja verde de cima continua sÃ³lida */
+.topo__menu{
+  background:rgba(243,238,233,.5);
+  backdrop-filter:blur(16px) saturate(1.2);-webkit-backdrop-filter:blur(16px) saturate(1.2);
+}
 .topo__interno{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:var(--altura-nav);}
 /* A tarja de cima (Black Friday) e o menu ficam juntos, fixos no topo */
 .topo__barra{
@@ -677,6 +680,12 @@ section{padding-block:clamp(64px,9vw,120px);scroll-margin-top:calc(var(--altura-
 }
 /* Só o nicho em destaque usa duas fileiras */
 .carrossel--duplo .carrossel__trilho{grid-template-rows:repeat(2,1fr);}
+/* Nicho com vÃ­deo deitado (16:9): o card Ã© largo, com o dobro da largura de um vertical */
+.carrossel--horizontal .carrossel__trilho{
+  grid-auto-columns:calc((100% - 4 * var(--vao)) / 5 * 2 + var(--vao));align-items:start;
+}
+.carrossel .video--horizontal{aspect-ratio:16/9;}
+.carrossel .video--horizontal .video__previa{left:0;width:100%;transform:none;}
 .video{
   position:relative;display:block;overflow:hidden;border-radius:var(--raio-g);
   aspect-ratio:9/16;background:var(--creme-escuro);box-shadow:var(--sombra);
@@ -1098,6 +1107,11 @@ a.video:hover,button.video:hover{transform:translateY(-6px);box-shadow:var(--som
   transform:scale(.96);transition:transform .25s ease;
 }
 .lightbox.aberto .lightbox__caixa{transform:scale(1);}
+/* VÃ­deo deitado (16:9): a caixa muda de proporÃ§Ã£o */
+.lightbox__caixa--horizontal{
+  aspect-ratio:16/9;
+  width:min(92vw,calc(90vh * 16 / 9));height:min(90vh,calc(92vw * 9 / 16));
+}
 .lightbox__caixa iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
 .lightbox__fechar{
   position:absolute;top:10px;right:10px;z-index:2;width:36px;height:36px;border-radius:50%;
@@ -1200,6 +1214,7 @@ a.video:hover,button.video:hover{transform:translateY(-6px);box-shadow:var(--som
 <!-- ===== 1. MENU FIXO DO TOPO ===== -->
 <header class="topo" id="topo">
   <div class="topo__barra" id="topo-barra" hidden></div>
+  <div class="topo__menu">
   <div class="container topo__interno">
     <a class="logo" href="#inicio" id="logo-topo"></a>
     <nav id="navegacao" aria-label="Navegação principal">
@@ -1210,6 +1225,7 @@ a.video:hover,button.video:hover{transform:translateY(-6px);box-shadow:var(--som
             aria-label="Abrir menu de navegação" aria-expanded="false" aria-controls="menu">
       <span></span><span></span><span></span>
     </button>
+  </div>
   </div>
 </header>
 
@@ -1729,6 +1745,7 @@ const CONFIG = {
       {
         nome: "Casa e Decor",
         videos: [
+          { marca: "AGL Brasil", conteudo: "Automação", capa: "", link: "https://youtube.com/shorts/EDZtTPjUV3U", gradiente: "cremeSuave" },
           { marca: "Hoomy", conteudo: "Cama e Banho", capa: "", link: "https://youtube.com/shorts/Mme7pbP79jM", gradiente: "grafiteCreme" },
           { marca: "Pra Casa", conteudo: "Reforma", capa: "", link: "https://youtube.com/shorts/X08y9ufl6ng", gradiente: "laranjaSol" },
           { marca: "Sottile", conteudo: "Cozinha", capa: "", link: "https://youtube.com/shorts/o5YCA0164T8", gradiente: "tintaNoite" },
@@ -1978,6 +1995,7 @@ const CONFIG = {
       },
       {
         nome: "YouTube",
+        horizontal: true,
         videos: [
           { marca: "Full English", conteudo: "", capa: "", link: "https://youtu.be/ni9_cndmtDs", gradiente: "cremeSuave" }
         ]
@@ -2152,7 +2170,7 @@ const CONFIG = {
       { id: "nome",      rotulo: "Nome",                tipo: "text",     obrigatorio: true,  exemplo: "Seu nome" },
       { id: "email",     rotulo: "E-mail",              tipo: "email",    obrigatorio: true,  exemplo: "voce@marca.com" },
       { id: "marca",     rotulo: "Marca / empresa",     tipo: "text",     obrigatorio: false, exemplo: "Nome da marca", tamanho: "inteiro" },
-      { id: "orcamento", rotulo: "Orçamento estimado",  tipo: "text",     obrigatorio: false, exemplo: "Ex: R$ 1.000 a R$ 5.000", tamanho: "inteiro" },
+      { id: "orcamento", rotulo: "Orçamento estimado",  tipo: "text",     obrigatorio: false, exemplo: "Ex: R$ 2.500", tamanho: "inteiro", moeda: true },
       { id: "projeto",   rotulo: "Conta sobre o projeto", tipo: "textarea", obrigatorio: true,
         exemplo: "Categoria, formato, prazo, objetivo da campanha..." }
     ],
@@ -2502,7 +2520,7 @@ const CONFIG_EN = {
     campos: [
       { rotulo: "Name", exemplo: "Your name" }, { rotulo: "Email", exemplo: "you@brand.com" },
       { rotulo: "Brand / company", exemplo: "Brand name" },
-      { rotulo: "Estimated budget", exemplo: "E.g. US$ 200 to US$ 1,000" },
+      { rotulo: "Estimated budget", exemplo: "E.g. US$ 500" },
       { rotulo: "Tell me about the project", exemplo: "Category, format, deadline, campaign goal..." }
     ],
     botao: "Send message",
@@ -3022,23 +3040,29 @@ if(IDIOMA === "en"){
   carrossel.addEventListener("scroll", atualizarSetas, { passive: true });
   window.addEventListener("resize", atualizarSetas);
 
-  /* Prévia ao passar o mouse: depois de uma pausa curta, o card do YouTube
-     toca mudo, por cima da capa, e para assim que o mouse sai. Só vale com
-     mouse (no celular não existe "passar por cima") e só para Shorts, que
-     preenchem o card vertical. */
+  /* Prévia ao passar o mouse. Para começar no mesmo instante, os players dos
+     cards que estão à vista já ficam carregados, parados e escondidos por
+     cima da capa; ao passar o mouse só falta mandar o "play" e mostrar. Os
+     que saem da tela são descarregados. A prévia toca muda, em qualidade
+     baixa, e para (voltando ao começo) quando o mouse sai. Só vale com mouse
+     e fora do arquivo local, porque o player exige um endereço http(s). */
+  let observarCards = function(){};
   if(window.matchMedia("(hover: hover) and (pointer: fine)").matches && location.protocol !== "file:"){
+    const aquecidos = new Map();
     let cardPrevia = null;
-    let espera = null;
 
-    const pararPrevia = function(){
-      window.clearTimeout(espera);
-      if(!cardPrevia) return;
-      cardPrevia.classList.remove("com-previa");
-      const antigo = cardPrevia.querySelector(".video__previa");
-      if(antigo) antigo.remove();
-      cardPrevia = null;
+    const comando = function(frame, func, args){
+      try{
+        frame.contentWindow.postMessage(JSON.stringify({ event: "command", func: func, args: args || [] }), "*");
+      }catch(e){}
     };
-    const iniciarPrevia = function(card){
+    const tocar = function(info){
+      comando(info.frame, "playVideo");
+      info.card.classList.add("com-previa");
+      info.frame.classList.add("visivel");
+    };
+    const aquecer = function(card){
+      if(aquecidos.has(card) || !card.isConnected) return;
       const id = card.getAttribute("data-youtube");
       const frame = document.createElement("iframe");
       frame.className = "video__previa";
@@ -3048,32 +3072,83 @@ if(IDIOMA === "en"){
       frame.allow = "autoplay; encrypted-media";
       frame.referrerPolicy = "strict-origin-when-cross-origin";
       frame.src = "https://www.youtube.com/embed/" + encodeURIComponent(id) +
-        "?autoplay=1&mute=1&controls=0&loop=1&playlist=" + encodeURIComponent(id) +
-        "&playsinline=1&rel=0&modestbranding=1&disablekb=1&iv_load_policy=3&cc_load_policy=0&fs=0&origin=" +
-        encodeURIComponent(location.origin);
-      /* Só aparece quando o player carregou, para não piscar preto por cima da capa */
+        "?autoplay=0&mute=1&controls=0&loop=1&playlist=" + encodeURIComponent(id) +
+        "&playsinline=1&rel=0&modestbranding=1&disablekb=1&iv_load_policy=3&cc_load_policy=0&fs=0&vq=small" +
+        "&enablejsapi=1&origin=" + encodeURIComponent(location.origin);
+      const info = { card: card, frame: frame, pronto: false, quer: false };
+      /* O player só responde a comandos depois do "aperto de mão" */
       frame.addEventListener("load", function(){
-        frame.classList.add("visivel");
+        [0, 400, 1200].forEach(function(t){
+          window.setTimeout(function(){
+            if(info.pronto) return;
+            try{ frame.contentWindow.postMessage(JSON.stringify({ event: "listening", id: 1, channel: "widget" }), "*"); }catch(e){}
+          }, t);
+        });
       });
       card.insertBefore(frame, card.firstChild.nextSibling);
-      card.classList.add("com-previa");
-      cardPrevia = card;
+      aquecidos.set(card, info);
+      return info;
+    };
+    const esfriar = function(card){
+      const info = aquecidos.get(card);
+      if(!info || card === cardPrevia) return;
+      info.frame.remove();
+      aquecidos.delete(card);
+    };
+    window.addEventListener("message", function(evento){
+      if(evento.origin.indexOf("youtube.com") < 0) return;
+      let dados = evento.data;
+      if(typeof dados === "string"){ try{ dados = JSON.parse(dados); }catch(e){ return; } }
+      if(!dados || (dados.event !== "onReady" && dados.event !== "initialDelivery")) return;
+      aquecidos.forEach(function(info){
+        if(info.frame.contentWindow !== evento.source || info.pronto) return;
+        info.pronto = true;
+        if(info.quer) tocar(info);
+      });
+    });
+
+    const pararPrevia = function(){
+      if(!cardPrevia) return;
+      const info = aquecidos.get(cardPrevia);
+      cardPrevia.classList.remove("com-previa");
+      if(info){
+        info.quer = false;
+        info.frame.classList.remove("visivel");
+        if(info.pronto){ comando(info.frame, "pauseVideo"); comando(info.frame, "seekTo", [0, true]); }
+      }
+      cardPrevia = null;
     };
 
     trilho.addEventListener("mouseover", function(evento){
-      const card = evento.target.closest ? evento.target.closest(".video[data-vertical]") : null;
+      const card = evento.target.closest ? evento.target.closest(".video[data-youtube]") : null;
       if(!card || card === cardPrevia) return;
       pararPrevia();
-      iniciarPrevia(card);
+      cardPrevia = card;
+      const info = aquecidos.get(card) || aquecer(card);
+      info.quer = true;
+      if(info.pronto) tocar(info);
     });
     trilho.addEventListener("mouseout", function(evento){
-      if(!cardPrevia && !espera) return;
+      if(!cardPrevia) return;
       const para = evento.relatedTarget;
       if(para && para.closest && para.closest(".video") === (evento.target.closest && evento.target.closest(".video"))) return;
       pararPrevia();
     });
-    /* Trocar de nicho redesenha os cards: qualquer prévia em curso acaba junto */
     carrossel.addEventListener("scroll", pararPrevia, { passive: true });
+
+    /* Aquece os cards que aparecem e descarrega os que saem da tela */
+    const vigia = "IntersectionObserver" in window ? new IntersectionObserver(function(entradas){
+      entradas.forEach(function(e){
+        if(e.isIntersecting) aquecer(e.target); else esfriar(e.target);
+      });
+    }, { threshold: 0.5 }) : null;
+    observarCards = function(){
+      pararPrevia();
+      aquecidos.clear();
+      if(!vigia) return;
+      vigia.disconnect();
+      Array.prototype.forEach.call(trilho.querySelectorAll(".video[data-youtube]"), function(c){ vigia.observe(c); });
+    };
   }
 
   const rolar = function(sentido){
@@ -3181,6 +3256,7 @@ if(IDIOMA === "en"){
       '</div>';
 
     carrossel.classList.toggle("carrossel--duplo", !!nicho.duasLinhas);
+    carrossel.classList.toggle("carrossel--horizontal", !!nicho.horizontal);
     trilho.innerHTML = nicho.videos.map(function(v){
       const idYoutube = idDoYoutube(v.link);
       const capa = v.capa || (idYoutube ? capaYoutube(idYoutube) : "");
@@ -3202,7 +3278,7 @@ if(IDIOMA === "en"){
          antes. Sem link: o card é só figura. */
       if(idYoutube){
         const tituloVideo = v.marca ? (v.marca + (v.conteudo ? " — " + v.conteudo : "")) : "";
-        return '<button type="button" class="video" data-youtube="' + escapar(idYoutube) + '"' +
+        return '<button type="button" class="video' + (nicho.horizontal ? ' video--horizontal' : '') + '" data-youtube="' + escapar(idYoutube) + '"' +
           (tituloVideo ? ' data-titulo="' + escapar(tituloVideo) + '"' : "") +
           (String(v.link).indexOf("/shorts/") > -1 ? ' data-vertical="1"' : "") +
           ' aria-haspopup="dialog">' + miolo + '</button>';
@@ -3213,6 +3289,7 @@ if(IDIOMA === "en"){
     }).join("");
 
     carrossel.scrollLeft = 0;
+    observarCards();
     botoesNicho.forEach(function(b){
       b.setAttribute("aria-pressed", String(Number(b.dataset.indice) === indice));
     });
@@ -3266,6 +3343,8 @@ if(IDIOMA === "en"){
 
   const abrirVideo = function(id, origem){
     focoAntesDoVideo = origem || document.activeElement;
+    lightbox.querySelector(".lightbox__caixa").classList.toggle("lightbox__caixa--horizontal",
+      !!(origem && origem.classList && origem.classList.contains("video--horizontal")));
     lightbox.hidden = false;
     document.body.style.overflow = "hidden";
     requestAnimationFrame(function(){ lightbox.classList.add("aberto"); });
@@ -3533,6 +3612,20 @@ if(IDIOMA === "en"){
 
   const form = $("form-contato");
   const aviso = $("aviso-form");
+
+  /* Campos de valor: vira "R$ 2.500" (ou "US$ 2,500" em inglÃªs) enquanto digita */
+  CONFIG.contato.campos.forEach(function(campo){
+    if(!campo.moeda) return;
+    const el = $("campo-" + campo.id);
+    const em = IDIOMA === "en";
+    el.setAttribute("inputmode", "numeric");
+    el.addEventListener("input", function(){
+      const digitos = el.value.replace(/\D/g, "").replace(/^0+/, "");
+      el.value = digitos
+        ? (em ? "US$ " : "R$ ") + Number(digitos).toLocaleString(em ? "en-US" : "pt-BR")
+        : "";
+    });
+  });
 
   const mostrarErro = function(campo, mensagem){
     limparErro(campo);
