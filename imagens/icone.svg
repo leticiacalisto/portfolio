@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Florzinha sorridente">
+  <!-- As pétalas: elipses giradas em volta do mesmo centro. Como todas têm a
+       mesma cor e se sobrepõem, elas se fundem num borrão só. -->
+  <g fill="#991a0e">
+    <ellipse cx="50" cy="27" rx="12" ry="25" transform="rotate(-18 50 50)"/>
+    <ellipse cx="50" cy="28" rx="11" ry="24" transform="rotate(22 50 50)"/>
+    <ellipse cx="50" cy="27" rx="13" ry="23" transform="rotate(68 50 50)"/>
+    <ellipse cx="50" cy="29" rx="12" ry="21" transform="rotate(115 50 50)"/>
+    <ellipse cx="50" cy="28" rx="11" ry="23" transform="rotate(158 50 50)"/>
+    <ellipse cx="50" cy="27" rx="13" ry="24" transform="rotate(202 50 50)"/>
+    <ellipse cx="50" cy="29" rx="12" ry="20" transform="rotate(248 50 50)"/>
+    <ellipse cx="50" cy="28" rx="12" ry="23" transform="rotate(292 50 50)"/>
+    <circle cx="50" cy="50" r="23"/>
+  </g>
+  <!-- O rostinho, um pouco acima e à esquerda do centro -->
+  <g>
+    <ellipse cx="41" cy="50" rx="7.5" ry="9.5" fill="#fff"/>
+    <ellipse cx="58" cy="48" rx="7.5" ry="9.5" fill="#fff"/>
+    <ellipse cx="42.5" cy="50" rx="5.6" ry="8" fill="#111"/>
+    <ellipse cx="59.5" cy="48" rx="5.6" ry="8" fill="#111"/>
+    <circle cx="44.5" cy="45" r="1.9" fill="#fff"/>
+    <circle cx="61.5" cy="43" r="1.9" fill="#fff"/>
+    <path d="M45.5 60.5q4.5 4.2 9 0" fill="none" stroke="#111" stroke-width="2.1" stroke-linecap="round"/>
+  </g>
+</svg>

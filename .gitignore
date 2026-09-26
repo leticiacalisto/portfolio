@@ -1,2 +1,8 @@
 # Foto original em alta (12 MB) fica so na sua maquina, fora do site
 imagens/capa-original.jpg
+
+# Fotos UGC em alta (12 MB) ficam so na sua maquina, fora do site
+imagens/fotos-ugc-originais/
+
+# Foto de contato em alta (6 MB) fica so na sua maquina, fora do site
+imagens/contato-original.png

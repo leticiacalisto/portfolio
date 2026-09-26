@@ -1,0 +1,63 @@
+/* ==========================================================
+   REGRAS RESPONSIVAS — DESATIVADAS
+   =========================================================
+   O site foi fixado em 1440px de largura a pedido: ele mostra
+   sempre o mesmo desenho, em qualquer tela. Estas eram as
+   regras que adaptavam o layout para telas menores.
+
+   Para voltar a ser responsivo:
+     1. em index.html, troque o viewport de volta para
+        content="width=device-width, initial-scale=1";
+     2. tire o min-width do body e o overflow-x do html;
+     3. cole o conteúdo deste arquivo de volta no final do
+        <style>, antes do bloco de prefers-reduced-motion.
+   ========================================================= */
+
+   ========================================================= */
+@media (max-width:1180px){
+  .carrossel{--porVista:4;}
+}
+@media (max-width:980px){
+  .hero__grade,.sobre__grade,.contato__grade,.case__grade{grid-template-columns:1fr;}
+  /* Os dois celulares não passam de 400px juntos para não virarem um paredão */
+  .case__fones{max-width:400px;margin-inline:auto;}
+  /* Numa coluna só, o Sobre volta a ter as margens iguais dos outros blocos */
+  .sobre__grade{padding-inline:clamp(22px,5vw,76px);}
+  /* No celular a foto fica embaixo do texto, ainda encostando na faixa branca,
+     e os balões se recolhem para dentro para não saírem da tela */
+  .hero__visual{max-width:380px;margin-right:0;margin-left:auto;}
+  .balao{width:min(215px,72%);}
+  .balao--1{left:-7%;bottom:5%;}
+  .balao--2{right:-4%;top:2%;}
+  .balao--3{right:-4%;top:23%;}
+  .sobre__visual{max-width:420px;}
+  .servicos__grade,.numeros,.depoimentos__grade{grid-template-columns:repeat(2,1fr);}
+  /* Quantos vídeos aparecem de uma vez no carrossel, por tamanho de tela */
+  .carrossel{--porVista:3;}
+}
+@media (max-width:860px){
+  .hamburguer{display:block;}
+  .menu{
+    position:fixed;top:var(--altura-topo);left:0;right:0;
+    flex-direction:column;align-items:stretch;gap:0;
+    background:var(--creme);border-bottom:1px solid var(--borda);
+    padding:10px clamp(20px,5vw,44px) 28px;
+    box-shadow:0 20px 40px rgba(20,17,13,.1);
+    transform:translateY(-14px);opacity:0;visibility:hidden;pointer-events:none;
+    transition:opacity .28s ease, transform .28s ease, visibility .28s;
+    max-height:calc(100vh - var(--altura-topo));overflow-y:auto;
+  }
+  .menu.aberto{transform:none;opacity:1;visibility:visible;pointer-events:auto;}
+  .menu li{border-bottom:1px solid var(--borda);}
+  .menu li:last-child{border-bottom:none;padding-top:18px;}
+  .menu a{display:block;padding:16px 0;font-size:1.05rem;color:var(--tinta);}
+  .menu a::after{display:none;}
+  .menu .btn{width:100%;padding:15px 24px;}
+}
+@media (max-width:620px){
+  .depoimentos__grade,.servicos__grade{grid-template-columns:1fr;}
+  .carrossel{--porVista:2;}
+  .numeros{grid-template-columns:repeat(2,1fr);gap:24px 18px;}
+  .hero__acoes .btn{width:100%;}
+  .rodape__base{flex-direction:column;}
+}
