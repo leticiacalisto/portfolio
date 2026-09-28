@@ -1091,7 +1091,7 @@ a.video:hover,button.video:hover{transform:translateY(-6px);box-shadow:var(--som
 /* A janela escura que cobre a tela quando um vídeo é aberto. Clicar fora da
    caixa do vídeo (aqui mesmo, no fundo) também fecha. */
 .lightbox{
-  position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;
+  position:fixed;inset:0;z-index:110;display:flex;align-items:center;justify-content:center;
   padding:34px;background:rgba(14,12,10,.92);backdrop-filter:blur(3px);
   opacity:0;transition:opacity .25s ease;
 }
@@ -3156,11 +3156,12 @@ if(IDIOMA === "en"){
     const frame = document.createElement("iframe");
     frame.className = "pilha__frame";
     const v = cases[indice].video;
+    const ehHttp = /^https?:/.test(location.protocol);
     frame.src = v.tiktok
       ? "https://www.tiktok.com/player/v1/" + encodeURIComponent(v.tiktok) +
         "?autoplay=1&loop=1&music_info=0&description=0&rel=0&fullscreen_button=0&timestamp=0"
       : v.youtube
-        ? "https://www.youtube.com/embed/" + encodeURIComponent(v.youtube) + "?autoplay=1&rel=0&playsinline=1&modestbranding=1&vq=hd1080&cc_load_policy=0&hl=pt" + (/^https?:/.test(location.protocol) ? "&origin=" + encodeURIComponent(location.origin) : "")
+        ? "https://www.youtube.com/embed/" + encodeURIComponent(v.youtube) + "?autoplay=1&rel=0&playsinline=1&modestbranding=1&vq=hd1080&cc_load_policy=0&hl=pt" + (ehHttp ? "&enablejsapi=1&origin=" + encodeURIComponent(location.origin) : "")
         : "https://www.instagram.com/reel/" + encodeURIComponent(v.instagram) + "/embed/";
     frame.setAttribute("scrolling", "no");
     frame.referrerPolicy = "strict-origin-when-cross-origin";
@@ -3182,6 +3183,17 @@ if(IDIOMA === "en"){
       window.addEventListener("message", ouvir);
       frame.addEventListener("load", function(){
         [300, 900, 2000].forEach(function(t){ window.setTimeout(ligarSom, t); });
+      });
+    }
+    /* cc_load_policy=0 não basta se quem está assistindo já ligou legenda
+       antes em algum vídeo do YouTube nesse navegador; o comando abaixo
+       desliga de fato, mesmo com essa preferência guardada. */
+    if(v.youtube && ehHttp){
+      const desligarLegenda = function(){
+        try{ frame.contentWindow.postMessage(JSON.stringify({ event: "command", func: "unloadModule", args: ["captions"] }), "*"); }catch(e){}
+      };
+      frame.addEventListener("load", function(){
+        [500, 1200, 2500].forEach(function(t){ window.setTimeout(desligarLegenda, t); });
       });
     }
   });
@@ -3258,12 +3270,16 @@ if(IDIOMA === "en"){
         "&playsinline=1&rel=0&modestbranding=1&disablekb=1&iv_load_policy=3&cc_load_policy=0&fs=0&vq=small" +
         "&enablejsapi=1&origin=" + encodeURIComponent(location.origin);
       const info = { card: card, frame: frame, pronto: false, quer: false };
-      /* O player só responde a comandos depois do "aperto de mão" */
+      /* O player só responde a comandos depois do "aperto de mão"; aproveita
+         pra desligar a legenda automática, que cc_load_policy=0 sozinho não
+         garante se quem está passando o mouse já ligou legenda antes em
+         algum vídeo do YouTube nesse navegador. */
       frame.addEventListener("load", function(){
         [0, 400, 1200].forEach(function(t){
           window.setTimeout(function(){
             if(info.pronto) return;
             try{ frame.contentWindow.postMessage(JSON.stringify({ event: "listening", id: 1, channel: "widget" }), "*"); }catch(e){}
+            comando(frame, "unloadModule", ["captions"]);
           }, t);
         });
       });
@@ -3590,12 +3606,29 @@ if(IDIOMA === "en"){
     lightboxFechar.focus();
 
     /* vq=hd1080 pede a qualidade mais alta ao player; sem controles extras
-       (rel, branding) da tela de "vídeos relacionados" no final. */
+       (rel, branding) da tela de "vídeos relacionados" no final. cc_load_policy=0
+       só evita a legenda quando quem está assistindo nunca ligou legenda em
+       nenhum vídeo do YouTube nesse navegador — se já ligou, o YouTube guarda
+       essa preferência e ignora o parâmetro em qualquer vídeo embutido. Por
+       isso, fora do teste local (arquivo file://, onde a API de JS falha com
+       Erro 153), a gente também manda o comando "desligar legenda" assim que
+       o player carrega, o que funciona mesmo com a preferência ligada. */
+    const foraDeArquivoLocal = location.protocol !== "file:";
+    const srcVideo = "https://www.youtube.com/embed/" + encodeURIComponent(id) +
+      "?autoplay=1&playsinline=1&rel=0&modestbranding=1&vq=hd1080&cc_load_policy=0&hl=pt" +
+      (foraDeArquivoLocal ? "&enablejsapi=1&origin=" + encodeURIComponent(location.origin) : "");
     lightboxPlayer.innerHTML =
-      '<iframe src="https://www.youtube.com/embed/' + encodeURIComponent(id) +
-        '?autoplay=1&playsinline=1&rel=0&modestbranding=1&vq=hd1080&cc_load_policy=0&hl=pt"' +
+      '<iframe src="' + srcVideo + '"' +
         ' title="Vídeo" allow="autoplay; encrypted-media; picture-in-picture; fullscreen"' +
         ' allowfullscreen></iframe>';
+
+    if(foraDeArquivoLocal){
+      const frame = lightboxPlayer.querySelector("iframe");
+      const desligarLegenda = function(){
+        try{ frame.contentWindow.postMessage(JSON.stringify({ event: "command", func: "unloadModule", args: ["captions"] }), "*"); }catch(e){}
+      };
+      [500, 1200, 2500].forEach(function(t){ window.setTimeout(desligarLegenda, t); });
+    }
   };
 
   const fecharVideo = function(){
