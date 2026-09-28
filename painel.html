@@ -242,11 +242,11 @@
      de largura do .conteudo; as outras continuam na coluna de 1180px. */
   .conteudo:has(#painel-comercial-empresas:not([hidden])),
   .conteudo:has(#painel-crm-contratos:not([hidden])),
-  .conteudo:has(#painel-fin-dre:not([hidden])),
+  .conteudo:has(#painel-fin-resultados:not([hidden])),
   .conteudo:has(#painel-fin-fluxo-caixa:not([hidden])){ max-width: none; }
   #painel-comercial-empresas,
   #painel-crm-contratos,
-  #painel-fin-dre,
+  #painel-fin-resultados,
   #painel-fin-fluxo-caixa{ margin: 0 -56px -60px; padding: 0 56px 16px 56px; }
 
   .topo-conteudo{
@@ -1784,7 +1784,7 @@
     .overlay-mobile.visivel{ opacity:1; pointer-events:auto; }
 
     .conteudo{ padding: 90px 20px 40px; }
-    #painel-comercial-empresas, #painel-crm-contratos, #painel-fin-dre, #painel-fin-fluxo-caixa{ margin: 0 -20px -40px; padding: 0 20px 16px; }
+    #painel-comercial-empresas, #painel-crm-contratos, #painel-fin-resultados, #painel-fin-fluxo-caixa{ margin: 0 -20px -40px; padding: 0 20px 16px; }
     .nome-barra{ width: 50%; }
   }
 
@@ -2164,8 +2164,7 @@
   .painel-quadro-secao + .painel-quadro-secao{ margin-top:28px; }
   .painel-quadro-secao .tabela-cheia-wrap{ height: calc(50vh - 140px); }
   #painel-comercial-empresas .tabela-cheia-wrap,
-  #painel-crm-contratos .tabela-cheia-wrap,
-  #painel-fin-dre .tabela-cheia-wrap{ height: calc(100vh - 160px); }
+  #painel-crm-contratos .tabela-cheia-wrap{ height: calc(100vh - 160px); }
 
   .celula-editavel-simples{ cursor:pointer; }
   .celula-editavel-simples:hover{ background: var(--creme); }
@@ -2334,12 +2333,15 @@
   }
   .seletores-periodo-fluxo select:focus{ outline:none; border-color: var(--borda); }
   .cartoes-fluxo{ display:grid; grid-template-columns: repeat(4, 1fr); gap:14px; margin-bottom:26px; }
+  #cartoesFluxo{ grid-template-columns: repeat(5, 1fr); }
+  #cartoesTrafegoPago{ grid-template-columns: repeat(3, 1fr); margin-bottom:18px; }
   .cartao-fluxo{
     background: var(--branco); border:1px solid var(--borda); border-left:4px solid var(--cinza-claro);
     border-radius:12px; padding:14px 18px; display:flex; flex-direction:column; gap:4px;
   }
   .cartao-fluxo.entradas{ border-left-color: var(--verde-sucesso); }
   .cartao-fluxo.saidas{ border-left-color: var(--vermelho-erro); }
+  .cartao-fluxo.pendente{ border-left-color: #C98A1F; }
   .cartao-fluxo.saldo{ border-left-color: var(--vermelho-erro); }
   .cartao-fluxo.saldo.positivo{ border-left-color: var(--verde-sucesso); }
   .cartao-fluxo.acumulado{ border-left-color: #7C3AED; }
@@ -2347,11 +2349,66 @@
   .valor-cartao-fluxo{ font-size:1.25rem; font-weight:700; color: var(--grafite); }
   .cartao-fluxo.entradas .valor-cartao-fluxo, .cartao-fluxo.positivo .valor-cartao-fluxo{ color: var(--verde-sucesso); }
   .cartao-fluxo.saidas .valor-cartao-fluxo, .cartao-fluxo.negativo .valor-cartao-fluxo{ color: var(--vermelho-erro); }
+  .cartao-fluxo.pendente .valor-cartao-fluxo{ color: #C98A1F; }
   .nota-cartao-fluxo{ font-size:.76rem; color: var(--texto-suave); }
   .cartao-fluxo.negativo .nota-cartao-fluxo{ color: var(--vermelho-erro); }
   .aviso-migracao-fluxo{ background:#FCEFD1; color:#6B4A00; border-radius:10px; padding:10px 14px; font-size:.85rem; margin-bottom:16px; }
   .valor-fluxo-num{ white-space:nowrap; }
   .celula-vazia-fluxo{ color: var(--cinza-claro); }
+
+  /* ---- Vídeos do portfólio (arrastar/ocultar/excluir por nicho) ---- */
+  .lista-videos-pf{ list-style:none; margin:0; padding:0; }
+  .linha-video-pf{
+    display:flex; align-items:center; gap:12px; padding:10px 4px; border-bottom:1px solid var(--borda);
+    background: var(--branco); cursor:grab;
+  }
+  .arrastando-pf{ opacity:.4; }
+  .linha-video-pf.oculto{ opacity:.5; }
+  .linha-video-pf.oculto .titulo-video-pf{ text-decoration: line-through; color: var(--texto-suave); }
+  .alca-arrastar-pf{ color: var(--cinza-claro); flex-shrink:0; display:flex; cursor:grab; }
+  .miniatura-video-pf{ flex-shrink:0; display:block; width:56px; height:32px; border-radius:6px; overflow:hidden; background: var(--creme); }
+  .miniatura-video-pf img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .miniatura-video-pf-vazia{ display:block; width:100%; height:100%; background: var(--creme); }
+  .titulo-video-pf{ flex:1; cursor:pointer; font-size:.92rem; }
+  .titulo-video-pf:hover{ text-decoration: underline; }
+  #filtroNichoVideosPf .btn-alternador{ cursor:grab; }
+
+  /* Prévia do vídeo, expandida na própria página */
+  .caixa-video-preview-pf{
+    position:relative; background:#000; border-radius:16px; overflow:hidden;
+    box-shadow:0 30px 90px rgba(0,0,0,.5); aspect-ratio:9/16;
+    width:min(90vw, calc(85vh * 9 / 16)); height:min(85vh, calc(90vw * 16 / 9));
+  }
+  .caixa-video-preview-pf.horizontal-pf{
+    aspect-ratio:16/9; width:min(90vw, calc(85vh * 16 / 9)); height:min(85vh, calc(90vw * 9 / 16));
+  }
+  .caixa-video-preview-pf iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+  .btn-fechar-video-preview-pf{
+    position:absolute; top:10px; right:10px; z-index:2; width:36px; height:36px; border-radius:50%;
+    border:1px solid rgba(255,255,255,.35); background:rgba(14,12,10,.55); color:#fff;
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .btn-fechar-video-preview-pf:hover{ background:rgba(14,12,10,.85); border-color:#fff; }
+
+  /* Botão de status "Portfólio em dia/pendente/atualizado" */
+  .btn-status-portfolio{
+    font-family:inherit; font-weight:600; font-size:.82rem; border-radius:10px; padding:9px 16px;
+    border:1.5px solid transparent; cursor:pointer; transition: all .2s ease;
+  }
+  .btn-status-portfolio.sem-mudancas{ background: var(--creme); color: var(--texto-suave); cursor:default; }
+  .btn-status-portfolio.pendente{ background:#FCEFD1; color:#8A5D00; border-color:#F0D68A; }
+  .btn-status-portfolio.atualizado{ background:#E3F1E8; color: var(--verde-sucesso); border-color:#BFE3CC; }
+
+  /* ---- Resultados (Resultado dos Contratos / Despesas da empresa / DRE) ---- */
+  .pilula-status.fechado-automatico{ background:#E4ECFB; color:#2C4C9B; }
+  .pilula-status.fechado-manual{ background:#EFE9FB; color:#5B3E9B; }
+  .valor-negativo-resultado{ color: var(--vermelho-erro); }
+  .linha-total-resultado td{ font-weight:700; background: var(--creme); }
+  .tabela-dre-resumo td{ padding:9px 16px; }
+  .tabela-dre-resumo td:last-child{ text-align:right; font-variant-numeric: tabular-nums; }
+  .tabela-dre-resumo tr.linha-dre-subtotal td{ font-weight:700; border-top:1.5px solid var(--borda); }
+  .tabela-dre-resumo tr.linha-dre-categoria td:first-child{ padding-left:30px; color: var(--texto-suave); }
+  .tabela-dre-resumo tr.linha-dre-final td{ font-weight:700; font-size:1.02rem; border-top:1.5px solid var(--grafite); }
 
   /* Chave liga/desliga (Emissão de NF, Foi recebida, Receita fixa...) */
   .chave-liga{ position:relative; display:inline-block; width:38px; height:20px; flex-shrink:0; cursor:pointer; margin:0 !important; }
@@ -2561,13 +2618,19 @@
         </svg>
         <span class="rotulo-item">Produção</span>
       </button>
+      <button class="item-nav item-pagina" data-tab="crm-contratos">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="6" y="3" width="12" height="18" rx="2"/><polyline points="9,13 11,15.5 15,10"/>
+        </svg>
+        <span class="rotulo-item">Campanhas</span>
+      </button>
 
       <div class="titulo-secao">Finanças</div>
-      <button class="item-nav item-pagina" data-tab="fin-dre">
+      <button class="item-nav item-pagina" data-tab="fin-resultados">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <rect x="6" y="3" width="12" height="18" rx="2"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/>
         </svg>
-        <span class="rotulo-item">DRE</span>
+        <span class="rotulo-item">Resultados</span>
       </button>
       <button class="item-nav item-pagina" data-tab="fin-fluxo-caixa">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -2575,13 +2638,6 @@
         </svg>
         <span class="rotulo-item">Fluxo de Caixa</span>
       </button>
-      <button class="item-nav item-pagina" data-tab="fin-precificacao">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <polygon points="13,2 4,14 11,14 10,22 20,9 13,9" fill="currentColor" stroke="none"/>
-        </svg>
-        <span class="rotulo-item">Precificação</span>
-      </button>
-
       <div class="titulo-secao">Comercial</div>
       <button class="item-nav item-pagina" data-tab="comercial-oportunidades">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -2594,12 +2650,6 @@
           <path d="M7 3h10v18l-5-4-5 4V3z"/>
         </svg>
         <span class="rotulo-item">Marcas</span>
-      </button>
-      <button class="item-nav item-pagina" data-tab="crm-contratos">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="6" y="3" width="12" height="18" rx="2"/><polyline points="9,13 11,15.5 15,10"/>
-        </svg>
-        <span class="rotulo-item">Campanhas</span>
       </button>
       <button class="item-nav item-pagina" data-tab="portfolio">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -2642,12 +2692,6 @@
       <div class="bloco-titulo-topo">
         <h1 id="tituloTopo" class="titulo-saudacao">Olá</h1>
         <p class="subtitulo-topo" id="subtituloTopo"></p>
-      </div>
-      <div class="filtros-periodo" id="filtrosPeriodo" hidden>
-        <button data-periodo="tudo" class="ativo">Tudo</button>
-        <button data-periodo="7d">7d</button>
-        <button data-periodo="30d">30d</button>
-        <button data-periodo="90d">90d</button>
       </div>
       <!-- Salvos: a estrela abre, para a esquerda, atalhos de copiar (só na tela inicial) -->
       <div class="barra-ferramentas-tabela barra-salvos colapsada" id="barraSalvos">
@@ -2733,60 +2777,100 @@
 
     <!-- ===================== ABA: PORTFÓLIO ===================== -->
     <section id="painel-portfolio" class="painel-aba" hidden>
-      <p class="saudacao">Aqui estão os números do seu portfólio.</p>
-
-      <div class="grade-cartoes">
-        <div class="cartao-numero destaque">
-          <span class="rotulo-numero">Visitas</span>
-          <span class="valor-numero" id="numVisitas">0</span>
-        </div>
-        <div class="cartao-numero">
-          <span class="rotulo-numero">Visitantes únicos</span>
-          <span class="valor-numero" id="numVisitantes">0</span>
-        </div>
-        <div class="cartao-numero">
-          <span class="rotulo-numero">Cliques em botões</span>
-          <span class="valor-numero" id="numCliques">0</span>
-        </div>
-        <div class="cartao-numero">
-          <span class="rotulo-numero">Vídeos vistos</span>
-          <span class="valor-numero" id="numVideos">0</span>
-        </div>
-        <div class="cartao-numero">
-          <span class="rotulo-numero">Mensagens</span>
-          <span class="valor-numero" id="numMensagens">0</span>
+      <div class="painel-quadro-secao">
+        <div class="topo-quadro">
+          <div class="alternador-visualizacao alternador-mini" id="alternadorPortfolio">
+            <button type="button" class="btn-alternador ativo" data-vis-portfolio="geral">Análise Geral</button>
+            <button type="button" class="btn-alternador" data-vis-portfolio="videos">Vídeos</button>
+          </div>
+          <div class="acoes-topo-quadro">
+            <div class="alternador-visualizacao alternador-mini" id="filtrosPeriodo">
+              <button type="button" class="btn-alternador ativo" data-periodo="tudo">Tudo</button>
+              <button type="button" class="btn-alternador" data-periodo="7d">7d</button>
+              <button type="button" class="btn-alternador" data-periodo="30d">30d</button>
+              <button type="button" class="btn-alternador" data-periodo="90d">90d</button>
+            </div>
+            <div class="alternador-visualizacao alternador-mini" id="alternadorVideosPortfolio" hidden>
+              <button type="button" class="btn-alternador ativo" data-vis-videos-pf="mais-vistos">Mais vistos</button>
+              <button type="button" class="btn-alternador" data-vis-videos-pf="todos">Todos</button>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="cartao-destaque-contato">
-        <span class="rotulo-numero">Clicaram para entrar em contato</span>
-        <span class="valor-numero" id="numContato">0</span>
-        <p class="texto-pequeno">Conta quem clicou em WhatsApp, e-mail, Instagram ou no botão de enviar o formulário.</p>
+      <div id="portfolioVisaoGeral">
+        <div class="cartoes-fluxo" id="cartoesPortfolio" style="grid-template-columns: repeat(5, 1fr);">
+          <div class="cartao-fluxo entradas">
+            <span class="rotulo-cartao-fluxo">Visitas</span>
+            <span class="valor-cartao-fluxo" id="numVisitas">0</span>
+          </div>
+          <div class="cartao-fluxo">
+            <span class="rotulo-cartao-fluxo">Visitantes únicos</span>
+            <span class="valor-cartao-fluxo" id="numVisitantes">0</span>
+          </div>
+          <div class="cartao-fluxo">
+            <span class="rotulo-cartao-fluxo">Cliques em botões</span>
+            <span class="valor-cartao-fluxo" id="numCliques">0</span>
+          </div>
+          <div class="cartao-fluxo">
+            <span class="rotulo-cartao-fluxo">Vídeos vistos</span>
+            <span class="valor-cartao-fluxo" id="numVideos">0</span>
+          </div>
+          <div class="cartao-fluxo">
+            <span class="rotulo-cartao-fluxo">Mensagens</span>
+            <span class="valor-cartao-fluxo" id="numMensagens">0</span>
+          </div>
+        </div>
+
+        <div class="cartao-destaque-contato">
+          <span class="rotulo-numero">Clicaram para entrar em contato</span>
+          <span class="valor-numero" id="numContato">0</span>
+          <p class="texto-pequeno">Conta quem clicou em WhatsApp, e-mail, Instagram ou no botão de enviar o formulário.</p>
+        </div>
+
+        <div class="painel-quadro-secao">
+          <div class="topo-quadro"><div><h2 style="margin-bottom:2px;">Visitas nos últimos 14 dias</h2></div></div>
+          <div class="grafico-barras" id="graficoVisitas"></div>
+        </div>
+
+        <div class="painel-quadro-secao">
+          <div class="topo-quadro"><div><h2 style="margin-bottom:2px;">Botões mais clicados</h2></div></div>
+          <div id="listaBotoes"></div>
+        </div>
+
+        <div class="painel-quadro-secao">
+          <div class="topo-quadro"><div><h2 style="margin-bottom:2px;">Cliques para contato</h2></div></div>
+          <div id="listaContatos"></div>
+        </div>
+
+        <div class="painel-quadro-secao">
+          <div class="topo-quadro"><div><h2 style="margin-bottom:2px;">Mensagens recebidas</h2></div></div>
+          <div id="listaMensagens"></div>
+        </div>
       </div>
 
-      <div class="cartao">
-        <h2>Visitas nos últimos 14 dias</h2>
-        <div class="grafico-barras" id="graficoVisitas"></div>
-      </div>
+      <div id="portfolioVisaoVideos" hidden>
+        <div id="videosPfMaisVistos">
+          <div class="painel-quadro-secao">
+            <div class="topo-quadro"><div><h2 style="margin-bottom:2px;">Vídeos mais vistos</h2></div></div>
+            <div id="listaVideos"></div>
+          </div>
+        </div>
 
-      <div class="cartao">
-        <h2>Vídeos mais vistos</h2>
-        <div id="listaVideos"></div>
-      </div>
-
-      <div class="cartao">
-        <h2>Botões mais clicados</h2>
-        <div id="listaBotoes"></div>
-      </div>
-
-      <div class="cartao">
-        <h2>Cliques para contato</h2>
-        <div id="listaContatos"></div>
-      </div>
-
-      <div class="cartao">
-        <h2>Mensagens recebidas</h2>
-        <div id="listaMensagens"></div>
+        <div id="videosPfTodos" hidden>
+          <div id="avisoMigracaoVideosPf" class="aviso-migracao-fluxo" hidden>Falta rodar <strong>js/portfolio-videos-setup.sql</strong> no Supabase (SQL Editor) pra migrar os vídeos/nichos do portfólio pra cá.</div>
+          <div class="painel-quadro-secao">
+            <div class="topo-quadro">
+              <div><h2 style="margin-bottom:2px;">Todos os vídeos</h2></div>
+              <div class="acoes-topo-quadro">
+                <button type="button" class="btn-status-portfolio sem-mudancas" id="btnStatusPortfolio" title="Sem alterações desde a última conferida">Portfólio em dia</button>
+                <button type="button" class="btn-novo-card" id="btnNovoVideoPortfolio">+ Adicionar vídeo</button>
+              </div>
+            </div>
+            <div class="alternador-visualizacao alternador-mini" id="filtroNichoVideosPf" style="flex-wrap:wrap; margin-bottom:16px;"></div>
+            <div id="listaVideosPorNicho"></div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -2986,26 +3070,139 @@
     </section>
 
     <!-- ===================== SEÇÃO: FINANÇAS ===================== -->
-    <section id="painel-fin-dre" class="painel-aba" hidden>
-      <div class="painel-quadro-secao">
-        <div class="topo-quadro">
-          <div>
-            <h2 style="margin-bottom:2px;">DRE</h2>
-            <p class="texto-pequeno">Resultado mensal: cachê recebido menos despesas de UGC.</p>
+    <section id="painel-fin-resultados" class="painel-aba" hidden>
+      <div id="avisoMigracaoResultados" class="aviso-migracao-fluxo" hidden>Falta rodar <strong>js/financas-resultados-setup.sql</strong> no Supabase (SQL Editor) pra liberar despesa fixa com data de encerramento e depreciação de infraestrutura. Até lá, dá pra ver as tabelas, mas não lançar despesa da empresa por esta janela.</div>
+
+      <div class="seletores-periodo-fluxo">
+        <div class="grupo-seletores-mes" id="grupoSeletoresMesResultados">
+          <select id="campoMesResultados" title="Mês"></select>
+          <select id="campoAnoResultados" title="Ano"></select>
+        </div>
+        <div class="alternador-visualizacao alternador-mini" id="alternadorVisaoResultados">
+          <button type="button" class="btn-alternador ativo" data-visao-resultados="mes">Mês atual</button>
+          <button type="button" class="btn-alternador" data-visao-resultados="analise">Análises</button>
+        </div>
+      </div>
+
+      <div id="resultadosVisaoMes">
+        <div class="cartoes-fluxo" id="cartoesResultados">
+          <div class="cartao-fluxo entradas">
+            <span class="rotulo-cartao-fluxo">Total faturado</span>
+            <span class="valor-cartao-fluxo" id="resultadosTotalFaturado">R$ 0,00</span>
+            <span class="nota-cartao-fluxo" id="resultadosNotaFaturado">—</span>
           </div>
-          <div class="acoes-topo-quadro">
-            <select id="campoAnoDre"></select>
+          <div class="cartao-fluxo" id="cartaoResultadosLucroBruto">
+            <span class="rotulo-cartao-fluxo">Lucro bruto</span>
+            <span class="valor-cartao-fluxo" id="resultadosLucroBruto">R$ 0,00</span>
+            <span class="nota-cartao-fluxo">Faturado − impostos − descontos</span>
+          </div>
+          <div class="cartao-fluxo saidas">
+            <span class="rotulo-cartao-fluxo">Despesas</span>
+            <span class="valor-cartao-fluxo" id="resultadosDespesas">R$ 0,00</span>
+            <span class="nota-cartao-fluxo">Despesas da empresa</span>
+          </div>
+          <div class="cartao-fluxo acumulado" id="cartaoResultadosLucroLiquido">
+            <span class="rotulo-cartao-fluxo">Lucro líquido</span>
+            <span class="valor-cartao-fluxo" id="resultadosLucroLiquido">R$ 0,00</span>
+            <span class="nota-cartao-fluxo" id="resultadosNotaMargem">—</span>
           </div>
         </div>
-        <div class="tabela-cheia-wrap">
-          <table class="tabela-contratos" id="tabelaDre">
-            <thead>
-              <tr><th>Mês</th><th>Cachê</th><th>Produtos</th><th>Receita total</th><th>Despesas</th><th>Resultado líquido</th></tr>
-            </thead>
-            <tbody id="corpoTabelaDre"></tbody>
+
+        <div class="cartao-meta-receita">
+          <div class="topo-meta-receita">
+            <span class="rotulo">Meta de faturamento mensal</span>
+            <label>Meta (R$) <input type="number" min="0" step="1" id="campoMetaFaturamentoResultados" placeholder="Ex: 20000"></label>
+          </div>
+          <div class="trilho-meta"><div class="preenchido-meta" id="preenchidoMetaResultados" style="width:0%"></div></div>
+          <div class="rodape-meta-receita"><span id="resultadosMetaConvertido">R$ 0,00 convertidos no mês atual</span><span id="resultadosMetaPct">0%</span></div>
+        </div>
+
+        <div class="painel-quadro-secao">
+          <div class="topo-quadro">
+            <div>
+              <h2 style="margin-bottom:2px;">Resultado dos Contratos</h2>
+              <p class="texto-pequeno">Uma linha por campanha fechada (automática) ou serviço avulso lançado manualmente.</p>
+            </div>
+            <div class="acoes-topo-quadro">
+              <button type="button" class="btn-novo-card" id="btnNovoFechamento">+ Novo fechamento</button>
+            </div>
+          </div>
+          <div class="tabela-cheia-wrap">
+            <table class="tabela-contratos" id="tabelaResultadoContratos">
+              <thead>
+                <tr><th>Fechado</th><th>Data de fechamento</th><th>Cachê</th><th>Impostos</th><th>Descontos</th><th>Resultado líquido do contrato</th><th>Margem</th></tr>
+              </thead>
+              <tbody id="corpoResultadoContratos"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="painel-quadro-secao">
+          <div class="topo-quadro topo-quadro-centro">
+            <h2 style="margin-bottom:0;">Despesas da empresa</h2>
+            <div class="acoes-topo-quadro">
+              <div class="alternador-visualizacao alternador-mini" id="filtroStatusDespesaEmpresa">
+                <button type="button" class="btn-alternador ativo" data-status-filtro="todas">Todas</button>
+                <button type="button" class="btn-alternador" data-status-filtro="abertas">Em aberto</button>
+                <button type="button" class="btn-alternador" data-status-filtro="pagas">Pagas</button>
+              </div>
+              <button type="button" class="btn-ferramenta-tabela" id="btnCategoriasDespesaEmpresa" title="Categorias">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h7"/><circle cx="14" cy="6" r="2"/><path d="M18 6h2"/><path d="M4 12h2"/><circle cx="9" cy="12" r="2"/><path d="M13 12h7"/><path d="M4 18h10"/><circle cx="17" cy="18" r="2"/></svg>
+              </button>
+              <button type="button" class="btn-novo-card" id="btnNovaDespesaEmpresa">+ Nova despesa</button>
+            </div>
+          </div>
+          <div class="tabela-cheia-wrap">
+            <table class="tabela-contratos" id="tabelaDespesasEmpresa">
+              <thead>
+                <tr><th>Nome</th><th>Categoria</th><th>Data</th><th>Recorrência</th><th>Status</th><th>Valor</th></tr>
+              </thead>
+              <tbody id="corpoDespesasEmpresa"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="painel-quadro-secao">
+          <div class="topo-quadro">
+            <div>
+              <h2 style="margin-bottom:2px;">DRE</h2>
+              <p class="texto-pequeno">Soma das duas tabelas acima, no período selecionado.</p>
+            </div>
+          </div>
+          <div class="tabela-cheia-wrap">
+            <table class="tabela-contratos tabela-dre-resumo" id="tabelaDre">
+              <tbody id="corpoTabelaDre"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="resultadosVisaoAnalise" hidden>
+        <div class="topo-analise-fluxo">
+          <div>
+            <h2 style="margin-bottom:2px;">Análise de Resultados</h2>
+            <p class="texto-pequeno">Faturamento, despesas e lucro líquido ao longo dos meses</p>
+          </div>
+          <label class="seletor-periodo-analise">Período:
+            <select id="campoPeriodoAnaliseResultados">
+              <option value="6">Últimos 6 meses</option>
+              <option value="12">Últimos 12 meses</option>
+              <option value="3">Últimos 3 meses</option>
+            </select>
+          </label>
+        </div>
+        <div class="cartoes-fluxo" id="cartoesAnaliseResultados"></div>
+        <div class="cartao-grafico">
+          <h3>Faturamento × Despesas por mês</h3>
+          <div id="graficoBarrasAnaliseResultados"></div>
+        </div>
+        <div class="cartao-grafico" style="margin-top:18px; padding:0;">
+          <h3 style="padding:18px 22px 0;">Detalhamento mensal</h3>
+          <table class="tabela-contratos tabela-detalhe-mensal">
+            <thead><tr><th>Mês</th><th>Faturamento</th><th>Despesas</th><th>Lucro líquido</th><th>Margem</th><th></th></tr></thead>
+            <tbody id="corpoDetalheMensalResultados"></tbody>
           </table>
         </div>
-        <p class="texto-pequeno" style="margin-top:14px;">Resultado líquido = cachê recebido no mês (dinheiro) − despesas do mês. Produto recebido em permuta entra à parte, porque não é dinheiro em caixa.</p>
       </div>
     </section>
     <section id="painel-fin-fluxo-caixa" class="painel-aba" hidden>
@@ -3023,20 +3220,25 @@
 
       <div id="fluxoVisaoMes">
         <div class="cartoes-fluxo" id="cartoesFluxo">
+          <div class="cartao-fluxo previsto">
+            <span class="rotulo-cartao-fluxo">Previsto</span>
+            <span class="valor-cartao-fluxo" id="fluxoPrevisto">R$ 0,00</span>
+            <span class="nota-cartao-fluxo" id="fluxoNotaPrevisto">—</span>
+          </div>
           <div class="cartao-fluxo entradas">
-            <span class="rotulo-cartao-fluxo">Total entradas</span>
-            <span class="valor-cartao-fluxo" id="fluxoTotalEntradas">R$ 0,00</span>
-            <span class="nota-cartao-fluxo" id="fluxoNotaEntradas">—</span>
+            <span class="rotulo-cartao-fluxo">Recebido</span>
+            <span class="valor-cartao-fluxo" id="fluxoRecebido">R$ 0,00</span>
+            <span class="nota-cartao-fluxo" id="fluxoNotaRecebido">—</span>
+          </div>
+          <div class="cartao-fluxo pendente">
+            <span class="rotulo-cartao-fluxo">Pendente</span>
+            <span class="valor-cartao-fluxo" id="fluxoPendente">R$ 0,00</span>
+            <span class="nota-cartao-fluxo" id="fluxoNotaPendente">—</span>
           </div>
           <div class="cartao-fluxo saidas">
-            <span class="rotulo-cartao-fluxo">Total saídas</span>
-            <span class="valor-cartao-fluxo" id="fluxoTotalSaidas">R$ 0,00</span>
-            <span class="nota-cartao-fluxo" id="fluxoNotaSaidas">—</span>
-          </div>
-          <div class="cartao-fluxo saldo" id="cartaoFluxoSaldo">
-            <span class="rotulo-cartao-fluxo" id="rotuloFluxoSaldo">Saldo do mês</span>
-            <span class="valor-cartao-fluxo" id="fluxoSaldo">R$ 0,00</span>
-            <span class="nota-cartao-fluxo" id="fluxoNotaSaldo">—</span>
+            <span class="rotulo-cartao-fluxo">Pagos</span>
+            <span class="valor-cartao-fluxo" id="fluxoPagos">R$ 0,00</span>
+            <span class="nota-cartao-fluxo" id="fluxoNotaPagos">—</span>
           </div>
           <div class="cartao-fluxo acumulado" id="cartaoFluxoAcumulado">
             <span class="rotulo-cartao-fluxo">Caixa acumulado</span>
@@ -3143,12 +3345,6 @@
         </div>
       </div>
     </section>
-    <section id="painel-fin-precificacao" class="painel-aba" hidden>
-      <div class="cartao">
-        <h2>Precificação</h2>
-        <p class="texto-vazio">Em construção.</p>
-      </div>
-    </section>
 
     <!-- ===================== SEÇÃO: COMERCIAL ===================== -->
     <section id="painel-comercial-oportunidades" class="painel-aba" hidden>
@@ -3235,8 +3431,9 @@
             <button type="button" class="btn-alternador ativo" data-vis-campanha="em_producao">Em produção</button>
             <button type="button" class="btn-alternador" data-vis-campanha="aguardando_pagamento">Aguardando pagamento</button>
             <button type="button" class="btn-alternador" data-vis-campanha="finalizadas">Finalizadas</button>
+            <button type="button" class="btn-alternador" data-vis-campanha="trafego_pago">Tráfego Pago</button>
           </div>
-          <div class="acoes-topo-quadro">
+          <div class="acoes-topo-quadro" id="acoesTopoCampanhas">
             <div class="barra-ferramentas-tabela" id="barraFerramentasCampanhas">
               <button type="button" class="btn-minimizar-tabela" id="btnMinimizarFerramentasCampanhas" title="Recolher/expandir ferramentas">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 5l6 7-6 7"/><path d="M13 5l6 7-6 7"/></svg>
@@ -3260,13 +3457,57 @@
             <button type="button" class="btn-novo-card" id="btnNovoContrato">+ Nova campanha</button>
           </div>
         </div>
-        <div class="tabela-cheia-wrap">
+        <div class="tabela-cheia-wrap" id="tabelaCampanhasWrap">
           <table class="tabela-contratos">
             <thead>
               <tr id="linhaCabecalhoContratos"><th>Marca</th></tr>
             </thead>
             <tbody id="corpoTabelaContratos"></tbody>
           </table>
+        </div>
+
+        <div id="painelTrafegoPago" hidden>
+          <div id="avisoMigracaoTrafegoPago" class="aviso-migracao-fluxo" hidden>Falta rodar <strong>js/trafego-pago-setup.sql</strong> no Supabase (SQL Editor) pra liberar o tráfego pago. Até lá, os campos não aparecem na edição do vídeo.</div>
+          <div class="topo-quadro" style="margin-bottom:18px;">
+            <div>
+              <h2 style="margin-bottom:2px;">Tráfego Pago</h2>
+              <p class="texto-pequeno">Gerencie direitos de uso em ads e oportunidades de renovação.</p>
+            </div>
+          </div>
+          <div class="cartoes-fluxo" id="cartoesTrafegoPago">
+            <div class="cartao-fluxo entradas">
+              <span class="rotulo-cartao-fluxo">Ativos</span>
+              <span class="valor-cartao-fluxo" id="trafegoAtivosQtd">0</span>
+              <span class="nota-cartao-fluxo" id="trafegoAtivosValor">R$ 0,00</span>
+            </div>
+            <div class="cartao-fluxo pendente">
+              <span class="rotulo-cartao-fluxo">Vencendo (30d)</span>
+              <span class="valor-cartao-fluxo" id="trafegoVencendoQtd">0</span>
+              <span class="nota-cartao-fluxo">⚠ Oferecer renovação</span>
+            </div>
+            <div class="cartao-fluxo saidas">
+              <span class="rotulo-cartao-fluxo">Vencidos</span>
+              <span class="valor-cartao-fluxo" id="trafegoVencidosQtd">0</span>
+              <span class="nota-cartao-fluxo">Oportunidade!</span>
+            </div>
+          </div>
+          <div class="alternador-visualizacao alternador-mini" id="filtroTrafegoPago" style="margin-bottom:16px;">
+            <button type="button" class="btn-alternador ativo" data-filtro-trafego="todos">Todos</button>
+            <button type="button" class="btn-alternador" data-filtro-trafego="ativos">Ativos (<span id="contTrafegoAtivos">0</span>)</button>
+            <button type="button" class="btn-alternador" data-filtro-trafego="vencendo">Vencendo (<span id="contTrafegoVencendo">0</span>)</button>
+            <button type="button" class="btn-alternador" data-filtro-trafego="vencidos">Vencidos (<span id="contTrafegoVencidos">0</span>)</button>
+          </div>
+          <div class="tabela-cheia-wrap" style="height:auto; max-height:none;">
+            <table class="tabela-contratos" id="tabelaTrafegoPago">
+              <thead>
+                <tr><th>Vídeo</th><th>Marca</th><th>Início</th><th>Vencimento</th><th>Valor</th><th>Status</th></tr>
+              </thead>
+              <tbody id="corpoTrafegoPago"></tbody>
+            </table>
+          </div>
+          <div class="acoes-modal-quadro" id="blocoVerMaisTrafego" hidden style="justify-content:center; margin-top:14px;">
+            <button type="button" class="btn-cancelar-quadro" id="btnVerMaisTrafego">Ver mais</button>
+          </div>
         </div>
       </div>
     </section>
@@ -3381,6 +3622,22 @@
               </button>
               <input type="date" class="input-limpo" id="campoEnviadoCard">
             </div>
+          </div>
+          <div class="prop-limpa">
+            <span class="rotulo-limpo">Tráfego pago</span>
+            <label class="chave-liga"><input type="checkbox" id="campoTrafegoPagoAtivo"><span class="trilho-chave"></span></label>
+          </div>
+          <div class="prop-limpa" id="propTrafegoPagoInicio" hidden>
+            <span class="rotulo-limpo">Início do direito</span>
+            <input type="date" id="campoTrafegoPagoInicio" class="input-limpo">
+          </div>
+          <div class="prop-limpa" id="propTrafegoPagoFim" hidden>
+            <span class="rotulo-limpo">Vencimento do direito</span>
+            <input type="date" id="campoTrafegoPagoFim" class="input-limpo">
+          </div>
+          <div class="prop-limpa" id="propTrafegoPagoValor" hidden>
+            <span class="rotulo-limpo">Valor pago</span>
+            <input type="number" min="0" step="0.01" id="campoTrafegoPagoValor" class="input-limpo" placeholder="0,00">
           </div>
         </div>
 
@@ -3834,6 +4091,141 @@
   </div>
 </div>
 
+<!-- ===================== MODAL: NOVA/EDITAR DESPESA DA EMPRESA (Resultados) ===================== -->
+<!-- Despesa fixa gera uma linha por mês (mesmo esquema de "grupo_repeticao" do
+     Fluxo de Caixa) até a data de encerramento. Infraestrutura gera uma linha
+     por mês com o valor da depreciação (valor total ÷ tempo de uso), pelo
+     tempo de uso informado. Editar aqui só altera a linha clicada, não a
+     série inteira. -->
+<div class="overlay-modal" id="overlayDespesaEmpresa" hidden>
+  <div class="modal-quadro">
+    <h3 id="tituloDespesaEmpresa">Nova despesa da empresa</h3>
+
+    <div class="lanc-linha">
+      <input type="text" id="campoDespesaEmpresaNome" class="lanc-input" placeholder="Nome da despesa">
+    </div>
+
+    <div class="lanc-linha">
+      <span class="lanc-rotulo">Categoria</span>
+      <select id="campoDespesaEmpresaCategoria" class="lanc-input" style="max-width:180px;"></select>
+    </div>
+
+    <div class="lanc-linha" id="linhaDespesaEmpresaFixa">
+      <span class="lanc-rotulo">Despesa fixa</span>
+      <label class="chave-liga"><input type="checkbox" id="campoDespesaEmpresaFixa"><span class="trilho-chave"></span></label>
+    </div>
+    <div class="lanc-linha" id="linhaDespesaEmpresaFixaAte" hidden>
+      <span class="lanc-rotulo">Lançar todo mês até</span>
+      <input type="date" id="campoDespesaEmpresaFixaAte" class="lanc-input" style="max-width:150px;">
+    </div>
+
+    <div class="lanc-linha lanc-valor">
+      <span class="lanc-prefixo" id="rotuloDespesaEmpresaValor">R$</span>
+      <input type="number" min="0" step="0.01" id="campoDespesaEmpresaValor" class="lanc-input lanc-input-grande" placeholder="0,00">
+    </div>
+    <p class="texto-pequeno" id="notaDespesaEmpresaValor" style="margin:-8px 0 4px;" hidden></p>
+
+    <div id="blocoDespesaEmpresaInfra" hidden>
+      <div class="lanc-linha">
+        <span class="lanc-rotulo">Tempo estimado de uso (meses)</span>
+        <input type="number" min="1" step="1" id="campoDespesaEmpresaInfraMeses" class="lanc-input" style="max-width:90px; text-align:right;">
+      </div>
+      <div class="lanc-linha">
+        <span class="lanc-rotulo">Depreciação (por mês)</span>
+        <span class="lanc-input" id="campoDespesaEmpresaDepreciacao" style="max-width:140px; text-align:right; color:var(--texto-suave);">R$ 0,00</span>
+      </div>
+      <div class="lanc-linha" id="linhaDespesaEmpresaUso" hidden>
+        <span class="lanc-rotulo">Uso</span>
+        <span class="lanc-input" id="campoDespesaEmpresaUso" style="max-width:100px; text-align:right; color:var(--texto-suave);">—</span>
+      </div>
+    </div>
+
+    <div class="acoes-modal-quadro">
+      <button type="button" class="btn-excluir-quadro" id="btnExcluirDespesaEmpresa" hidden>Excluir</button>
+      <span style="flex-grow:1"></span>
+      <button type="button" class="btn-cancelar-quadro" id="btnCancelarDespesaEmpresa">Cancelar</button>
+      <button type="button" class="btn-salvar-quadro" id="btnSalvarDespesaEmpresa">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL: NOVO/EDITAR FECHAMENTO (Resultados) ===================== -->
+<!-- Serviço avulso lançado manualmente (sem campanha) — vira uma linha "Manual"
+     no Resultado dos Contratos. Só edita/exclui aquela linha, não mexe no
+     resto do fluxo de campanhas. -->
+<div class="overlay-modal" id="overlayNovoFechamento" hidden>
+  <div class="modal-quadro">
+    <h3 id="tituloNovoFechamento">Novo fechamento</h3>
+
+    <div class="lanc-linha">
+      <input type="text" id="campoFechamentoNome" class="lanc-input" placeholder="Nome / marca">
+    </div>
+    <div class="lanc-linha">
+      <span class="lanc-rotulo">Data de fechamento</span>
+      <input type="date" id="campoFechamentoData" class="lanc-input" style="max-width:150px;">
+    </div>
+    <div class="lanc-linha lanc-valor">
+      <span class="lanc-prefixo">R$</span>
+      <input type="number" min="0" step="0.01" id="campoFechamentoValor" class="lanc-input lanc-input-grande" placeholder="0,00">
+    </div>
+    <div class="lanc-linha">
+      <span class="lanc-rotulo">Emissão de NF</span>
+      <label class="chave-liga"><input type="checkbox" id="campoFechamentoNf"><span class="trilho-chave"></span></label>
+    </div>
+    <div class="lanc-linha" id="linhaFechamentoNfTaxa" hidden>
+      <span class="lanc-rotulo">Taxa da NF (%)</span>
+      <input type="number" min="0" step="0.1" id="campoFechamentoNfTaxa" class="lanc-input" style="max-width:90px; text-align:right;" value="6">
+    </div>
+
+    <div class="acoes-modal-quadro">
+      <button type="button" class="btn-excluir-quadro" id="btnExcluirFechamento" hidden>Excluir</button>
+      <span style="flex-grow:1"></span>
+      <button type="button" class="btn-cancelar-quadro" id="btnCancelarFechamento">Cancelar</button>
+      <button type="button" class="btn-salvar-quadro" id="btnSalvarFechamento">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PRÉVIA DE VÍDEO DO PORTFÓLIO (expande na própria página) ===================== -->
+<div class="overlay-modal" id="overlayVideoPreviewPf" hidden>
+  <div class="caixa-video-preview-pf" id="caixaVideoPreviewPf">
+    <button type="button" class="btn-fechar-video-preview-pf" id="btnFecharVideoPreviewPf" aria-label="Fechar vídeo">✕</button>
+    <div id="videoPreviewPfPlayer"></div>
+  </div>
+</div>
+
+<!-- ===================== MODAL: NOVO/EDITAR VÍDEO DO PORTFÓLIO ===================== -->
+<div class="overlay-modal" id="overlayVideoPortfolio" hidden>
+  <div class="modal-quadro">
+    <h3 id="tituloVideoPortfolio">Adicionar vídeo</h3>
+
+    <div class="lanc-linha">
+      <input type="text" id="campoVideoPfMarca" class="lanc-input" placeholder="Marca">
+    </div>
+    <div class="lanc-linha">
+      <input type="text" id="campoVideoPfConteudo" class="lanc-input" placeholder="Conteúdo (opcional, ex.: Reforma)">
+    </div>
+    <div class="lanc-linha">
+      <input type="url" id="campoVideoPfLink" class="lanc-input" placeholder="Link do YouTube (shorts, watch ou youtu.be)">
+    </div>
+    <div class="lanc-linha">
+      <span class="lanc-rotulo">Nicho</span>
+      <select id="campoVideoPfNicho" class="lanc-input" style="max-width:220px;"></select>
+    </div>
+    <div class="lanc-linha">
+      <span class="lanc-rotulo">Visível no site</span>
+      <label class="chave-liga"><input type="checkbox" id="campoVideoPfVisivel" checked><span class="trilho-chave"></span></label>
+    </div>
+
+    <div class="acoes-modal-quadro">
+      <button type="button" class="btn-excluir-quadro" id="btnExcluirVideoPortfolio" hidden>Excluir</button>
+      <span style="flex-grow:1"></span>
+      <button type="button" class="btn-cancelar-quadro" id="btnCancelarVideoPortfolio">Cancelar</button>
+      <button type="button" class="btn-salvar-quadro" id="btnSalvarVideoPortfolio">Salvar</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===================== MODAL: NOVA/EDITAR EMPRESA ===================== -->
 <!-- ===================== MODAL: NOVA/EDITAR OPORTUNIDADE ===================== -->
 <div class="overlay-modal" id="overlayModalOportunidade" hidden>
@@ -4047,9 +4439,8 @@
     "gp-dashboard": "Dashboard",
     "gp-tarefas": "Tarefas",
     "gp-quadro": "Produção",
-    "fin-dre": "DRE",
+    "fin-resultados": "Resultados",
     "fin-fluxo-caixa": "Fluxo de Caixa",
-    "fin-precificacao": "Precificação",
     "comercial-oportunidades": "Oportunidades",
     "comercial-empresas": "Marcas",
     "crm-contratos": "Campanhas",
@@ -4096,7 +4487,6 @@
     subtitulo.textContent = ehPrincipal ? dataPorExtenso() : "";
     subtitulo.hidden = !ehPrincipal;
     document.getElementById("barraSalvos").hidden = !ehPrincipal;
-    document.getElementById("filtrosPeriodo").hidden = aba !== "portfolio";
   }
   atualizarTopo("principal");
 
@@ -4256,6 +4646,7 @@
   let etiquetasCache = [];
   let subtarefasCache = [];
   let producaoAvancadaDisponivel = true;
+  let migracaoTrafegoPagoOk = true; // atualizado em recarregarQuadro()
 
   // Fases do quadro (js/quadro-colunas-setup.sql) — tratadas como parte
   // essencial do quadro (assim como quadro_cards): sem elas não tem como
@@ -4279,6 +4670,9 @@
     try {
       [quadroCache, colunasCache] = await Promise.all([buscarTudo("quadro_cards"), buscarColunas()]);
       quadroDisponivel = true;
+      migracaoTrafegoPagoOk = quadroCache[0] ? "trafego_pago_ativo" in quadroCache[0] : true;
+      const avisoTrafego = document.getElementById("avisoMigracaoTrafegoPago");
+      if (avisoTrafego) avisoTrafego.hidden = migracaoTrafegoPagoOk;
     } catch (erro) {
       quadroDisponivel = false;
       console.error(erro);
@@ -4305,6 +4699,9 @@
       renderizarReceitas();
       renderizarDespesasFin();
     }
+    // Resultado dos Contratos depende de contratosCache (uma linha por campanha fechada)
+    if (typeof renderizarResultados === "function") renderizarResultados();
+    if (typeof renderizarTrafegoPago === "function") renderizarTrafegoPago();
     if (typeof atualizarMenuPrincipal === "function") atualizarMenuPrincipal();
   }
 
@@ -4448,7 +4845,9 @@
     const eventos = filtrarPorPeriodo(eventosCache);
     const leads = filtrarPorPeriodo(leadsCache);
 
-    renderizarVideos(eventos.filter((e) => e.event_type === "video_view"));
+    // "Vídeos mais vistos" (aba Vídeos) sempre mostra tudo — o filtro de
+    // período no topo só vale pra Análise Geral.
+    renderizarVideos(eventosCache.filter((e) => e.event_type === "video_view"));
     renderizarBotoes(eventos.filter((e) => e.event_type === "button_click"));
     renderizarContatos(
       eventos.filter((e) => e.event_type === "button_click" && (e.event_name || "").startsWith("contact_"))
@@ -4580,6 +4979,418 @@
       })
       .join("");
   }
+
+  // ---------------------------------------------------------------
+  // PORTFÓLIO: sub-abas (Análise Geral / Vídeos) e gestão de vídeos por
+  // nicho (portfolio_nichos/portfolio_videos — js/portfolio-videos-setup.sql).
+  // O site público lê essas mesmas tabelas (só o que estiver visivel=true,
+  // em ordem), então arrastar/ocultar/excluir/adicionar aqui já vale lá,
+  // sem precisar publicar o index.html de novo.
+  // ---------------------------------------------------------------
+  document.querySelectorAll("#alternadorPortfolio button").forEach((botao) => {
+    botao.addEventListener("click", () => {
+      document.querySelectorAll("#alternadorPortfolio button").forEach((b) => b.classList.remove("ativo"));
+      botao.classList.add("ativo");
+      const ehVideos = botao.dataset.visPortfolio === "videos";
+      document.getElementById("portfolioVisaoGeral").hidden = ehVideos;
+      document.getElementById("portfolioVisaoVideos").hidden = !ehVideos;
+      // Do lado direito da mesma linha: período (Análise Geral) ou
+      // Mais vistos/Todos (Vídeos) — só um dos dois aparece por vez.
+      document.getElementById("filtrosPeriodo").hidden = ehVideos;
+      document.getElementById("alternadorVideosPortfolio").hidden = !ehVideos;
+    });
+  });
+  document.querySelectorAll("#alternadorVideosPortfolio button").forEach((botao) => {
+    botao.addEventListener("click", () => {
+      document.querySelectorAll("#alternadorVideosPortfolio button").forEach((b) => b.classList.remove("ativo"));
+      botao.classList.add("ativo");
+      const ehTodos = botao.dataset.visVideosPf === "todos";
+      document.getElementById("videosPfMaisVistos").hidden = ehTodos;
+      document.getElementById("videosPfTodos").hidden = !ehTodos;
+      if (ehTodos) renderizarVideosPorNicho();
+    });
+  });
+
+  let portfolioNichosCache = [];
+  let portfolioVideosCache = [];
+  let portfolioVideosDisponivel = true;
+  let nichoSelecionadoPf = null;
+
+  async function recarregarVideosPortfolio() {
+    try {
+      [portfolioNichosCache, portfolioVideosCache] = await Promise.all([buscarTudo("portfolio_nichos"), buscarTudo("portfolio_videos")]);
+      portfolioVideosDisponivel = true;
+    } catch (erro) {
+      portfolioVideosDisponivel = false;
+      console.error(erro);
+    }
+    const aviso = document.getElementById("avisoMigracaoVideosPf");
+    if (aviso) aviso.hidden = portfolioVideosDisponivel;
+    portfolioNichosCache.sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0));
+    if ((nichoSelecionadoPf === null || !portfolioNichosCache.some((n) => n.id === nichoSelecionadoPf)) && portfolioNichosCache.length) {
+      nichoSelecionadoPf = portfolioNichosCache[0].id;
+    }
+    renderizarFiltroNichoPf();
+    const painelTodos = document.getElementById("videosPfTodos");
+    if (painelTodos && !painelTodos.hidden) renderizarVideosPorNicho();
+  }
+
+  function renderizarFiltroNichoPf() {
+    const container = document.getElementById("filtroNichoVideosPf");
+    if (!container) return;
+    if (portfolioVideosDisponivel && !portfolioNichosCache.length) {
+      container.innerHTML = `<p class="texto-vazio">As tabelas existem mas estão vazias — confirma se o bloco de dados (os "insert into..." no fim) do js/portfolio-videos-setup.sql rodou junto, e não só a criação das tabelas.</p>`;
+      return;
+    }
+    container.innerHTML = portfolioNichosCache
+      .map((n) => {
+        const qtd = portfolioVideosCache.filter((v) => v.nicho_id === n.id).length;
+        return `<button type="button" class="btn-alternador ${n.id === nichoSelecionadoPf ? "ativo" : ""}" draggable="true" title="Arrastar para reordenar" data-nicho-pf="${n.id}">${esc(n.nome)} (${qtd})</button>`;
+      })
+      .join("");
+    ligarDragNichosPf();
+  }
+  const filtroNichoVideosPf = document.getElementById("filtroNichoVideosPf");
+  if (filtroNichoVideosPf) {
+    filtroNichoVideosPf.addEventListener("click", (evento) => {
+      const botao = evento.target.closest("[data-nicho-pf]");
+      if (!botao) return;
+      nichoSelecionadoPf = botao.dataset.nichoPf;
+      renderizarFiltroNichoPf();
+      renderizarVideosPorNicho();
+    });
+  }
+
+  // Arrastar os balões de nicho pra mudar a ordem em que aparecem no site
+  // (mesma lógica de reordenar vídeos: move no DOM durante o arraste, grava
+  // a ordem final ao soltar).
+  function ligarDragNichosPf() {
+    const container = document.getElementById("filtroNichoVideosPf");
+    if (!container) return;
+    let arrastando = null;
+    container.querySelectorAll("[data-nicho-pf]").forEach((botao) => {
+      botao.addEventListener("dragstart", () => {
+        arrastando = botao;
+        botao.classList.add("arrastando-pf");
+      });
+      botao.addEventListener("dragend", () => {
+        botao.classList.remove("arrastando-pf");
+        arrastando = null;
+        salvarOrdemNichosPf();
+      });
+      botao.addEventListener("dragover", (evento) => {
+        evento.preventDefault();
+        if (!arrastando || arrastando === botao) return;
+        const retangulo = botao.getBoundingClientRect();
+        const depois = evento.clientX > retangulo.left + retangulo.width / 2;
+        container.insertBefore(arrastando, depois ? botao.nextSibling : botao);
+      });
+    });
+  }
+  async function salvarOrdemNichosPf() {
+    const container = document.getElementById("filtroNichoVideosPf");
+    if (!container) return;
+    const ids = Array.prototype.map.call(container.querySelectorAll("[data-nicho-pf]"), (b) => b.dataset.nichoPf);
+    try {
+      await Promise.all(
+        ids.map((id, i) => {
+          const n = portfolioNichosCache.find((x) => x.id === id);
+          if (n) n.ordem = i;
+          return Auth.sb.from("portfolio_nichos").update({ ordem: i }).eq("id", id);
+        })
+      );
+      portfolioNichosCache.sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0));
+      marcarPortfolioPendente();
+    } catch (erro) {
+      alert("Não foi possível salvar a nova ordem dos nichos.");
+      console.error(erro);
+    }
+  }
+
+  function tituloVideoPf(v) {
+    return v.marca + (v.conteudo ? " — " + v.conteudo : "");
+  }
+  function idYoutubePf(link) {
+    const m = String(link || "").match(/(?:youtube(?:-nocookie)?\.com\/(?:shorts\/|watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})/);
+    return m ? m[1] : null;
+  }
+
+  function renderizarVideosPorNicho() {
+    const container = document.getElementById("listaVideosPorNicho");
+    if (!container) return;
+    if (!portfolioVideosDisponivel) {
+      container.innerHTML = "";
+      return;
+    }
+    const videos = portfolioVideosCache.filter((v) => v.nicho_id === nichoSelecionadoPf).sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0));
+    if (!videos.length) {
+      container.innerHTML = `<p class="texto-vazio">Nenhum vídeo nesse nicho ainda.</p>`;
+      return;
+    }
+    container.innerHTML =
+      `<ul class="lista-videos-pf" id="ulVideosPf">` +
+      videos
+        .map((v) => {
+          const idYt = idYoutubePf(v.link);
+          const miniatura = idYt
+            ? `<img src="https://i.ytimg.com/vi/${idYt}/mqdefault.jpg" alt="" loading="lazy">`
+            : `<span class="miniatura-video-pf-vazia"></span>`;
+          return `
+        <li class="linha-video-pf ${v.visivel ? "" : "oculto"}" draggable="true" data-id="${v.id}">
+          <span class="alca-arrastar-pf" title="Arrastar para reordenar">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="18" r="1"/></svg>
+          </span>
+          <a class="miniatura-video-pf" href="${esc(v.link)}" target="_blank" rel="noopener" draggable="false" data-ver-video-pf="${v.id}" title="Ver vídeo">${miniatura}</a>
+          <span class="titulo-video-pf" data-editar-video-pf="${v.id}" title="Editar">${esc(tituloVideoPf(v))}</span>
+          <label class="chave-liga" title="Visível no site"><input type="checkbox" data-toggle-visivel-pf="${v.id}" ${v.visivel ? "checked" : ""}><span class="trilho-chave"></span></label>
+          <button type="button" class="btn-remover-parcela" title="Excluir" data-excluir-video-pf="${v.id}">✕</button>
+        </li>`;
+        })
+        .join("") +
+      `</ul>`;
+    ligarDragVideosPf();
+  }
+
+  const listaVideosPorNicho = document.getElementById("listaVideosPorNicho");
+  if (listaVideosPorNicho) {
+    listaVideosPorNicho.addEventListener("click", (evento) => {
+      const verAlvo = evento.target.closest("[data-ver-video-pf]");
+      if (verAlvo) {
+        evento.preventDefault();
+        const v = portfolioVideosCache.find((x) => x.id === verAlvo.dataset.verVideoPf);
+        if (v) abrirPreviewVideoPf(v);
+        return;
+      }
+      if (evento.target.closest("[data-toggle-visivel-pf]")) return;
+      const excluirAlvo = evento.target.closest("[data-excluir-video-pf]");
+      if (excluirAlvo) {
+        excluirVideoPf(excluirAlvo.dataset.excluirVideoPf);
+        return;
+      }
+      const editarAlvo = evento.target.closest("[data-editar-video-pf]");
+      if (editarAlvo) {
+        const v = portfolioVideosCache.find((x) => x.id === editarAlvo.dataset.editarVideoPf);
+        if (v) abrirVideoPortfolio(v);
+      }
+    });
+    listaVideosPorNicho.addEventListener("change", async (evento) => {
+      const alvo = evento.target.closest("[data-toggle-visivel-pf]");
+      if (!alvo) return;
+      const id = alvo.dataset.toggleVisivelPf;
+      const visivel = alvo.checked;
+      try {
+        await Auth.sb.from("portfolio_videos").update({ visivel, updated_at: new Date().toISOString() }).eq("id", id);
+        const v = portfolioVideosCache.find((x) => x.id === id);
+        if (v) v.visivel = visivel;
+        alvo.closest("li").classList.toggle("oculto", !visivel);
+        marcarPortfolioPendente();
+      } catch (erro) {
+        alert("Não foi possível salvar.");
+        console.error(erro);
+        alvo.checked = !visivel;
+      }
+    });
+  }
+
+  // ---- Prévia do vídeo, expandida na própria página (em vez de abrir o YouTube) ----
+  const overlayVideoPreviewPf = document.getElementById("overlayVideoPreviewPf");
+  function abrirPreviewVideoPf(v) {
+    const idYt = idYoutubePf(v.link);
+    if (!idYt) {
+      window.open(v.link, "_blank", "noopener");
+      return;
+    }
+    const vertical = /\/shorts\//.test(v.link);
+    document.getElementById("caixaVideoPreviewPf").classList.toggle("horizontal-pf", !vertical);
+    document.getElementById("videoPreviewPfPlayer").innerHTML =
+      `<iframe src="https://www.youtube.com/embed/${idYt}?autoplay=1&playsinline=1&rel=0&modestbranding=1&cc_load_policy=0" title="Vídeo" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+    overlayVideoPreviewPf.hidden = false;
+  }
+  function fecharPreviewVideoPf() {
+    overlayVideoPreviewPf.hidden = true;
+    document.getElementById("videoPreviewPfPlayer").innerHTML = "";
+  }
+  document.getElementById("btnFecharVideoPreviewPf").addEventListener("click", fecharPreviewVideoPf);
+  overlayVideoPreviewPf.addEventListener("click", (evento) => {
+    if (evento.target === overlayVideoPreviewPf) fecharPreviewVideoPf();
+  });
+  document.addEventListener("keydown", (evento) => {
+    if (evento.key === "Escape" && !overlayVideoPreviewPf.hidden) fecharPreviewVideoPf();
+  });
+
+  // ---- Status "Portfólio em dia/pendente/atualizado" ----
+  let statusPortfolioPf = "cinza";
+  function atualizarBotaoStatusPf() {
+    const botao = document.getElementById("btnStatusPortfolio");
+    if (!botao) return;
+    botao.classList.remove("sem-mudancas", "pendente", "atualizado");
+    if (statusPortfolioPf === "amarelo") {
+      botao.classList.add("pendente");
+      botao.textContent = "Atualizar portfólio";
+      botao.title = "Tem alteração ainda não conferida — clica pra confirmar";
+    } else if (statusPortfolioPf === "verde") {
+      botao.classList.add("atualizado");
+      botao.textContent = "Portfólio atualizado";
+      botao.title = "Já confirmado, tudo em dia";
+    } else {
+      botao.classList.add("sem-mudancas");
+      botao.textContent = "Portfólio em dia";
+      botao.title = "Sem alterações desde a última conferida";
+    }
+  }
+  function marcarPortfolioPendente() {
+    statusPortfolioPf = "amarelo";
+    atualizarBotaoStatusPf();
+  }
+  const btnStatusPortfolio = document.getElementById("btnStatusPortfolio");
+  if (btnStatusPortfolio) {
+    btnStatusPortfolio.addEventListener("click", async () => {
+      if (statusPortfolioPf !== "amarelo") return;
+      await recarregarVideosPortfolio();
+      statusPortfolioPf = "verde";
+      atualizarBotaoStatusPf();
+    });
+  }
+
+  async function excluirVideoPf(id) {
+    const v = portfolioVideosCache.find((x) => x.id === id);
+    if (!v) return;
+    if (!confirm(`Excluir "${tituloVideoPf(v)}"? Isso remove do site.`)) return;
+    try {
+      await Auth.sb.from("portfolio_videos").delete().eq("id", id);
+      marcarPortfolioPendente();
+      portfolioVideosCache = portfolioVideosCache.filter((x) => x.id !== id);
+      renderizarFiltroNichoPf();
+      renderizarVideosPorNicho();
+    } catch (erro) {
+      alert("Não foi possível excluir.");
+      console.error(erro);
+    }
+  }
+
+  // Arrastar pra reordenar dentro do nicho: ao soltar, renumera pela ordem
+  // final no DOM e grava tudo (autocura qualquer ordem antiga/negativa).
+  function ligarDragVideosPf() {
+    const lista = document.getElementById("ulVideosPf");
+    if (!lista) return;
+    let arrastando = null;
+    lista.querySelectorAll("li").forEach((li) => {
+      li.addEventListener("dragstart", () => {
+        arrastando = li;
+        li.classList.add("arrastando-pf");
+      });
+      li.addEventListener("dragend", () => {
+        li.classList.remove("arrastando-pf");
+        arrastando = null;
+        salvarOrdemVideosPf();
+      });
+      li.addEventListener("dragover", (evento) => {
+        evento.preventDefault();
+        if (!arrastando || arrastando === li) return;
+        const retangulo = li.getBoundingClientRect();
+        const depois = evento.clientY > retangulo.top + retangulo.height / 2;
+        lista.insertBefore(arrastando, depois ? li.nextSibling : li);
+      });
+    });
+  }
+  async function salvarOrdemVideosPf() {
+    const lista = document.getElementById("ulVideosPf");
+    if (!lista) return;
+    const ids = Array.prototype.map.call(lista.querySelectorAll("li"), (li) => li.dataset.id);
+    try {
+      await Promise.all(
+        ids.map((id, i) => {
+          const v = portfolioVideosCache.find((x) => x.id === id);
+          if (v) v.ordem = i;
+          return Auth.sb.from("portfolio_videos").update({ ordem: i }).eq("id", id);
+        })
+      );
+      marcarPortfolioPendente();
+    } catch (erro) {
+      alert("Não foi possível salvar a nova ordem.");
+      console.error(erro);
+    }
+  }
+
+  // ---- Modal: novo/editar vídeo do portfólio ----
+  const overlayVideoPortfolio = document.getElementById("overlayVideoPortfolio");
+  let videoPfEmEdicao = null;
+  function popularNichosVideoPf() {
+    const sel = document.getElementById("campoVideoPfNicho");
+    sel.innerHTML = portfolioNichosCache.map((n) => `<option value="${n.id}">${esc(n.nome)}</option>`).join("");
+  }
+  function abrirVideoPortfolio(v) {
+    popularNichosVideoPf();
+    videoPfEmEdicao = v || null;
+    document.getElementById("tituloVideoPortfolio").textContent = v ? "Editar vídeo" : "Adicionar vídeo";
+    document.getElementById("campoVideoPfMarca").value = v ? v.marca || "" : "";
+    document.getElementById("campoVideoPfConteudo").value = v ? v.conteudo || "" : "";
+    document.getElementById("campoVideoPfLink").value = v ? v.link || "" : "";
+    document.getElementById("campoVideoPfNicho").value = v ? v.nicho_id : nichoSelecionadoPf || (portfolioNichosCache[0] && portfolioNichosCache[0].id) || "";
+    document.getElementById("campoVideoPfVisivel").checked = v ? !!v.visivel : true;
+    document.getElementById("btnExcluirVideoPortfolio").hidden = !v;
+    overlayVideoPortfolio.hidden = false;
+  }
+  function fecharVideoPortfolio() {
+    overlayVideoPortfolio.hidden = true;
+    videoPfEmEdicao = null;
+  }
+  const btnNovoVideoPortfolio = document.getElementById("btnNovoVideoPortfolio");
+  if (btnNovoVideoPortfolio) btnNovoVideoPortfolio.addEventListener("click", () => abrirVideoPortfolio(null));
+  document.getElementById("btnCancelarVideoPortfolio").addEventListener("click", fecharVideoPortfolio);
+  overlayVideoPortfolio.addEventListener("click", (evento) => {
+    if (evento.target === overlayVideoPortfolio) fecharVideoPortfolio();
+  });
+
+  async function salvarVideoPortfolio() {
+    const marca = document.getElementById("campoVideoPfMarca").value.trim();
+    const link = document.getElementById("campoVideoPfLink").value.trim();
+    const nichoId = document.getElementById("campoVideoPfNicho").value;
+    if (!marca) {
+      alert("Dá o nome da marca.");
+      return;
+    }
+    if (!/youtube\.com|youtu\.be/i.test(link)) {
+      alert("Cola um link do YouTube (shorts, watch ou youtu.be) — é o que toca direto no site, em alta qualidade e sem legenda automática.");
+      return;
+    }
+    if (!nichoId) {
+      alert("Escolhe um nicho.");
+      return;
+    }
+    const dados = {
+      marca,
+      conteudo: document.getElementById("campoVideoPfConteudo").value.trim() || null,
+      link,
+      nicho_id: nichoId,
+      visivel: document.getElementById("campoVideoPfVisivel").checked,
+      updated_at: new Date().toISOString(),
+    };
+    try {
+      if (videoPfEmEdicao) {
+        await Auth.sb.from("portfolio_videos").update(dados).eq("id", videoPfEmEdicao.id);
+      } else {
+        const doNicho = portfolioVideosCache.filter((v) => v.nicho_id === nichoId);
+        dados.ordem = (doNicho.length ? Math.min(...doNicho.map((v) => v.ordem ?? 0)) : 0) - 1;
+        dados.capa = null;
+        await Auth.sb.from("portfolio_videos").insert(dados);
+      }
+      fecharVideoPortfolio();
+      nichoSelecionadoPf = nichoId;
+      marcarPortfolioPendente();
+      await recarregarVideosPortfolio();
+    } catch (erro) {
+      alert("Não foi possível salvar. Confira se js/portfolio-videos-setup.sql já rodou no Supabase.");
+      console.error(erro);
+    }
+  }
+  document.getElementById("btnSalvarVideoPortfolio").addEventListener("click", salvarVideoPortfolio);
+  document.getElementById("btnExcluirVideoPortfolio").addEventListener("click", async () => {
+    if (!videoPfEmEdicao) return;
+    const id = videoPfEmEdicao.id;
+    fecharVideoPortfolio();
+    await excluirVideoPf(id);
+  });
 
   // ---------------------------------------------------------------
   // CÁLCULOS: dias úteis, vencimento, direitos autorais, semáforo
@@ -4832,6 +5643,20 @@
   const campoRecebidoCard = document.getElementById("campoRecebidoCard");
   const btnEnviarCard = document.getElementById("btnEnviarCard");
   const campoEnviadoCard = document.getElementById("campoEnviadoCard");
+  const campoTrafegoPagoAtivo = document.getElementById("campoTrafegoPagoAtivo");
+  const propTrafegoPagoInicio = document.getElementById("propTrafegoPagoInicio");
+  const campoTrafegoPagoInicio = document.getElementById("campoTrafegoPagoInicio");
+  const propTrafegoPagoFim = document.getElementById("propTrafegoPagoFim");
+  const campoTrafegoPagoFim = document.getElementById("campoTrafegoPagoFim");
+  const propTrafegoPagoValor = document.getElementById("propTrafegoPagoValor");
+  const campoTrafegoPagoValor = document.getElementById("campoTrafegoPagoValor");
+  function atualizarCamposTrafegoPagoCard() {
+    const ativo = campoTrafegoPagoAtivo.checked;
+    propTrafegoPagoInicio.hidden = !ativo;
+    propTrafegoPagoFim.hidden = !ativo;
+    propTrafegoPagoValor.hidden = !ativo;
+  }
+  campoTrafegoPagoAtivo.addEventListener("change", atualizarCamposTrafegoPagoCard);
   const btnConcluirCard = document.getElementById("btnConcluirCard");
   const campoDescricaoCard = document.getElementById("campoDescricaoCard");
   const listaSubtarefasCard = document.getElementById("listaSubtarefasCard");
@@ -5512,6 +6337,12 @@
 
     campoFormatoCard.value = card && card.formato ? card.formato : "ugc";
 
+    campoTrafegoPagoAtivo.checked = !!(card && card.trafego_pago_ativo);
+    campoTrafegoPagoInicio.value = card && card.trafego_pago_inicio ? card.trafego_pago_inicio : "";
+    campoTrafegoPagoFim.value = card && card.trafego_pago_fim ? card.trafego_pago_fim : "";
+    campoTrafegoPagoValor.value = card && card.trafego_pago_valor != null ? card.trafego_pago_valor : "";
+    atualizarCamposTrafegoPagoCard();
+
     atualizarCamposDerivadosCard();
     renderizarSubtarefasModal();
 
@@ -5742,6 +6573,12 @@
       updated_at: new Date().toISOString(),
     };
     if (!campoPrazoCard.hidden) dados.prazo = campoPrazoCard.value || null;
+    if (migracaoTrafegoPagoOk) {
+      dados.trafego_pago_ativo = campoTrafegoPagoAtivo.checked;
+      dados.trafego_pago_inicio = campoTrafegoPagoAtivo.checked ? campoTrafegoPagoInicio.value || null : null;
+      dados.trafego_pago_fim = campoTrafegoPagoAtivo.checked ? campoTrafegoPagoFim.value || null : null;
+      dados.trafego_pago_valor = campoTrafegoPagoAtivo.checked ? Number(campoTrafegoPagoValor.value) || null : null;
+    }
 
     try {
       if (idCardEmEdicao) {
@@ -6344,7 +7181,7 @@
     }
   }
 
-  // --- Visualizações rápidas (Em produção / Aguardando pagamento / Finalizadas) ---
+  // --- Visualizações rápidas (Em produção / Aguardando pagamento / Finalizadas / Tráfego Pago) ---
   const alternadorCampanhas = document.getElementById("alternadorCampanhas");
   if (alternadorCampanhas) {
     alternadorCampanhas.addEventListener("click", (evento) => {
@@ -6352,7 +7189,122 @@
       if (!botao) return;
       visualizacaoCampanhas = botao.dataset.visCampanha;
       alternadorCampanhas.querySelectorAll(".btn-alternador").forEach((b) => b.classList.toggle("ativo", b === botao));
-      renderizarContratos();
+      const ehTrafego = visualizacaoCampanhas === "trafego_pago";
+      document.getElementById("tabelaCampanhasWrap").hidden = ehTrafego;
+      document.getElementById("acoesTopoCampanhas").hidden = ehTrafego;
+      document.getElementById("painelTrafegoPago").hidden = !ehTrafego;
+      if (ehTrafego) renderizarTrafegoPago();
+      else renderizarContratos();
+    });
+  }
+
+  // ---------------------------------------------------------------
+  // TRÁFEGO PAGO — direitos de uso em ads por vídeo (quadro_cards),
+  // lançados na aba Detalhes do card. Vencendo = vence dentro de 30 dias;
+  // Vencido = já passou a data; Ativo = o resto (ou sem data de fim).
+  // ---------------------------------------------------------------
+  let filtroTrafegoAtual = "todos";
+  let paginaTrafegoPago = 1;
+  const PAGINA_TRAFEGO = 10;
+
+  function statusTrafegoPago(fim) {
+    if (!fim) return "ativo";
+    const hoje = hojeIso();
+    if (fim < hoje) return "vencido";
+    if (fim <= somarDiasIso(hoje, 30)) return "vencendo";
+    return "ativo";
+  }
+
+  function linhasTrafegoPago() {
+    return quadroCache
+      .filter((c) => c.trafego_pago_ativo)
+      .map((c) => {
+        const contrato = c.contrato_id ? contratosCache.find((k) => k.id === c.contrato_id) : null;
+        return {
+          id: c.id,
+          titulo: c.titulo,
+          marca: contrato ? contrato.marca : "—",
+          inicio: c.trafego_pago_inicio,
+          fim: c.trafego_pago_fim,
+          valor: Number(c.trafego_pago_valor) || 0,
+          status: statusTrafegoPago(c.trafego_pago_fim),
+        };
+      })
+      .sort((a, b) => (a.fim || "9999").localeCompare(b.fim || "9999"));
+  }
+
+  function renderizarTrafegoPago() {
+    const corpo = document.getElementById("corpoTrafegoPago");
+    if (!corpo) return;
+    const todas = linhasTrafegoPago();
+    const ativos = todas.filter((l) => l.status === "ativo");
+    const vencendo = todas.filter((l) => l.status === "vencendo");
+    const vencidos = todas.filter((l) => l.status === "vencido");
+
+    const texto = (id, v) => (document.getElementById(id).textContent = v);
+    texto("trafegoAtivosQtd", ativos.length);
+    texto("trafegoAtivosValor", formatarMoeda(ativos.reduce((s, l) => s + l.valor, 0)));
+    texto("trafegoVencendoQtd", vencendo.length);
+    texto("trafegoVencidosQtd", vencidos.length);
+    texto("contTrafegoAtivos", ativos.length);
+    texto("contTrafegoVencendo", vencendo.length);
+    texto("contTrafegoVencidos", vencidos.length);
+
+    const filtradas =
+      filtroTrafegoAtual === "ativos" ? ativos : filtroTrafegoAtual === "vencendo" ? vencendo : filtroTrafegoAtual === "vencidos" ? vencidos : todas;
+    const blocoVerMais = document.getElementById("blocoVerMaisTrafego");
+
+    if (!filtradas.length) {
+      corpo.innerHTML = `<tr><td colspan="6" class="texto-vazio">Nenhum registro. Adicione direitos de tráfego pago ao criar/editar um job.</td></tr>`;
+      blocoVerMais.hidden = true;
+      return;
+    }
+
+    const visiveis = filtradas.slice(0, paginaTrafegoPago * PAGINA_TRAFEGO);
+    const ROTULO_STATUS = { ativo: ["status-pago", "Ativo"], vencendo: ["status-pgto-parcial", "Vencendo"], vencido: ["status-atrasado", "Vencido"] };
+    corpo.innerHTML = visiveis
+      .map((l) => {
+        const [classe, rotulo] = ROTULO_STATUS[l.status];
+        return `
+        <tr data-abrir-video-trafego="${l.id}">
+          <td>${esc(l.titulo)}</td>
+          <td>${esc(l.marca)}</td>
+          <td>${formatarDataBr(l.inicio)}</td>
+          <td>${formatarDataBr(l.fim)}</td>
+          <td>${formatarMoeda(l.valor)}</td>
+          <td><span class="pilula-status ${classe}">${rotulo}</span></td>
+        </tr>`;
+      })
+      .join("");
+    blocoVerMais.hidden = visiveis.length >= filtradas.length;
+  }
+
+  const filtroTrafegoPago = document.getElementById("filtroTrafegoPago");
+  if (filtroTrafegoPago) {
+    filtroTrafegoPago.addEventListener("click", (evento) => {
+      const botao = evento.target.closest("[data-filtro-trafego]");
+      if (!botao) return;
+      filtroTrafegoPago.querySelectorAll(".btn-alternador").forEach((b) => b.classList.remove("ativo"));
+      botao.classList.add("ativo");
+      filtroTrafegoAtual = botao.dataset.filtroTrafego;
+      paginaTrafegoPago = 1;
+      renderizarTrafegoPago();
+    });
+  }
+  const btnVerMaisTrafego = document.getElementById("btnVerMaisTrafego");
+  if (btnVerMaisTrafego) {
+    btnVerMaisTrafego.addEventListener("click", () => {
+      paginaTrafegoPago++;
+      renderizarTrafegoPago();
+    });
+  }
+  const corpoTrafegoPago = document.getElementById("corpoTrafegoPago");
+  if (corpoTrafegoPago) {
+    corpoTrafegoPago.addEventListener("click", (evento) => {
+      const linha = evento.target.closest("tr[data-abrir-video-trafego]");
+      if (!linha) return;
+      const card = quadroCache.find((c) => c.id === linha.dataset.abrirVideoTrafego);
+      if (card) abrirModalCard(card);
     });
   }
 
@@ -7690,6 +8642,7 @@
       ]);
       financasDisponivel = true;
       migracaoFluxoOk = (receitasCache[0] ? "valor_pago" in receitasCache[0] : true) && (despesasFinCache[0] ? "eh_fatura" in despesasFinCache[0] : true);
+      migracaoResultadosOk = despesasFinCache[0] ? "fixa_ate" in despesasFinCache[0] : true;
     } catch (erro) {
       financasDisponivel = false;
       console.error(erro);
@@ -7701,9 +8654,11 @@
     }
     const aviso = document.getElementById("avisoMigracaoFluxo");
     if (aviso) aviso.hidden = migracaoFluxoOk;
+    const avisoResultados = document.getElementById("avisoMigracaoResultados");
+    if (avisoResultados) avisoResultados.hidden = migracaoResultadosOk;
     renderizarReceitas();
     renderizarDespesasFin();
-    renderizarDre();
+    renderizarResultados();
     if (typeof renderizarContratos === "function") renderizarContratos(); // as visualizações de Campanhas dependem de receitasCache
     if (typeof atualizarMenuPrincipal === "function") atualizarMenuPrincipal();
   }
@@ -8002,33 +8957,36 @@
     renderizarDespesasFin();
   });
 
-  // Cartões: previsão do período (pagos + pendentes) e caixa acumulado até o fim dele.
+  // Cartões: previsto/recebido/pendente do lado da receita, pagos do lado da
+  // despesa, e caixa acumulado até o fim do período.
   function renderizarCardsFluxo() {
-    if (!document.getElementById("fluxoTotalEntradas")) return;
+    if (!document.getElementById("fluxoPrevisto")) return;
     const itensReceita = linhasReceitas().flatMap((l) => l.itens);
     const itensDespesa = linhasDespesas().flatMap((l) => l.itens);
     const { fim } = limitesPeriodo();
     const somar = (itens) => itens.reduce((s, i) => s + i.valor, 0);
     const entradas = itensReceita.filter((i) => noPeriodo(i.data));
     const saidas = itensDespesa.filter((i) => noPeriodo(i.data));
-    const totalEntradas = somar(entradas);
-    const totalSaidas = somar(saidas);
-    const saldo = totalEntradas - totalSaidas;
+    const recebidos = entradas.filter((i) => i.pago);
+    const pendentes = entradas.filter((i) => !i.pago);
+    const pagos = saidas.filter((i) => i.pago);
+    const previsto = somar(entradas);
+    const recebido = somar(recebidos);
+    const pendente = somar(pendentes);
+    const totalPagos = somar(pagos);
     const acumulado = somar(itensReceita.filter((i) => i.data && i.data <= fim)) - somar(itensDespesa.filter((i) => i.data && i.data <= fim));
 
     const texto = (id, valor) => (document.getElementById(id).textContent = valor);
-    texto("fluxoTotalEntradas", formatarMoeda(totalEntradas));
-    texto("fluxoNotaEntradas", `${entradas.filter((i) => i.pago).length} de ${entradas.length} recebidos`);
-    texto("fluxoTotalSaidas", formatarMoeda(totalSaidas));
-    texto("fluxoNotaSaidas", `${saidas.filter((i) => i.pago).length} de ${saidas.length} pagos`);
-    texto("rotuloFluxoSaldo", periodoMes ? "Saldo do mês" : "Saldo do ano");
-    texto("fluxoSaldo", formatarMoeda(saldo));
-    texto("fluxoNotaSaldo", saldo < 0 ? "⚠ Saldo negativo" : "Saldo positivo");
+    texto("fluxoPrevisto", formatarMoeda(previsto));
+    texto("fluxoNotaPrevisto", `${entradas.length} lançamento${entradas.length === 1 ? "" : "s"} no período`);
+    texto("fluxoRecebido", formatarMoeda(recebido));
+    texto("fluxoNotaRecebido", `${recebidos.length} de ${entradas.length} recebidos`);
+    texto("fluxoPendente", formatarMoeda(pendente));
+    texto("fluxoNotaPendente", pendentes.length ? `${pendentes.length} em aberto` : "Nada em aberto");
+    texto("fluxoPagos", formatarMoeda(totalPagos));
+    texto("fluxoNotaPagos", `${pagos.length} de ${saidas.length} pagos`);
     texto("fluxoAcumulado", formatarMoeda(acumulado));
     texto("fluxoNotaAcumulado", acumulado < 0 ? "⚠ Caixa no negativo" : "Caixa positivo");
-    const cartaoSaldo = document.getElementById("cartaoFluxoSaldo");
-    cartaoSaldo.classList.toggle("positivo", saldo >= 0);
-    cartaoSaldo.classList.toggle("negativo", saldo < 0);
     document.getElementById("cartaoFluxoAcumulado").classList.toggle("negativo", acumulado < 0);
     renderizarGraficosFluxo();
   }
@@ -8946,86 +9904,650 @@
     }
   });
 
-  // ---- DRE ----
-  let anoDreAtual = null;
-  function renderizarDre() {
-    const corpo = document.getElementById("corpoTabelaDre");
-    const seletorAno = document.getElementById("campoAnoDre");
-    if (!corpo || !seletorAno) return;
+  // ---------------------------------------------------------------
+  // RESULTADOS — Resultado dos Contratos (uma linha por campanha fechada,
+  // com contrato_id, ou por serviço avulso lançado manualmente, sem
+  // contrato_id), Despesas da empresa (financas_despesas sem contrato_id,
+  // ou seja, fora do custo de uma campanha específica) e o resumo DRE, que
+  // é só a soma das duas tabelas acima no período selecionado. Layout segue
+  // o mesmo padrão do Fluxo de Caixa: mês/ano à esquerda, Mês atual/Análises
+  // à direita.
+  // ---------------------------------------------------------------
+  let resultadosMes = new Date().getMonth() + 1; // 0 = ano inteiro
+  let resultadosAno = new Date().getFullYear();
+  let visaoResultados = "mes";
+  let filtroStatusDespesaEmpresaAtual = "todas";
+  let migracaoResultadosOk = true; // atualizado em recarregarFinancas()
 
-    if (!financasDisponivel) {
-      corpo.innerHTML = `<tr><td colspan="6" class="texto-vazio">Ainda falta rodar js/financas-setup.sql no Supabase.</td></tr>`;
-      seletorAno.innerHTML = "";
+  function impostoNf(cache, ativo, taxa) {
+    return ativo ? -((cache * (Number(taxa) || 0)) / 100) : 0;
+  }
+  function limitesPeriodoResultados() {
+    const ano = String(resultadosAno);
+    if (!resultadosMes) return { ini: ano + "-01-01", fim: ano + "-12-31" };
+    const mes = String(resultadosMes).padStart(2, "0");
+    return { ini: `${ano}-${mes}-01`, fim: `${ano}-${mes}-31` };
+  }
+  function noPeriodoResultados(dataIso) {
+    const { ini, fim } = limitesPeriodoResultados();
+    return !!dataIso && dataIso >= ini && dataIso <= fim;
+  }
+  function rotuloPeriodoResultados() {
+    return resultadosMes ? MESES_PT[resultadosMes - 1] + "/" + resultadosAno : String(resultadosAno);
+  }
+
+  // Campanhas (contratos) fechadas + receitas avulsas (sem contrato_id),
+  // ambas com sua própria emissão de NF. Descontos só existem pro lado das
+  // campanhas: são as despesas de produção lançadas com esse contrato_id.
+  function linhasResultadoContratos() {
+    const automaticas = contratosCache
+      .filter((k) => k.data_assinatura && noPeriodoResultados(k.data_assinatura))
+      .map((k) => {
+        const cache = Number(k.valor) || 0;
+        const impostos = impostoNf(cache, !!k.emissao_nf, k.nf_taxa);
+        const descontos = -despesasFinCache
+          .filter((d) => d.contrato_id === k.id)
+          .reduce((soma, d) => soma + (Number(d.valor) || 0), 0);
+        return { automatico: true, id: k.id, nome: k.marca || "—", data: k.data_assinatura, cache, impostos, descontos };
+      });
+    const manuais = receitasCache
+      .filter((r) => !r.contrato_id && !r.parent_id && r.contratacao && noPeriodoResultados(r.contratacao))
+      .map((r) => {
+        const cache = Number(r.cache) || 0;
+        const impostos = impostoNf(cache, !!r.emissao_nf, r.nf_taxa);
+        return { automatico: false, id: r.id, nome: r.marca || r.descricao || "—", data: r.contratacao, cache, impostos, descontos: 0 };
+      });
+    return [...automaticas, ...manuais]
+      .map((l) => ({ ...l, liquido: l.cache + l.impostos + l.descontos }))
+      .sort((a, b) => a.data.localeCompare(b.data));
+  }
+
+  // Despesas da empresa = financas_despesas sem contrato_id (as ligadas a uma
+  // campanha já entram como "Descontos" na tabela acima).
+  function linhasDespesasEmpresa() {
+    return despesasFinCache
+      .filter((d) => !d.contrato_id && d.data && noPeriodoResultados(d.data))
+      .sort((a, b) => a.data.localeCompare(b.data));
+  }
+  function linhasDespesasEmpresaFiltradas() {
+    const linhas = linhasDespesasEmpresa();
+    if (filtroStatusDespesaEmpresaAtual === "abertas") return linhas.filter((d) => d.status !== "Pago");
+    if (filtroStatusDespesaEmpresaAtual === "pagas") return linhas.filter((d) => d.status === "Pago");
+    return linhas;
+  }
+
+  function rotuloRecorrenciaDespesa(d) {
+    if (d.infra_meses) {
+      const hoje = hojeIso();
+      const usados = despesasFinCache.filter((x) => x.grupo_repeticao && x.grupo_repeticao === d.grupo_repeticao && x.data && x.data <= hoje).length;
+      return `Infraestrutura ${Math.min(usados, d.infra_meses)}/${d.infra_meses} meses`;
+    }
+    if (d.fixa) return "Fixa" + (d.fixa_ate ? " até " + formatarDataBr(d.fixa_ate) : "");
+    return "Única";
+  }
+
+  function renderizarCardsResultados() {
+    if (!document.getElementById("resultadosTotalFaturado")) return;
+    const contratos = linhasResultadoContratos();
+    const despesas = linhasDespesasEmpresa();
+    const faturamento = contratos.reduce((s, l) => s + l.cache, 0);
+    const lucroBruto = contratos.reduce((s, l) => s + l.liquido, 0);
+    const totalDespesas = despesas.reduce((s, d) => s + (Number(d.valor) || 0), 0);
+    const lucroLiquido = lucroBruto - totalDespesas;
+    const margem = faturamento ? (lucroLiquido / faturamento) * 100 : 0;
+
+    const texto = (id, v) => (document.getElementById(id).textContent = v);
+    texto("resultadosTotalFaturado", formatarMoeda(faturamento));
+    texto("resultadosNotaFaturado", `${contratos.length} fechamento${contratos.length === 1 ? "" : "s"}`);
+    texto("resultadosLucroBruto", formatarMoeda(lucroBruto));
+    texto("resultadosDespesas", formatarMoeda(totalDespesas));
+    texto("resultadosLucroLiquido", formatarMoeda(lucroLiquido));
+    texto("resultadosNotaMargem", faturamento ? `Margem de ${margem.toFixed(1)}%` : "Sem faturamento");
+    document.getElementById("cartaoResultadosLucroBruto").classList.toggle("negativo", lucroBruto < 0);
+    document.getElementById("cartaoResultadosLucroLiquido").classList.toggle("negativo", lucroLiquido < 0);
+  }
+
+  function renderizarResultadoContratos() {
+    const corpo = document.getElementById("corpoResultadoContratos");
+    if (!corpo) return;
+    const linhas = linhasResultadoContratos();
+    if (!linhas.length) {
+      corpo.innerHTML = `<tr><td colspan="7" class="texto-vazio">Nenhum contrato fechado nem serviço avulso nesse período.</td></tr>`;
       return;
     }
-
-    const anoAtualReal = String(new Date().getFullYear());
-    const anos = [
-      ...new Set([
-        anoAtualReal,
-        ...receitasCache.filter((r) => r.contratacao).map((r) => r.contratacao.slice(0, 4)),
-        ...despesasFinCache.filter((d) => d.data).map((d) => d.data.slice(0, 4)),
-      ]),
-    ].sort().reverse();
-
-    if (!anoDreAtual || !anos.includes(anoDreAtual)) anoDreAtual = anos[0];
-    seletorAno.innerHTML = anos.map((a) => `<option value="${a}" ${a === anoDreAtual ? "selected" : ""}>${a}</option>`).join("");
-
-    const meses = {};
-    const add = (chave) => (meses[chave] = meses[chave] || { cache: 0, produto: 0, despesa: 0 });
-    receitasCache.forEach((r) => {
-      if (!r.parent_id && (r.contratacao || "").startsWith(anoDreAtual)) {
-        const linha = add(r.contratacao.slice(0, 7));
-        linha.cache += Number(r.cache) || 0;
-        linha.produto += Number(r.produto) || 0;
-      }
-    });
-    despesasFinCache.forEach((d) => {
-      if (!d.parent_id && (d.data || "").startsWith(anoDreAtual)) add(d.data.slice(0, 7)).despesa += Number(d.valor) || 0;
-    });
-
-    const chaves = Object.keys(meses).sort();
-    if (!chaves.length) {
-      corpo.innerHTML = `<tr><td colspan="6" class="texto-vazio">Sem movimento neste ano.</td></tr>`;
-      return;
-    }
-
-    const totais = { cache: 0, produto: 0, despesa: 0 };
-    const linhasHtml = chaves
-      .map((chave) => {
-        const m = meses[chave];
-        totais.cache += m.cache;
-        totais.produto += m.produto;
-        totais.despesa += m.despesa;
-        const liquido = m.cache - m.despesa;
+    const totais = { cache: 0, impostos: 0, descontos: 0, liquido: 0 };
+    const linhasHtml = linhas
+      .map((l) => {
+        totais.cache += l.cache;
+        totais.impostos += l.impostos;
+        totais.descontos += l.descontos;
+        totais.liquido += l.liquido;
+        const margem = l.cache ? (l.liquido / l.cache) * 100 : 0;
         return `
-        <tr>
-          <td>${MESES_PT[+chave.slice(5, 7) - 1]}</td>
-          <td>${formatarMoeda(m.cache)}</td>
-          <td>${formatarMoeda(m.produto)}</td>
-          <td>${formatarMoeda(m.cache + m.produto)}</td>
-          <td>${formatarMoeda(m.despesa)}</td>
-          <td style="font-weight:700; ${liquido < 0 ? "color:var(--vermelho-erro)" : ""}">${formatarMoeda(liquido)}</td>
+        <tr${l.automatico ? "" : ` data-manual-id="${l.id}"`}>
+          <td><span class="pilula-status ${l.automatico ? "fechado-automatico" : "fechado-manual"}">${l.automatico ? "Campanha" : "Manual"}</span> ${esc(l.nome)}</td>
+          <td>${formatarDataBr(l.data)}</td>
+          <td>${formatarMoeda(l.cache)}</td>
+          <td class="${l.impostos < 0 ? "valor-negativo-resultado" : ""}">${formatarMoeda(l.impostos)}</td>
+          <td class="${l.descontos < 0 ? "valor-negativo-resultado" : ""}">${formatarMoeda(l.descontos)}</td>
+          <td style="font-weight:700; ${l.liquido < 0 ? "color:var(--vermelho-erro)" : ""}">${formatarMoeda(l.liquido)}</td>
+          <td>${margem.toFixed(1)}%</td>
         </tr>`;
       })
       .join("");
-
-    const liquidoTotal = totais.cache - totais.despesa;
+    const margemTotal = totais.cache ? (totais.liquido / totais.cache) * 100 : 0;
     corpo.innerHTML =
       linhasHtml +
-      `<tr style="font-weight:700; background:var(--creme)">
-        <td>Total ${anoDreAtual}</td>
+      `<tr class="linha-total-resultado">
+        <td>Total ${rotuloPeriodoResultados()}</td><td></td>
         <td>${formatarMoeda(totais.cache)}</td>
-        <td>${formatarMoeda(totais.produto)}</td>
-        <td>${formatarMoeda(totais.cache + totais.produto)}</td>
-        <td>${formatarMoeda(totais.despesa)}</td>
-        <td style="${liquidoTotal < 0 ? "color:var(--vermelho-erro)" : ""}">${formatarMoeda(liquidoTotal)}</td>
+        <td>${formatarMoeda(totais.impostos)}</td>
+        <td>${formatarMoeda(totais.descontos)}</td>
+        <td style="${totais.liquido < 0 ? "color:var(--vermelho-erro)" : ""}">${formatarMoeda(totais.liquido)}</td>
+        <td>${margemTotal.toFixed(1)}%</td>
       </tr>`;
   }
 
-  document.getElementById("campoAnoDre").addEventListener("change", (evento) => {
-    anoDreAtual = evento.target.value;
-    renderizarDre();
+  function renderizarDespesasEmpresa() {
+    const corpo = document.getElementById("corpoDespesasEmpresa");
+    if (!corpo) return;
+    const linhas = linhasDespesasEmpresaFiltradas();
+    if (!linhas.length) {
+      corpo.innerHTML = `<tr><td colspan="6" class="texto-vazio">Nenhuma despesa da empresa lançada nesse período.</td></tr>`;
+      return;
+    }
+    let total = 0;
+    const linhasHtml = linhas
+      .map((d) => {
+        const valor = Number(d.valor) || 0;
+        total += valor;
+        return `
+        <tr data-id="${d.id}">
+          <td>${esc(d.nome)}</td>
+          <td>${esc(d.categoria || "—")}</td>
+          <td>${formatarDataBr(d.data)}</td>
+          <td>${rotuloRecorrenciaDespesa(d)}</td>
+          <td><span class="pilula-status ${d.status === "Pago" ? "status-pago" : "status-pendente"}">${d.status === "Pago" ? "Pago" : "Pendente"}</span></td>
+          <td>${formatarMoeda(valor)}</td>
+        </tr>`;
+      })
+      .join("");
+    corpo.innerHTML = linhasHtml + `<tr class="linha-total-resultado"><td colspan="5">Total ${rotuloPeriodoResultados()}</td><td>${formatarMoeda(total)}</td></tr>`;
+  }
+
+  function renderizarDreResumo() {
+    const corpo = document.getElementById("corpoTabelaDre");
+    if (!corpo) return;
+    const contratos = linhasResultadoContratos();
+    const despesas = linhasDespesasEmpresa();
+
+    const faturamentoBruto = contratos.reduce((s, l) => s + l.cache, 0);
+    const impostos = contratos.reduce((s, l) => s + l.impostos, 0);
+    const custosCampanhas = contratos.reduce((s, l) => s + l.descontos, 0);
+    const receitaLiquida = faturamentoBruto + impostos + custosCampanhas;
+
+    const porCategoria = new Map();
+    despesas.forEach((d) => {
+      const cat = d.categoria || "Outros";
+      porCategoria.set(cat, (porCategoria.get(cat) || 0) + (Number(d.valor) || 0));
+    });
+    const ordem = ["Operacional", "Marketing", "Infraestrutura", "Capacitação", "Outros"];
+    const extras = [...porCategoria.keys()].filter((c) => !ordem.includes(c)).sort((a, b) => a.localeCompare(b, "pt-BR"));
+    const categorias = [...ordem.filter((c) => porCategoria.has(c)), ...extras];
+    const totalDespesasEmpresa = [...porCategoria.values()].reduce((s, v) => s + v, 0);
+
+    const lucroLiquido = receitaLiquida - totalDespesasEmpresa;
+    const margemLiquida = faturamentoBruto ? (lucroLiquido / faturamentoBruto) * 100 : 0;
+
+    corpo.innerHTML = `
+      <tr><td>Faturamento bruto</td><td>${formatarMoeda(faturamentoBruto)}</td></tr>
+      <tr><td>Impostos</td><td class="${impostos < 0 ? "valor-negativo-resultado" : ""}">${formatarMoeda(impostos)}</td></tr>
+      <tr><td>Custos de campanhas</td><td class="${custosCampanhas < 0 ? "valor-negativo-resultado" : ""}">${formatarMoeda(custosCampanhas)}</td></tr>
+      <tr class="linha-dre-subtotal"><td>Receita líquida</td><td>${formatarMoeda(receitaLiquida)}</td></tr>
+      ${categorias
+        .map(
+          (cat) =>
+            `<tr class="linha-dre-categoria"><td>${esc(cat)}</td><td class="valor-negativo-resultado">${formatarMoeda(-(porCategoria.get(cat) || 0))}</td></tr>`
+        )
+        .join("")}
+      <tr class="linha-dre-subtotal"><td>Total de despesas</td><td class="valor-negativo-resultado">${formatarMoeda(-totalDespesasEmpresa)}</td></tr>
+      <tr class="linha-dre-final"><td>Lucro líquido</td><td style="${lucroLiquido < 0 ? "color:var(--vermelho-erro)" : ""}">${formatarMoeda(lucroLiquido)}</td></tr>
+      <tr class="linha-dre-final"><td>Margem líquida</td><td>${margemLiquida.toFixed(1)}%</td></tr>
+    `;
+  }
+
+  function renderizarPainelResultados() {
+    renderizarCardsResultados();
+    renderizarResultadoContratos();
+    renderizarDespesasEmpresa();
+    renderizarDreResumo();
+  }
+
+  function atualizarSeletoresPeriodoResultados() {
+    const selMes = document.getElementById("campoMesResultados");
+    const selAno = document.getElementById("campoAnoResultados");
+    if (!selMes || !selAno) return;
+    const anoAtualReal = new Date().getFullYear();
+    const anos = new Set([anoAtualReal, resultadosAno]);
+    const anotar = (d) => {
+      if (d) anos.add(Number(d.slice(0, 4)));
+    };
+    contratosCache.forEach((k) => anotar(k.data_assinatura));
+    receitasCache.forEach((r) => anotar(r.contratacao));
+    despesasFinCache.forEach((d) => anotar(d.data));
+    const htmlAnos = [...anos].filter(Boolean).sort((a, b) => b - a).map((a) => `<option value="${a}">${a}</option>`).join("");
+    const htmlMeses = `<option value="0">Todos os meses</option>` + MESES_PT.map((m, i) => `<option value="${i + 1}">${m}</option>`).join("");
+    if (selAno.innerHTML !== htmlAnos) selAno.innerHTML = htmlAnos;
+    if (selMes.innerHTML !== htmlMeses) selMes.innerHTML = htmlMeses;
+    selAno.value = String(resultadosAno);
+    selMes.value = String(resultadosMes);
+  }
+  document.getElementById("campoMesResultados").addEventListener("change", (evento) => {
+    resultadosMes = Number(evento.target.value);
+    renderizarPainelResultados();
+  });
+  document.getElementById("campoAnoResultados").addEventListener("change", (evento) => {
+    resultadosAno = Number(evento.target.value);
+    renderizarPainelResultados();
+  });
+  ligarFiltroStatus("filtroStatusDespesaEmpresa", (f) => {
+    filtroStatusDespesaEmpresaAtual = f;
+    renderizarDespesasEmpresa();
+  });
+  document.getElementById("btnCategoriasDespesaEmpresa").addEventListener("click", abrirCategoriasFluxo);
+
+  document.querySelectorAll("#alternadorVisaoResultados button").forEach((botao) => {
+    botao.addEventListener("click", () => {
+      document.querySelectorAll("#alternadorVisaoResultados button").forEach((b) => b.classList.remove("ativo"));
+      botao.classList.add("ativo");
+      visaoResultados = botao.dataset.visaoResultados;
+      document.getElementById("resultadosVisaoMes").hidden = visaoResultados !== "mes";
+      document.getElementById("resultadosVisaoAnalise").hidden = visaoResultados !== "analise";
+      document.getElementById("grupoSeletoresMesResultados").hidden = visaoResultados !== "mes";
+      if (visaoResultados === "analise") renderizarAnaliseResultados();
+    });
+  });
+
+  // ---- Meta de faturamento mensal: sincronizada com a mesma config do Menu
+  // Principal (chave "meta_receita" em painel_config) — editar aqui ou lá é a
+  // mesma meta. Sempre mostra o mês atual, independente do período escolhido
+  // acima, porque é uma meta mensal corrente, não histórica. ----
+  function atualizarMetaFaturamentoResultados() {
+    const campo = document.getElementById("campoMetaFaturamentoResultados");
+    if (!campo || typeof cfgLer !== "function" || typeof seriesDaJornada !== "function") return;
+    const alvo = Number(cfgLer("meta_receita", 0)) || 0;
+    if (document.activeElement !== campo) campo.value = alvo || "";
+    const mesAtual = hojeIso().slice(0, 7);
+    const convertido = seriesDaJornada()
+      .faturamento.filter((f) => f.data.startsWith(mesAtual))
+      .reduce((s, f) => s + f.valor, 0);
+    const pct = alvo > 0 ? Math.min(100, Math.round((convertido / alvo) * 100)) : 0;
+    document.getElementById("preenchidoMetaResultados").style.width = pct + "%";
+    document.getElementById("resultadosMetaConvertido").textContent = `${formatarMoeda(convertido)} convertidos no mês atual`;
+    document.getElementById("resultadosMetaPct").textContent = pct + "%";
+  }
+  document.getElementById("campoMetaFaturamentoResultados").addEventListener("change", async (evento) => {
+    const valor = Number(evento.target.value) || 0;
+    if (typeof cfgGravar !== "function") return;
+    await cfgGravar("meta_receita", valor);
+    atualizarMetaFaturamentoResultados();
+    if (typeof atualizarMenuPrincipal === "function") atualizarMenuPrincipal();
+  });
+
+  // ---- Análises: faturamento, despesas e lucro por mês (mesmo padrão do
+  // Fluxo de Caixa, com os dados de Resultados) ----
+  let periodoAnaliseResultados = 6;
+  function svgBarrasAnaliseResultados(dados) {
+    return svgBarrasAnalise(dados)
+      .replace(">Entradas<", ">Faturamento<")
+      .replace(">Saídas<", ">Despesas<")
+      .replace(">Saldo<", ">Lucro líquido<");
+  }
+  function renderizarAnaliseResultados() {
+    if (!document.getElementById("cartoesAnaliseResultados")) return;
+    const agora = new Date();
+    const dados = [];
+    for (let i = periodoAnaliseResultados - 1; i >= 0; i--) {
+      const d = new Date(agora.getFullYear(), agora.getMonth() - i, 1);
+      const chave = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
+      const contratosDoMes = [
+        ...contratosCache
+          .filter((k) => k.data_assinatura && k.data_assinatura.slice(0, 7) === chave)
+          .map((k) => {
+            const cache = Number(k.valor) || 0;
+            const descontos = -despesasFinCache.filter((x) => x.contrato_id === k.id).reduce((s, x) => s + (Number(x.valor) || 0), 0);
+            return { cache, impostos: impostoNf(cache, !!k.emissao_nf, k.nf_taxa), descontos };
+          }),
+        ...receitasCache
+          .filter((r) => !r.contrato_id && !r.parent_id && r.contratacao && r.contratacao.slice(0, 7) === chave)
+          .map((r) => {
+            const cache = Number(r.cache) || 0;
+            return { cache, impostos: impostoNf(cache, !!r.emissao_nf, r.nf_taxa), descontos: 0 };
+          }),
+      ];
+      const faturamento = contratosDoMes.reduce((s, l) => s + l.cache, 0);
+      const lucroBruto = contratosDoMes.reduce((s, l) => s + l.cache + l.impostos + l.descontos, 0);
+      const despesas = despesasFinCache
+        .filter((x) => !x.contrato_id && x.data && x.data.slice(0, 7) === chave)
+        .reduce((s, x) => s + (Number(x.valor) || 0), 0);
+      const lucro = lucroBruto - despesas;
+      dados.push({ chave, rotulo: abrevMes(chave), ent: faturamento, sai: despesas, saldo: lucro });
+    }
+    const totalFat = dados.reduce((s, d) => s + d.ent, 0);
+    const totalDesp = dados.reduce((s, d) => s + d.sai, 0);
+    const lucroTotal = dados.reduce((s, d) => s + d.saldo, 0);
+    const melhor = dados.reduce((m, d) => (d.saldo > m.saldo ? d : m), dados[0]);
+    const n = dados.length;
+    const margemTotal = totalFat ? (lucroTotal / totalFat) * 100 : 0;
+    document.getElementById("cartoesAnaliseResultados").innerHTML = `
+      <div class="cartao-fluxo analise entradas"><span class="rotulo-cartao-fluxo">↑ Total faturado</span><span class="valor-cartao-fluxo">${formatarMoeda(totalFat)}</span><span class="nota-cartao-fluxo">Média ${formatarMoeda(totalFat / n)}/mês</span></div>
+      <div class="cartao-fluxo analise saidas"><span class="rotulo-cartao-fluxo">↓ Total despesas</span><span class="valor-cartao-fluxo">${formatarMoeda(totalDesp)}</span><span class="nota-cartao-fluxo">Média ${formatarMoeda(totalDesp / n)}/mês</span></div>
+      <div class="cartao-fluxo analise saldo ${lucroTotal < 0 ? "negativo" : ""}"><span class="rotulo-cartao-fluxo">= Lucro do período</span><span class="valor-cartao-fluxo">${formatarMoeda(lucroTotal)}</span><span class="nota-cartao-fluxo">Margem de ${margemTotal.toFixed(1)}%</span></div>
+      <div class="cartao-fluxo analise melhor"><span class="rotulo-cartao-fluxo">Melhor mês</span><span class="valor-cartao-fluxo">${melhor && (melhor.ent || melhor.sai) ? melhor.rotulo : "—"}</span><span class="nota-cartao-fluxo">${melhor && (melhor.ent || melhor.sai) ? "Lucro " + formatarMoeda(melhor.saldo) : "Sem movimento"}</span></div>`;
+    document.getElementById("graficoBarrasAnaliseResultados").innerHTML = svgBarrasAnaliseResultados(dados);
+
+    const maxEnt = Math.max(...dados.map((d) => d.ent), 1);
+    const classe = (v) => (v < 0 ? "neg" : "pos");
+    document.getElementById("corpoDetalheMensalResultados").innerHTML =
+      dados
+        .map((d) => {
+          const margem = d.ent ? (d.saldo / d.ent) * 100 : 0;
+          return `<tr><td>${d.rotulo}</td><td class="pos">${formatarMoeda(d.ent)}</td><td class="neg">${formatarMoeda(d.sai)}</td><td class="${classe(d.saldo)}">${formatarMoeda(d.saldo)}</td><td>${margem.toFixed(1)}%</td><td><span class="mini-barra-mes"><i style="width:${(d.ent / maxEnt) * 100}%"></i></span></td></tr>`;
+        })
+        .join("") +
+      `<tr style="font-weight:700; background:var(--creme)"><td>Total</td><td class="pos">${formatarMoeda(totalFat)}</td><td class="neg">${formatarMoeda(totalDesp)}</td><td class="${classe(lucroTotal)}">${formatarMoeda(lucroTotal)}</td><td>${margemTotal.toFixed(1)}%</td><td></td></tr>`;
+  }
+  document.getElementById("campoPeriodoAnaliseResultados").addEventListener("change", (evento) => {
+    periodoAnaliseResultados = Number(evento.target.value);
+    renderizarAnaliseResultados();
+  });
+
+  function renderizarResultados() {
+    const corpoContratos = document.getElementById("corpoResultadoContratos");
+    if (!corpoContratos) return;
+
+    if (!financasDisponivel) {
+      corpoContratos.innerHTML = `<tr><td colspan="7" class="texto-vazio">Ainda falta rodar js/financas-setup.sql no Supabase.</td></tr>`;
+      document.getElementById("corpoDespesasEmpresa").innerHTML = "";
+      document.getElementById("corpoTabelaDre").innerHTML = "";
+      return;
+    }
+
+    atualizarSeletoresPeriodoResultados();
+    renderizarPainelResultados();
+    atualizarMetaFaturamentoResultados();
+    if (visaoResultados === "analise") renderizarAnaliseResultados();
+  }
+
+  // ---- Despesa da empresa: modal de lançamento (fixa com data de encerramento
+  // ou infraestrutura com depreciação) ----
+  const overlayDespesaEmpresa = document.getElementById("overlayDespesaEmpresa");
+  const campoDespesaEmpresaNome = document.getElementById("campoDespesaEmpresaNome");
+  const campoDespesaEmpresaCategoria = document.getElementById("campoDespesaEmpresaCategoria");
+  const linhaDespesaEmpresaFixa = document.getElementById("linhaDespesaEmpresaFixa");
+  const campoDespesaEmpresaFixa = document.getElementById("campoDespesaEmpresaFixa");
+  const linhaDespesaEmpresaFixaAte = document.getElementById("linhaDespesaEmpresaFixaAte");
+  const campoDespesaEmpresaFixaAte = document.getElementById("campoDespesaEmpresaFixaAte");
+  const campoDespesaEmpresaValor = document.getElementById("campoDespesaEmpresaValor");
+  const notaDespesaEmpresaValor = document.getElementById("notaDespesaEmpresaValor");
+  const blocoDespesaEmpresaInfra = document.getElementById("blocoDespesaEmpresaInfra");
+  const campoDespesaEmpresaInfraMeses = document.getElementById("campoDespesaEmpresaInfraMeses");
+  const campoDespesaEmpresaDepreciacao = document.getElementById("campoDespesaEmpresaDepreciacao");
+  const linhaDespesaEmpresaUso = document.getElementById("linhaDespesaEmpresaUso");
+  const campoDespesaEmpresaUso = document.getElementById("campoDespesaEmpresaUso");
+  const btnExcluirDespesaEmpresa = document.getElementById("btnExcluirDespesaEmpresa");
+  let despesaEmpresaEmEdicao = null; // registro clicado: editar/excluir só afeta essa linha, nunca a série inteira
+
+  function categoriaEhInfra(nome) {
+    return (nome || "").toLowerCase() === "infraestrutura";
+  }
+  function atualizarDepreciacaoDespesaEmpresa() {
+    const valor = Number(campoDespesaEmpresaValor.value) || 0;
+    const meses = Math.max(1, Math.floor(Number(campoDespesaEmpresaInfraMeses.value)) || 1);
+    campoDespesaEmpresaDepreciacao.textContent = formatarMoeda(valor / meses);
+  }
+  function atualizarBlocoInfraDespesaEmpresa() {
+    const infra = categoriaEhInfra(campoDespesaEmpresaCategoria.value);
+    blocoDespesaEmpresaInfra.hidden = !infra;
+    linhaDespesaEmpresaFixa.hidden = infra;
+    linhaDespesaEmpresaFixaAte.hidden = infra || !campoDespesaEmpresaFixa.checked;
+    notaDespesaEmpresaValor.hidden = !infra;
+    notaDespesaEmpresaValor.textContent = infra ? "Valor total do item — a depreciação mensal é calculada abaixo." : "";
+    atualizarDepreciacaoDespesaEmpresa();
+  }
+  campoDespesaEmpresaCategoria.addEventListener("change", atualizarBlocoInfraDespesaEmpresa);
+  campoDespesaEmpresaValor.addEventListener("input", atualizarDepreciacaoDespesaEmpresa);
+  campoDespesaEmpresaInfraMeses.addEventListener("input", atualizarDepreciacaoDespesaEmpresa);
+  campoDespesaEmpresaFixa.addEventListener("change", () => {
+    linhaDespesaEmpresaFixaAte.hidden = !campoDespesaEmpresaFixa.checked;
+  });
+
+  function popularCategoriasDespesaEmpresa() {
+    const nomes = categoriasDoTipo("despesa").filter((n) => n !== "Campanhas");
+    campoDespesaEmpresaCategoria.innerHTML = nomes.map((n) => `<option value="${esc(n)}">${esc(n)}</option>`).join("");
+  }
+
+  function abrirDespesaEmpresa(reg) {
+    popularCategoriasDespesaEmpresa();
+    despesaEmpresaEmEdicao = reg || null;
+    document.getElementById("tituloDespesaEmpresa").textContent = reg ? "Editar despesa" : "Nova despesa da empresa";
+    campoDespesaEmpresaNome.value = reg ? reg.nome || "" : "";
+    if (reg && reg.categoria) campoDespesaEmpresaCategoria.value = reg.categoria;
+    campoDespesaEmpresaFixa.checked = !!(reg && reg.fixa);
+    campoDespesaEmpresaFixaAte.value = reg && reg.fixa_ate ? reg.fixa_ate : "";
+    campoDespesaEmpresaValor.value = reg ? (reg.infra_valor_total != null ? reg.infra_valor_total : reg.valor) || "" : "";
+    campoDespesaEmpresaInfraMeses.value = reg && reg.infra_meses ? reg.infra_meses : "";
+    btnExcluirDespesaEmpresa.hidden = !reg;
+    atualizarBlocoInfraDespesaEmpresa();
+    if (reg && reg.infra_meses) {
+      const hoje = hojeIso();
+      const usados = despesasFinCache.filter((x) => x.grupo_repeticao && x.grupo_repeticao === reg.grupo_repeticao && x.data && x.data <= hoje).length;
+      linhaDespesaEmpresaUso.hidden = false;
+      campoDespesaEmpresaUso.textContent = `${Math.min(usados, reg.infra_meses)}/${reg.infra_meses} meses`;
+    } else {
+      linhaDespesaEmpresaUso.hidden = true;
+    }
+    overlayDespesaEmpresa.hidden = false;
+  }
+  function fecharDespesaEmpresa() {
+    overlayDespesaEmpresa.hidden = true;
+    despesaEmpresaEmEdicao = null;
+  }
+  document.getElementById("btnNovaDespesaEmpresa").addEventListener("click", () => abrirDespesaEmpresa(null));
+  document.getElementById("btnCancelarDespesaEmpresa").addEventListener("click", fecharDespesaEmpresa);
+  overlayDespesaEmpresa.addEventListener("click", (evento) => {
+    if (evento.target === overlayDespesaEmpresa) fecharDespesaEmpresa();
+  });
+  document.getElementById("corpoDespesasEmpresa").addEventListener("click", (evento) => {
+    const linha = evento.target.closest("tr[data-id]");
+    if (!linha) return;
+    const reg = despesasFinCache.find((d) => d.id === linha.dataset.id);
+    if (reg) abrirDespesaEmpresa(reg);
+  });
+
+  async function salvarDespesaEmpresa() {
+    const nome = campoDespesaEmpresaNome.value.trim();
+    if (!nome) {
+      alert("Dá um nome pra despesa.");
+      return;
+    }
+    const categoria = campoDespesaEmpresaCategoria.value || null;
+    const infra = categoriaEhInfra(categoria);
+    const valorCampo = Number(campoDespesaEmpresaValor.value) || 0;
+    if (valorCampo <= 0) {
+      alert("Informa o valor.");
+      return;
+    }
+
+    // Editando uma linha existente: só essa linha muda, a série não é regerada.
+    if (despesaEmpresaEmEdicao) {
+      const dados = { nome, categoria, updated_at: new Date().toISOString() };
+      if (infra) {
+        const meses = Math.max(1, Math.floor(Number(campoDespesaEmpresaInfraMeses.value)) || 1);
+        dados.infra_valor_total = valorCampo;
+        dados.infra_meses = meses;
+        dados.valor = valorCampo / meses;
+      } else {
+        dados.valor = valorCampo;
+        dados.fixa = campoDespesaEmpresaFixa.checked;
+        dados.fixa_ate = campoDespesaEmpresaFixa.checked ? campoDespesaEmpresaFixaAte.value || null : null;
+        dados.infra_meses = null;
+        dados.infra_valor_total = null;
+      }
+      try {
+        verificarErro(await Auth.sb.from("financas_despesas").update(dados).eq("id", despesaEmpresaEmEdicao.id));
+        fecharDespesaEmpresa();
+        await recarregarFinancas();
+      } catch (erro) {
+        alert("Não foi possível salvar. Confira se js/financas-resultados-setup.sql já rodou no Supabase.");
+        console.error(erro);
+      }
+      return;
+    }
+
+    if (!migracaoResultadosOk) {
+      alert("Rode js/financas-resultados-setup.sql no Supabase (SQL Editor) antes de lançar despesa por esta janela.");
+      return;
+    }
+    if (!infra && campoDespesaEmpresaFixa.checked && !campoDespesaEmpresaFixaAte.value) {
+      alert("Informa até quando lançar essa despesa fixa.");
+      return;
+    }
+
+    const hoje = hojeIso();
+    const base = { nome, categoria, status: "Pendente", valor_pago: 0, pago_em: null, contrato_id: null, parent_id: null };
+    const linhas = [];
+
+    if (infra) {
+      const meses = Math.max(1, Math.floor(Number(campoDespesaEmpresaInfraMeses.value)) || 1);
+      const depreciacao = valorCampo / meses;
+      const grupo = crypto.randomUUID();
+      for (let i = 0; i < meses; i++) {
+        linhas.push({ ...base, data: deslocarData(hoje, i, "meses"), valor: depreciacao, infra_meses: meses, infra_valor_total: valorCampo, grupo_repeticao: grupo, fixa: false, fixa_ate: null });
+      }
+    } else if (campoDespesaEmpresaFixa.checked) {
+      const inicio = new Date(hoje + "T00:00:00");
+      const fim = new Date(campoDespesaEmpresaFixaAte.value + "T00:00:00");
+      const meses = Math.max(1, (fim.getFullYear() - inicio.getFullYear()) * 12 + (fim.getMonth() - inicio.getMonth()) + 1);
+      const grupo = crypto.randomUUID();
+      for (let i = 0; i < meses; i++) {
+        linhas.push({ ...base, data: deslocarData(hoje, i, "meses"), valor: valorCampo, fixa: true, fixa_ate: campoDespesaEmpresaFixaAte.value, grupo_repeticao: grupo, infra_meses: null, infra_valor_total: null });
+      }
+    } else {
+      linhas.push({ ...base, data: hoje, valor: valorCampo, fixa: false, fixa_ate: null, grupo_repeticao: null, infra_meses: null, infra_valor_total: null });
+    }
+
+    try {
+      verificarErro(await Auth.sb.from("financas_despesas").insert(linhas));
+      fecharDespesaEmpresa();
+      await recarregarFinancas();
+    } catch (erro) {
+      alert("Não foi possível salvar. Confira se js/financas-resultados-setup.sql já rodou no Supabase.");
+      console.error(erro);
+    }
+  }
+  document.getElementById("btnSalvarDespesaEmpresa").addEventListener("click", salvarDespesaEmpresa);
+
+  document.getElementById("btnExcluirDespesaEmpresa").addEventListener("click", async () => {
+    if (!despesaEmpresaEmEdicao) return;
+    if (!confirm(`Excluir "${despesaEmpresaEmEdicao.nome}"? Só essa linha é excluída, não a série inteira.`)) return;
+    try {
+      verificarErro(await Auth.sb.from("financas_despesas").delete().eq("id", despesaEmpresaEmEdicao.id));
+      fecharDespesaEmpresa();
+      await recarregarFinancas();
+    } catch (erro) {
+      alert("Não foi possível excluir.");
+      console.error(erro);
+    }
+  });
+
+  // ---- Novo fechamento: serviço avulso lançado manualmente (financas_receitas
+  // sem contrato_id) — vira uma linha "Manual" no Resultado dos Contratos.
+  // Fechamentos automáticos (campanhas) continuam vindo de Campanhas/CRM. ----
+  const overlayNovoFechamento = document.getElementById("overlayNovoFechamento");
+  const campoFechamentoNome = document.getElementById("campoFechamentoNome");
+  const campoFechamentoData = document.getElementById("campoFechamentoData");
+  const campoFechamentoValor = document.getElementById("campoFechamentoValor");
+  const campoFechamentoNf = document.getElementById("campoFechamentoNf");
+  const linhaFechamentoNfTaxa = document.getElementById("linhaFechamentoNfTaxa");
+  const campoFechamentoNfTaxa = document.getElementById("campoFechamentoNfTaxa");
+  const btnExcluirFechamento = document.getElementById("btnExcluirFechamento");
+  let fechamentoEmEdicao = null;
+
+  function abrirNovoFechamento(reg) {
+    fechamentoEmEdicao = reg || null;
+    document.getElementById("tituloNovoFechamento").textContent = reg ? "Editar fechamento" : "Novo fechamento";
+    campoFechamentoNome.value = reg ? reg.marca || "" : "";
+    campoFechamentoData.value = reg ? reg.contratacao || "" : hojeIso();
+    campoFechamentoValor.value = reg ? reg.cache || "" : "";
+    campoFechamentoNf.checked = !!(reg && reg.emissao_nf);
+    campoFechamentoNfTaxa.value = reg && reg.nf_taxa != null ? reg.nf_taxa : 6;
+    linhaFechamentoNfTaxa.hidden = !campoFechamentoNf.checked;
+    btnExcluirFechamento.hidden = !reg;
+    overlayNovoFechamento.hidden = false;
+  }
+  function fecharNovoFechamento() {
+    overlayNovoFechamento.hidden = true;
+    fechamentoEmEdicao = null;
+  }
+  document.getElementById("btnNovoFechamento").addEventListener("click", () => abrirNovoFechamento(null));
+  document.getElementById("btnCancelarFechamento").addEventListener("click", fecharNovoFechamento);
+  overlayNovoFechamento.addEventListener("click", (evento) => {
+    if (evento.target === overlayNovoFechamento) fecharNovoFechamento();
+  });
+  campoFechamentoNf.addEventListener("change", () => {
+    linhaFechamentoNfTaxa.hidden = !campoFechamentoNf.checked;
+  });
+  document.getElementById("corpoResultadoContratos").addEventListener("click", (evento) => {
+    const linha = evento.target.closest("tr[data-manual-id]");
+    if (!linha) return;
+    const reg = receitasCache.find((r) => r.id === linha.dataset.manualId);
+    if (reg) abrirNovoFechamento(reg);
+  });
+
+  async function salvarFechamento() {
+    const nome = campoFechamentoNome.value.trim();
+    if (!nome) {
+      alert("Dá um nome pro fechamento.");
+      return;
+    }
+    const data = campoFechamentoData.value;
+    if (!data) {
+      alert("Informa a data de fechamento.");
+      return;
+    }
+    const valor = Number(campoFechamentoValor.value) || 0;
+    const nf = campoFechamentoNf.checked;
+    const taxa = Number(campoFechamentoNfTaxa.value) || 0;
+    const dados = { marca: nome, contratacao: data, cache: valor, emissao_nf: nf, nf_taxa: taxa, updated_at: new Date().toISOString() };
+    try {
+      if (fechamentoEmEdicao) {
+        verificarErro(await Auth.sb.from("financas_receitas").update(dados).eq("id", fechamentoEmEdicao.id));
+      } else {
+        verificarErro(
+          await Auth.sb.from("financas_receitas").insert({ ...dados, contrato_id: null, parent_id: null, status: valor > 0 ? "Pendente" : "Permuta" })
+        );
+      }
+      fecharNovoFechamento();
+      await recarregarFinancas();
+    } catch (erro) {
+      alert("Não foi possível salvar.");
+      console.error(erro);
+    }
+  }
+  document.getElementById("btnSalvarFechamento").addEventListener("click", salvarFechamento);
+
+  btnExcluirFechamento.addEventListener("click", async () => {
+    if (!fechamentoEmEdicao) return;
+    if (!confirm(`Excluir o fechamento "${fechamentoEmEdicao.marca}"?`)) return;
+    try {
+      verificarErro(await Auth.sb.from("financas_receitas").delete().eq("id", fechamentoEmEdicao.id));
+      fecharNovoFechamento();
+      await recarregarFinancas();
+    } catch (erro) {
+      alert("Não foi possível excluir.");
+      console.error(erro);
+    }
   });
 
   // ---------------------------------------------------------------
@@ -11675,6 +13197,7 @@
     }
     cfgPronta = true;
     atualizarMenuPrincipal();
+    if (typeof atualizarMetaFaturamentoResultados === "function") atualizarMetaFaturamentoResultados();
   }
   function cfgLer(chave, padrao) {
     if (cfgCache[chave] !== undefined) return cfgCache[chave];
@@ -13124,7 +14647,7 @@
     renderizarLinhaTempo();
     renderizarReceitas();
     renderizarDespesasFin();
-    renderizarDre();
+    renderizarResultados();
     renderizarEmpresas();
     renderizarOportunidades();
   }
@@ -13135,6 +14658,7 @@
   recarregarFinancas();
   recarregarComercial();
   recarregarOportunidades();
+  recarregarVideosPortfolio();
 })();
 </script>
 </body>
