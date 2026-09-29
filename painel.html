@@ -1311,8 +1311,6 @@
   }
   .tabela-contratos tbody tr{ cursor:pointer; transition: background .15s ease; }
   .tabela-contratos tbody tr:hover{ background: var(--creme); }
-  .tabela-contratos .link-anexo{ color: var(--coral); font-weight:600; text-decoration:none; }
-  .tabela-contratos .link-anexo:hover{ text-decoration:underline; }
   .tabela-contratos .btn-gerar-cards{ padding: 7px 12px; font-size:.76rem; }
   .acoes-modal-quadro{
     display:flex;
@@ -1472,6 +1470,24 @@
   .modal-video-clean textarea.textarea-limpa:focus{ outline:none; background: var(--creme); }
   .modal-video-clean textarea.textarea-limpa{ width:100%; margin:0; padding: 8px 10px; }
   .modal-video-clean .btn-recebido{ padding: 7px 12px; font-size:.82rem; width:auto; }
+
+  /* Mesmo padrão "limpo" acima, sem exigir o modal de vídeo por perto —
+     reaproveitado em qualquer janela simples de cadastro (Afiliados,
+     Despesa da empresa, Novo fechamento, Vídeo do portfólio...), pra manter
+     letra/tamanho/cor padronizados no site inteiro. */
+  .rotulo-limpo{
+    display:block; font-family: var(--fonte-sans); font-size:.7rem; font-weight:700;
+    letter-spacing:.03em; color: #6B6B6B; margin: 0 0 2px;
+  }
+  .rotulo-descricao{ margin: 18px 0 6px; }
+  select.input-limpo, input.input-limpo, textarea.textarea-limpa{
+    width:100%; border:1.5px solid transparent; background:none; font-family:inherit;
+    font-size:.88rem; color: var(--grafite); padding: 6px 8px; border-radius: 8px; resize: vertical;
+  }
+  select.input-limpo:hover, input.input-limpo:hover, textarea.textarea-limpa:hover{ background: var(--creme); }
+  select.input-limpo:focus, input.input-limpo:focus, textarea.textarea-limpa:focus{ outline:none; background: var(--creme); }
+  textarea.textarea-limpa{ width:100%; margin:0; padding: 8px 10px; }
+  .prop-limpa .chave-liga{ margin-top:2px; }
 
   /* Aba "Etapa da produção": subtarefas em linha (nome / início / fim /
      status / responsável / tempo rastreado), substitui o antigo
@@ -2677,6 +2693,12 @@
         </svg>
         <span class="rotulo-item">News</span>
       </button>
+      <button class="item-nav item-pagina" data-tab="cc-afiliados">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/>
+        </svg>
+        <span class="rotulo-item">Afiliados</span>
+      </button>
     </nav>
 
     <div class="rodape-sidebar">
@@ -3467,7 +3489,7 @@
         </div>
 
         <div id="painelTrafegoPago" hidden>
-          <div id="avisoMigracaoTrafegoPago" class="aviso-migracao-fluxo" hidden>Falta rodar <strong>js/trafego-pago-setup.sql</strong> no Supabase (SQL Editor) pra liberar o tráfego pago. Até lá, os campos não aparecem na edição do vídeo.</div>
+          <div id="avisoMigracaoTrafegoPago" class="aviso-migracao-fluxo" hidden>Falta rodar <strong>js/direitos-extensao-setup.sql</strong> no Supabase (SQL Editor) pra liberar o botão de renovar o direito de uso direto por aqui.</div>
           <div class="topo-quadro" style="margin-bottom:18px;">
             <div>
               <h2 style="margin-bottom:2px;">Tráfego Pago</h2>
@@ -3478,7 +3500,6 @@
             <div class="cartao-fluxo entradas">
               <span class="rotulo-cartao-fluxo">Ativos</span>
               <span class="valor-cartao-fluxo" id="trafegoAtivosQtd">0</span>
-              <span class="nota-cartao-fluxo" id="trafegoAtivosValor">R$ 0,00</span>
             </div>
             <div class="cartao-fluxo pendente">
               <span class="rotulo-cartao-fluxo">Vencendo (30d)</span>
@@ -3500,7 +3521,7 @@
           <div class="tabela-cheia-wrap" style="height:auto; max-height:none;">
             <table class="tabela-contratos" id="tabelaTrafegoPago">
               <thead>
-                <tr><th>Vídeo</th><th>Marca</th><th>Início</th><th>Vencimento</th><th>Valor</th><th>Status</th></tr>
+                <tr><th>Vídeo</th><th>Marca</th><th>Início</th><th>Vencimento</th><th>Status</th></tr>
               </thead>
               <tbody id="corpoTrafegoPago"></tbody>
             </table>
@@ -3529,6 +3550,26 @@
       <div class="cartao">
         <h2>News</h2>
         <p class="texto-vazio">Em construção.</p>
+      </div>
+    </section>
+    <section id="painel-cc-afiliados" class="painel-aba" hidden>
+      <div class="painel-quadro-secao">
+        <div class="topo-quadro">
+          <div>
+            <h2 style="margin-bottom:0;">Afiliados</h2>
+          </div>
+          <div class="acoes-topo-quadro">
+            <button type="button" class="btn-novo-card" id="btnNovoAfiliado">+ Novo afiliado</button>
+          </div>
+        </div>
+        <div class="tabela-cheia-wrap">
+          <table class="tabela-contratos" id="tabelaAfiliados">
+            <thead>
+              <tr><th>Marca</th><th>Link de afiliado</th><th>Cupom</th><th>Observações</th></tr>
+            </thead>
+            <tbody id="corpoTabelaAfiliados"></tbody>
+          </table>
+        </div>
       </div>
     </section>
   </main>
@@ -3596,7 +3637,12 @@
           </div>
           <div class="prop-limpa">
             <span class="rotulo-limpo">Direitos autorais</span>
-            <span class="valor-limpo" id="valorDireitosCard">—</span>
+            <div class="controle-data-acao">
+              <button type="button" class="btn-icone-linha" id="btnRenovarDireitosCard" title="Renovar direito de uso" hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
+              </button>
+              <span class="valor-limpo" id="valorDireitosCard">—</span>
+            </div>
           </div>
           <div class="prop-limpa" id="propPrioridadeCard">
             <span class="rotulo-limpo">Prioridade</span>
@@ -3622,22 +3668,6 @@
               </button>
               <input type="date" class="input-limpo" id="campoEnviadoCard">
             </div>
-          </div>
-          <div class="prop-limpa">
-            <span class="rotulo-limpo">Tráfego pago</span>
-            <label class="chave-liga"><input type="checkbox" id="campoTrafegoPagoAtivo"><span class="trilho-chave"></span></label>
-          </div>
-          <div class="prop-limpa" id="propTrafegoPagoInicio" hidden>
-            <span class="rotulo-limpo">Início do direito</span>
-            <input type="date" id="campoTrafegoPagoInicio" class="input-limpo">
-          </div>
-          <div class="prop-limpa" id="propTrafegoPagoFim" hidden>
-            <span class="rotulo-limpo">Vencimento do direito</span>
-            <input type="date" id="campoTrafegoPagoFim" class="input-limpo">
-          </div>
-          <div class="prop-limpa" id="propTrafegoPagoValor" hidden>
-            <span class="rotulo-limpo">Valor pago</span>
-            <input type="number" min="0" step="0.01" id="campoTrafegoPagoValor" class="input-limpo" placeholder="0,00">
           </div>
         </div>
 
@@ -4101,42 +4131,43 @@
   <div class="modal-quadro">
     <h3 id="tituloDespesaEmpresa">Nova despesa da empresa</h3>
 
-    <div class="lanc-linha">
-      <input type="text" id="campoDespesaEmpresaNome" class="lanc-input" placeholder="Nome da despesa">
+    <div class="prop-limpa">
+      <span class="rotulo-limpo">Nome</span>
+      <input type="text" id="campoDespesaEmpresaNome" class="input-limpo" autocomplete="off" placeholder="Nome da despesa">
     </div>
 
-    <div class="lanc-linha">
-      <span class="lanc-rotulo">Categoria</span>
-      <select id="campoDespesaEmpresaCategoria" class="lanc-input" style="max-width:180px;"></select>
+    <div class="prop-limpa">
+      <span class="rotulo-limpo">Categoria</span>
+      <select id="campoDespesaEmpresaCategoria" class="input-limpo"></select>
     </div>
 
-    <div class="lanc-linha" id="linhaDespesaEmpresaFixa">
-      <span class="lanc-rotulo">Despesa fixa</span>
+    <div class="prop-limpa" id="linhaDespesaEmpresaFixa">
+      <span class="rotulo-limpo">Despesa fixa</span>
       <label class="chave-liga"><input type="checkbox" id="campoDespesaEmpresaFixa"><span class="trilho-chave"></span></label>
     </div>
-    <div class="lanc-linha" id="linhaDespesaEmpresaFixaAte" hidden>
-      <span class="lanc-rotulo">Lançar todo mês até</span>
-      <input type="date" id="campoDespesaEmpresaFixaAte" class="lanc-input" style="max-width:150px;">
+    <div class="prop-limpa" id="linhaDespesaEmpresaFixaAte" hidden>
+      <span class="rotulo-limpo">Lançar todo mês até</span>
+      <input type="date" id="campoDespesaEmpresaFixaAte" class="input-limpo">
     </div>
 
-    <div class="lanc-linha lanc-valor">
-      <span class="lanc-prefixo" id="rotuloDespesaEmpresaValor">R$</span>
-      <input type="number" min="0" step="0.01" id="campoDespesaEmpresaValor" class="lanc-input lanc-input-grande" placeholder="0,00">
+    <div class="prop-limpa">
+      <span class="rotulo-limpo" id="rotuloDespesaEmpresaValor">Valor (R$)</span>
+      <input type="number" min="0" step="0.01" id="campoDespesaEmpresaValor" class="input-limpo" placeholder="0,00">
     </div>
     <p class="texto-pequeno" id="notaDespesaEmpresaValor" style="margin:-8px 0 4px;" hidden></p>
 
     <div id="blocoDespesaEmpresaInfra" hidden>
-      <div class="lanc-linha">
-        <span class="lanc-rotulo">Tempo estimado de uso (meses)</span>
-        <input type="number" min="1" step="1" id="campoDespesaEmpresaInfraMeses" class="lanc-input" style="max-width:90px; text-align:right;">
+      <div class="prop-limpa">
+        <span class="rotulo-limpo">Tempo estimado de uso (meses)</span>
+        <input type="number" min="1" step="1" id="campoDespesaEmpresaInfraMeses" class="input-limpo">
       </div>
-      <div class="lanc-linha">
-        <span class="lanc-rotulo">Depreciação (por mês)</span>
-        <span class="lanc-input" id="campoDespesaEmpresaDepreciacao" style="max-width:140px; text-align:right; color:var(--texto-suave);">R$ 0,00</span>
+      <div class="prop-limpa">
+        <span class="rotulo-limpo">Depreciação (por mês)</span>
+        <span class="valor-limpo" id="campoDespesaEmpresaDepreciacao">R$ 0,00</span>
       </div>
-      <div class="lanc-linha" id="linhaDespesaEmpresaUso" hidden>
-        <span class="lanc-rotulo">Uso</span>
-        <span class="lanc-input" id="campoDespesaEmpresaUso" style="max-width:100px; text-align:right; color:var(--texto-suave);">—</span>
+      <div class="prop-limpa" id="linhaDespesaEmpresaUso" hidden>
+        <span class="rotulo-limpo">Uso</span>
+        <span class="valor-limpo" id="campoDespesaEmpresaUso">—</span>
       </div>
     </div>
 
@@ -4157,24 +4188,25 @@
   <div class="modal-quadro">
     <h3 id="tituloNovoFechamento">Novo fechamento</h3>
 
-    <div class="lanc-linha">
-      <input type="text" id="campoFechamentoNome" class="lanc-input" placeholder="Nome / marca">
+    <div class="prop-limpa">
+      <span class="rotulo-limpo">Nome / marca</span>
+      <input type="text" id="campoFechamentoNome" class="input-limpo" autocomplete="off">
     </div>
-    <div class="lanc-linha">
-      <span class="lanc-rotulo">Data de fechamento</span>
-      <input type="date" id="campoFechamentoData" class="lanc-input" style="max-width:150px;">
+    <div class="prop-limpa">
+      <span class="rotulo-limpo">Data de fechamento</span>
+      <input type="date" id="campoFechamentoData" class="input-limpo">
     </div>
-    <div class="lanc-linha lanc-valor">
-      <span class="lanc-prefixo">R$</span>
-      <input type="number" min="0" step="0.01" id="campoFechamentoValor" class="lanc-input lanc-input-grande" placeholder="0,00">
+    <div class="prop-limpa">
+      <span class="rotulo-limpo">Valor (R$)</span>
+      <input type="number" min="0" step="0.01" id="campoFechamentoValor" class="input-limpo" placeholder="0,00">
     </div>
-    <div class="lanc-linha">
-      <span class="lanc-rotulo">Emissão de NF</span>
+    <div class="prop-limpa">
+      <span class="rotulo-limpo">Emissão de NF</span>
       <label class="chave-liga"><input type="checkbox" id="campoFechamentoNf"><span class="trilho-chave"></span></label>
     </div>
-    <div class="lanc-linha" id="linhaFechamentoNfTaxa" hidden>
-      <span class="lanc-rotulo">Taxa da NF (%)</span>
-      <input type="number" min="0" step="0.1" id="campoFechamentoNfTaxa" class="lanc-input" style="max-width:90px; text-align:right;" value="6">
+    <div class="prop-limpa" id="linhaFechamentoNfTaxa" hidden>
+      <span class="rotulo-limpo">Taxa da NF (%)</span>
+      <input type="number" min="0" step="0.1" id="campoFechamentoNfTaxa" class="input-limpo" value="6">
     </div>
 
     <div class="acoes-modal-quadro">
@@ -4194,26 +4226,60 @@
   </div>
 </div>
 
+<!-- ===================== MODAL: NOVO/EDITAR AFILIADO ===================== -->
+<div class="overlay-modal" id="overlayAfiliado" hidden>
+  <div class="modal-quadro">
+    <h3 id="tituloAfiliado">Novo afiliado</h3>
+
+    <div class="prop-limpa">
+      <span class="rotulo-limpo">Nome da marca</span>
+      <input type="text" id="campoAfiliadoMarca" class="input-limpo" autocomplete="off" placeholder="Ex: Amazon, Shopee...">
+    </div>
+    <div class="prop-limpa">
+      <span class="rotulo-limpo">Link de afiliado</span>
+      <input type="url" id="campoAfiliadoLink" class="input-limpo" autocomplete="off" placeholder="https://...">
+    </div>
+    <div class="prop-limpa">
+      <span class="rotulo-limpo">Cupom de desconto</span>
+      <input type="text" id="campoAfiliadoCupom" class="input-limpo" autocomplete="off" placeholder="Ex: UGCONTROL10">
+    </div>
+    <div class="prop-limpa">
+      <span class="rotulo-limpo rotulo-descricao">Observações</span>
+      <textarea id="campoAfiliadoObs" class="textarea-limpa" rows="3" placeholder="Comissão, regras, prazos..."></textarea>
+    </div>
+
+    <div class="acoes-modal-quadro">
+      <button type="button" class="btn-excluir-quadro" id="btnExcluirAfiliado" hidden>Excluir</button>
+      <span style="flex-grow:1"></span>
+      <button type="button" class="btn-cancelar-quadro" id="btnCancelarAfiliado">Cancelar</button>
+      <button type="button" class="btn-salvar-quadro" id="btnSalvarAfiliado">Adicionar</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===================== MODAL: NOVO/EDITAR VÍDEO DO PORTFÓLIO ===================== -->
 <div class="overlay-modal" id="overlayVideoPortfolio" hidden>
   <div class="modal-quadro">
     <h3 id="tituloVideoPortfolio">Adicionar vídeo</h3>
 
-    <div class="lanc-linha">
-      <input type="text" id="campoVideoPfMarca" class="lanc-input" placeholder="Marca">
+    <div class="prop-limpa">
+      <span class="rotulo-limpo">Marca</span>
+      <input type="text" id="campoVideoPfMarca" class="input-limpo" autocomplete="off">
     </div>
-    <div class="lanc-linha">
-      <input type="text" id="campoVideoPfConteudo" class="lanc-input" placeholder="Conteúdo (opcional, ex.: Reforma)">
+    <div class="prop-limpa">
+      <span class="rotulo-limpo">Conteúdo (opcional)</span>
+      <input type="text" id="campoVideoPfConteudo" class="input-limpo" autocomplete="off" placeholder="Ex.: Reforma">
     </div>
-    <div class="lanc-linha">
-      <input type="url" id="campoVideoPfLink" class="lanc-input" placeholder="Link do YouTube (shorts, watch ou youtu.be)">
+    <div class="prop-limpa">
+      <span class="rotulo-limpo">Link do YouTube</span>
+      <input type="url" id="campoVideoPfLink" class="input-limpo" autocomplete="off" placeholder="Shorts, watch ou youtu.be">
     </div>
-    <div class="lanc-linha">
-      <span class="lanc-rotulo">Nicho</span>
-      <select id="campoVideoPfNicho" class="lanc-input" style="max-width:220px;"></select>
+    <div class="prop-limpa">
+      <span class="rotulo-limpo">Nicho</span>
+      <select id="campoVideoPfNicho" class="input-limpo"></select>
     </div>
-    <div class="lanc-linha">
-      <span class="lanc-rotulo">Visível no site</span>
+    <div class="prop-limpa">
+      <span class="rotulo-limpo">Visível no site</span>
       <label class="chave-liga"><input type="checkbox" id="campoVideoPfVisivel" checked><span class="trilho-chave"></span></label>
     </div>
 
@@ -4447,6 +4513,7 @@
     "cc-insights": "Insights",
     "cc-criacao": "Criação",
     "cc-news": "News",
+    "cc-afiliados": "Afiliados",
   };
 
   botoesNav.forEach((botao) => {
@@ -4646,7 +4713,7 @@
   let etiquetasCache = [];
   let subtarefasCache = [];
   let producaoAvancadaDisponivel = true;
-  let migracaoTrafegoPagoOk = true; // atualizado em recarregarQuadro()
+  let migracaoDireitosExtensaoOk = true; // atualizado em recarregarQuadro()
 
   // Fases do quadro (js/quadro-colunas-setup.sql) — tratadas como parte
   // essencial do quadro (assim como quadro_cards): sem elas não tem como
@@ -4670,9 +4737,9 @@
     try {
       [quadroCache, colunasCache] = await Promise.all([buscarTudo("quadro_cards"), buscarColunas()]);
       quadroDisponivel = true;
-      migracaoTrafegoPagoOk = quadroCache[0] ? "trafego_pago_ativo" in quadroCache[0] : true;
+      migracaoDireitosExtensaoOk = quadroCache[0] ? "direitos_extensao_dias" in quadroCache[0] : true;
       const avisoTrafego = document.getElementById("avisoMigracaoTrafegoPago");
-      if (avisoTrafego) avisoTrafego.hidden = migracaoTrafegoPagoOk;
+      if (avisoTrafego) avisoTrafego.hidden = migracaoDireitosExtensaoOk;
     } catch (erro) {
       quadroDisponivel = false;
       console.error(erro);
@@ -5435,13 +5502,22 @@
     return card.prazo ? new Date(card.prazo + "T00:00:00") : null;
   }
 
-  function calcularDireitosAutorais(card, contrato) {
+  // Base pura (sem extensão de renovação) — usada só pra calcular a
+  // diferença em dias quando alguém escolhe uma data exata no popover de
+  // renovação, e assim converter isso numa extensão equivalente.
+  function calcularDireitosAutoraisBase(card, contrato) {
     if (card.concluido_em && contrato && contrato.direito_uso_meses) {
       const data = new Date(card.concluido_em);
       data.setMonth(data.getMonth() + Number(contrato.direito_uso_meses));
       return data;
     }
     return null;
+  }
+
+  function calcularDireitosAutorais(card, contrato) {
+    const data = calcularDireitosAutoraisBase(card, contrato);
+    if (data && card.direitos_extensao_dias) data.setDate(data.getDate() + Number(card.direitos_extensao_dias));
+    return data;
   }
 
   function calcularSemaforo(dataVencimento) {
@@ -5636,6 +5712,7 @@
   const valorVencimentoCard = document.getElementById("valorVencimentoCard");
   const campoPrazoCard = document.getElementById("campoPrazoCard");
   const valorDireitosCard = document.getElementById("valorDireitosCard");
+  const btnRenovarDireitosCard = document.getElementById("btnRenovarDireitosCard");
   const propPrioridadeCard = document.getElementById("propPrioridadeCard");
   const seloSemaforoCard = document.getElementById("seloSemaforoCard");
   const textoSemaforoCard = document.getElementById("textoSemaforoCard");
@@ -5643,20 +5720,6 @@
   const campoRecebidoCard = document.getElementById("campoRecebidoCard");
   const btnEnviarCard = document.getElementById("btnEnviarCard");
   const campoEnviadoCard = document.getElementById("campoEnviadoCard");
-  const campoTrafegoPagoAtivo = document.getElementById("campoTrafegoPagoAtivo");
-  const propTrafegoPagoInicio = document.getElementById("propTrafegoPagoInicio");
-  const campoTrafegoPagoInicio = document.getElementById("campoTrafegoPagoInicio");
-  const propTrafegoPagoFim = document.getElementById("propTrafegoPagoFim");
-  const campoTrafegoPagoFim = document.getElementById("campoTrafegoPagoFim");
-  const propTrafegoPagoValor = document.getElementById("propTrafegoPagoValor");
-  const campoTrafegoPagoValor = document.getElementById("campoTrafegoPagoValor");
-  function atualizarCamposTrafegoPagoCard() {
-    const ativo = campoTrafegoPagoAtivo.checked;
-    propTrafegoPagoInicio.hidden = !ativo;
-    propTrafegoPagoFim.hidden = !ativo;
-    propTrafegoPagoValor.hidden = !ativo;
-  }
-  campoTrafegoPagoAtivo.addEventListener("change", atualizarCamposTrafegoPagoCard);
   const btnConcluirCard = document.getElementById("btnConcluirCard");
   const campoDescricaoCard = document.getElementById("campoDescricaoCard");
   const listaSubtarefasCard = document.getElementById("listaSubtarefasCard");
@@ -5775,6 +5838,7 @@
 
     const direitos = calcularDireitosAutorais(base, contrato);
     valorDireitosCard.textContent = direitos ? direitos.toLocaleDateString("pt-BR") : "—";
+    btnRenovarDireitosCard.hidden = !direitos || !migracaoDireitosExtensaoOk;
 
     const semaforo = calcularSemaforo(vencimento);
     seloSemaforoCard.className = "selo-semaforo" + (semaforo ? " semaforo-" + semaforo : "");
@@ -5843,6 +5907,149 @@
 
   btnRecebidoCard.addEventListener("click", () => salvarRecebidoEm(dataDeHojeValor()));
   campoRecebidoCard.addEventListener("change", () => salvarRecebidoEm(campoRecebidoCard.value));
+
+  // ---------------------------------------------------------------
+  // Renovar direito de uso: soma dias por cima da data que "Direitos
+  // autorais" já calcula sozinha (concluído_em + meses do contrato).
+  // Cada clique numa opção do popover é cumulativo.
+  // ---------------------------------------------------------------
+  const SVG_RENOVACAO =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>';
+  const OPCOES_RENOVACAO_DIREITOS = [
+    { rotulo: "+30 dias", dias: 30 },
+    { rotulo: "+60 dias", dias: 60 },
+    { rotulo: "+90 dias", dias: 90 },
+    { rotulo: "+6 meses", dias: 182 },
+    { rotulo: "+12 meses", dias: 365 },
+  ];
+  let popoverRenovacaoAberto = false;
+
+  function fecharPopoverRenovacao() {
+    const existente = document.getElementById("popoverRenovacaoFlutuante");
+    if (existente) existente.remove();
+    popoverRenovacaoAberto = false;
+  }
+
+  // Recebe o id do card em vez de assumir cardEmEdicaoObjeto porque esse
+  // mesmo botão/popover é usado tanto no modal (Detalhes) quanto direto na
+  // linha da tabela de Tráfego Pago (Campanhas) — os dois ficam
+  // sincronizados por lerem/gravarem o mesmo card no banco. novoValor é
+  // sempre o total final de dias de extensão (pode ser negativo).
+  async function persistirExtensaoDireitos(cardId, novoValor) {
+    try {
+      const { error } = await Auth.sb
+        .from("quadro_cards")
+        .update({ direitos_extensao_dias: novoValor, updated_at: new Date().toISOString() })
+        .eq("id", cardId);
+      if (error) throw error;
+      const idx = quadroCache.findIndex((c) => c.id === cardId);
+      if (idx !== -1) quadroCache[idx] = { ...quadroCache[idx], direitos_extensao_dias: novoValor };
+      if (cardEmEdicaoObjeto && cardEmEdicaoObjeto.id === cardId) {
+        cardEmEdicaoObjeto.direitos_extensao_dias = novoValor;
+        atualizarCamposDerivadosCard();
+      }
+      renderizarQuadro();
+      const painelTrafego = document.getElementById("painelTrafegoPago");
+      if (painelTrafego && !painelTrafego.hidden) renderizarTrafegoPago();
+    } catch (erro) {
+      alert("Não foi possível atualizar o direito de uso.");
+      console.error(erro);
+    }
+  }
+
+  // +30d/+60d/etc. são cumulativos (somam ao que já tinha).
+  async function salvarExtensaoDireitos(cardId, diasAdicionais) {
+    const cardAtual = quadroCache.find((c) => c.id === cardId);
+    if (!cardAtual) return;
+    const atual = Number(cardAtual.direitos_extensao_dias) || 0;
+    const novoValor = diasAdicionais === null ? 0 : atual + diasAdicionais;
+    await persistirExtensaoDireitos(cardId, novoValor);
+  }
+
+  function abrirPopoverRenovacao(cardId, ancoraEl) {
+    fecharPopoverEtapa();
+    fecharPopoverRenovacao();
+    const cardAtual = quadroCache.find((c) => c.id === cardId);
+    if (!cardAtual) return;
+    const contratoAtual = cardAtual.contrato_id ? contratosCache.find((k) => k.id === cardAtual.contrato_id) : null;
+    const baseAuto = calcularDireitosAutoraisBase(cardAtual, contratoAtual);
+    const efetiva = calcularDireitosAutorais(cardAtual, contratoAtual);
+    const extensaoAtual = Number(cardAtual.direitos_extensao_dias) || 0;
+    const pop = document.createElement("div");
+    pop.id = "popoverRenovacaoFlutuante";
+    pop.className = "popover-etapa";
+    pop.innerHTML = `
+      <span class="rotulo-limpo">Renovar direito de uso</span>
+      <input type="date" class="input-limpo" id="campoDataManualRenovacao" style="width:100%; margin-bottom:10px;" value="${
+        efetiva ? formatarDataISO(efetiva) : ""
+      }">
+      <div class="lista-sugestoes-etiqueta">
+        ${OPCOES_RENOVACAO_DIREITOS.map((o) => `<button type="button" class="item-sugestao-etiqueta" data-renovar-dias="${o.dias}">${o.rotulo}</button>`).join("")}
+      </div>
+      ${
+        extensaoAtual
+          ? `<p class="texto-pequeno" style="margin:10px 2px 0;">Extensão atual: ${extensaoAtual > 0 ? "+" : ""}${extensaoAtual} dias.
+             <button type="button" class="btn-editar-fatura" data-remover-extensao>Voltar ao automático</button></p>`
+          : ""
+      }
+    `;
+    document.body.appendChild(pop);
+    posicionarPopover(pop, ancoraEl);
+    popoverRenovacaoAberto = true;
+
+    // Escolher uma data exata (ou limpar o campo) vira a extensão
+    // equivalente em dias em cima da data automática (concluído_em +
+    // meses do contrato) — mesmo mecanismo dos botões +30d etc.
+    const campoData = pop.querySelector("#campoDataManualRenovacao");
+    campoData.addEventListener("click", (evento) => evento.stopPropagation());
+    campoData.addEventListener("change", async () => {
+      if (!campoData.value) {
+        await persistirExtensaoDireitos(cardId, 0);
+      } else if (baseAuto) {
+        const diasDiferenca = Math.round((dataDoIso(campoData.value) - dataDoIso(formatarDataISO(baseAuto))) / 86400000);
+        await persistirExtensaoDireitos(cardId, diasDiferenca);
+      }
+      fecharPopoverRenovacao();
+    });
+
+    pop.addEventListener("click", async (evento) => {
+      evento.stopPropagation();
+      const opcao = evento.target.closest("[data-renovar-dias]");
+      if (opcao) {
+        await salvarExtensaoDireitos(cardId, Number(opcao.dataset.renovarDias));
+        fecharPopoverRenovacao();
+        return;
+      }
+      if (evento.target.closest("[data-remover-extensao]")) {
+        await persistirExtensaoDireitos(cardId, 0);
+        fecharPopoverRenovacao();
+      }
+    });
+  }
+
+  function alternarPopoverRenovacaoDoCardAberto(ancoraEl) {
+    if (!cardEmEdicaoObjeto || btnRenovarDireitosCard.hidden) return;
+    if (popoverRenovacaoAberto) fecharPopoverRenovacao();
+    else abrirPopoverRenovacao(cardEmEdicaoObjeto.id, ancoraEl);
+  }
+
+  btnRenovarDireitosCard.addEventListener("click", (evento) => {
+    evento.stopPropagation();
+    alternarPopoverRenovacaoDoCardAberto(btnRenovarDireitosCard);
+  });
+  valorDireitosCard.style.cursor = "pointer";
+  valorDireitosCard.addEventListener("click", (evento) => {
+    evento.stopPropagation();
+    alternarPopoverRenovacaoDoCardAberto(valorDireitosCard);
+  });
+
+  document.addEventListener("click", (evento) => {
+    if (!popoverRenovacaoAberto) return;
+    const pop = document.getElementById("popoverRenovacaoFlutuante");
+    if (pop && pop.contains(evento.target)) return;
+    if (evento.target.closest("#btnRenovarDireitosCard, #valorDireitosCard")) return;
+    fecharPopoverRenovacao();
+  });
 
   // "Enviar" manda o vídeo pra "Aguardando Aprovação" e grava enviado_em —
   // é esse campo que conta como "entregue" no Dashboard. Roteiro, Gravação
@@ -6337,12 +6544,6 @@
 
     campoFormatoCard.value = card && card.formato ? card.formato : "ugc";
 
-    campoTrafegoPagoAtivo.checked = !!(card && card.trafego_pago_ativo);
-    campoTrafegoPagoInicio.value = card && card.trafego_pago_inicio ? card.trafego_pago_inicio : "";
-    campoTrafegoPagoFim.value = card && card.trafego_pago_fim ? card.trafego_pago_fim : "";
-    campoTrafegoPagoValor.value = card && card.trafego_pago_valor != null ? card.trafego_pago_valor : "";
-    atualizarCamposTrafegoPagoCard();
-
     atualizarCamposDerivadosCard();
     renderizarSubtarefasModal();
 
@@ -6371,6 +6572,7 @@
     voltarModalPara = null;
     criandoCampanhaParaVideo = false;
     fecharPopoverEtapa();
+    fecharPopoverRenovacao();
   }
 
   // ---------------------------------------------------------------
@@ -6573,12 +6775,6 @@
       updated_at: new Date().toISOString(),
     };
     if (!campoPrazoCard.hidden) dados.prazo = campoPrazoCard.value || null;
-    if (migracaoTrafegoPagoOk) {
-      dados.trafego_pago_ativo = campoTrafegoPagoAtivo.checked;
-      dados.trafego_pago_inicio = campoTrafegoPagoAtivo.checked ? campoTrafegoPagoInicio.value || null : null;
-      dados.trafego_pago_fim = campoTrafegoPagoAtivo.checked ? campoTrafegoPagoFim.value || null : null;
-      dados.trafego_pago_valor = campoTrafegoPagoAtivo.checked ? Number(campoTrafegoPagoValor.value) || null : null;
-    }
 
     try {
       if (idCardEmEdicao) {
@@ -6934,7 +7130,6 @@
     valor: { rotulo: "Valor" },
     direito_uso_meses: { rotulo: "Direito de uso" },
     pagamento: { rotulo: "Pagamento" },
-    anexo: { rotulo: "Anexo" },
   };
   const ORDEM_COLUNAS_CAMPANHAS_PADRAO = [
     "escopo",
@@ -6945,7 +7140,6 @@
     "valor",
     "direito_uso_meses",
     "pagamento",
-    "anexo",
   ];
   const CHAVE_COLUNAS_CAMPANHAS = "painelCampanhasColunas";
   const OPCOES_CAMPO_CAMPANHAS = [
@@ -7067,10 +7261,6 @@
       const texto = pagamentoTextoContrato(k);
       return `<td>${texto ? esc(texto) : "—"}</td>`;
     }
-    if (campo === "anexo") {
-      const anexo = k.anexo_path ? `<a href="#" class="link-anexo" data-abrir-anexo="${k.id}">📎 ${esc(k.anexo_nome || "arquivo")}</a>` : "—";
-      return `<td>${anexo}</td>`;
-    }
     return `<td>—</td>`;
   }
 
@@ -7168,19 +7358,6 @@
     }
   }
 
-  async function abrirAnexoContrato(id) {
-    const contrato = contratosCache.find((k) => k.id === id);
-    if (!contrato || !contrato.anexo_path) return;
-    try {
-      const { data, error } = await Auth.sb.storage.from("contratos").createSignedUrl(contrato.anexo_path, 120);
-      if (error) throw error;
-      window.open(data.signedUrl, "_blank", "noopener");
-    } catch (erro) {
-      alert("Não foi possível abrir o anexo.");
-      console.error(erro);
-    }
-  }
-
   // --- Visualizações rápidas (Em produção / Aguardando pagamento / Finalizadas / Tráfego Pago) ---
   const alternadorCampanhas = document.getElementById("alternadorCampanhas");
   if (alternadorCampanhas) {
@@ -7199,9 +7376,13 @@
   }
 
   // ---------------------------------------------------------------
-  // TRÁFEGO PAGO — direitos de uso em ads por vídeo (quadro_cards),
-  // lançados na aba Detalhes do card. Vencendo = vence dentro de 30 dias;
-  // Vencido = já passou a data; Ativo = o resto (ou sem data de fim).
+  // TRÁFEGO PAGO — direitos de uso em ads por vídeo (quadro_cards).
+  // Extraído automaticamente: todo vídeo concluído com campanha que tem
+  // "Direito de uso (meses)" entra aqui sozinho, sem precisar marcar nada
+  // à mão. Início = concluído_em (quando o direito passa a valer);
+  // Vencimento = a mesma conta de "Direitos autorais" (+ extensão de
+  // renovação, se tiver). Vencendo = vence dentro de 30 dias; Vencido = já
+  // passou a data; Ativo = o resto.
   // ---------------------------------------------------------------
   let filtroTrafegoAtual = "todos";
   let paginaTrafegoPago = 1;
@@ -7217,19 +7398,21 @@
 
   function linhasTrafegoPago() {
     return quadroCache
-      .filter((c) => c.trafego_pago_ativo)
       .map((c) => {
         const contrato = c.contrato_id ? contratosCache.find((k) => k.id === c.contrato_id) : null;
+        const fim = calcularDireitosAutorais(c, contrato);
+        if (!fim) return null;
+        const fimIso = formatarDataISO(fim);
         return {
           id: c.id,
           titulo: c.titulo,
           marca: contrato ? contrato.marca : "—",
-          inicio: c.trafego_pago_inicio,
-          fim: c.trafego_pago_fim,
-          valor: Number(c.trafego_pago_valor) || 0,
-          status: statusTrafegoPago(c.trafego_pago_fim),
+          inicio: c.concluido_em ? formatarDataISO(new Date(c.concluido_em)) : null,
+          fim: fimIso,
+          status: statusTrafegoPago(fimIso),
         };
       })
+      .filter(Boolean)
       .sort((a, b) => (a.fim || "9999").localeCompare(b.fim || "9999"));
   }
 
@@ -7243,7 +7426,6 @@
 
     const texto = (id, v) => (document.getElementById(id).textContent = v);
     texto("trafegoAtivosQtd", ativos.length);
-    texto("trafegoAtivosValor", formatarMoeda(ativos.reduce((s, l) => s + l.valor, 0)));
     texto("trafegoVencendoQtd", vencendo.length);
     texto("trafegoVencidosQtd", vencidos.length);
     texto("contTrafegoAtivos", ativos.length);
@@ -7255,7 +7437,7 @@
     const blocoVerMais = document.getElementById("blocoVerMaisTrafego");
 
     if (!filtradas.length) {
-      corpo.innerHTML = `<tr><td colspan="6" class="texto-vazio">Nenhum registro. Adicione direitos de tráfego pago ao criar/editar um job.</td></tr>`;
+      corpo.innerHTML = `<tr><td colspan="5" class="texto-vazio">Nenhum registro. Vídeos com campanha (com Direito de uso definido) já concluídos aparecem aqui sozinhos.</td></tr>`;
       blocoVerMais.hidden = true;
       return;
     }
@@ -7270,8 +7452,16 @@
           <td>${esc(l.titulo)}</td>
           <td>${esc(l.marca)}</td>
           <td>${formatarDataBr(l.inicio)}</td>
-          <td>${formatarDataBr(l.fim)}</td>
-          <td>${formatarMoeda(l.valor)}</td>
+          <td>
+            <span class="controle-data-acao" style="display:inline-flex;">
+              ${
+                migracaoDireitosExtensaoOk
+                  ? `<button type="button" class="btn-icone-linha compacto" data-renovar-trafego="${l.id}" title="Renovar direito de uso">${SVG_RENOVACAO}</button>
+                     <span data-renovar-trafego="${l.id}" style="cursor:pointer;">${formatarDataBr(l.fim)}</span>`
+                  : formatarDataBr(l.fim)
+              }
+            </span>
+          </td>
           <td><span class="pilula-status ${classe}">${rotulo}</span></td>
         </tr>`;
       })
@@ -7301,6 +7491,14 @@
   const corpoTrafegoPago = document.getElementById("corpoTrafegoPago");
   if (corpoTrafegoPago) {
     corpoTrafegoPago.addEventListener("click", (evento) => {
+      const botaoRenovar = evento.target.closest("[data-renovar-trafego]");
+      if (botaoRenovar) {
+        evento.stopPropagation();
+        const cardId = botaoRenovar.dataset.renovarTrafego;
+        if (popoverRenovacaoAberto) fecharPopoverRenovacao();
+        else abrirPopoverRenovacao(cardId, botaoRenovar);
+        return;
+      }
       const linha = evento.target.closest("tr[data-abrir-video-trafego]");
       if (!linha) return;
       const card = quadroCache.find((c) => c.id === linha.dataset.abrirVideoTrafego);
@@ -7526,13 +7724,6 @@
     if (gerar) {
       evento.stopPropagation();
       await gerarCardsDoContrato(gerar.dataset.gerarCards);
-      return;
-    }
-    const anexo = evento.target.closest("[data-abrir-anexo]");
-    if (anexo) {
-      evento.preventDefault();
-      evento.stopPropagation();
-      await abrirAnexoContrato(anexo.dataset.abrirAnexo);
       return;
     }
     const nomeCel = evento.target.closest(".celula-nome-clicavel");
@@ -11680,8 +11871,7 @@
     try {
       await salvarEmpresaAtual();
       await recarregarComercial();
-      if (contextoRaizModal === "marca") fecharModalCard();
-      else sincronizarAbasRelacionadas();
+      fecharModalCard();
     } catch (erro) {
       alert(
         erro && erro.code === "23505"
@@ -14652,6 +14842,123 @@
     renderizarOportunidades();
   }
 
+  // ---------------------------------------------------------------
+  // AFILIADOS: marcas com link de afiliado e/ou cupom de desconto
+  // (js/afiliados-setup.sql)
+  // ---------------------------------------------------------------
+  let afiliadosCache = [];
+  let afiliadosDisponivel = true;
+
+  async function recarregarAfiliados() {
+    try {
+      afiliadosCache = await buscarTudo("afiliados");
+      afiliadosDisponivel = true;
+    } catch (erro) {
+      afiliadosDisponivel = false;
+      console.error(erro);
+    }
+    renderizarAfiliados();
+  }
+
+  function renderizarAfiliados() {
+    const corpo = document.getElementById("corpoTabelaAfiliados");
+    if (!corpo) return;
+    if (!afiliadosDisponivel) {
+      corpo.innerHTML = `<tr><td colspan="4" class="texto-vazio">Ainda falta rodar js/afiliados-setup.sql no Supabase.</td></tr>`;
+      return;
+    }
+    if (!afiliadosCache.length) {
+      corpo.innerHTML = `<tr><td colspan="4" class="texto-vazio">Nenhum afiliado cadastrado ainda.</td></tr>`;
+      return;
+    }
+    const ordenados = [...afiliadosCache].sort((a, b) => a.marca.localeCompare(b.marca, "pt-BR"));
+    corpo.innerHTML = ordenados
+      .map(
+        (a) => `
+      <tr data-id="${a.id}">
+        <td>${esc(a.marca)}</td>
+        <td>${a.link ? `<a href="${esc(a.link)}" target="_blank" rel="noopener">${esc(a.link)}</a>` : "—"}</td>
+        <td>${a.cupom ? esc(a.cupom) : "—"}</td>
+        <td>${a.observacoes ? esc(a.observacoes) : "—"}</td>
+      </tr>`
+      )
+      .join("");
+  }
+
+  const overlayAfiliado = document.getElementById("overlayAfiliado");
+  let afiliadoEmEdicao = null;
+  function abrirAfiliado(a) {
+    afiliadoEmEdicao = a || null;
+    document.getElementById("tituloAfiliado").textContent = a ? "Editar afiliado" : "Novo afiliado";
+    document.getElementById("campoAfiliadoMarca").value = a ? a.marca || "" : "";
+    document.getElementById("campoAfiliadoLink").value = a ? a.link || "" : "";
+    document.getElementById("campoAfiliadoCupom").value = a ? a.cupom || "" : "";
+    document.getElementById("campoAfiliadoObs").value = a ? a.observacoes || "" : "";
+    document.getElementById("btnExcluirAfiliado").hidden = !a;
+    document.getElementById("btnSalvarAfiliado").textContent = a ? "Salvar" : "Adicionar";
+    overlayAfiliado.hidden = false;
+  }
+  function fecharAfiliado() {
+    overlayAfiliado.hidden = true;
+    afiliadoEmEdicao = null;
+  }
+  const btnNovoAfiliado = document.getElementById("btnNovoAfiliado");
+  if (btnNovoAfiliado) btnNovoAfiliado.addEventListener("click", () => abrirAfiliado(null));
+  document.getElementById("btnCancelarAfiliado").addEventListener("click", fecharAfiliado);
+  overlayAfiliado.addEventListener("click", (evento) => {
+    if (evento.target === overlayAfiliado) fecharAfiliado();
+  });
+  const corpoTabelaAfiliados = document.getElementById("corpoTabelaAfiliados");
+  if (corpoTabelaAfiliados) {
+    corpoTabelaAfiliados.addEventListener("click", (evento) => {
+      if (evento.target.closest("a")) return;
+      const linha = evento.target.closest("tr[data-id]");
+      if (!linha) return;
+      const a = afiliadosCache.find((x) => x.id === linha.dataset.id);
+      if (a) abrirAfiliado(a);
+    });
+  }
+
+  async function salvarAfiliado() {
+    const marca = document.getElementById("campoAfiliadoMarca").value.trim();
+    if (!marca) {
+      alert("Dá o nome da marca.");
+      return;
+    }
+    const dados = {
+      marca,
+      link: document.getElementById("campoAfiliadoLink").value.trim() || null,
+      cupom: document.getElementById("campoAfiliadoCupom").value.trim() || null,
+      observacoes: document.getElementById("campoAfiliadoObs").value.trim() || null,
+      updated_at: new Date().toISOString(),
+    };
+    try {
+      if (afiliadoEmEdicao) {
+        await Auth.sb.from("afiliados").update(dados).eq("id", afiliadoEmEdicao.id);
+      } else {
+        await Auth.sb.from("afiliados").insert(dados);
+      }
+      fecharAfiliado();
+      await recarregarAfiliados();
+    } catch (erro) {
+      alert("Não foi possível salvar. Confira se js/afiliados-setup.sql já rodou no Supabase.");
+      console.error(erro);
+    }
+  }
+  document.getElementById("btnSalvarAfiliado").addEventListener("click", salvarAfiliado);
+  document.getElementById("btnExcluirAfiliado").addEventListener("click", async () => {
+    if (!afiliadoEmEdicao) return;
+    if (!confirm(`Excluir "${afiliadoEmEdicao.marca}"?`)) return;
+    try {
+      await Auth.sb.from("afiliados").delete().eq("id", afiliadoEmEdicao.id);
+      fecharAfiliado();
+      await recarregarAfiliados();
+    } catch (erro) {
+      alert("Não foi possível excluir.");
+      console.error(erro);
+    }
+  });
+
   renderizarTudo();
   carregarCfg();
   recarregarQuadro();
@@ -14659,6 +14966,7 @@
   recarregarComercial();
   recarregarOportunidades();
   recarregarVideosPortfolio();
+  recarregarAfiliados();
 })();
 </script>
 </body>
