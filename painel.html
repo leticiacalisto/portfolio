@@ -929,7 +929,7 @@
     border: 1px solid var(--borda);
     border-radius: 12px;
     padding: 12px 14px;
-    margin-bottom: 10px;
+    margin-bottom: 16px;
     color: var(--grafite);
     cursor: pointer;
     transition: box-shadow .15s ease, transform .15s ease, opacity .15s ease;
@@ -938,9 +938,9 @@
   .card-quadro.arrastando{ opacity: .4; }
   .titulo-card-quadro{
     display:block;
-    font-weight:600;
+    font-weight:700;
     font-size: .86rem;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
   .meta-card-quadro{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
   .chip-card-quadro{
@@ -1286,6 +1286,8 @@
     cursor:pointer;
   }
   .btn-gerar-cards:hover{ background: rgba(58,58,58,0.1); }
+  .btn-gerar-cards.cards-gerados{ border-color:#2e7d4f; color:#fff; background:#2e7d4f; }
+  .btn-gerar-cards.cards-gerados:hover{ background:#256a42; }
 
   /* Tabela de contratos */
   .tabela-scroll{ overflow-x:auto; }
@@ -7298,7 +7300,7 @@
         <tr data-contrato-id="${k.id}">
           <td class="celula-nome-clicavel" data-id="${k.id}"><b style="font-weight:600">${esc(k.marca)}</b></td>
           ${colunasVisiveis.map((c) => celulaContratoHtml(k, c.campo)).join("")}
-          <td><button type="button" class="btn-gerar-cards" data-gerar-cards="${k.id}">Gerar cards</button></td>
+          <td><button type="button" class="btn-gerar-cards${quadroCache.some((c) => c.contrato_id === k.id) ? " cards-gerados" : ""}" data-gerar-cards="${k.id}" title="${quadroCache.some((c) => c.contrato_id === k.id) ? "Cards já gerados no quadro" : "Gerar cards no quadro"}">Gerar cards</button></td>
         </tr>`
       )
       .join("");
@@ -7330,7 +7332,9 @@
       alert("Preencha a quantidade de vídeos do contrato antes de gerar os cards.");
       return;
     }
-    if (!confirm("Isso vai criar " + quantidade + " card(s) para " + contrato.marca + ". Confirmar?")) return;
+    const jaGerados = quadroCache.filter((c) => c.contrato_id === contrato.id).length;
+    const aviso = jaGerados ? "Já existem " + jaGerados + " card(s) gerado(s) para " + contrato.marca + ". Criar mais " + quantidade + " mesmo assim?" : "Isso vai criar " + quantidade + " card(s) para " + contrato.marca + ". Confirmar?";
+    if (!confirm(aviso)) return;
 
     const colunaInicial = colunasCache[0];
     if (!colunaInicial) {
@@ -10834,8 +10838,23 @@
   // oportunidade aberta (quando Lead) ou da produção das campanhas
   // (quando Ativo), pra nunca desalinhar do que já existe em Oportunidades
   // e Produção.
+  // Status da marca é calculado (o valor salvo em empresas.status é ignorado):
+  //  - sem campanha vinculada: Lead (veio de Oportunidades);
+  //  - com campanha cujos cards não estão todos concluídos (ou ainda sem
+  //    cards): Ativo — vale tanto pra quem veio de oportunidade ganha
+  //    quanto pra cadastro direto, e também reativa uma marca Fechada;
+  //  - com campanhas e todos os cards concluídos: Fechado.
+  function statusEfetivoEmpresa(empresa) {
+    const campanhas = contratosCache.filter((k) => k.empresa_id === empresa.id);
+    if (!campanhas.length) return "Lead";
+    return campanhas.some((k) => statusCampanha(k) === "em_producao") ? "Ativo" : "Fechado";
+  }
+
+  // Fase: Lead = etapa da oportunidade aberta; Ativo = Em produção;
+  // Fechado = Concluída.
   function faseDaEmpresa(empresa) {
-    if (empresa.status === "Lead") {
+    const status = statusEfetivoEmpresa(empresa);
+    if (status === "Lead") {
       const abertas = oportunidadesCache.filter((o) => {
         if (o.empresa_id !== empresa.id) return false;
         const etapa = etapaOportunidade(o.etapa_id);
@@ -10845,12 +10864,8 @@
       const etapa = etapaOportunidade(abertas[0].etapa_id);
       return etapa ? etapa.nome : "Sem oportunidade aberta";
     }
-    if (empresa.status === "Ativo") {
-      const idsCampanhas = new Set(contratosCache.filter((k) => k.empresa_id === empresa.id).map((k) => k.id));
-      const final = colunaFinal();
-      const emProducao = quadroCache.some((c) => idsCampanhas.has(c.contrato_id) && (!final || c.coluna_id !== final.id));
-      return emProducao ? "Em produção" : "Standby";
-    }
+    if (status === "Ativo") return "Em produção";
+    if (status === "Fechado") return "Concluída";
     return null;
   }
 
@@ -10902,9 +10917,10 @@
 
   function empresaPassaVisualizacao(empresa) {
     if (visualizacaoMarcas === "todas") return true;
-    if (visualizacaoMarcas === "ativas") return empresa.status === "Ativo";
-    if (visualizacaoMarcas === "lead") return empresa.status === "Lead";
-    if (visualizacaoMarcas === "fechadas") return empresa.status === "Fechado";
+    const status = statusEfetivoEmpresa(empresa);
+    if (visualizacaoMarcas === "ativas") return status === "Ativo";
+    if (visualizacaoMarcas === "lead") return status === "Lead";
+    if (visualizacaoMarcas === "fechadas") return status === "Fechado";
     return true;
   }
 
@@ -10916,7 +10932,7 @@
 
   function valorExibicaoEmpresaCampo(empresa, campo) {
     if (campo === "nome") return empresa.nome || "";
-    if (campo === "status") return empresa.status || "";
+    if (campo === "status") return statusEfetivoEmpresa(empresa) || "";
     if (campo === "fase") return faseDaEmpresa(empresa) || "";
     return empresa[campo] || "";
   }
@@ -11019,7 +11035,7 @@
       return td;
     }
     if (campo === "status") {
-      td.innerHTML = htmlStatusMarca(empresa.status);
+      td.innerHTML = htmlStatusMarca(statusEfetivoEmpresa(empresa));
       return td;
     }
     if (campo === "site") {
