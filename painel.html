@@ -7380,9 +7380,29 @@
     const final = colunaFinal();
     const emProducao = !cards.length || cards.some((c) => !final || c.coluna_id !== final.id);
     if (emProducao) return "em_producao";
-    const parcelas = receitasCache.filter((r) => r.contrato_id === contrato.id && r.tipo === "parcela");
-    const recebido = parcelas.filter((r) => r.status === "Pago").reduce((soma, r) => soma + Number(r.cache || 0), 0);
-    return recebido >= Number(contrato.valor || 0) ? "finalizada" : "aguardando_pagamento";
+    return recebidoDaCampanha(contrato) >= Number(contrato.valor || 0) - 0.005 ? "finalizadas" : "aguardando_pagamento";
+  }
+
+  // Quanto já entrou de uma campanha: parcelas pagas + qualquer outro
+  // recebimento lançado no Fluxo de Caixa ligado à campanha (lançamento
+  // avulso quitado ou com valor pago parcial, e suas parcelas).
+  function recebidoDaCampanha(contrato) {
+    const doContrato = receitasCache.filter((r) => r.contrato_id === contrato.id);
+    const idsAvulsos = new Set(doContrato.filter((r) => r.tipo !== "parcela").map((r) => r.id));
+    const filhosDeAvulsos = receitasCache.filter((r) => r.parent_id && idsAvulsos.has(r.parent_id));
+    let total = 0;
+    doContrato.forEach((r) => {
+      if (r.tipo === "parcela") {
+        if (r.status === "Pago") total += Number(r.cache || 0);
+      } else if (!filhosDeAvulsos.some((f) => f.parent_id === r.id)) {
+        // avulso sem parcelas: pago inteiro ou o valor_pago parcial
+        total += r.status === "Pago" ? Number(r.cache || 0) : Number(r.valor_pago) || 0;
+      }
+    });
+    filhosDeAvulsos.forEach((f) => {
+      if (f.status === "Pago") total += Number(f.cache || 0);
+    });
+    return total;
   }
 
   function pagamentoTextoContrato(contrato) {
