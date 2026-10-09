@@ -2055,7 +2055,12 @@
   @media (max-width: 1000px){ .tarefas-grade{ grid-template-columns: 1fr; } .listas-tarefas-tres{ grid-template-columns: 1fr; } }
 
   /* ================= DASHBOARD ================= */
-  .mes-corrente-dash{ margin:0 0 16px; font-family: var(--fonte-impacto); font-size:1.25rem; font-weight:600; }
+  .mes-corrente-dash{ margin:0; font-family: var(--fonte-impacto); font-size:1.25rem; font-weight:600; }
+  .nav-mes-dash{ display:flex; align-items:center; gap:10px; margin:0 0 16px; flex-wrap:wrap; }
+  .nav-mes-dash button{ background:none; border:1px solid var(--borda); border-radius:8px; width:30px; height:30px; cursor:pointer; color: var(--texto-suave); font-family:inherit; font-size:1rem; }
+  .nav-mes-dash button:hover:not(:disabled){ background: var(--creme); }
+  .nav-mes-dash button:disabled{ opacity:.35; cursor:default; }
+  .nav-mes-dash select{ width:auto; margin-left:6px; font-size:.82rem; }
   .grade-marcadores{ display:grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap:14px; margin-bottom:8px; }
   .grade-marcadores.grade-2{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .grade-marcadores.grade-3{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -2974,7 +2979,12 @@
 
     <!-- ===================== DASHBOARD ===================== -->
     <section id="painel-gp-dashboard" class="painel-aba" hidden>
-      <h2 class="mes-corrente-dash" id="dashMesCorrente"></h2>
+      <div class="nav-mes-dash">
+        <button type="button" id="dashMesAnterior" aria-label="Mês anterior">‹</button>
+        <h2 class="mes-corrente-dash" id="dashMesCorrente"></h2>
+        <button type="button" id="dashMesProximo" aria-label="Próximo mês">›</button>
+        <select id="dashSeletorMes" class="input-limpo" aria-label="Escolher mês"></select>
+      </div>
 
       <h3 class="subtitulo-dash">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,17 10,11 14,15 20,7"/><polyline points="14,7 20,7 20,13"/></svg>
@@ -3808,6 +3818,10 @@
             <span class="rotulo-limpo">Marca</span>
             <input type="text" id="campoMarcaContrato" class="input-limpo" placeholder="Buscar ou criar..." required autocomplete="off">
             <div class="lista-sugestoes-marca" id="listaSugestoesMarca" hidden></div>
+          </div>
+          <div class="prop-limpa">
+            <span class="rotulo-limpo">Nome da campanha</span>
+            <input type="text" id="campoNomeContrato" class="input-limpo" placeholder="Ex: Abril, 10-20, Collab..." autocomplete="off">
           </div>
           <div class="prop-limpa">
             <span class="rotulo-limpo">Qtde de vídeos</span>
@@ -6717,7 +6731,7 @@
     campoContratoCard.innerHTML =
       '<option value="">Nenhuma</option>' +
       contratosCache
-        .map((k) => `<option value="${k.id}">${k.marca}${k.data_assinatura ? " — " + new Date(k.data_assinatura + "T00:00:00").toLocaleDateString("pt-BR") : ""}</option>`)
+        .map((k) => `<option value="${k.id}">${k.marca}${k.nome ? " · " + esc(k.nome) : ""}${k.data_assinatura ? " — " + new Date(k.data_assinatura + "T00:00:00").toLocaleDateString("pt-BR") : ""}</option>`)
         .join("");
   }
 
@@ -7323,6 +7337,7 @@
   // "Marca" é sempre a 1ª coluna, fixa; "Gerar cards" é sempre a última.
   // =================================================================
   const COLUNAS_CAMPANHAS_DEF = {
+    nome: { rotulo: "Campanha" },
     escopo: { rotulo: "Escopo" },
     qtde_videos: { rotulo: "Vídeos" },
     plataforma_agencia: { rotulo: "Plataforma/agência" },
@@ -7333,6 +7348,7 @@
     pagamento: { rotulo: "Pagamento" },
   };
   const ORDEM_COLUNAS_CAMPANHAS_PADRAO = [
+    "nome",
     "escopo",
     "qtde_videos",
     "plataforma_agencia",
@@ -7447,6 +7463,7 @@
   }
 
   function celulaContratoHtml(k, campo) {
+    if (campo === "nome") return celulaEditavel("contratos", k.id, "nome", k.nome, "text");
     if (campo === "escopo") {
       const resumo = k.escopo ? (k.escopo.length > 40 ? k.escopo.slice(0, 40) + "…" : k.escopo) : null;
       return celulaEditavel("contratos", k.id, "escopo", k.escopo, "text", resumo);
@@ -7967,6 +7984,7 @@
   const formContrato = document.getElementById("formContrato");
   const campoMarcaContrato = document.getElementById("campoMarcaContrato");
   const campoEscopoContrato = document.getElementById("campoEscopoContrato");
+  const campoNomeContrato = document.getElementById("campoNomeContrato");
   const campoQtdeVideosContrato = document.getElementById("campoQtdeVideosContrato");
   const campoDireitoUsoContrato = document.getElementById("campoDireitoUsoContrato");
   const seletorPlataformaContrato = document.getElementById("seletorPlataformaContrato");
@@ -8086,6 +8104,7 @@
   // com empresa/contato/serviço/valor herdados dela (ver tratarOportunidadeGanha)
   function preencherFormContrato(contrato, prefill) {
     campoMarcaContrato.value = contrato ? contrato.marca : prefill && prefill.empresa ? prefill.empresa.nome : "";
+    campoNomeContrato.value = (contrato && contrato.nome) || "";
     campoEscopoContrato.value = (contrato && contrato.escopo) || (prefill && prefill.oportunidade && prefill.oportunidade.servico_interesse) || "";
     campoQtdeVideosContrato.value = contrato && contrato.qtde_videos != null ? contrato.qtde_videos : "";
     campoDireitoUsoContrato.value = contrato && contrato.direito_uso_meses != null ? contrato.direito_uso_meses : "";
@@ -8828,6 +8847,7 @@
       marca,
       empresa_id: null, // preenchido abaixo, depois de salvar/criar a marca
       oportunidade_id: contratoOportunidadeIdPendente,
+      nome: campoNomeContrato.value.trim() || null,
       escopo: campoEscopoContrato.value.trim() || null,
       qtde_videos: campoQtdeVideosContrato.value ? Number(campoQtdeVideosContrato.value) : null,
       direito_uso_meses: campoDireitoUsoContrato.value ? Number(campoDireitoUsoContrato.value) : null,
@@ -14721,11 +14741,36 @@
       htmlBlocoMarcador({ rotulo: "Follow-ups enviados", neutro: true, textoGrande: "—", nota: "Em construção" });
   }
 
+  // Mês exibido no Dashboard ("AAAA-MM"); null = mês atual. Todos os
+  // blocos já calculam a partir desse mês, então basta trocar aqui.
+  let mesDashboard = null;
+
+  function atualizarNavegacaoMesDashboard(mesAtualChave, agora, s) {
+    // meses disponíveis: do mais antigo com dado até o mês atual
+    let primeiro = mesAtualChave;
+    contratosCache.forEach((k) => {
+      if (k.data_assinatura && k.data_assinatura.slice(0, 7) < primeiro) primeiro = k.data_assinatura.slice(0, 7);
+    });
+    quadroCache.forEach((c) => {
+      const m = String(c.created_at || "").slice(0, 7);
+      if (/^\d{4}-\d{2}$/.test(m) && m < primeiro) primeiro = m;
+    });
+    const meses = [];
+    for (let m = mesAtualChave, i = 0; m >= primeiro && i < 60; m = deslocarMes(m, -1), i++) meses.push(m);
+    const seletor = document.getElementById("dashSeletorMes");
+    seletor.innerHTML = meses.map((m) => `<option value="${m}">${esc(nomeDoMes(m))}</option>`).join("");
+    seletor.value = agora;
+    document.getElementById("dashMesAnterior").disabled = !meses.includes(deslocarMes(agora, -1));
+    document.getElementById("dashMesProximo").disabled = agora >= mesAtualChave;
+  }
+
   function renderizarDashboard() {
     if (!document.getElementById("dashMarcadores")) return;
-    const agora = hojeIso().slice(0, 7);
+    const mesAtualChave = hojeIso().slice(0, 7);
+    const agora = mesDashboard && mesDashboard <= mesAtualChave ? mesDashboard : mesAtualChave;
     const s = seriesDaJornada();
     document.getElementById("dashMesCorrente").textContent = nomeDoMes(agora);
+    atualizarNavegacaoMesDashboard(mesAtualChave, agora, s);
 
     const totais = { marcas: s.marcas.length, campanhas: s.contratos.length, videos: s.videos.length, si: s.seuInfluencer.length };
     const definicoes = [
@@ -14774,6 +14819,15 @@
     renderizarReputacao();
     renderizarFunis(agora, s);
   }
+
+  const trocarMesDashboard = (chave) => {
+    mesDashboard = chave === hojeIso().slice(0, 7) ? null : chave;
+    renderizarDashboard();
+  };
+  const mesExibidoDashboard = () => mesDashboard || hojeIso().slice(0, 7);
+  document.getElementById("dashMesAnterior").addEventListener("click", () => trocarMesDashboard(deslocarMes(mesExibidoDashboard(), -1)));
+  document.getElementById("dashMesProximo").addEventListener("click", () => trocarMesDashboard(deslocarMes(mesExibidoDashboard(), 1)));
+  document.getElementById("dashSeletorMes").addEventListener("change", (evento) => trocarMesDashboard(evento.target.value));
 
   // "Mais detalhes" (um por bloco): abre/fecha, seleciona marcadores e muda o período
   document.querySelectorAll("[data-dash-detalhes]").forEach((botao) => {
