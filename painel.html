@@ -704,6 +704,50 @@
   .quadro-wrap::-webkit-scrollbar-thumb:hover{ background: var(--texto-suave); }
 
   /* Linha do tempo */
+  .linha-tempo-layout{ display:flex; gap:14px; align-items:stretch; }
+  .linha-tempo-layout .linha-tempo-wrap{ flex:1 1 auto; min-width:0; }
+  .tl-sem-data{
+    flex:0 0 260px;
+    height: calc(100vh - 200px);
+    min-height: 380px;
+    overflow-y:auto;
+    border: 1px solid var(--borda);
+    border-radius: 16px;
+    padding: 14px 12px;
+    background: var(--branco);
+    scrollbar-width: thin;
+    scrollbar-color: var(--cinza-claro) transparent;
+  }
+  .tl-sem-data h3{
+    margin:0 0 12px; padding:0 4px;
+    font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.03em;
+    color: var(--texto-suave);
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .tl-sem-data h3 .contagem-coluna{ font-weight:600; }
+  .tl-sem-item{
+    display:block; width:100%; text-align:left; font-family:inherit;
+    border:none; border-left:4px solid var(--cor-fase, #9A9A9A);
+    background: var(--cor-fase-bg, #E7E5E1); color: var(--cor-fase-fg, #4A443C);
+    border-radius:10px; padding:8px 10px; margin-bottom:8px; cursor:pointer;
+  }
+  .tl-sem-item:hover{ filter:brightness(.97); }
+  .tl-sem-item b{ display:block; font-size:.82rem; }
+  .tl-sem-item small{ display:block; font-size:.7rem; opacity:.8; margin-top:2px; }
+  .tl-sem-grupo{ margin-top:6px; border-top:1px solid var(--borda); padding-top:6px; }
+  .tl-sem-grupo-cab{
+    display:flex; align-items:center; gap:8px; width:100%;
+    background:none; border:none; font-family:inherit; cursor:pointer;
+    padding:8px 4px; margin-bottom:6px; border-radius:8px;
+    font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.03em; color: var(--texto-suave);
+  }
+  .tl-sem-grupo-cab:hover{ background: var(--creme); }
+  .tl-sem-grupo-cab .contagem-coluna{ margin-left:auto; font-weight:600; }
+  .tl-sem-seta{ width:10px; }
+  .tl-sem-item.arrastando-sem-data{ opacity:.4; }
+  .tl-destaque-drop{ position:absolute; top:0; bottom:0; background: rgba(59,130,246,.14); border-left:2px solid #3B82F6; border-right:2px solid #3B82F6; pointer-events:none; z-index:1; }
+  .tl-sem-item.concluida{ opacity:.55; text-decoration:line-through; }
+  @media (max-width: 900px){ .linha-tempo-layout{ flex-direction:column; } .tl-sem-data{ flex-basis:auto; height:auto; max-height:320px; min-height:0; } }
   .linha-tempo-wrap{
     overflow: auto;
     height: calc(100vh - 200px);
@@ -3069,6 +3113,9 @@
                 <button type="button" class="btn-ferramenta-tabela" id="btnHojeProd" data-vistas="linha-tempo calendario" hidden title="Ir para hoje">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16"/><path d="M8 3v4"/><path d="M16 3v4"/><circle cx="12" cy="15" r="1.6" fill="currentColor"/></svg>
                 </button>
+                <button type="button" class="btn-ferramenta-tabela" id="btnMinhasProd" data-vistas="linha-tempo" hidden title="Mostrar só as minhas (e as sem responsável)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c0-3.9 3.1-6.5 7-6.5s7 2.6 7 6.5"/></svg>
+                </button>
                 <button type="button" class="btn-ferramenta-tabela" id="btnConcluidasProd" data-vistas="linha-tempo calendario" hidden title="Ocultar concluídas">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
                 </button>
@@ -3088,7 +3135,10 @@
         </div>
         <div class="quadro-wrap" id="quadroWrap"></div>
         <div class="tabela-cheia-wrap lista-prod-wrap" id="listaProdWrap" hidden></div>
-        <div class="linha-tempo-wrap" id="linhaTempoWrap" hidden></div>
+        <div class="linha-tempo-layout" id="linhaTempoLayout" hidden>
+          <div class="linha-tempo-wrap" id="linhaTempoWrap" hidden></div>
+          <aside class="tl-sem-data" id="linhaTempoSemData"></aside>
+        </div>
         <div class="calendario-prod-wrap" id="calendarioProdWrap" hidden></div>
       </div>
     </section>
@@ -4713,6 +4763,17 @@
   // avançada (contrato, prazos calculados, subtarefas) até rodar o SQL.
   let contratosCache = [];
   let etiquetasCache = [];
+
+  // "Eu" = a etiqueta de responsável chamada Letícia. É o responsável
+  // padrão das subtarefas novas e o critério do filtro "só as minhas".
+  const ehEtiquetaMinha = (et) => !!et && /^let[ií]cia/i.test((et.nome || "").trim());
+  function etiquetaIdsPadrao() {
+    const minha = etiquetasCache.find(ehEtiquetaMinha);
+    return minha ? [minha.id] : [];
+  }
+  function responsaveisDaSubtarefa(s) {
+    return (Array.isArray(s.etiqueta_ids) ? s.etiqueta_ids : []).map((id) => etiquetasCache.find((et) => et.id === id)).filter(Boolean);
+  }
   let subtarefasCache = [];
   let producaoAvancadaDisponivel = true;
   let migracaoDireitosExtensaoOk = true; // atualizado em recarregarQuadro()
@@ -5592,10 +5653,21 @@
                 ? `<span class="data-card-quadro">📅 ${vencimento.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })}</span>`
                 : "";
             const chipMarca = propriedadesCartao.marca && contrato ? `<span class="chip-card-quadro">${contrato.marca}</span>` : "";
+            // responsáveis que não sou eu, nas etapas ainda abertas
+            const nomesOutros = [
+              ...new Set(
+                subtarefasCard
+                  .filter((s) => statusSubtarefa(s) !== "concluido")
+                  .flatMap((s) => responsaveisDaSubtarefa(s))
+                  .filter((et) => !ehEtiquetaMinha(et))
+                  .map((et) => et.nome)
+              ),
+            ];
+            const chipResponsavel = nomesOutros.length ? `<span class="chip-card-quadro chip-responsavel-card">👤 ${esc(nomesOutros.join(", "))}</span>` : "";
             return `
             <div class="card-quadro" draggable="true" data-id="${c.id}">
               <span class="titulo-card-quadro">${seloSemaforo}${c.titulo}</span>
-              <div class="meta-card-quadro">${badgeProgresso}${dataFormatada}${chipMarca}</div>
+              <div class="meta-card-quadro">${badgeProgresso}${dataFormatada}${chipMarca}${chipResponsavel}</div>
             </div>`;
           })
           .join("")
@@ -5745,7 +5817,7 @@
     const nomesExistentes = existentes.map((s) => s.nome.trim().toLowerCase());
     const faltando = ETAPAS_EXTRA_PUBLIPOST.filter((nome) => !nomesExistentes.includes(nome.toLowerCase()));
     if (!faltando.length) return;
-    const novas = faltando.map((nome, i) => ({ card_id: cardId, nome, ordem: existentes.length + i }));
+    const novas = faltando.map((nome, i) => ({ card_id: cardId, nome, ordem: existentes.length + i, etiqueta_ids: etiquetaIdsPadrao() }));
     const { data, error } = await Auth.sb.from("quadro_subtarefas").insert(novas).select();
     if (error) throw error;
     subtarefasCache.push(...data);
@@ -6127,6 +6199,27 @@
     }
   });
 
+  // Quando um vídeo chega na última fase (Concluído) com subtarefas ainda
+  // abertas, pergunta se é pra concluir todas elas.
+  async function perguntarConcluirSubtarefas(cardId) {
+    const pendentes = subtarefasCache.filter((s) => s.card_id === cardId && statusSubtarefa(s) !== "concluido");
+    if (!pendentes.length) return;
+    if (!confirm("Concluir todas as subtarefas?\n\nOK = Sim, Cancelar = Não")) return;
+    const agora = new Date().toISOString();
+    try {
+      await Promise.all(
+        pendentes.map((s) => Auth.sb.from("quadro_subtarefas").update({ status: "concluido", feito: true, updated_at: agora }).eq("id", s.id))
+      );
+      pendentes.forEach((s) => {
+        const idx = subtarefasCache.findIndex((x) => x.id === s.id);
+        if (idx !== -1) subtarefasCache[idx] = { ...subtarefasCache[idx], status: "concluido", feito: true };
+      });
+    } catch (erro) {
+      alert("Não foi possível concluir as subtarefas.");
+      console.error(erro);
+    }
+  }
+
   // "✓" ao lado do título manda direto pra última fase (Concluído).
   btnConcluirCard.addEventListener("click", async () => {
     if (!cardEmEdicaoObjeto) return;
@@ -6145,6 +6238,10 @@
       campoColunaCard.value = final.id;
       const idx = quadroCache.findIndex((c) => c.id === cardEmEdicaoObjeto.id);
       if (idx !== -1) quadroCache[idx] = { ...quadroCache[idx], coluna_id: final.id, concluido_em: concluidoEm };
+      if (colunaAnteriorId !== final.id) {
+        await perguntarConcluirSubtarefas(cardEmEdicaoObjeto.id);
+        renderizarSubtarefasModal();
+      }
       atualizarCamposDerivadosCard();
       renderizarQuadro();
       renderizarDashboardProducao();
@@ -6526,7 +6623,7 @@
         .join("");
   }
 
-  function abrirModalCard(card, colunaPadrao) {
+  function abrirModalCard(card, colunaPadrao, abaInicial) {
     idCardEmEdicao = card ? card.id : null;
     cardEmEdicaoObjeto = card || null;
     idContratoEmEdicao = null;
@@ -6561,8 +6658,8 @@
     btnConcluirCard.hidden = !card;
     overlayModalQuadro.hidden = false;
     atualizarCabecalhoModalCard();
-    alternarAbaCard("detalhes");
-    campoTituloCard.focus();
+    alternarAbaCard(abaInicial || "detalhes");
+    if (!abaInicial) campoTituloCard.focus();
   }
 
   function fecharModalCard() {
@@ -6782,11 +6879,13 @@
       if (idCardEmEdicao) {
         await Auth.sb.from("quadro_cards").update(dados).eq("id", idCardEmEdicao);
         if (dados.formato === "publipost") await garantirEtapasPublipost(idCardEmEdicao);
+        const colunaFinalSalvar = colunaFinal();
+        if (colunaFinalSalvar && novaColunaId === colunaFinalSalvar.id && colunaAnteriorId !== colunaFinalSalvar.id) await perguntarConcluirSubtarefas(idCardEmEdicao);
       } else {
         const { data, error } = await Auth.sb.from("quadro_cards").insert(dados).select().single();
         if (error) throw error;
         idCardEmEdicao = data.id;
-        const subtarefasPadrao = etapasPadraoParaFormato(dados.formato).map((nome, i) => ({ card_id: data.id, nome, ordem: i }));
+        const subtarefasPadrao = etapasPadraoParaFormato(dados.formato).map((nome, i) => ({ card_id: data.id, nome, ordem: i, etiqueta_ids: etiquetaIdsPadrao() }));
         await Auth.sb.from("quadro_subtarefas").insert(subtarefasPadrao);
       }
       return true;
@@ -6834,6 +6933,8 @@
           updated_at: new Date().toISOString(),
         })
         .eq("id", id);
+      const colunaFinalMover = colunaFinal();
+      if (colunaFinalMover && novaColunaId === colunaFinalMover.id && colunaAnteriorId !== colunaFinalMover.id) await perguntarConcluirSubtarefas(id);
       await recarregarQuadro();
       if (card && card.contrato_id) await sincronizarParcelasAutomaticasContrato(card.contrato_id);
     } catch (erro) {
@@ -7351,7 +7452,7 @@
           .select()
           .single();
         if (error) throw error;
-        const subtarefasPadrao = etapasPadraoParaFormato("ugc").map((nome, idx) => ({ card_id: data.id, nome, ordem: idx }));
+        const subtarefasPadrao = etapasPadraoParaFormato("ugc").map((nome, idx) => ({ card_id: data.id, nome, ordem: idx, etiqueta_ids: etiquetaIdsPadrao() }));
         await Auth.sb.from("quadro_subtarefas").insert(subtarefasPadrao);
       }
       await recarregarQuadro();
@@ -8799,6 +8900,7 @@
         autentique_assinado_em: resultado.status === "assinado" ? new Date().toISOString() : null,
         autentique_arquivo_assinado_url: resultado.arquivo_assinado_url || null,
       };
+      if (resultado.link_contratada) atualizado.autentique_link_assinatura_contratada = resultado.link_contratada;
       if (idx !== -1) contratosCache[idx] = { ...contratosCache[idx], ...atualizado };
       atualizarBlocoAutentique(idx !== -1 ? contratosCache[idx] : atualizado);
       renderizarSignatariosAutentique(resultado.signatarios);
@@ -12567,10 +12669,19 @@
   const subtarefaConcluida = (s) => statusSubtarefa(s) === "concluido";
 
   // Subtarefas com data de fim (entrega) e/ou início, de vídeos que não estão arquivados.
-  function subtarefasAgendadas() {
+  // Filtro "só as minhas" (Timeline): com ele ligado, ficam as subtarefas em que
+  // eu sou responsável ou que não têm nenhum responsável.
+  let timelineApenasMinhas = false;
+  function subtarefaPassaFiltroMinhas(s) {
+    const resp = responsaveisDaSubtarefa(s);
+    return !resp.length || resp.some(ehEtiquetaMinha);
+  }
+
+  function subtarefasAgendadas(opcoes) {
     const lista = [];
     subtarefasCache.forEach((s) => {
       if (!s.data_execucao && !s.data_fim) return; // a data de fim (entrega) basta; sem início a barra é de 1 dia
+      if (opcoes && opcoes.apenasMinhas && !subtarefaPassaFiltroMinhas(s)) return;
       const card = quadroCache.find((c) => c.id === s.card_id);
       if (!card || cardEstaArquivado(card)) return;
       const concluida = subtarefaConcluida(s);
@@ -12613,7 +12724,7 @@
     const pxAnterior = Number(container.dataset.px);
     const diaNaBorda = inicioAnterior && pxAnterior ? new Date(dataDoIso(inicioAnterior).getTime() + (container.scrollLeft / pxAnterior) * 86400000) : null;
 
-    const itens = subtarefasAgendadas();
+    const itens = subtarefasAgendadas({ apenasMinhas: timelineApenasMinhas });
     const hoje = inicioDoDia(new Date());
     const tempos = itens.flatMap((i) => [i.ini.getTime(), i.fim.getTime()]);
     const menor = Math.min(hoje.getTime(), ...tempos);
@@ -12682,7 +12793,10 @@
         return `<div class="tl-barra${it.concluida ? " concluida" : ""}${it.curta ? " curta" : ""}" data-sub-tl="${it.s.id}" title="${esc(it.s.nome + " · " + it.card.titulo)}"
           style="left:${offset * DIA_PX + 2}px; top:${it.faixa * ALTURA_FAIXA_TL + 4}px; width:${duracao * DIA_PX - 4}px; height:${ALTURA_FAIXA_TL - 8}px; background:${it.cor.bg}; color:${it.cor.fg};">
           <span class="tl-alca tl-alca-ini" data-alca="inicio"></span>
-          <div class="tl-texto"><b>${esc(it.s.nome)}</b><small>${esc(it.card.titulo)}</small></div>
+          <div class="tl-texto"><b>${esc(it.s.nome)}</b><small>${esc(it.card.titulo)}${(() => {
+            const outros = responsaveisDaSubtarefa(it.s).filter((et) => !ehEtiquetaMinha(et));
+            return outros.length ? " · " + esc(outros.map((et) => et.nome).join(", ")) : "";
+          })()}</small></div>
           <span class="tl-alca tl-alca-fim" data-alca="fim"></span>
         </div>`;
       })
@@ -12706,6 +12820,7 @@
     container.dataset.inicioTl = formatarDataISO(inicio);
     container.dataset.px = String(DIA_PX);
     container.dataset.diasAteHoje = String(diasAteHoje);
+    renderizarSubtarefasSemData();
 
     if (!timelineJaRolou && vistaProducaoAtual === "linha-tempo") {
       rolarTimelineParaHoje(true);
@@ -12714,6 +12829,126 @@
       container.scrollLeft = ((diaNaBorda.getTime() - inicio.getTime()) / 86400000) * DIA_PX;
     }
   }
+
+  // Coluna à direita da Timeline: subtarefas (de vídeos não arquivados) sem
+  // data de início nem de fim. Clicar abre o vídeo.
+  const gruposSemDataAbertos = new Set(); // grupos começam recolhidos
+  function renderizarSubtarefasSemData() {
+    const lateral = document.getElementById("linhaTempoSemData");
+    if (!lateral) return;
+    const itens = [];
+    subtarefasCache.forEach((s) => {
+      if (s.data_execucao || s.data_fim) return;
+      const card = quadroCache.find((c) => c.id === s.card_id);
+      if (!card || cardEstaArquivado(card)) return;
+      if (subtarefaConcluida(s)) return; // concluídas não entram na coluna
+      if (timelineApenasMinhas && !subtarefaPassaFiltroMinhas(s)) return;
+      itens.push({ s, card, concluida: false, cor: corDaFase(s.nome) });
+    });
+    itens.sort((a, b) => a.card.titulo.localeCompare(b.card.titulo, "pt-BR", { numeric: true }) || (a.s.ordem || 0) - (b.s.ordem || 0));
+
+    // Grupos: "Briefing pendente" = todas as subtarefas de vídeos nessa etapa;
+    // "Revisão" = subtarefas de revisão (menos as de vídeos ainda em briefing,
+    // que já estão no primeiro grupo); o resto fica solto no topo.
+    const emBriefing = (it) => {
+      const coluna = colunasCache.find((c) => c.id === it.card.coluna_id);
+      return !!coluna && normalizarTexto(coluna.nome).includes("briefing");
+    };
+    const ehRevisao = (it) => normalizarTexto(it.s.nome).includes("revis");
+    const soltas = itens.filter((it) => !emBriefing(it) && !ehRevisao(it));
+    const briefing = itens.filter(emBriefing);
+    const revisao = itens.filter((it) => !emBriefing(it) && ehRevisao(it));
+
+    const htmlItem = (it) => `<button type="button" class="tl-sem-item" draggable="true" data-sem-data-sub="${it.s.id}" data-sem-data-card="${it.card.id}" title="Clique pra abrir o vídeo ou arraste pra um dia da timeline"
+                style="--cor-fase:${it.cor.ponto}; --cor-fase-bg:${it.cor.bg}; --cor-fase-fg:${it.cor.fg};">
+                <b>${esc(it.s.nome)}</b><small>${esc(it.card.titulo)}${(() => {
+                  const outros = responsaveisDaSubtarefa(it.s).filter((et) => !ehEtiquetaMinha(et));
+                  return outros.length ? " · " + esc(outros.map((et) => et.nome).join(", ")) : "";
+                })()}</small>
+              </button>`;
+    const htmlGrupo = (chave, titulo, lista) => {
+      if (!lista.length) return "";
+      const aberto = gruposSemDataAbertos.has(chave);
+      return `<div class="tl-sem-grupo">
+        <button type="button" class="tl-sem-grupo-cab" data-sem-data-grupo="${chave}" aria-expanded="${aberto}">
+          <span class="tl-sem-seta">${aberto ? "▾" : "▸"}</span><span>${titulo}</span><span class="contagem-coluna">${lista.length}</span>
+        </button>
+        ${aberto ? lista.map(htmlItem).join("") : ""}
+      </div>`;
+    };
+
+    lateral.innerHTML =
+      `<h3>Sem data <span class="contagem-coluna">${itens.length}</span></h3>` +
+      (itens.length
+        ? soltas.map(htmlItem).join("") + htmlGrupo("briefing", "Briefing pendente", briefing) + htmlGrupo("revisao", "Revisão", revisao)
+        : `<p class="texto-vazio">Todas as subtarefas têm data.</p>`);
+  }
+  // Arrastar uma subtarefa sem data pra um dia da timeline: grava início e
+  // fim nesse dia (barra de 1 dia, que dá pra esticar depois).
+  const TIPO_ARRASTE_SEM_DATA = "application/x-subtarefa-sem-data";
+  const wrapTimelineDrop = document.getElementById("linhaTempoWrap");
+  const diaDoPonteiroTl = (evento) => {
+    const px = Number(wrapTimelineDrop.dataset.px) || DIA_PX;
+    const x = evento.clientX - wrapTimelineDrop.getBoundingClientRect().left + wrapTimelineDrop.scrollLeft;
+    return Math.floor(x / px);
+  };
+  const limparDestaqueDropTl = () => wrapTimelineDrop.querySelectorAll(".tl-destaque-drop").forEach((el) => el.remove());
+
+  document.getElementById("linhaTempoSemData").addEventListener("dragstart", (evento) => {
+    const item = evento.target.closest("[data-sem-data-sub]");
+    if (!item) return;
+    evento.dataTransfer.setData(TIPO_ARRASTE_SEM_DATA, item.dataset.semDataSub);
+    evento.dataTransfer.setData("text/plain", item.dataset.semDataSub);
+    evento.dataTransfer.effectAllowed = "move";
+    item.classList.add("arrastando-sem-data");
+  });
+  document.getElementById("linhaTempoSemData").addEventListener("dragend", (evento) => {
+    const item = evento.target.closest("[data-sem-data-sub]");
+    if (item) item.classList.remove("arrastando-sem-data");
+    limparDestaqueDropTl();
+  });
+  wrapTimelineDrop.addEventListener("dragover", (evento) => {
+    if (!Array.from(evento.dataTransfer.types).includes(TIPO_ARRASTE_SEM_DATA)) return;
+    evento.preventDefault();
+    evento.dataTransfer.dropEffect = "move";
+    const corpo = wrapTimelineDrop.querySelector(".tl-corpo");
+    if (!corpo) return;
+    const px = Number(wrapTimelineDrop.dataset.px) || DIA_PX;
+    let destaque = corpo.querySelector(".tl-destaque-drop");
+    if (!destaque) {
+      destaque = document.createElement("div");
+      destaque.className = "tl-destaque-drop";
+      corpo.appendChild(destaque);
+    }
+    destaque.style.left = diaDoPonteiroTl(evento) * px + "px";
+    destaque.style.width = px + "px";
+  });
+  wrapTimelineDrop.addEventListener("dragleave", (evento) => {
+    if (!wrapTimelineDrop.contains(evento.relatedTarget)) limparDestaqueDropTl();
+  });
+  wrapTimelineDrop.addEventListener("drop", async (evento) => {
+    const subId = evento.dataTransfer.getData(TIPO_ARRASTE_SEM_DATA);
+    if (!subId) return;
+    evento.preventDefault();
+    const dia = formatarDataISO(somarDiasData(dataDoIso(wrapTimelineDrop.dataset.inicioTl), diaDoPonteiroTl(evento)));
+    limparDestaqueDropTl();
+    await atualizarSubtarefa(subId, { data_execucao: dia, data_fim: dia });
+  });
+
+  document.getElementById("linhaTempoSemData").addEventListener("click", (evento) => {
+    const cabecalhoGrupo = evento.target.closest("[data-sem-data-grupo]");
+    if (cabecalhoGrupo) {
+      const chave = cabecalhoGrupo.dataset.semDataGrupo;
+      if (gruposSemDataAbertos.has(chave)) gruposSemDataAbertos.delete(chave);
+      else gruposSemDataAbertos.add(chave);
+      renderizarSubtarefasSemData();
+      return;
+    }
+    const botao = evento.target.closest("[data-sem-data-card]");
+    if (!botao) return;
+    const card = quadroCache.find((c) => c.id === botao.dataset.semDataCard);
+    if (card) abrirModalCard(card, null, "producao");
+  });
 
   // Começa mostrando a semana atual (no zoom de 1 semana); em zooms maiores, hoje fica no primeiro quarto da tela.
   function rolarTimelineParaHoje(instantaneo) {
@@ -13327,6 +13562,7 @@
     document.querySelectorAll("#alternadorProducao .btn-alternador").forEach((b) => b.classList.toggle("ativo", b.dataset.visualizacao === vista));
     document.getElementById("quadroWrap").hidden = vista !== "kanban";
     document.getElementById("listaProdWrap").hidden = vista !== "lista";
+    document.getElementById("linhaTempoLayout").hidden = vista !== "linha-tempo";
     document.getElementById("linhaTempoWrap").hidden = vista !== "linha-tempo";
     document.getElementById("calendarioProdWrap").hidden = vista !== "calendario";
     // cada ferramenta só aparece nas vistas em que faz sentido
@@ -13353,6 +13589,12 @@
       calReferencia = inicioDoDia(new Date());
       renderizarCalendarioProd();
     }
+  });
+  document.getElementById("btnMinhasProd").addEventListener("click", (evento) => {
+    timelineApenasMinhas = !timelineApenasMinhas;
+    evento.currentTarget.classList.toggle("ativo", timelineApenasMinhas);
+    evento.currentTarget.title = timelineApenasMinhas ? "Mostrar também as de outros responsáveis" : "Mostrar só as minhas (e as sem responsável)";
+    renderizarLinhaTempo();
   });
   document.getElementById("btnConcluidasProd").addEventListener("click", (evento) => {
     prodMostrarConcluidas = !prodMostrarConcluidas;
@@ -14487,7 +14729,7 @@
       return porDia.get(iso);
     };
     if (filtrosTarefas.subs) {
-      subtarefasAgendadas().forEach((it) => {
+      subtarefasAgendadas({ apenasMinhas: true }).forEach((it) => {
         for (let d = new Date(it.ini); d <= it.fim; d = somarDiasData(d, 1)) {
           const iso = formatarDataISO(d);
           if (iso >= inicioIso && iso <= fimIso) pegar(iso).subs.push(it);
