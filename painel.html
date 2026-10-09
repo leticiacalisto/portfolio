@@ -1489,6 +1489,36 @@
     color: #6B6B6B;
     margin: 0 0 2px;
   }
+  .seletor-status-card{ position:relative; display:flex; align-items:center; gap:8px; padding:4px 0; }
+  .status-grupo{
+    display:inline-flex; align-items:stretch; border-radius:8px; overflow:hidden;
+    background: var(--cor-status-bg, #E7E5E1); color: var(--cor-status-fg, #4A443C);
+  }
+  .status-pill, .status-seta{
+    font-family:inherit; font-weight:700; font-size:.76rem; text-transform:uppercase; letter-spacing:.02em;
+    background:none; border:none; color:inherit; cursor:pointer; padding:7px 12px;
+  }
+  .status-pill:hover, .status-seta:hover:not(:disabled){ background: rgba(0,0,0,.07); }
+  .status-seta{ border-left:1px solid rgba(0,0,0,.15); padding:7px 10px; }
+  .status-seta:disabled{ opacity:.35; cursor:default; }
+  .status-check{
+    font-family:inherit; font-size:.9rem; width:32px; height:32px; border-radius:8px; cursor:pointer;
+    background: var(--creme); border:none; color: var(--texto-suave);
+  }
+  .status-check:hover:not(:disabled){ background:#D3F0DC; color:#1E6B3A; }
+  .status-check:disabled{ opacity:.35; cursor:default; }
+  .menu-status-card{
+    position:absolute; top:100%; left:0; z-index:20; min-width:220px; max-height:300px; overflow-y:auto;
+    background: var(--branco); border:1px solid var(--borda); border-radius:12px; padding:6px;
+    box-shadow:0 10px 28px rgba(20,17,13,.16);
+  }
+  .menu-status-item{
+    display:flex; align-items:center; gap:8px; width:100%; text-align:left; font-family:inherit;
+    font-size:.8rem; font-weight:600; background:none; border:none; border-radius:8px; padding:8px 10px; cursor:pointer; color: var(--grafite);
+  }
+  .menu-status-item:hover{ background: var(--creme); }
+  .menu-status-item.atual{ background: var(--creme); }
+  .menu-status-item .ponto-status-card{ width:10px; height:10px; border-radius:50%; flex:none; }
   .modal-video-clean .rotulo-descricao{ margin: 18px 0 6px; }
   .valor-limpo{ font-size:.88rem; color: var(--grafite); padding: 6px 0; }
   .prop-limpa .valor-semaforo{ padding:6px 0; }
@@ -3650,8 +3680,16 @@
        <div id="painelDetalhesVideo">
         <div class="grade-propriedades-limpa">
           <div class="prop-limpa">
-            <span class="rotulo-limpo">Etapa</span>
-            <select id="campoColunaCard" class="input-limpo"></select>
+            <span class="rotulo-limpo">Status (Kanban)</span>
+            <select id="campoColunaCard" class="input-limpo" hidden></select>
+            <div class="seletor-status-card" id="seletorStatusCard">
+              <div class="status-grupo">
+                <button type="button" class="status-pill" id="btnStatusAtual" aria-haspopup="listbox"></button>
+                <button type="button" class="status-seta" id="btnStatusProximo">▸</button>
+              </div>
+              <button type="button" class="status-check" id="btnStatusConcluir" title="Mover para Concluído">✓</button>
+              <div class="menu-status-card" id="menuStatusCard" role="listbox" hidden></div>
+            </div>
           </div>
           <div class="prop-limpa">
             <span class="rotulo-limpo">Campanha</span>
@@ -5936,7 +5974,67 @@
     // Prioridade (urgência) só faz sentido enquanto o vídeo ainda não foi
     // entregue/concluído — depois disso não há mais prazo a vigiar.
     propPrioridadeCard.hidden = colunaEhFinalOuAguardandoAprovacao(campoColunaCard.value);
+    atualizarSeletorStatusCard();
   }
+
+  // Seletor de status (coluna do Kanban) da aba Detalhes: o <select>
+  // escondido continua sendo a fonte da verdade; os botões só mexem nele.
+  // Clicar no nome abre a lista, ▸ vai pra próxima coluna e ✓ pra Concluído
+  // (última coluna). Vale ao salvar, igual ao campo de antes.
+  function atualizarSeletorStatusCard() {
+    const btnAtual = document.getElementById("btnStatusAtual");
+    if (!btnAtual) return;
+    const idx = colunasCache.findIndex((c) => c.id === campoColunaCard.value);
+    const coluna = idx !== -1 ? colunasCache[idx] : null;
+    const cor = coluna ? coluna.cor : "#8d8d8d";
+    const grupo = btnAtual.parentElement;
+    grupo.style.setProperty("--cor-status-bg", `color-mix(in srgb, ${cor} 22%, white)`);
+    grupo.style.setProperty("--cor-status-fg", `color-mix(in srgb, ${cor} 70%, black)`);
+    btnAtual.textContent = coluna ? coluna.nome : "Sem status";
+    const proxima = idx !== -1 ? colunasCache[idx + 1] : null;
+    const btnProximo = document.getElementById("btnStatusProximo");
+    btnProximo.disabled = !proxima;
+    btnProximo.title = proxima ? "Próximo status [" + proxima.nome + "]" : "Já está na última etapa";
+    const final = colunaFinal();
+    document.getElementById("btnStatusConcluir").disabled = !final || (coluna && coluna.id === final.id);
+  }
+  function definirStatusCard(colunaId) {
+    if (!colunaId || campoColunaCard.value === colunaId) return;
+    campoColunaCard.value = colunaId;
+    campoColunaCard.dispatchEvent(new Event("change")); // atualiza campos derivados + o seletor
+  }
+  (function ligarSeletorStatusCard() {
+    const menu = document.getElementById("menuStatusCard");
+    const fecharMenu = () => (menu.hidden = true);
+    document.getElementById("btnStatusAtual").addEventListener("click", (evento) => {
+      evento.stopPropagation();
+      if (!menu.hidden) return fecharMenu();
+      menu.innerHTML = colunasCache
+        .map(
+          (c) =>
+            `<button type="button" class="menu-status-item${c.id === campoColunaCard.value ? " atual" : ""}" role="option" data-status-coluna="${c.id}"><span class="ponto-status-card" style="background:${c.cor}"></span>${esc(c.nome)}</button>`
+        )
+        .join("");
+      menu.hidden = false;
+    });
+    menu.addEventListener("click", (evento) => {
+      const item = evento.target.closest("[data-status-coluna]");
+      if (!item) return;
+      definirStatusCard(item.dataset.statusColuna);
+      fecharMenu();
+    });
+    document.addEventListener("click", (evento) => {
+      if (!menu.hidden && !evento.target.closest("#seletorStatusCard")) fecharMenu();
+    });
+    document.getElementById("btnStatusProximo").addEventListener("click", () => {
+      const idx = colunasCache.findIndex((c) => c.id === campoColunaCard.value);
+      if (idx !== -1 && colunasCache[idx + 1]) definirStatusCard(colunasCache[idx + 1].id);
+    });
+    document.getElementById("btnStatusConcluir").addEventListener("click", () => {
+      const final = colunaFinal();
+      if (final) definirStatusCard(final.id);
+    });
+  })();
 
   campoContratoCard.addEventListener("change", atualizarCamposDerivadosCard);
   campoColunaCard.addEventListener("change", atualizarCamposDerivadosCard);
