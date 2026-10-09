@@ -2430,6 +2430,8 @@
   }
   .seletores-periodo-fluxo select:focus{ outline:none; border-color: var(--borda); }
   .cartoes-fluxo{ display:grid; grid-template-columns: repeat(4, 1fr); gap:14px; margin-bottom:26px; }
+  .cartoes-fluxo.cartoes-marcas{ grid-template-columns: repeat(3, 1fr); margin-bottom:18px; }
+  @media (max-width: 700px){ .cartoes-fluxo.cartoes-marcas{ grid-template-columns: 1fr; } }
   #cartoesFluxo{ grid-template-columns: repeat(5, 1fr); }
   #cartoesTrafegoPago{ grid-template-columns: repeat(3, 1fr); margin-bottom:18px; }
   .cartao-fluxo{
@@ -2442,6 +2444,24 @@
   .cartao-fluxo.saldo{ border-left-color: var(--vermelho-erro); }
   .cartao-fluxo.saldo.positivo{ border-left-color: var(--verde-sucesso); }
   .cartao-fluxo.acumulado{ border-left-color: #7C3AED; }
+
+  /* ---- Cartões de números em tom pastel (Finanças, Marcas, Dashboard, Portfólio) ----
+     Os que têm significado (entradas/saídas/pendente...) mantêm a cor do
+     significado; os neutros alternam lavanda / pêssego / azul / menta. */
+  .cartao-fluxo, .cartao-numero{ --pastel:#EEF1F5; background: var(--pastel); border-color: transparent; }
+  .cartao-fluxo{ border-left-width:1px; }
+  .cartoes-fluxo > .cartao-fluxo:nth-child(4n+1), .grade-marcadores > .bloco-marcador:nth-child(4n+1) .cartao-fluxo, .grade-cartoes > .cartao-numero:nth-child(4n+1){ --pastel:#ECE8FB; }
+  .cartoes-fluxo > .cartao-fluxo:nth-child(4n+2), .grade-marcadores > .bloco-marcador:nth-child(4n+2) .cartao-fluxo, .grade-cartoes > .cartao-numero:nth-child(4n+2){ --pastel:#FCEEDC; }
+  .cartoes-fluxo > .cartao-fluxo:nth-child(4n+3), .grade-marcadores > .bloco-marcador:nth-child(4n+3) .cartao-fluxo, .grade-cartoes > .cartao-numero:nth-child(4n+3){ --pastel:#E1F1FA; }
+  .cartoes-fluxo > .cartao-fluxo:nth-child(4n+4), .grade-marcadores > .bloco-marcador:nth-child(4n+4) .cartao-fluxo, .grade-cartoes > .cartao-numero:nth-child(4n+4){ --pastel:#E3F4EA; }
+  .cartao-fluxo.cartao-fluxo.entradas{ --pastel:#E3F4EA; }
+  .cartao-fluxo.cartao-fluxo.saidas{ --pastel:#FBE7E4; }
+  .cartao-fluxo.cartao-fluxo.pendente{ --pastel:#FCF1D9; }
+  .cartao-fluxo.cartao-fluxo.acumulado{ --pastel:#ECE8FB; }
+  .cartao-fluxo.cartao-fluxo.saldo{ --pastel:#FBE7E4; }
+  .cartao-fluxo.cartao-fluxo.saldo.positivo{ --pastel:#E3F4EA; }
+  .cartao-fluxo.cartao-fluxo.previsto{ --pastel:#E1F1FA; }
+  .cartao-numero.cartao-numero.destaque{ background: var(--coral); }
   .rotulo-cartao-fluxo{ font-size:.72rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color: var(--grafite); }
   .valor-cartao-fluxo{ font-size:1.25rem; font-weight:700; color: var(--grafite); }
   .cartao-fluxo.entradas .valor-cartao-fluxo, .cartao-fluxo.positivo .valor-cartao-fluxo{ color: var(--verde-sucesso); }
@@ -3494,6 +3514,23 @@
     </section>
     <section id="painel-comercial-empresas" class="painel-aba" hidden>
       <div class="painel-quadro-secao">
+        <div class="cartoes-fluxo cartoes-marcas" id="cartoesMarcas">
+          <div class="cartao-fluxo acumulado">
+            <span class="rotulo-cartao-fluxo">Marcas trabalhadas</span>
+            <span class="valor-cartao-fluxo" id="marcasTrabalhadas">0</span>
+            <span class="nota-cartao-fluxo">Ativas + fechadas</span>
+          </div>
+          <div class="cartao-fluxo entradas">
+            <span class="rotulo-cartao-fluxo">Ativas</span>
+            <span class="valor-cartao-fluxo" id="marcasAtivasTotal">0</span>
+            <span class="nota-cartao-fluxo">Com campanha em produção</span>
+          </div>
+          <div class="cartao-fluxo">
+            <span class="rotulo-cartao-fluxo">Fechadas</span>
+            <span class="valor-cartao-fluxo" id="marcasFechadasTotal">0</span>
+            <span class="nota-cartao-fluxo">Todas as campanhas concluídas</span>
+          </div>
+        </div>
         <div class="topo-quadro">
           <div class="alternador-visualizacao alternador-mini" id="alternadorMarcas">
             <button type="button" class="btn-alternador ativo" data-vis-marca="ativas">Ativas</button>
@@ -11366,6 +11403,15 @@
   function renderizarEmpresas() {
     renderizarCabecalhoEmpresas();
     atualizarEstadoFerramentasMarcas();
+    // marcos do topo (contam todas as marcas, independente da aba/filtro)
+    const totalAtivas = empresasCache.filter((e) => statusEfetivoEmpresa(e) === "Ativo").length;
+    const totalFechadas = empresasCache.filter((e) => statusEfetivoEmpresa(e) === "Fechado").length;
+    const marcoTrabalhadas = document.getElementById("marcasTrabalhadas");
+    if (marcoTrabalhadas) {
+      marcoTrabalhadas.textContent = formatarNumero(totalAtivas + totalFechadas);
+      document.getElementById("marcasAtivasTotal").textContent = formatarNumero(totalAtivas);
+      document.getElementById("marcasFechadasTotal").textContent = formatarNumero(totalFechadas);
+    }
     const corpo = document.getElementById("corpoTabelaEmpresas");
     if (!corpo) return;
     const colspan = colunasVisiveisEfetivas().length + 1;
