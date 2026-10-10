@@ -2149,8 +2149,49 @@
     letter-spacing:.08em;
     text-transform:uppercase;
     color: var(--grafite);
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
   }
   .alerta-vazio{ margin:0; font-size:.85rem; font-style:italic; color: var(--cinza-claro); }
+  /* ---- Alertas clicáveis (coluna direita do Menu Principal) ---- */
+  .seta-cartao-alerta{ background:none; border:none; padding:3px; border-radius:6px; cursor:pointer; color: var(--cinza-menu); display:flex; align-items:center; flex:none; }
+  .seta-cartao-alerta:hover{ background: var(--creme); color: var(--grafite); }
+  .item-alerta.clicavel{ cursor:pointer; border-radius:8px; transition: background .15s ease; }
+  .item-alerta.clicavel:hover{ background: var(--creme); }
+  .mais-alerta.clicavel{ cursor:pointer; }
+  .mais-alerta.clicavel:hover{ color: var(--grafite); text-decoration: underline; }
+
+  /* ---- Sino de notificações ---- */
+  .notif-wrap{ position:relative; margin-left:auto; }
+  .barra-salvos:not([hidden]) + .notif-wrap{ margin-left:8px; }
+  .btn-sino{ position:relative; width:34px; height:34px; }
+  .btn-sino svg{ width:19px; height:19px; }
+  .notif-badge{
+    position:absolute; top:-4px; right:-4px; min-width:17px; height:17px; padding:0 4px; border-radius:999px;
+    background: var(--vermelho-erro); color:#fff; font-size:.64rem; font-weight:700; line-height:17px; text-align:center;
+  }
+  .notif-painel{
+    position:absolute; top:calc(100% + 8px); right:0; z-index:60; width:360px; max-width:calc(100vw - 24px);
+    background: var(--branco); border:1px solid var(--borda); border-radius:14px; box-shadow:0 12px 32px rgba(20,17,13,.16);
+    overflow:hidden;
+  }
+  .notif-topo{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 14px; border-bottom:1px solid var(--borda); font-size:.85rem; }
+  .notif-topo button{ background:none; border:none; font-family:inherit; font-size:.74rem; color: var(--texto-suave); cursor:pointer; }
+  .notif-topo button:hover{ color: var(--grafite); text-decoration:underline; }
+  .notif-lista{ max-height:min(70vh, 460px); overflow-y:auto; }
+  .notif-item{
+    display:flex; align-items:flex-start; gap:10px; width:100%; text-align:left; font-family:inherit;
+    background:none; border:none; border-bottom:1px solid var(--borda); padding:11px 14px; cursor:pointer;
+  }
+  .notif-item:last-child{ border-bottom:none; }
+  .notif-item:hover{ background: var(--creme); }
+  .notif-item.lida{ opacity:.6; }
+  .notif-icone{ flex:none; width:26px; height:26px; border-radius:8px; background: var(--creme); display:flex; align-items:center; justify-content:center; font-size:.8rem; color: var(--texto-suave); }
+  .notif-corpo{ display:flex; flex-direction:column; gap:1px; min-width:0; flex:1; font-size:.8rem; color: var(--texto-suave); }
+  .notif-corpo b{ color: var(--grafite); font-size:.84rem; }
+  .notif-corpo span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .notif-ponto{ flex:none; width:8px; height:8px; border-radius:50%; background: var(--vermelho-erro); margin-top:6px; }
+  .notif-vazio{ margin:0; padding:22px 14px; text-align:center; font-size:.82rem; color: var(--texto-suave); }
+
   .item-alerta{ display:flex; flex-direction:column; gap:1px; padding:7px 0; border-top:1px solid var(--borda); font-size:.85rem; }
   .item-alerta:first-child{ border-top:none; padding-top:0; }
   .item-alerta .nome-alerta{ font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
@@ -2842,6 +2883,17 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.85-4.2 4.1 1 5.8L12 16.8l-5.2 2.75 1-5.8-4.2-4.1 5.8-.85Z"/></svg>
         </button>
       </div>
+      <!-- Notificações: o sino aparece em todas as telas -->
+      <div class="notif-wrap">
+        <button type="button" class="btn-ferramenta-tabela btn-sino" id="btnNotificacoes" title="Notificações" aria-label="Notificações" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6.5 2 6.5H4S6 14 6 9z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>
+          <span class="notif-badge" id="notifBadge" hidden>0</span>
+        </button>
+        <div class="notif-painel" id="notifPainel" hidden>
+          <div class="notif-topo"><b>Notificações</b><button type="button" id="btnNotifLerTodas">Marcar todas como lidas</button></div>
+          <div class="notif-lista" id="notifLista"></div>
+        </div>
+      </div>
     </header>
 
     <div class="aviso-erro" id="avisoErro" hidden></div>
@@ -2875,23 +2927,23 @@
 
         <aside class="principal-direita" aria-label="Lembretes e alertas">
           <div class="cartao-alerta">
-            <h3>Próximos recebimentos</h3>
-            <div id="alertaRecebimentos"></div>
-          </div>
-          <div class="cartao-alerta">
-            <h3>Pagamentos pendentes</h3>
-            <div id="alertaPendentes"></div>
-          </div>
-          <div class="cartao-alerta">
-            <h3>Direito de uso expirando</h3>
-            <div id="alertaDireitoUso"></div>
-          </div>
-          <div class="cartao-alerta">
-            <h3>Prazos vencendo em breve</h3>
+            <h3>Prazos vencendo em breve <button type="button" class="seta-cartao-alerta" data-ir-aba="gp-quadro" title="Ir para Produção" aria-label="Ir para Produção"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button></h3>
             <div id="alertaPrazos"></div>
           </div>
           <div class="cartao-alerta">
-            <h3>Follow-ups pendentes</h3>
+            <h3>Próximos recebimentos <button type="button" class="seta-cartao-alerta" data-ir-aba="fin-fluxo-caixa" title="Ir para Fluxo de Caixa" aria-label="Ir para Fluxo de Caixa"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button></h3>
+            <div id="alertaRecebimentos"></div>
+          </div>
+          <div class="cartao-alerta">
+            <h3>Pagamentos pendentes <button type="button" class="seta-cartao-alerta" data-ir-aba="fin-fluxo-caixa" title="Ir para Fluxo de Caixa" aria-label="Ir para Fluxo de Caixa"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button></h3>
+            <div id="alertaPendentes"></div>
+          </div>
+          <div class="cartao-alerta">
+            <h3>Direito de uso expirando <button type="button" class="seta-cartao-alerta" data-ir-aba="crm-contratos" title="Ir para Campanhas" aria-label="Ir para Campanhas"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button></h3>
+            <div id="alertaDireitoUso"></div>
+          </div>
+          <div class="cartao-alerta">
+            <h3>Follow-ups pendentes <button type="button" class="seta-cartao-alerta" data-ir-aba="comercial-oportunidades" title="Ir para Oportunidades" aria-label="Ir para Oportunidades"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button></h3>
             <p class="alerta-vazio">Em construção.</p>
           </div>
         </aside>
@@ -14376,22 +14428,79 @@
   });
 
   // ---- LEMBRETES E ALERTAS (coluna da direita) ----
-  function listaAlerta(idContainer, itens, vazio, limite = 5) {
+  // Cada item pode ter "destino" (ver executarDestino): clicar nele abre a
+  // página/janela correspondente. "destinoMais" é pro "+ N outro(s)".
+  function listaAlerta(idContainer, itens, vazio, limite = 5, destinoMais = null) {
     const container = document.getElementById(idContainer);
+    container._destinos = [];
+    container._destinoMais = destinoMais;
     if (!itens.length) {
       container.innerHTML = `<p class="alerta-vazio">${esc(vazio)}</p>`;
       return;
     }
+    const visiveis = itens.slice(0, limite);
+    container._destinos = visiveis.map((i) => i.destino || null);
     container.innerHTML =
-      itens
-        .slice(0, limite)
+      visiveis
         .map(
-          (i) => `<div class="item-alerta">
+          (i, n) => `<div class="item-alerta${i.destino ? " clicavel" : ""}" data-alerta-i="${n}"${i.destino ? ' role="button" tabindex="0"' : ""}>
             <span class="nome-alerta" title="${esc(i.nome)}">${esc(i.nome)}</span>
             <span class="info-alerta"><span>${esc(i.esquerda || "")}</span><span class="${i.classe || ""}">${esc(i.direita || "")}</span></span>
           </div>`
         )
-        .join("") + (itens.length > limite ? `<p class="mais-alerta">+ ${itens.length - limite} outro(s)</p>` : "");
+        .join("") +
+      (itens.length > limite ? `<p class="mais-alerta${destinoMais ? " clicavel" : ""}" data-alerta-mais="1">+ ${itens.length - limite} outro(s)</p>` : "");
+  }
+  ["alertaPrazos", "alertaRecebimentos", "alertaPendentes", "alertaDireitoUso"].forEach((id) => {
+    const container = document.getElementById(id);
+    const abrir = (evento) => {
+      const mais = evento.target.closest("[data-alerta-mais]");
+      if (mais && container._destinoMais) return executarDestino(container._destinoMais);
+      const item = evento.target.closest("[data-alerta-i]");
+      const destino = item && container._destinos && container._destinos[Number(item.dataset.alertaI)];
+      if (destino) executarDestino(destino, true); // só a janela, sem trocar de página
+    };
+    container.addEventListener("click", abrir);
+    container.addEventListener("keydown", (evento) => {
+      if (evento.key === "Enter" || evento.key === " ") {
+        evento.preventDefault();
+        abrir(evento);
+      }
+    });
+  });
+
+  // Seta no título de cada cartão: aí sim vai pra página (ex.: Fluxo de Caixa)
+  document.querySelectorAll("[data-ir-aba]").forEach((botao) => botao.addEventListener("click", () => irParaAba(botao.dataset.irAba)));
+  // Leva pra página/janela de um alerta ou notificação.
+  //  { tipo: "aba", tab }                      -> abre a aba do menu
+  //  { tipo: "jornada", aba }                  -> Menu Principal > Metas/Conquistas
+  //  { tipo: "lancamento", ehDespesa, chave }  -> Fluxo de Caixa, janela do lançamento
+  //  { tipo: "video", id }                     -> Produção, janela do vídeo
+  //  { tipo: "campanha", id }                  -> Campanhas, janela da campanha
+  function irParaAba(tab) {
+    const botao = document.querySelector(`.item-nav[data-tab="${tab}"]`);
+    if (botao) botao.click();
+  }
+  function executarDestino(d, soJanela) {
+    if (!d) return;
+    if (d.tipo === "aba") irParaAba(d.tab);
+    else if (d.tipo === "jornada") {
+      irParaAba("principal");
+      const botao = document.querySelector(`[data-jornada="${d.aba}"]`);
+      if (botao) botao.click();
+    } else if (d.tipo === "lancamento") {
+      if (!soJanela) irParaAba("fin-fluxo-caixa");
+      const linha = (d.ehDespesa ? linhasDespesas() : linhasReceitas()).find((l) => l.chave === d.chave);
+      if (linha) abrirLancamento(d.ehDespesa, linha);
+    } else if (d.tipo === "video") {
+      if (!soJanela) irParaAba("gp-quadro");
+      const card = quadroCache.find((c) => c.id === d.id);
+      if (card) abrirModalCard(card);
+    } else if (d.tipo === "campanha") {
+      if (!soJanela) irParaAba("crm-contratos");
+      const contrato = contratosCache.find((k) => k.id === d.id);
+      if (contrato) abrirModalContrato(contrato);
+    }
   }
   const textoDias = (dias) => (dias === 0 ? "hoje" : dias === 1 ? "amanhã" : `em ${dias} dias`);
   const textoAtraso = (dias) => (dias === -1 ? "ontem" : `há ${-dias} dias`);
@@ -14404,10 +14513,10 @@
       if (l.parcelas.length) {
         l.parcelas.forEach((x) => {
           const valor = Number(x.cache) || 0;
-          if (x.status !== "Pago" && x.pagamento && valor > 0) itens.push({ nome: l.descricao, data: x.pagamento, valor });
+          if (x.status !== "Pago" && x.pagamento && valor > 0) itens.push({ nome: l.descricao, data: x.pagamento, valor, chave: l.chave });
         });
       } else if (l.vencimentoColuna && l.valor > 0 && l.pago < l.valor - 0.005) {
-        itens.push({ nome: l.descricao, data: l.vencimentoColuna, valor: l.valor - l.pago });
+        itens.push({ nome: l.descricao, data: l.vencimentoColuna, valor: l.valor - l.pago, chave: l.chave });
       }
     });
     return itens.sort((a, b) => a.data.localeCompare(b.data)).map((i) => ({ ...i, dias: diasAte(i.data) }));
@@ -14422,7 +14531,7 @@
       const iso = isoLocalDeData(fim);
       const dias = diasAte(iso);
       if (dias < -15 || dias > 30) return;
-      const item = porCampanha.get(contrato.id) || { nome: contrato.marca, data: iso, videos: 0 };
+      const item = porCampanha.get(contrato.id) || { id: contrato.id, nome: contrato.marca, data: iso, videos: 0 };
       item.videos++;
       if (iso < item.data) item.data = iso;
       porCampanha.set(contrato.id, item);
@@ -14434,32 +14543,40 @@
     const final = colunaFinal();
     const itens = [];
     quadroCache.forEach((card) => {
-      if (final && card.coluna_id === final.id) return;
+      if (final && card.coluna_id === final.id) return; // concluído
+      if (card.enviado_em) return; // já entregue: o prazo não importa mais
       const contrato = contratoDoCard(card);
       const vencimento = calcularVencimento(card, contrato);
       if (!vencimento) return;
       const iso = isoLocalDeData(vencimento);
       const dias = diasAte(iso);
       if (dias > 7) return;
-      itens.push({ nome: card.titulo, marca: contrato ? contrato.marca : "", data: iso, dias });
+      itens.push({ id: card.id, nome: card.titulo, marca: contrato ? contrato.marca : "", data: iso, dias });
     });
     return itens.sort((a, b) => a.data.localeCompare(b.data));
   }
 
   function renderizarAlertas() {
     const recebimentos = recebimentosEmAberto();
+    const destinoRec = (i) => ({ tipo: "lancamento", ehDespesa: false, chave: i.chave });
     listaAlerta(
       "alertaRecebimentos",
-      recebimentos.filter((i) => i.dias >= 0 && i.dias <= 30).map((i) => ({ nome: i.nome, esquerda: `${formatarMoeda(i.valor)} · ${formatarDataBr(i.data)}`, direita: textoDias(i.dias) })),
-      "Nenhum recebimento nos próximos 30 dias"
+      recebimentos
+        .filter((i) => i.dias >= 0 && i.dias <= 30)
+        .map((i) => ({ nome: i.nome, esquerda: `${formatarMoeda(i.valor)} · ${formatarDataBr(i.data)}`, direita: textoDias(i.dias), destino: destinoRec(i) })),
+      "Nenhum recebimento nos próximos 30 dias",
+      5,
+      { tipo: "aba", tab: "fin-fluxo-caixa" }
     );
     listaAlerta(
       "alertaPendentes",
       recebimentos
         .filter((i) => i.dias < 0)
         .sort((a, b) => b.data.localeCompare(a.data))
-        .map((i) => ({ nome: i.nome, esquerda: `${formatarMoeda(i.valor)} · ${formatarDataBr(i.data)}`, direita: textoAtraso(i.dias), classe: "atraso" })),
-      "Nenhum pagamento atrasado"
+        .map((i) => ({ nome: i.nome, esquerda: `${formatarMoeda(i.valor)} · ${formatarDataBr(i.data)}`, direita: textoAtraso(i.dias), classe: "atraso", destino: destinoRec(i) })),
+      "Nenhum pagamento atrasado",
+      5,
+      { tipo: "aba", tab: "fin-fluxo-caixa" }
     );
     listaAlerta(
       "alertaDireitoUso",
@@ -14468,8 +14585,11 @@
         esquerda: `${i.videos} vídeo(s) · ${formatarDataBr(i.data)}`,
         direita: i.dias < 0 ? "expirou " + textoAtraso(i.dias) : textoDias(i.dias),
         classe: i.dias < 0 ? "atraso" : "aviso",
+        destino: { tipo: "campanha", id: i.id },
       })),
-      "Nenhum direito de uso expirando em 30 dias"
+      "Nenhum direito de uso expirando em 30 dias",
+      5,
+      { tipo: "aba", tab: "crm-contratos" }
     );
     listaAlerta(
       "alertaPrazos",
@@ -14478,10 +14598,208 @@
         esquerda: `${i.marca ? i.marca + " · " : ""}${formatarDataBr(i.data)}`,
         direita: i.dias < 0 ? "atrasado " + textoAtraso(i.dias) : textoDias(i.dias),
         classe: i.dias < 0 ? "atraso" : "aviso",
+        destino: { tipo: "video", id: i.id },
       })),
-      "Nenhum prazo vencendo nos próximos 7 dias"
+      "Nenhum prazo vencendo nos próximos 7 dias",
+      5,
+      { tipo: "aba", tab: "gp-quadro" }
     );
+    atualizarNotificacoes();
   }
+
+  // ---------------------------------------------------------------
+  // NOTIFICAÇÕES (sino no topo). Duas origens:
+  //  - do dia (calculadas na hora, somem sozinhas no dia seguinte): recebimento
+  //    e pagamento pra hoje, vídeo que vence amanhã sem concluir, direito de
+  //    uso que expira hoje;
+  //  - eventos (ficam guardados até você ler): nova resposta nos formulários
+  //    do portfólio, conquista nova, meta batida. A 1ª vez que o sino roda,
+  //    tudo que já existe é tratado como "visto" (senão chegaria tudo de uma vez).
+  // Lidas/vistos ficam em painel_config (ou localStorage, sem o SQL do menu).
+  // ---------------------------------------------------------------
+  const CFG_NOTIF_LIDAS = "notif_lidas";
+  const CFG_NOTIF_VISTOS = "notif_vistos";
+  const CFG_NOTIF_EVENTOS = "notif_eventos";
+
+  // Eventos novos desde a última vez (leads, conquistas, metas). Só roda com os dados já carregados.
+  function detectarEventosNotificacao() {
+    const dadosProntos = cfgPronta && financasDisponivel && producaoAvancadaDisponivel && contratosCache.length > 0 && receitasCache.length > 0 && Array.isArray(leadsCache);
+    if (!dadosProntos) return;
+    let vistos = cfgLer(CFG_NOTIF_VISTOS, null);
+    const primeira = !vistos;
+    vistos = vistos || { leads: [], conquistas: [], metas: [] };
+    const jaVisto = { leads: new Set(vistos.leads), conquistas: new Set(vistos.conquistas), metas: new Set(vistos.metas) };
+    const eventos = (cfgLer(CFG_NOTIF_EVENTOS, []) || []).slice();
+    const novos = [];
+    const agora = new Date().toISOString();
+
+    leadsCache.forEach((lead) => {
+      const chave = String(lead.id);
+      if (jaVisto.leads.has(chave)) return;
+      jaVisto.leads.add(chave);
+      if (!primeira)
+        novos.push({
+          chave: "lead:" + chave, tipo: "lead", titulo: "Nova resposta no formulário",
+          texto: `${lead.name || "Sem nome"} · ${lead.source === "popup" ? "Popup" : "Contato"}`,
+          em: lead.created_at || agora, destino: { tipo: "aba", tab: "portfolio" },
+        });
+    });
+
+    calcularConquistas()
+      .filter((c) => c.desbloqueada)
+      .forEach((c) => {
+        const chave = c.cat.id + ":" + c.marco;
+        if (jaVisto.conquistas.has(chave)) return;
+        jaVisto.conquistas.add(chave);
+        if (!primeira)
+          novos.push({
+            chave: "conq:" + chave, tipo: "conquista", titulo: "Nova conquista",
+            texto: `${c.cat.titulo}: ${c.cat.nome(c.marco)}`, em: agora, destino: { tipo: "jornada", aba: "conquistas" },
+          });
+      });
+
+    const mesAtualChave = hojeIso().slice(0, 7);
+    const series = seriesDaJornada();
+    (cfgLer("metas", []) || []).forEach((m) => {
+      const progresso = progressoMeta(m, m.mes, series);
+      if (!metaConcluida(m, progresso)) return;
+      const chave = m.id + ":" + m.mes;
+      if (jaVisto.metas.has(chave)) return;
+      jaVisto.metas.add(chave);
+      if (!primeira && m.mes === mesAtualChave) {
+        const tipo = TIPOS_META[m.tipo] || TIPOS_META.outra;
+        novos.push({
+          chave: "meta:" + chave, tipo: "meta", titulo: "Meta batida",
+          texto: m.tipo === "outra" ? m.texto : tipo.rotulo, em: agora, destino: { tipo: "jornada", aba: "metas" },
+        });
+      }
+    });
+    const alvoReceita = Number(cfgLer("meta_receita", 0)) || 0;
+    if (alvoReceita > 0) {
+      const convertido = series.faturamento.filter((f) => f.data.startsWith(mesAtualChave)).reduce((s, f) => s + f.valor, 0);
+      const chave = "receita:" + mesAtualChave;
+      if (convertido >= alvoReceita && !jaVisto.metas.has(chave)) {
+        jaVisto.metas.add(chave);
+        if (!primeira)
+          novos.push({ chave: "meta:" + chave, tipo: "meta", titulo: "Meta de receita batida", texto: `${formatarMoeda(convertido)} no mês`, em: agora, destino: { tipo: "jornada", aba: "metas" } });
+      }
+    }
+
+    const mudou = primeira || novos.length || jaVisto.leads.size !== vistos.leads.length || jaVisto.conquistas.size !== vistos.conquistas.length || jaVisto.metas.size !== vistos.metas.length;
+    if (!mudou) return;
+    cfgGravar(CFG_NOTIF_VISTOS, { leads: [...jaVisto.leads], conquistas: [...jaVisto.conquistas], metas: [...jaVisto.metas] });
+    if (novos.length) {
+      const limite = Date.now() - 45 * 86400000;
+      const todos = eventos.concat(novos).filter((e) => new Date(e.em).getTime() >= limite);
+      cfgGravar(CFG_NOTIF_EVENTOS, todos.slice(-80));
+    }
+  }
+
+  // Tudo que o sino mostra, do mais novo pro mais antigo.
+  function listaNotificacoes() {
+    const hoje = hojeIso();
+    const inicioDoDiaMs = new Date().setHours(0, 0, 0, 0);
+    const lista = (cfgLer(CFG_NOTIF_EVENTOS, []) || []).map((e) => ({ ...e, ordem: new Date(e.em).getTime() }));
+    let n = 0;
+    const doDia = (tipo, titulo, texto, chave, destino) => lista.push({ chave: `${tipo}:${hoje}:${chave}`, tipo, titulo, texto, destino, ordem: inicioDoDiaMs + 1000 * 60 * 60 * 24 - ++n });
+
+    recebimentosEmAberto()
+      .filter((i) => i.dias === 0)
+      .forEach((i) => doDia("receber", "Recebimento hoje", `${i.nome} · ${formatarMoeda(i.valor)}`, `${i.chave}:${i.valor}`, { tipo: "lancamento", ehDespesa: false, chave: i.chave }));
+    if (financasDisponivel) {
+      linhasDespesas()
+        .filter((l) => l.status !== "Pago" && l.vencimentoColuna === hoje)
+        .forEach((l) => doDia("pagar", "Pagamento hoje", `${l.descricao} · ${formatarMoeda(l.valor - l.pago)}`, l.chave, { tipo: "lancamento", ehDespesa: true, chave: l.chave }));
+    }
+    prazosVencendo()
+      .filter((i) => i.dias === 1)
+      .forEach((i) => doDia("prazo", "Vídeo vence amanhã", `${i.nome}${i.marca ? " · " + i.marca : ""}`, i.id, { tipo: "video", id: i.id }));
+    direitosDeUsoExpirando()
+      .filter((i) => i.dias === 0)
+      .forEach((i) => doDia("direito", "Direito de uso expira hoje", `${i.nome} · ${i.videos} vídeo(s)`, i.id, { tipo: "campanha", id: i.id }));
+
+    return lista.sort((a, b) => b.ordem - a.ordem).slice(0, 50);
+  }
+
+  const ICONES_NOTIF = { lead: "✉", conquista: "★", meta: "◎", receber: "＋", pagar: "−", prazo: "⏰", direito: "©" };
+
+  function atualizarNotificacoes() {
+    const btn = document.getElementById("btnNotificacoes");
+    if (!btn) return;
+    try {
+      detectarEventosNotificacao();
+    } catch (erro) {
+      console.error("Notificações:", erro);
+    }
+    const lidas = new Set(cfgLer(CFG_NOTIF_LIDAS, []) || []);
+    const lista = listaNotificacoes();
+    const naoLidas = lista.filter((n) => !lidas.has(n.chave));
+    const badge = document.getElementById("notifBadge");
+    badge.hidden = !naoLidas.length;
+    badge.textContent = naoLidas.length > 9 ? "9+" : String(naoLidas.length);
+    document.getElementById("notifLista").innerHTML = lista.length
+      ? lista
+          .map((n, i) => {
+            const lida = lidas.has(n.chave);
+            return `<button type="button" class="notif-item${lida ? " lida" : ""}" data-notif-i="${i}">
+              <span class="notif-icone">${ICONES_NOTIF[n.tipo] || "•"}</span>
+              <span class="notif-corpo"><b>${esc(n.titulo)}</b><span>${esc(n.texto || "")}</span></span>
+              ${lida ? "" : '<span class="notif-ponto"></span>'}
+            </button>`;
+          })
+          .join("")
+      : `<p class="notif-vazio">Nada por aqui por enquanto.</p>`;
+    document.getElementById("notifLista")._itens = lista;
+  }
+
+  (function ligarNotificacoes() {
+    const btn = document.getElementById("btnNotificacoes");
+    const painel = document.getElementById("notifPainel");
+    if (!btn) return;
+    const fechar = () => {
+      painel.hidden = true;
+      btn.setAttribute("aria-expanded", "false");
+    };
+    btn.addEventListener("click", (evento) => {
+      evento.stopPropagation();
+      atualizarNotificacoes();
+      painel.hidden = !painel.hidden;
+      btn.setAttribute("aria-expanded", String(!painel.hidden));
+    });
+    document.addEventListener("click", (evento) => {
+      if (!painel.hidden && !evento.target.closest(".notif-wrap")) fechar();
+    });
+    const marcarLida = (chave) => {
+      const lidas = cfgLer(CFG_NOTIF_LIDAS, []) || [];
+      if (!lidas.includes(chave)) cfgGravar(CFG_NOTIF_LIDAS, lidas.concat(chave).slice(-300));
+    };
+    document.getElementById("notifLista").addEventListener("click", (evento) => {
+      const item = evento.target.closest("[data-notif-i]");
+      const lista = document.getElementById("notifLista")._itens || [];
+      const notif = item && lista[Number(item.dataset.notifI)];
+      if (!notif) return;
+      marcarLida(notif.chave);
+      fechar();
+      atualizarNotificacoes();
+      executarDestino(notif.destino);
+    });
+    document.getElementById("btnNotifLerTodas").addEventListener("click", () => {
+      const lista = document.getElementById("notifLista")._itens || [];
+      const lidas = new Set(cfgLer(CFG_NOTIF_LIDAS, []) || []);
+      lista.forEach((n) => lidas.add(n.chave));
+      cfgGravar(CFG_NOTIF_LIDAS, [...lidas].slice(-300));
+      atualizarNotificacoes();
+    });
+    // novas respostas de formulário chegam com a página aberta: confere de tempos em tempos
+    setInterval(async () => {
+      try {
+        leadsCache = await buscarTudo("portfolio_leads");
+        atualizarNotificacoes();
+      } catch (erro) {
+        console.error(erro);
+      }
+    }, 120000);
+  })();
 
   // ---------------------------------------------------------------
   // DASHBOARD: marcadores do mês corrente (comparados com a média dos
