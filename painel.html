@@ -1472,6 +1472,22 @@
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 16px 24px;
   }
+  .prop-com-balao{ position:relative; }
+  .prop-com-balao[data-balao]:hover::after{
+    content: attr(data-balao);
+    position:absolute;
+    left:0; bottom:calc(100% - 4px);
+    z-index:30;
+    max-width:280px;
+    padding:8px 12px;
+    border-radius:10px;
+    background: var(--grafite);
+    color:#fff;
+    font-size:.78rem;
+    line-height:1.35;
+    box-shadow:0 6px 18px rgba(0,0,0,.18);
+    pointer-events:none;
+  }
   .prop-limpa{
     display:flex;
     flex-direction:column;
@@ -3808,18 +3824,14 @@
             <span class="valor-limpo" id="valorMarcaCard">—</span>
           </div>
           <div class="prop-limpa">
-            <span class="rotulo-limpo">Representante</span>
-            <span class="valor-limpo" id="valorRepresentanteCard">—</span>
-          </div>
-          <div class="prop-limpa">
             <span class="rotulo-limpo">Plataforma/agência</span>
             <span class="valor-limpo" id="valorPlataformaCard">—</span>
           </div>
           <div class="prop-limpa">
-            <span class="rotulo-limpo">Início</span>
+            <span class="rotulo-limpo">Início (assinatura do contrato)</span>
             <input type="date" id="valorInicioCard" class="input-limpo">
           </div>
-          <div class="prop-limpa">
+          <div class="prop-limpa prop-com-balao" id="propVencimentoCard">
             <span class="rotulo-limpo">Vencimento</span>
             <span class="valor-limpo" id="valorVencimentoCard" hidden>—</span>
             <input type="date" id="campoPrazoCard" class="input-limpo" hidden>
@@ -3857,6 +3869,10 @@
               </button>
               <input type="date" class="input-limpo" id="campoEnviadoCard">
             </div>
+          </div>
+          <div class="prop-limpa">
+            <span class="rotulo-limpo">Data de conclusão</span>
+            <input type="date" id="campoConcluidoCard" class="input-limpo">
           </div>
         </div>
 
@@ -5921,9 +5937,10 @@
   const campoContratoCard = document.getElementById("campoContratoCard");
   const campoFormatoCard = document.getElementById("campoFormatoCard");
   const valorMarcaCard = document.getElementById("valorMarcaCard");
-  const valorRepresentanteCard = document.getElementById("valorRepresentanteCard");
   const valorPlataformaCard = document.getElementById("valorPlataformaCard");
   const valorInicioCard = document.getElementById("valorInicioCard");
+  const campoConcluidoCard = document.getElementById("campoConcluidoCard");
+  const propVencimentoCard = document.getElementById("propVencimentoCard");
   const valorVencimentoCard = document.getElementById("valorVencimentoCard");
   const campoPrazoCard = document.getElementById("campoPrazoCard");
   const valorDireitosCard = document.getElementById("valorDireitosCard");
@@ -6024,16 +6041,29 @@
     const contrato = contratosCache.find((k) => k.id === campoContratoCard.value) || null;
     const empresaDoContrato = contrato && contrato.empresa_id ? empresasCache.find((e) => e.id === contrato.empresa_id) : null;
     valorMarcaCard.textContent = contrato ? contrato.marca : "—";
-    // Representante agora vive na marca (aba Marca), não mais na campanha.
-    valorRepresentanteCard.textContent = empresaDoContrato && empresaDoContrato.representante ? empresaDoContrato.representante : "—";
     valorPlataformaCard.textContent = contrato && contrato.plataforma_agencia ? contrato.plataforma_agencia : "—";
 
-    // Início = created_at do card, editável. Só repopula enquanto não foi mexido à mão.
+    // Início = created_at do card, editável. Em vídeo novo puxa a assinatura do
+    // contrato; ao trocar a campanha (listener abaixo) também. Só repopula
+    // enquanto não foi mexido à mão.
     if (!valorInicioCard.dataset.tocado) {
       valorInicioCard.value =
         cardEmEdicaoObjeto && cardEmEdicaoObjeto.created_at
           ? new Date(cardEmEdicaoObjeto.created_at).toLocaleDateString("sv-SE")
-          : "";
+          : (contrato && contrato.data_assinatura) || "";
+    }
+
+    // Data de conclusão: só vale com o status na coluna final. Preenche sozinha
+    // (hoje, ou a data já gravada) até ser editada à mão.
+    const colunaFinalCard = colunaFinal();
+    const statusConcluido = !!colunaFinalCard && campoColunaCard.value === colunaFinalCard.id;
+    campoConcluidoCard.disabled = !statusConcluido;
+    if (!statusConcluido) {
+      campoConcluidoCard.value = "";
+    } else if (!campoConcluidoCard.dataset.tocado) {
+      campoConcluidoCard.value = new Date(
+        (cardEmEdicaoObjeto && cardEmEdicaoObjeto.concluido_em) || Date.now()
+      ).toLocaleDateString("sv-SE");
     }
 
     const base = cardEmEdicaoObjeto || {};
@@ -6045,6 +6075,7 @@
       valorVencimentoCard.hidden = false;
       campoPrazoCard.hidden = true;
       valorVencimentoCard.textContent = vencimento.toLocaleDateString("pt-BR") + " (calculado)";
+      propVencimentoCard.dataset.balao = `${contrato.prazo_entrega_dias_uteis} dias úteis após o recebimento do produto`;
     } else {
       valorVencimentoCard.hidden = true;
       campoPrazoCard.hidden = false;
@@ -6052,6 +6083,10 @@
         campoPrazoCard.value = base.prazo || "";
       }
       vencimento = campoPrazoCard.value ? new Date(campoPrazoCard.value + "T00:00:00") : null;
+      propVencimentoCard.dataset.balao =
+        contrato && contrato.prazo_entrega_dias_uteis
+          ? `${contrato.prazo_entrega_dias_uteis} dias úteis após o recebimento do produto (preencha o recebimento para calcular). Enquanto isso, a data é manual.`
+          : "Data definida manualmente (a campanha não tem prazo em dias úteis).";
     }
 
     const direitos = calcularDireitosAutorais(base, contrato);
@@ -6150,6 +6185,17 @@
   });
   valorInicioCard.addEventListener("change", () => {
     valorInicioCard.dataset.tocado = "1";
+  });
+  campoConcluidoCard.addEventListener("change", () => {
+    campoConcluidoCard.dataset.tocado = "1";
+  });
+  // Trocar a campanha puxa a data de assinatura pro Início (se ela tiver uma).
+  campoContratoCard.addEventListener("change", () => {
+    const k = contratosCache.find((x) => x.id === campoContratoCard.value);
+    if (k && k.data_assinatura) {
+      valorInicioCard.value = k.data_assinatura;
+      valorInicioCard.dataset.tocado = "1";
+    }
   });
 
   // Trocar pra Publipost já cria (se faltar) Publicação/Envio de métricas
@@ -6840,6 +6886,7 @@
     criandoCampanhaParaVideo = false;
     delete campoPrazoCard.dataset.tocado;
     delete valorInicioCard.dataset.tocado;
+    delete campoConcluidoCard.dataset.tocado;
 
     campoTituloCard.value = card ? card.titulo : "";
     campoColunaCard.innerHTML = colunasCache.map((c) => `<option value="${c.id}">${c.nome}</option>`).join("");
@@ -7081,6 +7128,9 @@
       concluido_em: calcularConcluidoEm(novaColunaId, colunaAnteriorId, concluidoAtual),
       updated_at: new Date().toISOString(),
     };
+    if (dados.concluido_em && campoConcluidoCard.dataset.tocado && campoConcluidoCard.value) {
+      dados.concluido_em = new Date(campoConcluidoCard.value + "T12:00:00").toISOString();
+    }
     if (!campoPrazoCard.hidden) dados.prazo = campoPrazoCard.value || null;
     if (valorInicioCard.dataset.tocado && valorInicioCard.value) {
       dados.created_at = new Date(valorInicioCard.value + "T12:00:00").toISOString();
