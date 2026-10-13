@@ -3817,7 +3817,7 @@
           </div>
           <div class="prop-limpa">
             <span class="rotulo-limpo">Início</span>
-            <span class="valor-limpo" id="valorInicioCard">—</span>
+            <input type="date" id="valorInicioCard" class="input-limpo">
           </div>
           <div class="prop-limpa">
             <span class="rotulo-limpo">Vencimento</span>
@@ -6028,10 +6028,13 @@
     valorRepresentanteCard.textContent = empresaDoContrato && empresaDoContrato.representante ? empresaDoContrato.representante : "—";
     valorPlataformaCard.textContent = contrato && contrato.plataforma_agencia ? contrato.plataforma_agencia : "—";
 
-    valorInicioCard.textContent =
-      cardEmEdicaoObjeto && cardEmEdicaoObjeto.created_at
-        ? new Date(cardEmEdicaoObjeto.created_at).toLocaleDateString("pt-BR")
-        : "Ao salvar";
+    // Início = created_at do card, editável. Só repopula enquanto não foi mexido à mão.
+    if (!valorInicioCard.dataset.tocado) {
+      valorInicioCard.value =
+        cardEmEdicaoObjeto && cardEmEdicaoObjeto.created_at
+          ? new Date(cardEmEdicaoObjeto.created_at).toLocaleDateString("sv-SE")
+          : "";
+    }
 
     const base = cardEmEdicaoObjeto || {};
     const calculavel = !!(base.recebido_em && contrato && contrato.prazo_entrega_dias_uteis);
@@ -6144,6 +6147,9 @@
   campoPrazoCard.addEventListener("change", () => {
     campoPrazoCard.dataset.tocado = "1";
     atualizarCamposDerivadosCard();
+  });
+  valorInicioCard.addEventListener("change", () => {
+    valorInicioCard.dataset.tocado = "1";
   });
 
   // Trocar pra Publipost já cria (se faltar) Publicação/Envio de métricas
@@ -6833,6 +6839,7 @@
     voltarModalPara = null;
     criandoCampanhaParaVideo = false;
     delete campoPrazoCard.dataset.tocado;
+    delete valorInicioCard.dataset.tocado;
 
     campoTituloCard.value = card ? card.titulo : "";
     campoColunaCard.innerHTML = colunasCache.map((c) => `<option value="${c.id}">${c.nome}</option>`).join("");
@@ -7075,6 +7082,9 @@
       updated_at: new Date().toISOString(),
     };
     if (!campoPrazoCard.hidden) dados.prazo = campoPrazoCard.value || null;
+    if (valorInicioCard.dataset.tocado && valorInicioCard.value) {
+      dados.created_at = new Date(valorInicioCard.value + "T12:00:00").toISOString();
+    }
 
     try {
       if (idCardEmEdicao) {
