@@ -2495,6 +2495,8 @@
     background: var(--branco); border:1px solid var(--borda); border-left:4px solid var(--cinza-claro);
     border-radius:12px; padding:14px 18px; display:flex; flex-direction:column; gap:4px;
   }
+  .cartao-fluxo.clicavel{ cursor:pointer; transition: box-shadow .15s ease; }
+  .cartao-fluxo.clicavel:hover{ box-shadow:0 0 0 1px var(--borda), 0 2px 8px rgba(0,0,0,.06); }
   .cartao-fluxo.entradas{ border-left-color: var(--verde-sucesso); }
   .cartao-fluxo.saidas{ border-left-color: var(--vermelho-erro); }
   .cartao-fluxo.pendente{ border-left-color: #C98A1F; }
@@ -3422,27 +3424,27 @@
 
       <div id="fluxoVisaoMes">
         <div class="cartoes-fluxo" id="cartoesFluxo">
-          <div class="cartao-fluxo previsto">
+          <div class="cartao-fluxo previsto clicavel" data-lista-fluxo="previsto" role="button" tabindex="0" title="Ver a lista">
             <span class="rotulo-cartao-fluxo">Previsto</span>
             <span class="valor-cartao-fluxo" id="fluxoPrevisto">R$ 0,00</span>
             <span class="nota-cartao-fluxo" id="fluxoNotaPrevisto">—</span>
           </div>
-          <div class="cartao-fluxo entradas">
+          <div class="cartao-fluxo entradas clicavel" data-lista-fluxo="recebido" role="button" tabindex="0" title="Ver a lista">
             <span class="rotulo-cartao-fluxo">Recebido</span>
             <span class="valor-cartao-fluxo" id="fluxoRecebido">R$ 0,00</span>
             <span class="nota-cartao-fluxo" id="fluxoNotaRecebido">—</span>
           </div>
-          <div class="cartao-fluxo pendente">
+          <div class="cartao-fluxo pendente clicavel" data-lista-fluxo="pendente" role="button" tabindex="0" title="Ver a lista">
             <span class="rotulo-cartao-fluxo">Pendente</span>
             <span class="valor-cartao-fluxo" id="fluxoPendente">R$ 0,00</span>
             <span class="nota-cartao-fluxo" id="fluxoNotaPendente">—</span>
           </div>
-          <div class="cartao-fluxo saidas">
+          <div class="cartao-fluxo saidas clicavel" data-lista-fluxo="pagos" role="button" tabindex="0" title="Ver a lista">
             <span class="rotulo-cartao-fluxo">Pagos</span>
             <span class="valor-cartao-fluxo" id="fluxoPagos">R$ 0,00</span>
             <span class="nota-cartao-fluxo" id="fluxoNotaPagos">—</span>
           </div>
-          <div class="cartao-fluxo acumulado" id="cartaoFluxoAcumulado">
+          <div class="cartao-fluxo acumulado clicavel" id="cartaoFluxoAcumulado" data-lista-fluxo="acumulado" role="button" tabindex="0" title="Ver a lista">
             <span class="rotulo-cartao-fluxo">Caixa acumulado</span>
             <span class="valor-cartao-fluxo" id="fluxoAcumulado">R$ 0,00</span>
             <span class="nota-cartao-fluxo" id="fluxoNotaAcumulado">—</span>
@@ -4145,6 +4147,24 @@
     <div class="acoes-modal-quadro">
       <span style="flex-grow:1"></span>
       <button type="button" class="btn-salvar-quadro" id="btnFecharArquivados">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL: LISTA DE UM CARTÃO DO FLUXO DE CAIXA ===================== -->
+<div class="overlay-modal" id="overlayModalListaFluxo" hidden>
+  <div class="modal-quadro modal-quadro-grande">
+    <h3 id="tituloListaFluxo">Lançamentos</h3>
+    <p class="texto-pequeno" id="subtituloListaFluxo" style="margin:-8px 0 14px;"></p>
+    <div class="tabela-scroll" style="max-height:55vh; overflow-y:auto;">
+      <table class="tabela-contratos">
+        <thead><tr><th>Descrição</th><th>Data</th><th>Valor</th><th>Situação</th></tr></thead>
+        <tbody id="corpoListaFluxo"></tbody>
+      </table>
+    </div>
+    <div class="acoes-modal-quadro">
+      <strong id="totalListaFluxo" style="flex-grow:1"></strong>
+      <button type="button" class="btn-salvar-quadro" id="btnFecharListaFluxo">Fechar</button>
     </div>
   </div>
 </div>
@@ -9543,10 +9563,50 @@
 
   // Cartões: previsto/recebido/pendente do lado da receita, pagos do lado da
   // despesa, e caixa acumulado até o fim do período.
+  let listasCartoesFluxo = {};
+  function abrirListaCartaoFluxo(chave) {
+    const lista = listasCartoesFluxo[chave];
+    if (!lista) return;
+    const itens = [...lista.itens].sort((a, b) => (a.data || "").localeCompare(b.data || ""));
+    const valorAssinado = (i) => (lista.assinado && i.ehSaida ? -i.valor : i.valor);
+    document.getElementById("tituloListaFluxo").textContent = `${lista.titulo} — ${itens.length} lançamento${itens.length === 1 ? "" : "s"}`;
+    document.getElementById("subtituloListaFluxo").textContent = lista.sub;
+    document.getElementById("corpoListaFluxo").innerHTML = itens.length
+      ? itens
+          .map(
+            (i) => `<tr>
+          <td>${esc(i.nome || "—")}${lista.assinado ? ` <span class="texto-pequeno">(${i.ehSaida ? "saída" : "entrada"})</span>` : ""}</td>
+          <td>${celulaDataFluxo(i.data)}</td>
+          <td>${formatarMoeda(valorAssinado(i))}</td>
+          <td>${i.pago ? (i.ehSaida ? "Pago" : "Recebido") : "Em aberto"}</td>
+        </tr>`
+          )
+          .join("")
+      : `<tr><td colspan="4" class="texto-vazio">Nada neste cartão.</td></tr>`;
+    document.getElementById("totalListaFluxo").textContent = "Total: " + formatarMoeda(itens.reduce((s, i) => s + valorAssinado(i), 0));
+    document.getElementById("overlayModalListaFluxo").hidden = false;
+  }
+  document.getElementById("cartoesFluxo").addEventListener("click", (evento) => {
+    const cartao = evento.target.closest("[data-lista-fluxo]");
+    if (cartao) abrirListaCartaoFluxo(cartao.dataset.listaFluxo);
+  });
+  document.getElementById("cartoesFluxo").addEventListener("keydown", (evento) => {
+    if (evento.key !== "Enter" && evento.key !== " ") return;
+    const cartao = evento.target.closest("[data-lista-fluxo]");
+    if (!cartao) return;
+    evento.preventDefault();
+    abrirListaCartaoFluxo(cartao.dataset.listaFluxo);
+  });
+  const overlayModalListaFluxo = document.getElementById("overlayModalListaFluxo");
+  document.getElementById("btnFecharListaFluxo").addEventListener("click", () => (overlayModalListaFluxo.hidden = true));
+  overlayModalListaFluxo.addEventListener("click", (evento) => {
+    if (evento.target === overlayModalListaFluxo) overlayModalListaFluxo.hidden = true;
+  });
+
   function renderizarCardsFluxo() {
     if (!document.getElementById("fluxoPrevisto")) return;
-    const itensReceita = linhasReceitas().flatMap((l) => l.itens);
-    const itensDespesa = linhasDespesas().flatMap((l) => l.itens);
+    const itensReceita = linhasReceitas().flatMap((l) => l.itens.map((i) => ({ ...i, nome: l.descricao, ehSaida: false })));
+    const itensDespesa = linhasDespesas().flatMap((l) => l.itens.map((i) => ({ ...i, nome: l.descricao, ehSaida: true })));
     const { fim } = limitesPeriodo();
     const somar = (itens) => itens.reduce((s, i) => s + i.valor, 0);
     const entradas = itensReceita.filter((i) => noPeriodo(i.data));
@@ -9572,6 +9632,19 @@
     texto("fluxoAcumulado", formatarMoeda(acumulado));
     texto("fluxoNotaAcumulado", acumulado < 0 ? "⚠ Caixa no negativo" : "Caixa positivo");
     document.getElementById("cartaoFluxoAcumulado").classList.toggle("negativo", acumulado < 0);
+    // O que cada cartão está somando (abre ao clicar no cartão).
+    listasCartoesFluxo = {
+      previsto: { titulo: "Previsto", sub: "Entradas previstas no período", itens: entradas },
+      recebido: { titulo: "Recebido", sub: "Entradas já recebidas no período", itens: recebidos },
+      pendente: { titulo: "Pendente", sub: "Entradas ainda em aberto no período", itens: pendentes },
+      pagos: { titulo: "Pagos", sub: "Saídas já pagas no período", itens: pagos },
+      acumulado: {
+        titulo: "Caixa acumulado",
+        sub: "Todas as entradas e saídas até o fim do período (saídas em negativo)",
+        itens: [...itensReceita, ...itensDespesa].filter((i) => i.data && i.data <= fim),
+        assinado: true,
+      },
+    };
     renderizarGraficosFluxo();
   }
 
