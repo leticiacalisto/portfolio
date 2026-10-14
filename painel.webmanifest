@@ -1,0 +1,13 @@
+{
+  "name": "Painel Letícia Calisto",
+  "short_name": "Painel",
+  "start_url": "/painel.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f3eee9",
+  "theme_color": "#f3eee9",
+  "icons": [
+    { "src": "/imagens/icone-180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/imagens/icone.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

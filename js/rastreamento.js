@@ -54,8 +54,51 @@
 
   window.Rastreamento = { evento: evento, lead: lead };
 
-  // Visita: uma vez por carregamento de página
-  evento("page_view");
+  // De onde veio a visita. Prioridade: o parâmetro do link (?origem=instagram,
+  // ?utm_source=..., ?ref=...) e só depois o site de referência (document.referrer).
+  // Sem nenhum dos dois = acesso direto (link colado, app que não informa a origem etc.).
+  var SITES_CONHECIDOS = [
+    [/(^|\.)instagram\.com$/, "instagram"],
+    [/(^|\.)(wa\.me|whatsapp\.com)$/, "whatsapp"],
+    [/(^|\.)(tiktok\.com)$/, "tiktok"],
+    [/(^|\.)(youtube\.com|youtu\.be)$/, "youtube"],
+    [/(^|\.)(google\.[a-z.]+)$/, "google"],
+    [/(^|\.)(linkedin\.com|lnkd\.in)$/, "linkedin"],
+    [/(^|\.)(facebook\.com|fb\.com|l\.facebook\.com)$/, "facebook"],
+    [/(^|\.)(t\.co|twitter\.com|x\.com)$/, "x"],
+    [/(^|\.)seuinfluencer\.[a-z.]+$/, "seuinfluencer"],
+  ];
+  function origemDaVisita() {
+    var origem = "";
+    var meio = "";
+    var campanha = "";
+    try {
+      var params = new URLSearchParams(location.search);
+      origem = (params.get("origem") || params.get("utm_source") || params.get("ref") || params.get("src") || "").trim().toLowerCase();
+      meio = (params.get("utm_medium") || "").trim().toLowerCase();
+      campanha = (params.get("utm_campaign") || "").trim().toLowerCase();
+    } catch (erro) {}
+    var site = "";
+    try {
+      if (document.referrer) {
+        site = new URL(document.referrer).hostname.replace(/^www\./, "");
+        if (site === location.hostname.replace(/^www\./, "")) site = "";
+      }
+    } catch (erro) {}
+    if (!origem && site) {
+      origem = site;
+      for (var i = 0; i < SITES_CONHECIDOS.length; i++) {
+        if (SITES_CONHECIDOS[i][0].test(site)) {
+          origem = SITES_CONHECIDOS[i][1];
+          break;
+        }
+      }
+    }
+    return { origem: origem || "direto", site: site || null, meio: meio || null, campanha: campanha || null };
+  }
+
+  // Visita: uma vez por carregamento de página (com a origem junto)
+  evento("page_view", null, origemDaVisita());
 
   // Cliques: vídeos abertos (data-youtube) e qualquer elemento com data-rastrear
   document.addEventListener("click", function (evt) {

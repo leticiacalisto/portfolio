@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>Painel - Meus números</title>
+<link rel="manifest" href="painel.webmanifest">
+<link rel="apple-touch-icon" href="imagens/icone-180.png">
+<meta name="theme-color" content="#f3eee9">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1998,23 +2001,39 @@
   .chip-fase-lista .ponto-fase{ width:8px; height:8px; border-radius:50%; }
 
   /* ================= TAREFAS ================= */
-  .tarefas-grade{ display:grid; grid-template-columns: minmax(0, 3fr) minmax(250px, 1fr); gap:32px; align-items:start; }
+  .tarefas-grade{ display:grid; grid-template-columns: minmax(0, 4fr) minmax(230px, 1fr); gap:28px; align-items:start; }
   .topo-semana-tarefas{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:10px; }
   .nav-semana-tarefas{ display:flex; align-items:center; gap:2px; }
   .titulo-semana-tarefas{ font-weight:600; font-size:.9rem; min-width:160px; text-align:center; }
   .filtros-demanda{ display:flex; gap:2px; }
   .filtro-demanda{ opacity:.35; }
   .filtro-demanda.ativo{ opacity:1; background: var(--creme); border-color: var(--borda); color: var(--grafite); }
-  .semana-tarefas{ border:1px solid var(--borda); border-radius:14px; overflow:hidden; display:flex; flex-direction:column; height:400px; background: var(--branco); }
+  .semana-tarefas{ border:1px solid var(--borda); border-radius:14px; overflow:hidden; display:flex; flex-direction:column; height:clamp(500px, 74vh, 800px); background: var(--branco); }
   .sem-linha{ display:grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
   .sem-cabecalho{ flex:0 0 auto; }
   .sem-cab-dia{ display:flex; align-items:center; justify-content:center; gap:6px; padding:7px 4px; font-size:.74rem; color: var(--cinza-menu); }
   .sem-cab-dia b{ font-size:.86rem; font-weight:600; color: var(--grafite); min-width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; border-radius:999px; }
   .sem-cab-dia.hoje b{ background:#E5484D; color:#fff; }
-  .sem-topo{ flex:0 0 auto; max-height:130px; min-height:46px; overflow:auto; border-top:1px solid var(--borda); }
+  /* altura automática (cabe tudo, até 70% do calendário); ao arrastar o divisor vira altura manual */
+  .sem-topo{ flex:0 0 auto; max-height:70%; min-height:46px; overflow:auto; border-top:1px solid var(--borda); }
+  .sem-topo.manual{ max-height:none; }
   .sem-topo-dia{ border-left:1px solid var(--borda); padding:4px 4px 6px; display:flex; flex-direction:column; gap:3px; min-width:0; }
   .sem-topo-dia:first-child, .sem-coluna-tar:first-child{ border-left:none; }
-  .sem-divisor{ flex:0 0 auto; height:0; border-top:2px solid var(--borda); }
+  .sem-divisor{ flex:0 0 auto; height:10px; cursor:row-resize; position:relative; touch-action:none; user-select:none; }
+  .sem-divisor::before{ content:""; position:absolute; left:0; right:0; top:4px; border-top:2px solid var(--borda); }
+  .sem-divisor::after{ content:""; position:absolute; left:50%; top:2px; width:34px; height:6px; margin-left:-17px; border-radius:3px; background: var(--borda); }
+  .sem-divisor:hover::before, .sem-divisor.arrastando::before{ border-top-color: var(--cinza-menu); }
+  .sem-divisor:hover::after, .sem-divisor.arrastando::after{ background: var(--cinza-menu); }
+  .sem-topo .cal-sub{ align-items:flex-start; padding:3px 6px; border-radius:6px; }
+  .sem-topo .cal-sub .chk-redondo{ margin-top:1px; }
+  .sem-topo .cal-sub-texto{ white-space:normal; overflow:visible; overflow-wrap:anywhere; }
+  .sem-topo .cal-sub-texto em{ color:inherit; opacity:.7; }
+  .sem-topo .cal-sub:hover{ filter:brightness(.96); }
+  .cal-sub.feita{ opacity:.6; }
+  .cal-sub.feita .cal-sub-texto{ text-decoration:line-through; }
+  .sem-topo .chip-demanda{ white-space:normal; overflow-wrap:anywhere; }
+  .sem-coluna-tar .chip-tarefa-dia{ align-items:flex-start; }
+  .sem-coluna-tar .chip-tarefa-dia .tit{ white-space:normal; overflow-wrap:anywhere; }
   .sem-dias-tar{ flex:1 1 0; min-height:0; overflow-y:auto; align-items:stretch; }
   .sem-coluna-tar{ border-left:1px solid var(--borda); padding:6px 4px; display:flex; flex-direction:column; gap:4px; min-width:0; }
   .sem-coluna-tar.hoje{ background: rgba(229,72,77,.03); }
@@ -2121,7 +2140,7 @@
   .reputacao-periodo{ margin-left:auto; font-size:.68rem; line-height:1.4; color: var(--cinza-menu); text-align:right; }
   .dash-funis{ display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-top:0; }
   .dash-funis .cartao{ margin-bottom:0; }
-  .etapa-funil{ margin:0 auto 6px; padding:11px 14px; border-radius:8px; color:#fff; display:flex; justify-content:space-between; gap:10px; font-size:.85rem; font-weight:600; min-width:150px; transition: width .3s ease; }
+  .etapa-funil{ margin:0 auto 6px; padding:13px 34px; border-radius:0; clip-path: polygon(0 0, 100% 0, calc(100% - 22px) 100%, 22px 100%); color: var(--grafite); display:flex; justify-content:space-between; gap:10px; font-size:.85rem; font-weight:600; min-width:150px; transition: width .3s ease; }
   .etapa-funil .qtd{ font-weight:700; }
   .conversao-funil{ text-align:center; font-size:.72rem; color: var(--cinza-menu); margin:-2px 0 6px; }
   #dashFunilTotais{ margin-top:20px; }
@@ -2177,8 +2196,7 @@
   .mais-alerta.clicavel:hover{ color: var(--grafite); text-decoration: underline; }
 
   /* ---- Sino de notificações ---- */
-  .notif-wrap{ position:relative; margin-left:auto; }
-  .barra-salvos:not([hidden]) + .notif-wrap{ margin-left:8px; }
+  .notif-wrap{ position:relative; }
   .btn-sino{ position:relative; width:34px; height:34px; }
   .btn-sino svg{ width:19px; height:19px; }
   .notif-badge{
@@ -2207,6 +2225,107 @@
   .notif-corpo span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .notif-ponto{ flex:none; width:8px; height:8px; border-radius:50%; background: var(--vermelho-erro); margin-top:6px; }
   .notif-vazio{ margin:0; padding:22px 14px; text-align:center; font-size:.82rem; color: var(--texto-suave); }
+  .notif-rodape{ display:block; width:100%; padding:11px 14px; border:none; border-top:1px solid var(--borda); background: var(--creme); font-family:inherit; font-size:.8rem; font-weight:600; color: var(--grafite); cursor:pointer; text-align:center; }
+  .notif-rodape:hover{ background:#F1EEE9; }
+
+  /* topo: ocultar dados sensíveis + sino */
+  .topo-acoes{ display:flex; align-items:center; gap:6px; margin-left:auto; }
+  /* o cabeçalho já tem um espaço entre os blocos; este recuo deixa a estrela à mesma distância dos outros botões */
+  .barra-salvos:not([hidden]) + .topo-acoes{ margin-left:-10px; }
+  .btn-ocultar-dados.ativo{ background: var(--creme); border-color: var(--borda); color: var(--grafite); }
+  .btn-ocultar-dados .olho-fechado{ display:none; }
+  .btn-ocultar-dados.ativo .olho-aberto{ display:none; }
+  .btn-ocultar-dados.ativo .olho-fechado{ display:inline; }
+  .dado-sensivel{ transition: filter .15s ease; }
+  body.ocultar-sensivel .dado-sensivel,
+  body.ocultar-sensivel .valor-cartao-fluxo,
+  body.ocultar-sensivel .nota-cartao-fluxo,
+  body.ocultar-sensivel #campoMetaReceita,
+  body.ocultar-sensivel #campoMetaFaturamentoResultados,
+  body.ocultar-sensivel #emailUsuario{ filter: blur(7px); user-select:none; }
+
+  /* análise inteligente abaixo do cumprimento */
+  .insight-topo{ margin:6px 0 0; max-width:760px; font-size:.88rem; line-height:1.45; color: var(--texto-suave); }
+
+  /* central de notificações */
+  .notif-central-topo{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
+  .notif-central-filtros{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .notif-central-grupo{ display:flex; align-items:center; gap:8px; font-size:.75rem; color: var(--texto-suave); }
+  .notif-dispositivo{ border:1px solid var(--borda); border-radius:14px; padding:14px 18px; margin-bottom:18px; background: var(--branco); }
+  .notif-dispositivo h3{ margin:0 0 4px; font-size:.95rem; }
+  .notif-dispositivo p{ margin:0; font-size:.82rem; color: var(--texto-suave); }
+  .notif-disp-topo{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .notif-disp-lista{ margin-top:10px; display:flex; flex-direction:column; gap:4px; font-size:.8rem; }
+  .notif-disp-lista span.off{ color: var(--cinza-menu); }
+  .notif-dia{ margin:18px 0 6px; font-size:.72rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color: var(--texto-suave); }
+  .notif-linha{ display:flex; align-items:flex-start; gap:12px; padding:11px 14px; border:1px solid var(--borda); border-radius:12px; margin-bottom:8px; background: var(--branco); cursor:pointer; }
+  .notif-linha:hover{ background: var(--creme); }
+  .notif-linha.lida{ opacity:.65; }
+  .notif-linha .notif-corpo{ white-space:normal; }
+  .notif-linha .notif-corpo span{ white-space:normal; overflow:visible; }
+  .notif-hora{ font-size:.72rem; color: var(--cinza-menu); white-space:nowrap; }
+  .notif-selos{ display:flex; gap:6px; align-items:center; margin-top:4px; flex-wrap:wrap; }
+  .notif-selo{ font-size:.68rem; font-weight:700; padding:2px 8px; border-radius:999px; }
+  .notif-selo.pendente{ background:#FCF1D9; color:#8A5A00; }
+  .notif-selo.resolvida{ background:#E3F4EA; color:#1E6B3A; }
+  .notif-acoes-linha{ display:flex; gap:4px; flex-shrink:0; }
+  .notif-acoes-linha button{ background:none; border:1px solid var(--borda); border-radius:8px; font-family:inherit; font-size:.7rem; padding:4px 8px; cursor:pointer; color: var(--texto-suave); }
+  .notif-acoes-linha button:hover{ background: var(--creme); color: var(--grafite); }
+
+  @media (max-width: 900px){ #cartoesCampanhas, #cartoesOportunidades{ grid-template-columns: repeat(2, 1fr) !important; } }
+  /* lista genérica aberta pelos cartões de números (Campanhas, Marcas, Oportunidades, Resultados) */
+  .linha-clicavel-lista{ cursor:pointer; }
+  .linha-clicavel-lista:hover td{ background: var(--creme); }
+
+  /* origem dos acessos (Portfólio) */
+  .linha-origem{ display:flex; align-items:center; gap:12px; padding:6px 0; font-size:.88rem; }
+  .linha-origem .nome-origem{ width:200px; flex-shrink:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .linha-origem .trilho-origem{ flex-grow:1; height:9px; border-radius:999px; background:#EFEFEF; overflow:hidden; }
+  .linha-origem .trilho-origem i{ display:block; height:100%; border-radius:999px; }
+  .linha-origem .qtd-origem{ width:110px; flex-shrink:0; text-align:right; font-weight:700; font-size:.85rem; white-space:nowrap; }
+  .menu-links-origem{ position:relative; }
+  .popover-links-origem{ position:absolute; top:calc(100% + 6px); right:0; z-index:40; min-width:230px; background: var(--branco); border:1px solid var(--borda); border-radius:12px; box-shadow:0 12px 32px rgba(20,17,13,.16); padding:6px; display:flex; flex-direction:column; }
+  .popover-links-origem p{ margin:4px 8px 6px; font-size:.72rem; color: var(--texto-suave); }
+  .popover-links-origem button{ background:none; border:none; font-family:inherit; font-size:.84rem; text-align:left; padding:8px 10px; border-radius:8px; cursor:pointer; color: var(--grafite); }
+  .popover-links-origem button:hover{ background: var(--creme); }
+
+  /* mensagens recebidas: 5 por vez, não respondidas em destaque */
+  .cartao-mensagem.nao-respondida{ border-color:#D9B3EE; background: linear-gradient(90deg, #FBEAF3, #F1EAFB); }
+  .cartao-mensagem.nao-respondida .nome-lead{ font-weight:700; }
+  .selo-novo{ font-size:.64rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; padding:2px 8px; border-radius:999px; background: linear-gradient(90deg, #F29BC4, #9F86E3); color:#fff; }
+  .btn-mais-mensagens{ display:block; margin:12px auto 0; background:none; border:1px solid var(--borda); border-radius:999px; font-family:inherit; font-size:.8rem; padding:7px 18px; cursor:pointer; color: var(--texto-suave); }
+  .btn-mais-mensagens:hover{ background: var(--creme); color: var(--grafite); }
+
+  /* ================= MOVIMENTO (entrada suave, barras que crescem, hover, janelas) =================
+     Só anima quando a aba abre (classe .entrando, tirada logo depois), pra não piscar a cada
+     atualização de dados. Termina sempre no estado normal (sem fill forwards), pra não
+     criar camadas que atrapalhem janelas e menus. */
+  :root{ --ease-mov: cubic-bezier(.22, 1, .36, 1); }
+  @keyframes abaEntra{ from{ opacity:0; } }
+  @keyframes subirSuave{ from{ opacity:0; transform: translateY(14px); } }
+  @keyframes crescerX{ from{ transform: scaleX(0); } }
+  @keyframes crescerY{ from{ transform: scaleY(0); } }
+  @keyframes funilEntra{ from{ opacity:0; transform: translateY(-10px) scale(.86, .92); } }
+  @keyframes modalFundo{ from{ opacity:0; } }
+  @keyframes modalEntra{ from{ opacity:0; transform: translateY(14px) scale(.96); } }
+  @keyframes menuEntra{ from{ opacity:0; transform: translateY(-6px) scale(.97); } }
+  .painel-aba.entrando{ animation: abaEntra .4s ease backwards; }
+  .painel-aba.entrando :is(.cartao, .cartao-fluxo, .cartao-numero, .cartao-alerta, .painel-quadro-secao, .linha-fase-andamento, .item-alerta, .notif-linha, .cartao-mensagem, .linha-origem, .card-quadro, .bloco-marcador, .mini-mes, .semana-tarefas, .selo, .cartao-meta-receita, .linha-meta){
+    animation: subirSuave .65s var(--ease-mov) backwards; animation-delay: calc(var(--i, 0) * 45ms);
+  }
+  .painel-aba.entrando :is(.preenchido-fase, .preenchido-meta, .trilho-origem i, .mini-barra-mes i){
+    transform-origin: left center; animation: crescerX .95s var(--ease-mov) backwards; animation-delay: .2s;
+  }
+  .painel-aba.entrando .barra-dia{ transform-origin: bottom center; animation: crescerY .8s var(--ease-mov) backwards; animation-delay: .2s; }
+  .painel-aba.entrando .etapa-funil{ transform-origin: top center; animation: funilEntra .7s var(--ease-mov) backwards; animation-delay: calc(.25s + var(--i, 0) * 60ms); }
+  .cartao-fluxo, .cartao-numero, .cartao-alerta{ transition: transform .25s var(--ease-mov), box-shadow .25s ease; }
+  .cartao-fluxo.clicavel:hover, .cartao-numero:hover, .cartao-alerta:hover{ transform: translateY(-2px); }
+  .overlay-modal:not([hidden]){ animation: modalFundo .25s ease backwards; }
+  .overlay-modal:not([hidden]) > :is(.modal-quadro, .modal-pequeno, .modal-conteudo){ animation: modalEntra .4s var(--ease-mov) backwards; }
+  .notif-painel:not([hidden]), .popover-links-origem:not([hidden]){ transform-origin: top right; animation: menuEntra .25s var(--ease-mov) backwards; }
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{ animation: none !important; transition: none !important; }
+  }
 
   .item-alerta{ display:flex; flex-direction:column; gap:1px; padding:7px 0; border-top:1px solid var(--borda); font-size:.85rem; }
   .item-alerta:first-child{ border-top:none; padding-top:0; }
@@ -2490,7 +2609,6 @@
   .cartoes-fluxo.cartoes-marcas{ grid-template-columns: repeat(3, 1fr); margin-bottom:18px; }
   @media (max-width: 700px){ .cartoes-fluxo.cartoes-marcas{ grid-template-columns: 1fr; } }
   #cartoesFluxo{ grid-template-columns: repeat(5, 1fr); }
-  #cartoesTrafegoPago{ grid-template-columns: repeat(3, 1fr); margin-bottom:18px; }
   .cartao-fluxo{
     background: var(--branco); border:1px solid var(--borda); border-left:4px solid var(--cinza-claro);
     border-radius:12px; padding:14px 18px; display:flex; flex-direction:column; gap:4px;
@@ -2874,6 +2992,7 @@
       <div class="bloco-titulo-topo">
         <h1 id="tituloTopo" class="titulo-saudacao">Olá</h1>
         <p class="subtitulo-topo" id="subtituloTopo"></p>
+        <p class="insight-topo" id="insightTopo" hidden></p>
       </div>
       <!-- Salvos: a estrela abre, para a esquerda, atalhos de copiar (só na tela inicial) -->
       <div class="barra-ferramentas-tabela barra-salvos colapsada" id="barraSalvos">
@@ -2901,20 +3020,52 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.85-4.2 4.1 1 5.8L12 16.8l-5.2 2.75 1-5.8-4.2-4.1 5.8-.85Z"/></svg>
         </button>
       </div>
-      <!-- Notificações: o sino aparece em todas as telas -->
-      <div class="notif-wrap">
-        <button type="button" class="btn-ferramenta-tabela btn-sino" id="btnNotificacoes" title="Notificações" aria-label="Notificações" aria-expanded="false">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6.5 2 6.5H4S6 14 6 9z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>
-          <span class="notif-badge" id="notifBadge" hidden>0</span>
+      <!-- Ocultar dados sensíveis + notificações: aparecem em todas as telas -->
+      <div class="topo-acoes">
+        <button type="button" class="btn-ferramenta-tabela btn-ocultar-dados" id="btnOcultarDados" title="Ocultar dados sensíveis (valores e e-mails)" aria-label="Ocultar dados sensíveis" aria-pressed="false">
+          <svg class="olho-aberto" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg class="olho-fechado" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A9.9 9.9 0 0 1 12 5c6 0 10 7 10 7a17 17 0 0 1-3.2 4"/><path d="M6.6 6.6A16.6 16.6 0 0 0 2 12s4 7 10 7a9.7 9.7 0 0 0 4.4-1.1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
         </button>
-        <div class="notif-painel" id="notifPainel" hidden>
-          <div class="notif-topo"><b>Notificações</b><button type="button" id="btnNotifLerTodas">Marcar todas como lidas</button></div>
-          <div class="notif-lista" id="notifLista"></div>
+        <div class="notif-wrap">
+          <button type="button" class="btn-ferramenta-tabela btn-sino" id="btnNotificacoes" title="Notificações" aria-label="Notificações" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6.5 2 6.5H4S6 14 6 9z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>
+            <span class="notif-badge" id="notifBadge" hidden>0</span>
+          </button>
+          <div class="notif-painel" id="notifPainel" hidden>
+            <div class="notif-topo"><b>Últimas notificações</b><button type="button" id="btnNotifLerTodas">Marcar todas como lidas</button></div>
+            <div class="notif-lista" id="notifLista"></div>
+            <button type="button" class="notif-rodape" id="btnAbrirCentralNotif">Abrir central de notificações</button>
+          </div>
         </div>
       </div>
     </header>
 
     <div class="aviso-erro" id="avisoErro" hidden></div>
+
+    <!-- ===================== PÁGINA: CENTRAL DE NOTIFICAÇÕES (sem item no menu; abre pelo sino) ===================== -->
+    <section id="painel-notificacoes" class="painel-aba" hidden>
+      <div class="notif-dispositivo" id="notifDispositivo"></div>
+      <div class="notif-central-topo">
+        <div class="notif-central-filtros">
+          <div class="notif-central-grupo">Leitura
+            <div class="alternador-visualizacao alternador-mini" id="filtroNotifLeitura">
+              <button type="button" class="btn-alternador ativo" data-nf="todas">Todas</button>
+              <button type="button" class="btn-alternador" data-nf="nao-lidas">Não lidas</button>
+              <button type="button" class="btn-alternador" data-nf="lidas">Lidas</button>
+            </div>
+          </div>
+          <div class="notif-central-grupo">Situação
+            <div class="alternador-visualizacao alternador-mini" id="filtroNotifSituacao">
+              <button type="button" class="btn-alternador ativo" data-nf="todas">Todas</button>
+              <button type="button" class="btn-alternador" data-nf="pendentes">Pendentes</button>
+              <button type="button" class="btn-alternador" data-nf="resolvidas">Resolvidas</button>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="btn-fases" id="btnCentralLerTodas">Marcar todas como lidas</button>
+      </div>
+      <div id="notifCentralLista"></div>
+    </section>
 
     <!-- ===================== ABA: MENU PRINCIPAL ===================== -->
     <section id="painel-principal" class="painel-aba">
@@ -2983,6 +3134,12 @@
               <button type="button" class="btn-alternador" data-periodo="30d">30d</button>
               <button type="button" class="btn-alternador" data-periodo="90d">90d</button>
             </div>
+            <div class="menu-links-origem" id="menuLinksOrigem">
+              <button type="button" class="btn-ferramenta-tabela" id="btnLinksOrigem" title="Copiar link do portfólio com origem" aria-expanded="false">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/></svg>
+              </button>
+              <div class="popover-links-origem" id="popoverLinksOrigem" hidden></div>
+            </div>
             <div class="alternador-visualizacao alternador-mini" id="alternadorVideosPortfolio" hidden>
               <button type="button" class="btn-alternador ativo" data-vis-videos-pf="mais-vistos">Mais vistos</button>
               <button type="button" class="btn-alternador" data-vis-videos-pf="todos">Todos</button>
@@ -3024,6 +3181,11 @@
         <div class="painel-quadro-secao">
           <div class="topo-quadro"><div><h2 style="margin-bottom:2px;">Visitas nos últimos 14 dias</h2></div></div>
           <div class="grafico-barras" id="graficoVisitas"></div>
+        </div>
+
+        <div class="painel-quadro-secao">
+          <div class="topo-quadro"><div><h2 style="margin-bottom:2px;">De onde vêm os acessos</h2></div></div>
+          <div id="listaOrigens"></div>
         </div>
 
         <div class="painel-quadro-secao">
@@ -3171,6 +3333,9 @@
               <button type="button" class="btn-ferramenta-tabela filtro-demanda" data-filtro-tarefas="pagamentos" title="Pagamentos pendentes (despesas previstas)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V9"/><path d="M7.5 13.5L12 9l4.5 4.5"/><path d="M5 4h14"/></svg>
               </button>
+              <button type="button" class="btn-ferramenta-tabela" id="btnConcluidasTarefas" title="Ocultar concluídas">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
             </div>
           </div>
           <div class="semana-tarefas" id="semanaTarefas"></div>
@@ -3207,6 +3372,7 @@
 
     <section id="painel-gp-quadro" class="painel-aba" hidden>
       <div class="painel-quadro-secao">
+        <div class="aviso-migracao-fluxo" id="avisoDuplicadosProducao" hidden></div>
         <div class="topo-quadro">
           <div class="alternador-visualizacao alternador-mini" id="alternadorProducao">
             <button type="button" class="btn-alternador ativo" data-visualizacao="kanban">Kanban</button>
@@ -3290,22 +3456,22 @@
 
       <div id="resultadosVisaoMes">
         <div class="cartoes-fluxo" id="cartoesResultados">
-          <div class="cartao-fluxo entradas">
+          <div class="cartao-fluxo entradas clicavel" data-lista-cartao="res-faturado" role="button" tabindex="0" title="Ver a lista">
             <span class="rotulo-cartao-fluxo">Total faturado</span>
             <span class="valor-cartao-fluxo" id="resultadosTotalFaturado">R$ 0,00</span>
             <span class="nota-cartao-fluxo" id="resultadosNotaFaturado">—</span>
           </div>
-          <div class="cartao-fluxo" id="cartaoResultadosLucroBruto">
+          <div class="cartao-fluxo clicavel" id="cartaoResultadosLucroBruto" data-lista-cartao="res-lucro-bruto" role="button" tabindex="0" title="Ver a lista">
             <span class="rotulo-cartao-fluxo">Lucro bruto</span>
             <span class="valor-cartao-fluxo" id="resultadosLucroBruto">R$ 0,00</span>
             <span class="nota-cartao-fluxo">Faturado − impostos − descontos</span>
           </div>
-          <div class="cartao-fluxo saidas">
+          <div class="cartao-fluxo saidas clicavel" data-lista-cartao="res-despesas" role="button" tabindex="0" title="Ver a lista">
             <span class="rotulo-cartao-fluxo">Despesas</span>
             <span class="valor-cartao-fluxo" id="resultadosDespesas">R$ 0,00</span>
             <span class="nota-cartao-fluxo">Despesas da empresa</span>
           </div>
-          <div class="cartao-fluxo acumulado" id="cartaoResultadosLucroLiquido">
+          <div class="cartao-fluxo acumulado clicavel" id="cartaoResultadosLucroLiquido" data-lista-cartao="res-lucro-liquido" role="button" tabindex="0" title="Ver a lista">
             <span class="rotulo-cartao-fluxo">Lucro líquido</span>
             <span class="valor-cartao-fluxo" id="resultadosLucroLiquido">R$ 0,00</span>
             <span class="nota-cartao-fluxo" id="resultadosNotaMargem">—</span>
@@ -3553,6 +3719,7 @@
     <!-- ===================== SEÇÃO: COMERCIAL ===================== -->
     <section id="painel-comercial-oportunidades" class="painel-aba" hidden>
       <div class="painel-quadro-secao">
+        <div class="cartoes-fluxo" id="cartoesOportunidades" style="grid-template-columns: repeat(5, 1fr); margin-bottom:18px;"></div>
         <div class="topo-quadro">
           <div>
             <h2 style="margin-bottom:2px;">Oportunidades</h2>
@@ -3585,17 +3752,17 @@
     <section id="painel-comercial-empresas" class="painel-aba" hidden>
       <div class="painel-quadro-secao">
         <div class="cartoes-fluxo cartoes-marcas" id="cartoesMarcas">
-          <div class="cartao-fluxo acumulado">
+          <div class="cartao-fluxo acumulado clicavel" data-lista-cartao="marcas-trabalhadas" role="button" tabindex="0" title="Ver a lista">
             <span class="rotulo-cartao-fluxo">Marcas trabalhadas</span>
             <span class="valor-cartao-fluxo" id="marcasTrabalhadas">0</span>
             <span class="nota-cartao-fluxo">Ativas + fechadas</span>
           </div>
-          <div class="cartao-fluxo entradas">
+          <div class="cartao-fluxo entradas clicavel" data-lista-cartao="marcas-ativas" role="button" tabindex="0" title="Ver a lista">
             <span class="rotulo-cartao-fluxo">Ativas</span>
             <span class="valor-cartao-fluxo" id="marcasAtivasTotal">0</span>
             <span class="nota-cartao-fluxo">Com campanha em produção</span>
           </div>
-          <div class="cartao-fluxo">
+          <div class="cartao-fluxo clicavel" data-lista-cartao="marcas-fechadas" role="button" tabindex="0" title="Ver a lista">
             <span class="rotulo-cartao-fluxo">Fechadas</span>
             <span class="valor-cartao-fluxo" id="marcasFechadasTotal">0</span>
             <span class="nota-cartao-fluxo">Todas as campanhas concluídas</span>
@@ -3647,6 +3814,25 @@
     </section>
     <section id="painel-crm-contratos" class="painel-aba" hidden>
       <div class="painel-quadro-secao">
+        <div class="cartoes-fluxo" id="cartoesCampanhas" style="grid-template-columns: repeat(4, 1fr); margin-bottom:18px;"></div>
+        <!-- Tráfego Pago: os cartões ficam no mesmo lugar dos de Campanhas, só mudam os números -->
+        <div class="cartoes-fluxo" id="cartoesTrafegoPago" style="grid-template-columns: repeat(4, 1fr); margin-bottom:18px;" hidden>
+          <div class="cartao-fluxo entradas">
+            <span class="rotulo-cartao-fluxo">Ativos</span>
+            <span class="valor-cartao-fluxo" id="trafegoAtivosQtd">0</span>
+            <span class="nota-cartao-fluxo">Direito de uso em vigor</span>
+          </div>
+          <div class="cartao-fluxo pendente">
+            <span class="rotulo-cartao-fluxo">Vencendo (30d)</span>
+            <span class="valor-cartao-fluxo" id="trafegoVencendoQtd">0</span>
+            <span class="nota-cartao-fluxo">⚠ Oferecer renovação</span>
+          </div>
+          <div class="cartao-fluxo saidas">
+            <span class="rotulo-cartao-fluxo">Vencidos</span>
+            <span class="valor-cartao-fluxo" id="trafegoVencidosQtd">0</span>
+            <span class="nota-cartao-fluxo">Oportunidade!</span>
+          </div>
+        </div>
         <div class="topo-quadro">
           <div class="alternador-visualizacao alternador-mini" id="alternadorCampanhas">
             <button type="button" class="btn-alternador ativo" data-vis-campanha="em_producao">Em produção</button>
@@ -3693,22 +3879,6 @@
             <div>
               <h2 style="margin-bottom:2px;">Tráfego Pago</h2>
               <p class="texto-pequeno">Gerencie direitos de uso em ads e oportunidades de renovação.</p>
-            </div>
-          </div>
-          <div class="cartoes-fluxo" id="cartoesTrafegoPago">
-            <div class="cartao-fluxo entradas">
-              <span class="rotulo-cartao-fluxo">Ativos</span>
-              <span class="valor-cartao-fluxo" id="trafegoAtivosQtd">0</span>
-            </div>
-            <div class="cartao-fluxo pendente">
-              <span class="rotulo-cartao-fluxo">Vencendo (30d)</span>
-              <span class="valor-cartao-fluxo" id="trafegoVencendoQtd">0</span>
-              <span class="nota-cartao-fluxo">⚠ Oferecer renovação</span>
-            </div>
-            <div class="cartao-fluxo saidas">
-              <span class="rotulo-cartao-fluxo">Vencidos</span>
-              <span class="valor-cartao-fluxo" id="trafegoVencidosQtd">0</span>
-              <span class="nota-cartao-fluxo">Oportunidade!</span>
             </div>
           </div>
           <div class="alternador-visualizacao alternador-mini" id="filtroTrafegoPago" style="margin-bottom:16px;">
@@ -4165,6 +4335,24 @@
     <div class="acoes-modal-quadro">
       <strong id="totalListaFluxo" style="flex-grow:1"></strong>
       <button type="button" class="btn-salvar-quadro" id="btnFecharListaFluxo">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL: LISTA DE UM CARTÃO DE NÚMEROS (Campanhas, Marcas, Oportunidades, Resultados) ===================== -->
+<div class="overlay-modal" id="overlayModalListaCartao" hidden>
+  <div class="modal-quadro modal-quadro-grande">
+    <h3 id="tituloListaCartao">Lista</h3>
+    <p class="texto-pequeno" id="subtituloListaCartao" style="margin:-8px 0 14px;"></p>
+    <div class="tabela-scroll" style="max-height:55vh; overflow-y:auto;">
+      <table class="tabela-contratos">
+        <thead><tr id="cabListaCartao"></tr></thead>
+        <tbody id="corpoListaCartao"></tbody>
+      </table>
+    </div>
+    <div class="acoes-modal-quadro">
+      <strong id="totalListaCartao" style="flex-grow:1"></strong>
+      <button type="button" class="btn-salvar-quadro" id="btnFecharListaCartao">Fechar</button>
     </div>
   </div>
 </div>
@@ -4743,6 +4931,7 @@
     "cc-criacao": "Criação",
     "cc-news": "News",
     "cc-afiliados": "Afiliados",
+    notificacoes: "Central de notificações",
   };
 
   botoesNav.forEach((botao) => {
@@ -4774,15 +4963,21 @@
     const texto = new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
     return texto.charAt(0).toUpperCase() + texto.slice(1);
   }
+  const NOME_USUARIA = "Letícia";
+  function emojiDoDia() {
+    const hora = new Date().getHours();
+    return hora < 5 ? "🌙" : hora < 12 ? "☀️" : hora < 18 ? "🌤️" : "🌙";
+  }
   function atualizarTopo(aba) {
     const titulo = document.getElementById("tituloTopo");
     const subtitulo = document.getElementById("subtituloTopo");
     const ehPrincipal = aba === "principal";
-    titulo.textContent = ehPrincipal ? cumprimentoDoDia() : titulosAba[aba];
+    titulo.textContent = ehPrincipal ? `${cumprimentoDoDia()}, ${NOME_USUARIA} ${emojiDoDia()}` : titulosAba[aba];
     titulo.classList.toggle("titulo-saudacao", ehPrincipal);
     subtitulo.textContent = ehPrincipal ? dataPorExtenso() : "";
     subtitulo.hidden = !ehPrincipal;
     document.getElementById("barraSalvos").hidden = !ehPrincipal;
+    if (typeof atualizarInsightTopo === "function") atualizarInsightTopo(ehPrincipal);
   }
   atualizarTopo("principal");
 
@@ -4998,6 +5193,7 @@
     }
 
     renderizarQuadro();
+    atualizarAvisoDuplicados();
     renderizarContratos();
     renderizarEmpresas(); // a coluna "Fase" das Marcas depende de quadroCache/contratosCache
     renderizarDashboardProducao();
@@ -5160,7 +5356,70 @@
       eventos.filter((e) => e.event_type === "button_click" && (e.event_name || "").startsWith("contact_"))
     );
     renderizarMensagens(leads);
+    renderizarOrigens(eventos.filter((e) => e.event_type === "page_view"));
   }
+
+  // ---- ORIGEM DOS ACESSOS: vem do metadata do page_view (js/rastreamento.js) ----
+  const NOMES_ORIGEM = {
+    instagram: "Instagram", seuinfluencer: "Seu Influencer", whatsapp: "WhatsApp", tiktok: "TikTok", youtube: "YouTube",
+    google: "Google", linkedin: "LinkedIn", facebook: "Facebook", x: "X (Twitter)", email: "E-mail", direto: "Direto / não identificado",
+  };
+  const LINKS_RASTREAVEIS = [
+    ["instagram", "Link na bio do Instagram"], ["seuinfluencer", "Perfil na Seu Influencer"], ["whatsapp", "Mensagens no WhatsApp"],
+    ["tiktok", "Bio do TikTok"], ["email", "Assinatura de e-mail"], ["linkedin", "LinkedIn"], ["youtube", "YouTube"],
+  ];
+  const nomeDaOrigem = (chave) => NOMES_ORIGEM[chave] || chave;
+  function linkDaOrigem(chave) {
+    const base = ((typeof salvosAtuais === "function" && salvosAtuais().portfolio) || "https://leticiacalisto.com").trim();
+    return base + (base.includes("?") ? "&" : "?") + "origem=" + encodeURIComponent(chave);
+  }
+  function renderizarOrigens(visitas) {
+    const container = document.getElementById("listaOrigens");
+    if (!container) return;
+    const mapa = new Map();
+    let semInfo = 0;
+    visitas.forEach((v) => {
+      const origem = v.metadata && v.metadata.origem;
+      if (!origem) semInfo++;
+      else mapa.set(origem, (mapa.get(origem) || 0) + 1);
+    });
+    const linhas = [...mapa.entries()].sort((a, b) => b[1] - a[1]);
+    if (semInfo) linhas.push(["(antes do rastreio de origem)", semInfo]);
+    const total = linhas.reduce((s, l) => s + l[1], 0);
+    container.innerHTML = linhas.length
+      ? linhas
+          .map(([chave, qtd], i) => {
+            const pct = total ? Math.round((qtd / total) * 100) : 0;
+            return `<div class="linha-origem"><span class="nome-origem">${esc(chave.startsWith("(") ? "Sem origem registrada" : nomeDaOrigem(chave))}</span><div class="trilho-origem"><i style="width:${pct}%; background:${degradeBarra(i, linhas.length)}"></i></div><span class="qtd-origem">${qtd} · ${pct}%</span></div>`;
+          })
+          .join("")
+      : textoVazio("Nenhuma visita neste período.");
+  }
+  // Botão único de copiar link: abre a lista de origens e copia o link da escolhida.
+  (function ligarMenuLinksOrigem() {
+    const botao = document.getElementById("btnLinksOrigem");
+    const pop = document.getElementById("popoverLinksOrigem");
+    pop.innerHTML = `<p>Copiar link do portfólio com origem:</p>` + LINKS_RASTREAVEIS.map(([chave, rotulo]) => `<button type="button" data-copiar-origem="${chave}">${rotulo}</button>`).join("");
+    botao.addEventListener("click", (evento) => {
+      evento.stopPropagation();
+      pop.hidden = !pop.hidden;
+      botao.setAttribute("aria-expanded", String(!pop.hidden));
+    });
+    document.addEventListener("click", (evento) => {
+      if (!pop.hidden && !evento.target.closest("#menuLinksOrigem")) pop.hidden = true;
+    });
+  })();
+  document.addEventListener("click", async (evento) => {
+    const botao = evento.target.closest("[data-copiar-origem]");
+    if (!botao) return;
+    document.getElementById("popoverLinksOrigem").hidden = true;
+    try {
+      await navigator.clipboard.writeText(linkDaOrigem(botao.dataset.copiarOrigem));
+      if (typeof mostrarAviso === "function") mostrarAviso("Link copiado");
+    } catch (erro) {
+      prompt("Copie o link:", linkDaOrigem(botao.dataset.copiarOrigem));
+    }
+  });
 
   function renderizarVideos(eventosVideo) {
     const container = document.getElementById("listaVideos");
@@ -5251,9 +5510,16 @@
     }
 
     const ordenadas = [...leads].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    let respondidos = new Set();
+    try {
+      respondidos = new Set(cfgLer("leads_respondidos", []) || []);
+    } catch (erro) {}
+    const visiveis = ordenadas.slice(0, mensagensVisiveis);
+    const faltam = ordenadas.length - visiveis.length;
 
-    container.innerHTML = ordenadas
+    container.innerHTML = visiveis
       .map((lead) => {
+        const novo = !respondidos.has(String(lead.id));
         const dataFormatada = new Date(lead.created_at).toLocaleDateString("pt-BR", {
           day: "2-digit",
           month: "2-digit",
@@ -5264,8 +5530,9 @@
         const telefoneDigitos = (lead.phone || "").replace(/\D/g, "");
 
         return `
-        <details class="cartao-mensagem">
+        <details class="cartao-mensagem${novo ? " nao-respondida" : ""}" data-lead-id="${lead.id}">
           <summary>
+            ${novo ? '<span class="selo-novo">Responder</span>' : ""}
             <span class="selo-origem ${seloClasse}">${origem}</span>
             <span class="nome-lead">${lead.name || "Sem nome"}</span>
             <span class="data-lead">${dataFormatada}</span>
@@ -5279,13 +5546,32 @@
             <div class="acoes-mensagem">
               <a class="btn-acao" href="mailto:${lead.email || ""}">Responder por e-mail</a>
               ${telefoneDigitos ? `<a class="btn-acao" href="https://wa.me/${telefoneDigitos}" target="_blank" rel="noopener">Chamar no WhatsApp</a>` : ""}
+              ${novo ? `<button type="button" class="btn-acao" data-lead-respondido="${lead.id}">Marcar como respondida</button>` : ""}
             </div>
           </div>
         </details>
       `;
       })
-      .join("");
+      .join("") + (faltam > 0 ? `<button type="button" class="btn-mais-mensagens" id="btnMaisMensagens">Mostrar mais (${faltam})</button>` : "");
   }
+  let mensagensVisiveis = 5;
+  // Uma mensagem fica em destaque até você clicar em Responder por e-mail, Chamar no WhatsApp
+  // ou Marcar como respondida.
+  document.addEventListener("click", (evento) => {
+    if (evento.target.closest("#btnMaisMensagens")) {
+      mensagensVisiveis += 5;
+      renderizarMensagens(filtrarPorPeriodo(leadsCache));
+      return;
+    }
+    const botao = evento.target.closest("#listaMensagens .btn-acao");
+    const cartao = botao && botao.closest("[data-lead-id]");
+    if (!cartao) return;
+    const id = cartao.dataset.leadId;
+    const respondidos = cfgLer("leads_respondidos", []) || [];
+    if (!respondidos.includes(id)) cfgGravar("leads_respondidos", respondidos.concat(id).slice(-1000));
+    if (botao.hasAttribute("data-lead-respondido")) renderizarMensagens(filtrarPorPeriodo(leadsCache));
+    else setTimeout(() => renderizarMensagens(filtrarPorPeriodo(leadsCache)), 300);
+  });
 
   // ---------------------------------------------------------------
   // PORTFÓLIO: sub-abas (Análise Geral / Vídeos) e gestão de vídeos por
@@ -5304,6 +5590,7 @@
       // Do lado direito da mesma linha: período (Análise Geral) ou
       // Mais vistos/Todos (Vídeos) — só um dos dois aparece por vez.
       document.getElementById("filtrosPeriodo").hidden = ehVideos;
+      document.getElementById("menuLinksOrigem").hidden = ehVideos;
       document.getElementById("alternadorVideosPortfolio").hidden = !ehVideos;
     });
   });
@@ -5991,7 +6278,9 @@
   // vídeo (não mexe nas que já tem) e já alimenta subtarefasCache, pra
   // Etapa da produção atualizar na hora, sem precisar salvar/recarregar.
   async function garantirEtapasPublipost(cardId) {
-    const existentes = subtarefasCache.filter((s) => s.card_id === cardId);
+    // consulta o banco (não o cache), senão dois salvamentos seguidos criariam a etapa duas vezes
+    const { data: doBanco } = await Auth.sb.from("quadro_subtarefas").select("nome").eq("card_id", cardId);
+    const existentes = doBanco || subtarefasCache.filter((s) => s.card_id === cardId);
     const nomesExistentes = existentes.map((s) => s.nome.trim().toLowerCase());
     const faltando = ETAPAS_EXTRA_PUBLIPOST.filter((nome) => !nomesExistentes.includes(nome.toLowerCase()));
     if (!faltando.length) return;
@@ -5999,6 +6288,36 @@
     const { data, error } = await Auth.sb.from("quadro_subtarefas").insert(novas).select();
     if (error) throw error;
     subtarefasCache.push(...data);
+  }
+
+  // Cria as etapas padrão de um vídeo recém-criado, só as que ainda não existem no banco
+  // (consulta o banco, não o cache, pra nunca repetir uma etapa).
+  async function criarEtapasPadrao(cardId, formato) {
+    const { data: existentes } = await Auth.sb.from("quadro_subtarefas").select("nome").eq("card_id", cardId);
+    const jaTem = new Set((existentes || []).map((s) => String(s.nome).trim().toLowerCase()));
+    const faltando = etapasPadraoParaFormato(formato).filter((nome) => !jaTem.has(nome.toLowerCase()));
+    if (!faltando.length) return;
+    const { error } = await Auth.sb.from("quadro_subtarefas").insert(faltando.map((nome, i) => ({ card_id: cardId, nome, ordem: (existentes || []).length + i, etiqueta_ids: etiquetaIdsPadrao() })));
+    if (error) throw error;
+  }
+
+  // Fila por chave: duas execuções da mesma ação nunca rodam ao mesmo tempo; a 2ª espera a 1ª
+  // terminar e já enxerga o que ela criou. `comFila` serve pra handlers de submit/click.
+  const filasDeAcoes = new Map();
+  function emFila(chave, fn) {
+    const anterior = filasDeAcoes.get(chave) || Promise.resolve();
+    const atual = anterior.catch(() => {}).then(fn);
+    filasDeAcoes.set(chave, atual);
+    atual.catch(() => {}).then(() => {
+      if (filasDeAcoes.get(chave) === atual) filasDeAcoes.delete(chave);
+    });
+    return atual;
+  }
+  function comFila(chave, fn) {
+    return (evento, ...resto) => {
+      if (evento && evento.type === "submit" && evento.preventDefault) evento.preventDefault(); // tem que ser na hora, antes da fila
+      return emFila(chave, () => fn(evento, ...resto));
+    };
   }
 
   const NOMES_ETAPAS_AUTO_CONCLUIDAS_NO_ENVIO = ["roteiro", "gravação", "edição"];
@@ -7131,7 +7450,13 @@
   // Extraído do "submit" pra poder ser chamado também pelo salvar da aba
   // Campanha, quando ela é secundária a um vídeo ("salvar tudo junto").
   // Retorna true/false conforme deu certo (false = título vazio ou erro).
-  async function salvarVideoAtual() {
+  // Vai pra fila: dois "Salvar" quase juntos (duplo clique, Enter + clique, salvar da aba
+  // Campanha junto) rodam um depois do outro — o 2º já encontra o vídeo criado pelo 1º e só
+  // atualiza, em vez de criar outro card igual com mais 4 etapas.
+  function salvarVideoAtual() {
+    return emFila("salvar-video", salvarVideoAtualSemFila);
+  }
+  async function salvarVideoAtualSemFila() {
     const titulo = campoTituloCard.value.trim();
     if (!titulo) return false;
 
@@ -7163,11 +7488,24 @@
         const colunaFinalSalvar = colunaFinal();
         if (colunaFinalSalvar && novaColunaId === colunaFinalSalvar.id && colunaAnteriorId !== colunaFinalSalvar.id) await perguntarConcluirSubtarefas(idCardEmEdicao);
       } else {
-        const { data, error } = await Auth.sb.from("quadro_cards").insert(dados).select().single();
-        if (error) throw error;
-        idCardEmEdicao = data.id;
-        const subtarefasPadrao = etapasPadraoParaFormato(dados.formato).map((nome, i) => ({ card_id: data.id, nome, ordem: i, etiqueta_ids: etiquetaIdsPadrao() }));
-        await Auth.sb.from("quadro_subtarefas").insert(subtarefasPadrao);
+        // Já existe um vídeo igual (mesmo título na mesma campanha) criado há poucos minutos? Era um
+        // envio repetido: atualiza esse em vez de criar outro.
+        let recente = null;
+        if (dados.contrato_id) {
+          const desde = new Date(Date.now() - 5 * 60000).toISOString();
+          const { data: iguais } = await Auth.sb.from("quadro_cards").select("id").eq("titulo", dados.titulo).eq("contrato_id", dados.contrato_id).gte("created_at", desde).limit(1);
+          recente = iguais && iguais[0];
+        }
+        if (recente) {
+          idCardEmEdicao = recente.id;
+          await Auth.sb.from("quadro_cards").update(dados).eq("id", recente.id);
+          await criarEtapasPadrao(recente.id, dados.formato);
+        } else {
+          const { data, error } = await Auth.sb.from("quadro_cards").insert(dados).select().single();
+          if (error) throw error;
+          idCardEmEdicao = data.id;
+          await criarEtapasPadrao(data.id, dados.formato);
+        }
       }
       return true;
     } catch (erro) {
@@ -7177,13 +7515,12 @@
     }
   }
 
-  formCardQuadro.addEventListener("submit", async (evento) => {
-    evento.preventDefault();
+  formCardQuadro.addEventListener("submit", comFila("form-video", async () => {
     const ok = await salvarVideoAtual();
     if (!ok) return;
     fecharModalCard();
     await recarregarQuadro();
-  });
+  }));
 
   btnExcluirCard.addEventListener("click", async () => {
     if (!idCardEmEdicao) return;
@@ -7681,6 +8018,11 @@
   function renderizarContratos() {
     renderizarCabecalhoContratos();
     if (typeof atualizarEstadoFerramentasCampanhas === "function") atualizarEstadoFerramentasCampanhas();
+    try {
+      renderizarCartoesCampanhas();
+    } catch (erro) {
+      console.error("Cartões de Campanhas:", erro);
+    }
     const corpo = document.getElementById("corpoTabelaContratos");
     if (!corpo) return;
     const colspan = colunasCampanhas.filter((c) => c.visivel).length + 2;
@@ -7729,7 +8071,10 @@
     });
   }
 
-  async function gerarCardsDoContrato(contratoId) {
+  function gerarCardsDoContrato(contratoId) {
+    return emFila("gerar-cards-" + contratoId, () => gerarCardsDoContratoSemFila(contratoId));
+  }
+  async function gerarCardsDoContratoSemFila(contratoId) {
     const contrato = contratosCache.find((k) => k.id === contratoId);
     if (!contrato) return;
     const quantidade = Number(contrato.qtde_videos) || 0;
@@ -7756,8 +8101,7 @@
           .select()
           .single();
         if (error) throw error;
-        const subtarefasPadrao = etapasPadraoParaFormato("ugc").map((nome, idx) => ({ card_id: data.id, nome, ordem: idx, etiqueta_ids: etiquetaIdsPadrao() }));
-        await Auth.sb.from("quadro_subtarefas").insert(subtarefasPadrao);
+        await criarEtapasPadrao(data.id, "ugc");
       }
       await recarregarQuadro();
       alert(quantidade + " card(s) criado(s) no quadro, na coluna " + colunaInicial.nome + ".");
@@ -7766,6 +8110,123 @@
       console.error(erro);
     }
   }
+
+  // ---------------------------------------------------------------
+  // DUPLICADOS NA PRODUÇÃO: acha vídeos repetidos (mesmo título na mesma campanha) e
+  // etapas repetidas (mesmo nome no mesmo vídeo). Só apaga o que está sem uso (nada
+  // preenchido, nenhuma etapa mexida); o que tem dados fica e é só avisado.
+  // ---------------------------------------------------------------
+  const normNome = (s) => String(s || "").trim().toLowerCase().replace(/\s+/g, " ");
+  const subtarefaUsada = (s) =>
+    statusSubtarefa(s) !== "pendente" || !!s.data_execucao || !!s.data_fim || !!s.cronometro_ativo_desde || (Array.isArray(s.tempo_registros) && s.tempo_registros.length > 0);
+  const pontosSubtarefa = (s) =>
+    (statusSubtarefa(s) === "concluido" ? 3 : statusSubtarefa(s) === "andamento" ? 2 : 0) + (s.data_execucao ? 1 : 0) + (s.data_fim ? 1 : 0) + (Array.isArray(s.tempo_registros) ? s.tempo_registros.length : 0) - (Number(s.ordem) || 0) / 1000;
+
+  function acharDuplicadosProducao() {
+    const subsDoCard = new Map();
+    subtarefasCache.forEach((s) => {
+      if (!subsDoCard.has(s.card_id)) subsDoCard.set(s.card_id, []);
+      subsDoCard.get(s.card_id).push(s);
+    });
+    const ordemColuna = new Map(colunasCache.map((c, i) => [c.id, c.ordem != null ? c.ordem : i]));
+    const cardUsado = (c) => !!(c.descricao || c.prazo || c.concluido_em) || (subsDoCard.get(c.id) || []).some(subtarefaUsada);
+    const pontosCard = (c) =>
+      (cardUsado(c) ? 1000 : 0) + (ordemColuna.get(c.coluna_id) || 0) * 10 + (subsDoCard.get(c.id) || []).reduce((s, x) => s + pontosSubtarefa(x), 0) - new Date(c.created_at || 0).getTime() / 1e13;
+
+    const grupos = new Map();
+    quadroCache.forEach((c) => {
+      if (!c.contrato_id) return;
+      const chave = c.contrato_id + "|" + normNome(c.titulo);
+      if (!grupos.has(chave)) grupos.set(chave, []);
+      grupos.get(chave).push(c);
+    });
+    const cardsRemover = [];
+    const cardsRevisar = [];
+    grupos.forEach((lista) => {
+      if (lista.length < 2) return;
+      lista.sort((a, b) => pontosCard(b) - pontosCard(a)).slice(1).forEach((c) => (cardUsado(c) ? cardsRevisar : cardsRemover).push(c));
+    });
+    const idsRemovidos = new Set(cardsRemover.map((c) => c.id));
+
+    const subsRemover = [];
+    const subsRevisar = [];
+    subsDoCard.forEach((subs, cardId) => {
+      if (idsRemovidos.has(cardId)) return;
+      const porNome = new Map();
+      subs.forEach((s) => {
+        const chave = normNome(s.nome);
+        if (!porNome.has(chave)) porNome.set(chave, []);
+        porNome.get(chave).push(s);
+      });
+      porNome.forEach((lista) => {
+        if (lista.length < 2) return;
+        lista.sort((a, b) => pontosSubtarefa(b) - pontosSubtarefa(a)).slice(1).forEach((s) => (subtarefaUsada(s) ? subsRevisar : subsRemover).push(s));
+      });
+    });
+    return { cardsRemover, cardsRevisar, subsRemover, subsRevisar };
+  }
+
+  function atualizarAvisoDuplicados() {
+    const el = document.getElementById("avisoDuplicadosProducao");
+    if (!el) return;
+    let d;
+    try {
+      d = acharDuplicadosProducao();
+    } catch (erro) {
+      el.hidden = true;
+      return;
+    }
+    const apagar = d.cardsRemover.length + d.subsRemover.length;
+    const revisar = d.cardsRevisar.length + d.subsRevisar.length;
+    if (!apagar && !revisar) {
+      el.hidden = true;
+      return;
+    }
+    el.hidden = false;
+    el.innerHTML =
+      `Encontrei <strong>${d.cardsRemover.length} vídeo(s)</strong> e <strong>${d.subsRemover.length} etapa(s)</strong> repetidos, sem nada preenchido` +
+      (revisar ? `. Tem mais ${revisar} repetido(s) com dados que você precisa conferir à mão` : "") +
+      `. ` +
+      (apagar ? `<button type="button" class="btn-fases" id="btnLimparDuplicados">Limpar repetidos</button>` : "");
+  }
+
+  document.getElementById("avisoDuplicadosProducao").addEventListener("click", (evento) => {
+    if (!evento.target.closest("#btnLimparDuplicados")) return;
+    emFila("limpar-duplicados", async () => {
+      const d = acharDuplicadosProducao();
+      if (!d.cardsRemover.length && !d.subsRemover.length) return atualizarAvisoDuplicados();
+      const porTitulo = new Map();
+      d.cardsRemover.forEach((c) => {
+        const t = String(c.titulo || "").trim();
+        porTitulo.set(t, (porTitulo.get(t) || 0) + 1);
+      });
+      const resumo = [...porTitulo.entries()].slice(0, 8).map(([t, n]) => `• ${t}: ${n} repetido(s)`).join("\n");
+      const texto =
+        `Vou apagar ${d.cardsRemover.length} vídeo(s) repetido(s) (com as etapas deles) e ${d.subsRemover.length} etapa(s) repetida(s).\n` +
+        (resumo ? `\n${resumo}\n` : "") +
+        `\nSó entram os que estão sem nada preenchido; em cada grupo fica o que está mais adiantado. Isso não pode ser desfeito. Continuar?`;
+      if (!confirm(texto)) return;
+      try {
+        const em = (lista, tamanho = 80) => Array.from({ length: Math.ceil(lista.length / tamanho) }, (_, i) => lista.slice(i * tamanho, (i + 1) * tamanho));
+        for (const lote of em(d.cardsRemover.map((c) => c.id))) {
+          const e1 = await Auth.sb.from("quadro_subtarefas").delete().in("card_id", lote);
+          if (e1.error) throw e1.error;
+          const e2 = await Auth.sb.from("quadro_cards").delete().in("id", lote);
+          if (e2.error) throw e2.error;
+        }
+        for (const lote of em(d.subsRemover.map((s) => s.id))) {
+          const e3 = await Auth.sb.from("quadro_subtarefas").delete().in("id", lote);
+          if (e3.error) throw e3.error;
+        }
+        await recarregarQuadro();
+        mostrarAviso("Repetidos removidos");
+      } catch (erro) {
+        alert("Não consegui limpar tudo. Confira a Produção e tente de novo.");
+        console.error(erro);
+        await recarregarQuadro();
+      }
+    });
+  });
 
   // --- Visualizações rápidas (Em produção / Aguardando pagamento / Finalizadas / Tráfego Pago) ---
   const alternadorCampanhas = document.getElementById("alternadorCampanhas");
@@ -7779,6 +8240,8 @@
       document.getElementById("tabelaCampanhasWrap").hidden = ehTrafego;
       document.getElementById("acoesTopoCampanhas").hidden = ehTrafego;
       document.getElementById("painelTrafegoPago").hidden = !ehTrafego;
+      document.getElementById("cartoesCampanhas").hidden = ehTrafego;
+      document.getElementById("cartoesTrafegoPago").hidden = !ehTrafego;
       if (ehTrafego) renderizarTrafegoPago();
       else renderizarContratos();
     });
@@ -8555,6 +9018,7 @@
       estado.custos = (dados.custos || []).map(deDespesa);
       [...estado.parcelas, ...estado.custos].forEach((i) => (i.snap = assinatura(i)));
       estado.removidos = [];
+      estado.removeuAuto = false;
       estado.total = Number(dados.total) || 0;
       estado.nf = { ativo: !!(dados.nf && dados.nf.ativo), taxa: dados.nf && dados.nf.taxa != null ? Number(dados.nf.taxa) : 6 };
       render();
@@ -8666,6 +9130,12 @@
       if (!item) return;
 
       if (evento.target.closest(".btn-remover-parcela")) {
+        // Parcela automática volta sozinha enquanto a condição de pagamento da
+        // campanha a gerar; excluir = passar a condição pra "Outro" ao salvar.
+        if (item.auto && !item.pago) {
+          if (!confirm('Essa parcela é gerada automaticamente pela condição de pagamento da campanha e voltaria a aparecer ao salvar.\n\nPara excluir, a condição de pagamento passa para "Outro" (parcelas manuais) e as demais parcelas automáticas em aberto também saem. As já pagas ficam. Continuar?')) return;
+          estado.removeuAuto = true;
+        }
         if (item.id) estado.removidos.push({ id: item.id, tabela: lista === estado.custos || op.ehDespesa ? "financas_despesas" : "financas_receitas" });
         lista.splice(lista.indexOf(item), 1);
         render();
@@ -8873,7 +9343,10 @@
     ];
   }
 
-  async function sincronizarParcelasAutomaticasContrato(contratoId) {
+  function sincronizarParcelasAutomaticasContrato(contratoId) {
+    return emFila("parcelas-" + contratoId, () => sincronizarParcelasAutomaticasSemFila(contratoId));
+  }
+  async function sincronizarParcelasAutomaticasSemFila(contratoId) {
     const contrato = contratosCache.find((k) => k.id === contratoId);
     if (!contrato) return;
     const esperadas = parcelasEsperadasContrato(contrato);
@@ -8992,8 +9465,7 @@
     campoMarcaContrato.focus();
   });
 
-  formContrato.addEventListener("submit", async (evento) => {
-    evento.preventDefault();
+  formContrato.addEventListener("submit", comFila("form-campanha", async () => {
     const marca = campoMarcaContrato.value.trim();
     if (!marca) return;
 
@@ -9041,6 +9513,10 @@
         if (contratoAtual && "emissao_nf" in contratoAtual) {
           dados.emissao_nf = editorCampanha.estado.nf.ativo;
           dados.nf_taxa = editorCampanha.estado.nf.taxa;
+        }
+        if (editorCampanha.estado.removeuAuto) {
+          dados.pagamento_condicao = "Outro";
+          campoPagamentoCondicaoContrato.value = "Outro";
         }
         const { error: erroContrato } = await Auth.sb.from("contratos").update(dados).eq("id", contratoId);
         if (erroContrato) throw erroContrato;
@@ -9090,7 +9566,7 @@
       alert("Não foi possível salvar a campanha. Tente de novo.");
       console.error(erro);
     }
-  });
+  }));
 
   btnExcluirContrato.addEventListener("click", async () => {
     if (!idContratoEmEdicao) return;
@@ -10514,7 +10990,10 @@
     return true;
   }
 
-  async function salvarLancamento(criarNova) {
+  function salvarLancamento(criarNova) {
+    return emFila("salvar-lancamento", () => salvarLancamentoSemFila(criarNova));
+  }
+  async function salvarLancamentoSemFila(criarNova) {
     if (!lanc) return;
     const desc = campoLancDescricao.value.trim();
     if (!desc) {
@@ -10662,6 +11141,7 @@
     texto("resultadosNotaMargem", faturamento ? `Margem de ${margem.toFixed(1)}%` : "Sem faturamento");
     document.getElementById("cartaoResultadosLucroBruto").classList.toggle("negativo", lucroBruto < 0);
     document.getElementById("cartaoResultadosLucroLiquido").classList.toggle("negativo", lucroLiquido < 0);
+    definirListasResultados(contratos, despesas);
   }
 
   function renderizarResultadoContratos() {
@@ -10832,9 +11312,9 @@
   function atualizarMetaFaturamentoResultados() {
     const campo = document.getElementById("campoMetaFaturamentoResultados");
     if (!campo || typeof cfgLer !== "function" || typeof seriesDaJornada !== "function") return;
-    const alvo = Number(cfgLer("meta_receita", 0)) || 0;
-    if (document.activeElement !== campo) campo.value = alvo || "";
     const mesAtual = hojeIso().slice(0, 7);
+    const alvo = metaReceitaDoMes(mesAtual);
+    if (document.activeElement !== campo) campo.value = alvo || "";
     const convertido = seriesDaJornada()
       .faturamento.filter((f) => f.data.startsWith(mesAtual))
       .reduce((s, f) => s + f.valor, 0);
@@ -10846,7 +11326,7 @@
   document.getElementById("campoMetaFaturamentoResultados").addEventListener("change", async (evento) => {
     const valor = Number(evento.target.value) || 0;
     if (typeof cfgGravar !== "function") return;
-    await cfgGravar("meta_receita", valor);
+    await gravarMetaReceitaDoMes(hojeIso().slice(0, 7), valor);
     atualizarMetaFaturamentoResultados();
     if (typeof atualizarMenuPrincipal === "function") atualizarMenuPrincipal();
   });
@@ -11596,6 +12076,11 @@
       marcoTrabalhadas.textContent = formatarNumero(totalAtivas + totalFechadas);
       document.getElementById("marcasAtivasTotal").textContent = formatarNumero(totalAtivas);
       document.getElementById("marcasFechadasTotal").textContent = formatarNumero(totalFechadas);
+      try {
+        definirListasMarcas();
+      } catch (erro) {
+        console.error("Listas dos cartões de Marcas:", erro);
+      }
     }
     const corpo = document.getElementById("corpoTabelaEmpresas");
     if (!corpo) return;
@@ -12352,8 +12837,7 @@
   document.getElementById("btnNovaEmpresa").addEventListener("click", () => abrirModalEmpresa(null));
   btnCancelarEmpresa.addEventListener("click", fecharModalEmpresa);
 
-  formEmpresa.addEventListener("submit", async (evento) => {
-    evento.preventDefault();
+  formEmpresa.addEventListener("submit", comFila("form-marca", async () => {
     if (!campoNomeEmpresa.value.trim()) return;
     try {
       await salvarEmpresaAtual();
@@ -12367,7 +12851,7 @@
       );
       console.error(erro);
     }
-  });
+  }));
 
   btnExcluirEmpresa.addEventListener("click", async () => {
     if (!idEmpresaEmEdicao) return;
@@ -12595,6 +13079,11 @@
     const wrapLista = document.getElementById("listaOportunidadesWrap");
     const corpo = document.getElementById("corpoTabelaOportunidades");
     if (!wrapKanban || !corpo) return;
+    try {
+      renderizarCartoesOportunidades();
+    } catch (erro) {
+      console.error("Cartões de Oportunidades:", erro);
+    }
 
     if (!oportunidadesDisponivel) {
       wrapKanban.hidden = false;
@@ -12901,8 +13390,7 @@
     blocoMotivoPerdaOportunidade.hidden = !etapaSelecionada || etapaSelecionada.tipo !== "perdida";
   });
 
-  formOportunidade.addEventListener("submit", async (evento) => {
-    evento.preventDefault();
+  formOportunidade.addEventListener("submit", comFila("form-oportunidade", async () => {
     let empresaId = campoEmpresaOportunidade.value;
 
     if (empresaId === "__nova__") {
@@ -12967,7 +13455,7 @@
       alert("Não foi possível salvar a oportunidade. Tente de novo.");
       console.error(erro);
     }
-  });
+  }));
 
   btnExcluirOportunidade.addEventListener("click", async () => {
     if (!idOportunidadeEmEdicao) return;
@@ -13054,7 +13542,7 @@
       const card = quadroCache.find((c) => c.id === s.card_id);
       if (!card || cardEstaArquivado(card)) return;
       const concluida = subtarefaConcluida(s);
-      if (concluida && !prodMostrarConcluidas) return;
+      if (concluida && !prodMostrarConcluidas && !(opcoes && opcoes.incluirConcluidas)) return;
       // Fim = entrega. Sem data de início, a subtarefa aparece só no dia da entrega.
       const fim = dataDoIso(s.data_fim || s.data_execucao);
       let ini = s.data_execucao ? dataDoIso(s.data_execucao) : fim;
@@ -14150,6 +14638,39 @@
   // ---- VÍDEOS EM ANDAMENTO: uma barra por fase da Produção ----
   // Conta vídeos (cards) fora da fase final. A barra é a proporção da fase
   // em relação ao total em andamento (todas as barras somam 100%).
+  // Paleta dos balões do site (lavanda, pêssego, azul, menta): "suave" é a cor
+  // exata dos cartões; "forte" é a mesma cor um pouco mais viva, pra barras finas.
+  const PALETA_BALOES = [
+    { suave: "#ECE8FB", forte: "#B9A9EE" },
+    { suave: "#FCEEDC", forte: "#F5BE85" },
+    { suave: "#E1F1FA", forte: "#8ECBEC" },
+    { suave: "#E3F4EA", forte: "#8AD3A6" },
+  ];
+
+  // Degradê rosa → lilás → roxo, usado nos gráficos (vídeos em andamento, funis, origem dos acessos).
+  const PARADAS_DEGRADE = ["#F8A9CB", "#D3B0EE", "#9B83E2"];
+  function corDoDegrade(t) {
+    const x = Math.min(1, Math.max(0, t)) * (PARADAS_DEGRADE.length - 1);
+    const i = Math.min(PARADAS_DEGRADE.length - 2, Math.floor(x));
+    const f = x - i;
+    const a = PARADAS_DEGRADE[i].match(/\w\w/g).map((h) => parseInt(h, 16));
+    const b = PARADAS_DEGRADE[i + 1].match(/\w\w/g).map((h) => parseInt(h, 16));
+    return "#" + a.map((v, k) => Math.round(v + (b[k] - v) * f).toString(16).padStart(2, "0")).join("");
+  }
+  // cor da posição i de n (0..n-1) ao longo do degradê
+  const degradeNaPosicao = (i, n) => corDoDegrade(n > 1 ? i / (n - 1) : 0);
+  // barra com um leve degradê próprio, que continua o tom da seguinte
+  function degradeBarra(i, n) {
+    const passo = n > 1 ? 1 / (n - 1) : 0;
+    const t = n > 1 ? i / (n - 1) : 0;
+    return `linear-gradient(90deg, ${corDoDegrade(t)}, ${corDoDegrade(t + passo * 0.9)})`;
+  }
+  // texto branco sobre tons escuros, escuro sobre tons claros
+  function textoSobreCor(hex) {
+    const [r, g, b] = hex.match(/\w\w/g).map((h) => parseInt(h, 16));
+    return 0.299 * r + 0.587 * g + 0.114 * b < 165 ? "#fff" : "#2B2623";
+  }
+
   function renderizarCampanhasAndamento() {
     const container = document.getElementById("listaCampanhasAndamento");
     if (!quadroDisponivel || !colunasCache.length) {
@@ -14165,14 +14686,15 @@
     const somatorio = [...porFase.values()].reduce((s, n) => s + n, 0);
     document.getElementById("totalVideosAndamento").textContent = formatarNumero(somatorio);
     container.innerHTML = fases
-      .map((f) => {
+      .map((f, i) => {
         const total = porFase.get(f.id);
         const pct = somatorio ? (total / somatorio) * 100 : 0;
         const dica = `${total} vídeo(s) · ${Math.round(pct)}% do total`;
+        const cor = degradeNaPosicao(i, fases.length);
         return `<div class="linha-fase-andamento" title="${esc(dica)}">
-          <span class="ponto-fase" style="background:${esc(f.cor || "#8d8d8d")}"></span>
+          <span class="ponto-fase" style="background:${cor}"></span>
           <span class="nome-fase">${esc(f.nome)}</span>
-          <div class="trilho-fase"><div class="preenchido-fase" style="width:${pct}%; background:${esc(f.cor || "#8d8d8d")}"></div></div>
+          <div class="trilho-fase"><div class="preenchido-fase" style="width:${pct}%; background:${degradeBarra(i, fases.length)}"></div></div>
           <span class="contagem-fase ${total ? "" : "zerada"}">${total}</span>
           <span class="pct-fase ${total ? "" : "zerada"}">${Math.round(pct)}%</span>
         </div>`;
@@ -14242,10 +14764,30 @@
   }
   const metaConcluida = (meta, progresso) => (meta.manual != null ? !!meta.manual : meta.tipo !== "outra" && meta.alvo > 0 && progresso >= meta.alvo);
 
+  // A meta de receita é POR MÊS (cfg "metas_receita": { "2026-10": 6000 }): cada
+  // mês mostra a meta que foi definida pra ele. A meta única antiga ("meta_receita")
+  // vale só pro mês corrente, até o primeiro salvamento no formato novo.
+  function metaReceitaDoMes(mes) {
+    const mapa = cfgLer("metas_receita", null);
+    if (mapa && typeof mapa === "object") return Number(mapa[mes]) || 0;
+    return mes === hojeIso().slice(0, 7) ? Number(cfgLer("meta_receita", 0)) || 0 : 0;
+  }
+  async function gravarMetaReceitaDoMes(mes, valor) {
+    const atual = cfgLer("metas_receita", null);
+    const mapa = atual && typeof atual === "object" ? { ...atual } : {};
+    if (!atual) {
+      const antiga = Number(cfgLer("meta_receita", 0)) || 0;
+      if (antiga > 0) mapa[hojeIso().slice(0, 7)] = antiga;
+    }
+    if (valor > 0) mapa[mes] = valor;
+    else delete mapa[mes];
+    await cfgGravar("metas_receita", mapa);
+  }
+
   function renderizarJornadaMetas() {
     const container = document.getElementById("jornadaMetas");
     const series = seriesDaJornada();
-    const alvoReceita = Number(cfgLer("meta_receita", 0)) || 0;
+    const alvoReceita = metaReceitaDoMes(mesMetas);
     const convertido = series.faturamento.filter((f) => f.data.startsWith(mesMetas)).reduce((s, f) => s + f.valor, 0);
     const pct = alvoReceita > 0 ? Math.min(100, Math.round((convertido / alvoReceita) * 100)) : 0;
     const metas = (cfgLer("metas", []) || []).filter((m) => m.mes === mesMetas);
@@ -14279,7 +14821,7 @@
       </div>
       <div class="cartao-meta-receita">
         <div class="topo-meta-receita">
-          <span class="rotulo">Meta de receita mensal</span>
+          <span class="rotulo">Meta de receita · ${esc(nomeDoMes(mesMetas))}</span>
           <label>Meta (R$) <input type="number" min="0" step="1" id="campoMetaReceita" placeholder="Ex: 20000" value="${alvoReceita || ""}"></label>
         </div>
         <div class="trilho-meta"><div class="preenchido-meta" style="width:${pct}%"></div></div>
@@ -14351,8 +14893,10 @@
   });
   jornadaMetas.addEventListener("change", async (evento) => {
     if (evento.target.id === "campoMetaReceita") {
-      await cfgGravar("meta_receita", Number(evento.target.value) || 0);
+      await gravarMetaReceitaDoMes(mesMetas, Number(evento.target.value) || 0);
       renderizarJornadaMetas();
+      if (typeof atualizarMetaFaturamentoResultados === "function") atualizarMetaFaturamentoResultados();
+      atualizarInsightTopo();
       return;
     }
     const id = evento.target.dataset.metaCheck;
@@ -14436,6 +14980,95 @@
 
     if (datasMudaram) cfgGravar("conquistas_datas", datasManuais);
     return lista;
+  }
+
+  // ---- ANÁLISE DO TOPO: uma frase sobre o seu momento, abaixo do cumprimento ----
+  // Escolhe a ideia de maior prioridade entre: perto da meta de faturamento,
+  // perto de bater o melhor mês (faturamento, marcas, vídeos, campanhas),
+  // perto da próxima conquista, ou parabéns por já ter batido algo.
+  function textoInsightTopo() {
+    const mes = hojeIso().slice(0, 7);
+    const series = seriesDaJornada();
+    const ideias = [];
+    const somaMes = (lista, m) => lista.filter((x) => x.data.startsWith(m)).reduce((s, x) => s + (x.valor || 0), 0);
+    const contaMes = (lista, m) => lista.filter((x) => x.data.startsWith(m)).length;
+
+    const faturado = somaMes(series.faturamento, mes);
+    const alvo = metaReceitaDoMes(mes);
+    if (alvo > 0) {
+      const falta = alvo - faturado;
+      if (falta <= 0) ideias.push({ p: 96, t: `Meta de faturamento do mês batida: ${formatarMoeda(faturado)} de ${formatarMoeda(alvo)}. Parabéns! 🎉` });
+      else if (faturado / alvo >= 0.7) ideias.push({ p: 95, t: `Faltam apenas ${formatarMoeda(falta)} para bater a meta de faturamento desse mês, vamos lá!` });
+    }
+
+    const metricas = [
+      {
+        valor: (m) => somaMes(series.faturamento, m), dinheiro: true,
+        melhor: "faturamento",
+      },
+      {
+        valor: (m) => new Set(series.contratos.filter((c) => c.chave && c.data.startsWith(m)).map((c) => c.chave)).size,
+        melhor: "marcas trabalhadas", palavras: ["nova marca", "novas marcas"], maior: "o seu mês com maior número de marcas trabalhadas",
+      },
+      {
+        valor: (m) => contaMes(series.videos, m),
+        melhor: "vídeos produzidos", palavras: ["vídeo concluído", "vídeos concluídos"], maior: "o seu mês com mais vídeos produzidos",
+      },
+      {
+        valor: (m) => contaMes(series.contratos, m),
+        melhor: "campanhas fechadas", palavras: ["nova campanha", "novas campanhas"], maior: "o seu mês com mais campanhas fechadas",
+      },
+    ];
+    const mesesAnteriores = new Set();
+    [series.faturamento, series.contratos, series.videos].forEach((lista) => lista.forEach((x) => x.data && x.data.slice(0, 7) < mes && mesesAnteriores.add(x.data.slice(0, 7))));
+    if (mesesAnteriores.size) {
+      metricas.forEach((m) => {
+        const atual = m.valor(mes);
+        const recorde = Math.max(...[...mesesAnteriores].map((x) => m.valor(x)));
+        if (!(recorde > 0)) return;
+        if (atual > recorde) {
+          ideias.push({ p: 92, t: `Parabéns, esse é o seu melhor mês em ${m.melhor}! 🏆` });
+        } else if (m.dinheiro) {
+          const falta = recorde - atual + 0.01;
+          if (atual > 0 && falta <= recorde * 0.25) ideias.push({ p: 89, t: `Faltam apenas ${formatarMoeda(falta)} para esse ser o seu melhor mês em faturamento!` });
+        } else if (recorde >= 3 && atual > 0) {
+          const faltam = recorde - atual + 1;
+          if (faltam <= 2) ideias.push({ p: 88, t: `Com mais ${faltam} ${faltam === 1 ? m.palavras[0] : m.palavras[1]}, esse será ${m.maior}.` });
+        }
+      });
+    }
+
+    // próxima conquista: a que está mais perto (a partir de 85% do marco)
+    const proximas = new Map();
+    calcularConquistas().forEach((c) => {
+      if (c.desbloqueada || c.cat.booleano) return;
+      if (!proximas.has(c.cat.id)) proximas.set(c.cat.id, c);
+    });
+    proximas.forEach((c) => {
+      if (!(c.marco > 0) || c.atual / c.marco < 0.85) return;
+      const falta = c.marco - c.atual;
+      const faltaTxt = c.cat.id === "faturamento" ? formatarMoeda(falta) : nf(falta);
+      ideias.push({ p: 85 + (c.atual / c.marco) * 3, t: `Falta${c.cat.id !== "faturamento" && falta !== 1 ? "m" : ""} apenas ${faltaTxt} para sua próxima conquista: ${c.cat.nome(c.marco)}.` });
+    });
+
+    if (ideias.length) return ideias.sort((a, b) => b.p - a.p)[0].t;
+    if (alvo > 0) return `Você está em ${Math.round((faturado / alvo) * 100)}% da meta de faturamento de ${nomeDoMes(mes)} (${formatarMoeda(faturado)}).`;
+    if (faturado > 0) return `Você já faturou ${formatarMoeda(faturado)} em ${nomeDoMes(mes)}. Defina uma meta em Minha jornada para acompanhar o progresso.`;
+    return "";
+  }
+  function atualizarInsightTopo(principal) {
+    const el = document.getElementById("insightTopo");
+    if (!el) return;
+    const naPrincipal = principal !== undefined ? principal : !document.getElementById("painel-principal").hidden;
+    let texto = "";
+    try {
+      if (naPrincipal && cfgPronta && financasDisponivel && contratosCache.length) texto = textoInsightTopo();
+    } catch (erro) {
+      // na 1ª chamada (antes de a configuração existir) é esperado não ter nada pra mostrar
+      if (!/before initialization/.test(String(erro && erro.message))) console.error("Análise do topo:", erro);
+    }
+    el.textContent = texto;
+    el.hidden = !texto;
   }
 
   function renderizarJornadaConquistas(conquistas) {
@@ -14633,6 +15266,14 @@
       if (!soJanela) irParaAba("crm-contratos");
       const contrato = contratosCache.find((k) => k.id === d.id);
       if (contrato) abrirModalContrato(contrato);
+    } else if (d.tipo === "empresa") {
+      if (!soJanela) irParaAba("comercial-empresas");
+      const empresa = empresasCache.find((e) => e.id === d.id);
+      if (empresa) abrirModalEmpresa(empresa);
+    } else if (d.tipo === "oportunidade") {
+      if (!soJanela) irParaAba("comercial-oportunidades");
+      const op = oportunidadesCache.find((o) => o.id === d.id);
+      if (op) abrirModalOportunidade(op);
     }
   }
   const textoDias = (dias) => (dias === 0 ? "hoje" : dias === 1 ? "amanhã" : `em ${dias} dias`);
@@ -14807,7 +15448,7 @@
         });
       }
     });
-    const alvoReceita = Number(cfgLer("meta_receita", 0)) || 0;
+    const alvoReceita = metaReceitaDoMes(mesAtualChave);
     if (alvoReceita > 0) {
       const convertido = series.faturamento.filter((f) => f.data.startsWith(mesAtualChave)).reduce((s, f) => s + f.valor, 0);
       const chave = "receita:" + mesAtualChave;
@@ -14834,7 +15475,8 @@
     const inicioDoDiaMs = new Date().setHours(0, 0, 0, 0);
     const lista = (cfgLer(CFG_NOTIF_EVENTOS, []) || []).map((e) => ({ ...e, ordem: new Date(e.em).getTime() }));
     let n = 0;
-    const doDia = (tipo, titulo, texto, chave, destino) => lista.push({ chave: `${tipo}:${hoje}:${chave}`, tipo, titulo, texto, destino, ordem: inicioDoDiaMs + 1000 * 60 * 60 * 24 - ++n });
+    const agoraIso = new Date().toISOString();
+    const doDia = (tipo, titulo, texto, chave, destino) => lista.push({ chave: `${tipo}:${hoje}:${chave}`, tipo, titulo, texto, destino, dia: hoje, em: agoraIso, ordem: inicioDoDiaMs + 1000 * 60 * 60 * 24 - ++n });
 
     recebimentosEmAberto()
       .filter((i) => i.dias === 0)
@@ -14861,15 +15503,18 @@
     if (!btn) return;
     try {
       detectarEventosNotificacao();
+      registrarHistoricoNotificacoes(listaNotificacoes());
     } catch (erro) {
       console.error("Notificações:", erro);
     }
     const lidas = new Set(cfgLer(CFG_NOTIF_LIDAS, []) || []);
-    const lista = listaNotificacoes();
-    const naoLidas = lista.filter((n) => !lidas.has(n.chave));
+    const todas = todasNotificacoes();
+    const naoLidas = todas.filter((n) => !lidas.has(n.chave) && !notifResolvida(n, lidas));
     const badge = document.getElementById("notifBadge");
     badge.hidden = !naoLidas.length;
     badge.textContent = naoLidas.length > 9 ? "9+" : String(naoLidas.length);
+    // o sino mostra só as 10 últimas; o resto fica na central
+    const lista = todas.slice(0, 10);
     document.getElementById("notifLista").innerHTML = lista.length
       ? lista
           .map((n, i) => {
@@ -14883,6 +15528,241 @@
           .join("")
       : `<p class="notif-vazio">Nada por aqui por enquanto.</p>`;
     document.getElementById("notifLista")._itens = lista;
+    document.getElementById("notifLista")._todas = todas;
+    if (!document.getElementById("painel-notificacoes").hidden) renderizarCentralNotificacoes();
+    avisarNoDispositivo(naoLidas);
+  }
+
+  const CFG_NOTIF_HISTORICO = "notif_historico";
+  const CFG_NOTIF_RESOLVIDAS = "notif_resolvidas";
+  const CFG_NOTIF_DISPOSITIVOS = "notif_dispositivos";
+  const LIMITE_LIDAS = 800;
+
+  // Histórico: tudo que o sino já mostrou fica guardado (≈4 meses), pra central
+  // listar por data mesmo depois que o aviso do dia some do sino.
+  function registrarHistoricoNotificacoes(lista) {
+    const historico = cfgLer(CFG_NOTIF_HISTORICO, []) || [];
+    const conhecidas = new Set(historico.map((h) => h.chave));
+    const novas = lista.filter((n) => !conhecidas.has(n.chave)).map((n) => ({ chave: n.chave, tipo: n.tipo, titulo: n.titulo, texto: n.texto || "", destino: n.destino || null, dia: n.dia || null, em: n.em || new Date().toISOString() }));
+    if (!novas.length) return;
+    const limite = Date.now() - 120 * 86400000;
+    cfgGravar(CFG_NOTIF_HISTORICO, historico.concat(novas).filter((h) => new Date(h.em).getTime() >= limite).slice(-500));
+  }
+  // Histórico + o que está valendo agora, do mais novo pro mais antigo.
+  function todasNotificacoes() {
+    const mapa = new Map();
+    (cfgLer(CFG_NOTIF_HISTORICO, []) || []).forEach((h) => mapa.set(h.chave, h));
+    listaNotificacoes().forEach((n) => {
+      if (!mapa.has(n.chave)) mapa.set(n.chave, { chave: n.chave, tipo: n.tipo, titulo: n.titulo, texto: n.texto || "", destino: n.destino || null, dia: n.dia || null, em: n.em || new Date().toISOString() });
+    });
+    return [...mapa.values()].sort((a, b) => String(b.em).localeCompare(String(a.em)));
+  }
+
+  // Resolvida = a coisa que o aviso pedia já foi feita (recebeu, pagou, concluiu o
+  // vídeo) ou você marcou na mão. Avisos informativos (conquista/meta) contam como
+  // resolvidos assim que lidos. Sem os dados carregados, nada é dado como resolvido.
+  function notifResolvida(n, lidas) {
+    if ((cfgLer(CFG_NOTIF_RESOLVIDAS, []) || []).includes(n.chave)) return true;
+    const d = n.destino || {};
+    try {
+      if (n.tipo === "conquista" || n.tipo === "meta") return lidas.has(n.chave);
+      if (n.tipo === "receber" && financasDisponivel && receitasCache.length) return !recebimentosEmAberto().some((r) => r.chave === d.chave && (!n.dia || r.data === n.dia));
+      if (n.tipo === "pagar" && financasDisponivel && despesasFinCache.length) {
+        const linha = linhasDespesas().find((l) => l.chave === d.chave);
+        return !linha || linha.status === "Pago";
+      }
+      if (n.tipo === "prazo" && quadroCache.length) {
+        const card = quadroCache.find((c) => c.id === d.id);
+        const final = colunaFinal();
+        return !card || (!!final && card.coluna_id === final.id);
+      }
+    } catch (erro) {}
+    return false;
+  }
+
+  const gravarListaCfg = (chave, lista) => cfgGravar(chave, [...new Set(lista)].slice(-LIMITE_LIDAS));
+  const alternarEmCfg = (chave, valor, ligar) => {
+    const atual = cfgLer(chave, []) || [];
+    gravarListaCfg(chave, ligar ? atual.concat(valor) : atual.filter((x) => x !== valor));
+  };
+
+  // ---- CENTRAL DE NOTIFICAÇÕES (página aberta pelo sino) ----
+  let filtroNotifLeitura = "todas";
+  let filtroNotifSituacao = "todas";
+  function abrirCentralNotificacoes() {
+    document.querySelectorAll(".item-nav").forEach((b) => b.classList.remove("ativo"));
+    document.querySelectorAll(".painel-aba").forEach((p) => (p.hidden = true));
+    document.getElementById("painel-notificacoes").hidden = false;
+    document.querySelector(".conteudo").classList.remove("conteudo-cheia");
+    atualizarTopo("notificacoes");
+    renderizarCentralNotificacoes();
+    fecharMenuMobile();
+  }
+  function rotuloDiaNotif(iso) {
+    if (iso === hojeIso()) return "Hoje";
+    if (iso === formatarDataISO(somarDiasData(new Date(), -1))) return "Ontem";
+    const texto = dataDoIso(iso).toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+    return texto.charAt(0).toUpperCase() + texto.slice(1);
+  }
+  function renderizarCentralNotificacoes() {
+    renderizarDispositivosNotificacao();
+    const lidas = new Set(cfgLer(CFG_NOTIF_LIDAS, []) || []);
+    const todas = todasNotificacoes();
+    const visiveis = todas.filter((n) => {
+      const lida = lidas.has(n.chave);
+      const resolvida = notifResolvida(n, lidas);
+      if (filtroNotifLeitura === "nao-lidas" && lida) return false;
+      if (filtroNotifLeitura === "lidas" && !lida) return false;
+      if (filtroNotifSituacao === "pendentes" && resolvida) return false;
+      if (filtroNotifSituacao === "resolvidas" && !resolvida) return false;
+      return true;
+    });
+    const container = document.getElementById("notifCentralLista");
+    container._itens = visiveis;
+    if (!visiveis.length) {
+      container.innerHTML = `<p class="notif-vazio">Nenhuma notificação com esses filtros.</p>`;
+      return;
+    }
+    let diaAtual = "";
+    const manuais = new Set(cfgLer(CFG_NOTIF_RESOLVIDAS, []) || []);
+    container.innerHTML = visiveis
+      .map((n, i) => {
+        const dia = diaIso(n.em) || hojeIso();
+        const cabecalho = dia !== diaAtual ? `<h3 class="notif-dia">${esc(rotuloDiaNotif(dia))}</h3>` : "";
+        diaAtual = dia;
+        const lida = lidas.has(n.chave);
+        const resolvida = notifResolvida(n, lidas);
+        const hora = new Date(n.em).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+        return `${cabecalho}<div class="notif-linha${lida ? " lida" : ""}" data-nc-i="${i}" role="button" tabindex="0">
+          <span class="notif-icone">${ICONES_NOTIF[n.tipo] || "•"}</span>
+          <span class="notif-corpo"><b>${esc(n.titulo)}</b><span>${esc(n.texto || "")}</span>
+            <span class="notif-selos"><span class="notif-selo ${resolvida ? "resolvida" : "pendente"}">${resolvida ? "Resolvida" : "Pendente"}</span><span class="notif-hora">${esc(hora)}</span>${lida ? "" : '<span class="notif-ponto" style="margin:0"></span>'}</span>
+          </span>
+          <span class="notif-acoes-linha">
+            <button type="button" data-nc-lida="${i}" title="${lida ? "Marcar como não lida" : "Marcar como lida"}">${lida ? "Não lida" : "Lida"}</button>
+            ${!resolvida || manuais.has(n.chave) ? `<button type="button" data-nc-resolver="${i}" title="${resolvida ? "Reabrir (volta para pendente)" : "Marcar como resolvida"}">${resolvida ? "Reabrir" : "Resolver"}</button>` : ""}
+          </span>
+        </div>`;
+      })
+      .join("");
+  }
+
+  // ---- NOTIFICAÇÕES NESTE APARELHO (celular/computador) ----
+  // Cada aparelho liga/desliga a sua. O aviso sai do painel enquanto ele estiver
+  // aberto (inclusive instalado na tela inicial do celular, em segundo plano). Com o
+  // app totalmente fechado depende de um envio pelo servidor (não incluso).
+  const CHAVE_DISPOSITIVO_ID = "painelDispositivoId";
+  const CHAVE_DISPOSITIVO_ATIVO = "painelNotifDispositivoAtivo";
+  const CHAVE_AVISADAS = "painelNotifAvisadas";
+  const idDoDispositivo = () => {
+    try {
+      let id = localStorage.getItem(CHAVE_DISPOSITIVO_ID);
+      if (!id) {
+        id = "d_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+        localStorage.setItem(CHAVE_DISPOSITIVO_ID, id);
+      }
+      return id;
+    } catch (erro) {
+      return "d_sem_armazenamento";
+    }
+  };
+  function nomeDoDispositivo() {
+    const ua = navigator.userAgent || "";
+    const aparelho = /iPhone/.test(ua) ? "iPhone" : /iPad/.test(ua) ? "iPad" : /Android/.test(ua) ? "Celular Android" : /Windows/.test(ua) ? "Computador Windows" : /Mac/.test(ua) ? "Mac" : "Aparelho";
+    const navegador = /Edg\//.test(ua) ? "Edge" : /Chrome\//.test(ua) ? "Chrome" : /Safari\//.test(ua) ? "Safari" : /Firefox\//.test(ua) ? "Firefox" : "";
+    const instalado = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || navigator.standalone ? " (app na tela inicial)" : "";
+    return aparelho + (navegador ? " · " + navegador : "") + instalado;
+  }
+  const dispositivoSuportaNotificacao = () => "Notification" in window;
+  const dispositivoNotificaAtivo = () => {
+    try {
+      return dispositivoSuportaNotificacao() && Notification.permission === "granted" && localStorage.getItem(CHAVE_DISPOSITIVO_ATIVO) === "1";
+    } catch (erro) {
+      return false;
+    }
+  };
+  async function registrarServiceWorkerPainel() {
+    if (!("serviceWorker" in navigator) || !/^https?:$/.test(location.protocol)) return null;
+    try {
+      return await navigator.serviceWorker.register("painel-sw.js");
+    } catch (erro) {
+      console.error("Service worker:", erro);
+      return null;
+    }
+  }
+  async function mostrarNotificacaoDoSistema(titulo, corpo, chave) {
+    const opcoes = { body: corpo, icon: "imagens/icone-180.png", tag: chave, data: { url: "painel.html" } };
+    try {
+      const reg = "serviceWorker" in navigator && /^https?:$/.test(location.protocol) ? await navigator.serviceWorker.ready : null;
+      if (reg) return reg.showNotification(titulo, opcoes);
+    } catch (erro) {}
+    try {
+      new Notification(titulo, opcoes);
+    } catch (erro) {}
+  }
+  function avisarNoDispositivo(naoLidas) {
+    if (!dispositivoNotificaAtivo()) return;
+    let avisadas;
+    try {
+      avisadas = new Set(JSON.parse(localStorage.getItem(CHAVE_AVISADAS) || "[]"));
+    } catch (erro) {
+      avisadas = new Set();
+    }
+    const novas = naoLidas.filter((n) => !avisadas.has(n.chave));
+    if (!novas.length) return;
+    novas.forEach((n) => avisadas.add(n.chave));
+    try {
+      localStorage.setItem(CHAVE_AVISADAS, JSON.stringify([...avisadas].slice(-600)));
+    } catch (erro) {}
+    // com o painel na frente você já está vendo o sino; o aviso do sistema é pra quando está em outra tela
+    if (document.visibilityState === "visible" && document.hasFocus()) return;
+    novas.slice(0, 3).forEach((n) => mostrarNotificacaoDoSistema(n.titulo, n.texto || "", n.chave));
+    if (novas.length > 3) mostrarNotificacaoDoSistema("Painel", `+ ${novas.length - 3} notificações novas`, "painel-varias");
+  }
+  async function alternarNotificacaoDoDispositivo() {
+    if (!dispositivoSuportaNotificacao()) return;
+    if (dispositivoNotificaAtivo()) {
+      try {
+        localStorage.setItem(CHAVE_DISPOSITIVO_ATIVO, "0");
+      } catch (erro) {}
+    } else {
+      const permissao = Notification.permission === "granted" ? "granted" : await Notification.requestPermission();
+      if (permissao !== "granted") {
+        renderizarDispositivosNotificacao();
+        return;
+      }
+      await registrarServiceWorkerPainel();
+      try {
+        localStorage.setItem(CHAVE_DISPOSITIVO_ATIVO, "1");
+        // o que já existe não vira aviso de uma vez: só o que chegar daqui pra frente
+        const lidas = new Set(cfgLer(CFG_NOTIF_LIDAS, []) || []);
+        localStorage.setItem(CHAVE_AVISADAS, JSON.stringify(todasNotificacoes().filter((n) => !lidas.has(n.chave)).map((n) => n.chave).slice(-600)));
+      } catch (erro) {}
+      mostrarNotificacaoDoSistema("Notificações ativadas", "Você vai receber os avisos do painel neste aparelho.", "painel-teste");
+    }
+    const id = idDoDispositivo();
+    const outros = (cfgLer(CFG_NOTIF_DISPOSITIVOS, []) || []).filter((d) => d.id !== id);
+    await cfgGravar(CFG_NOTIF_DISPOSITIVOS, outros.concat({ id, nome: nomeDoDispositivo(), ativo: dispositivoNotificaAtivo(), em: new Date().toISOString() }));
+    renderizarDispositivosNotificacao();
+  }
+  function renderizarDispositivosNotificacao() {
+    const el = document.getElementById("notifDispositivo");
+    if (!el) return;
+    const id = idDoDispositivo();
+    let situacao;
+    if (!dispositivoSuportaNotificacao()) situacao = "Este navegador não suporta notificações. No iPhone, abra o painel pelo ícone da tela inicial (Compartilhar › Adicionar à Tela de Início) e volte aqui.";
+    else if (Notification.permission === "denied") situacao = "As notificações estão bloqueadas nas configurações do navegador para este site. Libere lá e volte aqui.";
+    else if (dispositivoNotificaAtivo()) situacao = "Ativadas neste aparelho. O painel confere novidades a cada 2 minutos e avisa quando você está em outra tela.";
+    else situacao = "Desativadas neste aparelho.";
+    const dispositivos = (cfgLer(CFG_NOTIF_DISPOSITIVOS, []) || []).map((d) => (d.id === id ? { ...d, ativo: dispositivoNotificaAtivo(), nome: nomeDoDispositivo() } : d));
+    const lista = dispositivos.length
+      ? `<div class="notif-disp-lista">${dispositivos.map((d) => `<span class="${d.ativo ? "" : "off"}">${d.ativo ? "● " : "○ "}${esc(d.nome)}${d.id === id ? " — este aparelho" : ""}</span>`).join("")}</div>`
+      : "";
+    const podeAlternar = dispositivoSuportaNotificacao() && Notification.permission !== "denied";
+    el.innerHTML = `<div class="notif-disp-topo">
+        <div><h3>Notificações neste aparelho</h3><p>${esc(situacao)}</p></div>
+        ${podeAlternar ? `<button type="button" class="btn-fases" id="btnAlternarNotifDispositivo">${dispositivoNotificaAtivo() ? "Desativar neste aparelho" : "Ativar neste aparelho"}</button>` : ""}
+      </div>${lista}`;
   }
 
   (function ligarNotificacoes() {
@@ -14904,7 +15784,7 @@
     });
     const marcarLida = (chave) => {
       const lidas = cfgLer(CFG_NOTIF_LIDAS, []) || [];
-      if (!lidas.includes(chave)) cfgGravar(CFG_NOTIF_LIDAS, lidas.concat(chave).slice(-300));
+      if (!lidas.includes(chave)) cfgGravar(CFG_NOTIF_LIDAS, lidas.concat(chave).slice(-LIMITE_LIDAS));
     };
     document.getElementById("notifLista").addEventListener("click", (evento) => {
       const item = evento.target.closest("[data-notif-i]");
@@ -14916,13 +15796,68 @@
       atualizarNotificacoes();
       executarDestino(notif.destino);
     });
-    document.getElementById("btnNotifLerTodas").addEventListener("click", () => {
-      const lista = document.getElementById("notifLista")._itens || [];
+    const lerTodas = () => {
+      const lista = document.getElementById("notifLista")._todas || [];
       const lidas = new Set(cfgLer(CFG_NOTIF_LIDAS, []) || []);
       lista.forEach((n) => lidas.add(n.chave));
-      cfgGravar(CFG_NOTIF_LIDAS, [...lidas].slice(-300));
+      cfgGravar(CFG_NOTIF_LIDAS, [...lidas].slice(-LIMITE_LIDAS));
       atualizarNotificacoes();
+    };
+    document.getElementById("btnNotifLerTodas").addEventListener("click", lerTodas);
+    document.getElementById("btnCentralLerTodas").addEventListener("click", lerTodas);
+    document.getElementById("btnAbrirCentralNotif").addEventListener("click", () => {
+      fechar();
+      abrirCentralNotificacoes();
     });
+
+    // ---- central: filtros, ler/resolver, abrir o item, ligar/desligar neste aparelho ----
+    const ligarFiltroNotif = (id, aoMudar) =>
+      document.getElementById(id).addEventListener("click", (evento) => {
+        const botao = evento.target.closest("[data-nf]");
+        if (!botao) return;
+        document.querySelectorAll(`#${id} .btn-alternador`).forEach((b) => b.classList.toggle("ativo", b === botao));
+        aoMudar(botao.dataset.nf);
+        renderizarCentralNotificacoes();
+      });
+    ligarFiltroNotif("filtroNotifLeitura", (v) => (filtroNotifLeitura = v));
+    ligarFiltroNotif("filtroNotifSituacao", (v) => (filtroNotifSituacao = v));
+    const acaoNaCentral = (evento) => {
+      const lista = document.getElementById("notifCentralLista")._itens || [];
+      const lida = evento.target.closest("[data-nc-lida]");
+      const resolver = evento.target.closest("[data-nc-resolver]");
+      const linha = evento.target.closest("[data-nc-i]");
+      const lidas = new Set(cfgLer(CFG_NOTIF_LIDAS, []) || []);
+      if (lida) {
+        const n = lista[Number(lida.dataset.ncLida)];
+        if (n) alternarEmCfg(CFG_NOTIF_LIDAS, n.chave, !lidas.has(n.chave));
+      } else if (resolver) {
+        const n = lista[Number(resolver.dataset.ncResolver)];
+        if (n) {
+          // se já está resolvida por si só (pago/concluído), "reabrir" não muda nada; senão alterna a marca manual
+          const manual = (cfgLer(CFG_NOTIF_RESOLVIDAS, []) || []).includes(n.chave);
+          alternarEmCfg(CFG_NOTIF_RESOLVIDAS, n.chave, !manual);
+        }
+      } else if (linha) {
+        const n = lista[Number(linha.dataset.ncI)];
+        if (!n) return;
+        alternarEmCfg(CFG_NOTIF_LIDAS, n.chave, true);
+        atualizarNotificacoes();
+        executarDestino(n.destino);
+        return;
+      } else return;
+      atualizarNotificacoes();
+    };
+    document.getElementById("notifCentralLista").addEventListener("click", acaoNaCentral);
+    document.getElementById("notifCentralLista").addEventListener("keydown", (evento) => {
+      if ((evento.key === "Enter" || evento.key === " ") && evento.target.matches("[data-nc-i]")) {
+        evento.preventDefault();
+        acaoNaCentral(evento);
+      }
+    });
+    document.getElementById("notifDispositivo").addEventListener("click", (evento) => {
+      if (evento.target.closest("#btnAlternarNotifDispositivo")) alternarNotificacaoDoDispositivo();
+    });
+    if (dispositivoNotificaAtivo()) registrarServiceWorkerPainel();
     // novas respostas de formulário chegam com a página aberta: confere de tempos em tempos
     setInterval(async () => {
       try {
@@ -14932,6 +15867,326 @@
         console.error(erro);
       }
     }, 120000);
+  })();
+
+  // ---------------------------------------------------------------
+  // CARTÕES DE NÚMEROS CLICÁVEIS (Campanhas, Marcas, Oportunidades,
+  // Resultados — o mesmo padrão do Fluxo de Caixa): clicar no cartão abre a
+  // lista exata do que foi contado; clicar numa linha abre o item.
+  // ---------------------------------------------------------------
+  const listasCartoes = {};
+  const definirListaCartao = (chave, lista) => (listasCartoes[chave] = lista);
+  const htmlCartaoLista = (chave, classe, rotulo, valor, nota) =>
+    `<div class="cartao-fluxo ${classe || ""} clicavel" data-lista-cartao="${chave}" role="button" tabindex="0" title="Ver a lista"><span class="rotulo-cartao-fluxo">${esc(rotulo)}</span><span class="valor-cartao-fluxo">${esc(valor)}</span>${nota ? `<span class="nota-cartao-fluxo">${esc(nota)}</span>` : ""}</div>`;
+
+  function abrirListaCartao(chave) {
+    const lista = listasCartoes[chave];
+    if (!lista) return;
+    const itens = lista.itens || [];
+    const temValor = itens.some((i) => i.valor !== undefined && i.valor !== null);
+    document.getElementById("tituloListaCartao").textContent = `${lista.titulo} — ${itens.length} ${itens.length === 1 ? "item" : "itens"}`;
+    document.getElementById("subtituloListaCartao").textContent = lista.sub || "";
+    document.getElementById("cabListaCartao").innerHTML = `<th>Nome</th><th>Detalhes</th>${temValor ? "<th>Valor</th>" : ""}`;
+    document.getElementById("corpoListaCartao").innerHTML = itens.length
+      ? itens
+          .map(
+            (i, n) => `<tr${i.destino ? ` class="linha-clicavel-lista" data-lc-i="${n}"` : ""}>
+          <td>${esc(i.nome || "—")}</td><td>${esc(i.info || "")}</td>${temValor ? `<td>${i.valor === undefined || i.valor === null ? "" : esc(formatarMoeda(i.valor))}</td>` : ""}
+        </tr>`
+          )
+          .join("")
+      : `<tr><td colspan="3" class="texto-vazio">Nada neste cartão.</td></tr>`;
+    document.getElementById("totalListaCartao").textContent = lista.total != null ? lista.total : temValor ? "Total: " + formatarMoeda(itens.reduce((s, i) => s + (Number(i.valor) || 0), 0)) : "";
+    document.getElementById("overlayModalListaCartao")._lista = lista;
+    document.getElementById("overlayModalListaCartao").hidden = false;
+  }
+  (function ligarCartoesClicaveis() {
+    const overlay = document.getElementById("overlayModalListaCartao");
+    const fechar = () => (overlay.hidden = true);
+    document.getElementById("btnFecharListaCartao").addEventListener("click", fechar);
+    overlay.addEventListener("click", (evento) => {
+      if (evento.target === overlay) return fechar();
+      const linha = evento.target.closest("[data-lc-i]");
+      const item = linha && overlay._lista && overlay._lista.itens[Number(linha.dataset.lcI)];
+      if (item && item.destino) {
+        fechar();
+        executarDestino(item.destino);
+      }
+    });
+    document.addEventListener("click", (evento) => {
+      const cartao = evento.target.closest("[data-lista-cartao]");
+      if (cartao) abrirListaCartao(cartao.dataset.listaCartao);
+    });
+    document.addEventListener("keydown", (evento) => {
+      if (evento.key !== "Enter" && evento.key !== " ") return;
+      const cartao = evento.target.closest && evento.target.closest("[data-lista-cartao]");
+      if (!cartao) return;
+      evento.preventDefault();
+      abrirListaCartao(cartao.dataset.listaCartao);
+    });
+  })();
+
+  // Campanhas: em produção / aguardando pagamento / finalizadas / valor contratado
+  function renderizarCartoesCampanhas() {
+    const el = document.getElementById("cartoesCampanhas");
+    if (!el) return;
+    if (!producaoAvancadaDisponivel || !contratosCache.length) {
+      el.innerHTML = "";
+      return;
+    }
+    const final = colunaFinal();
+    const grupos = { em_producao: [], aguardando_pagamento: [], finalizadas: [] };
+    contratosCache.forEach((k) => grupos[statusCampanha(k)].push(k));
+    const nomeCampanha = (k) => (k.marca || "—") + (k.nome ? " · " + k.nome : "");
+    const porData = (a, b) => (b.data_assinatura || "").localeCompare(a.data_assinatura || "");
+    const destino = (k) => ({ tipo: "campanha", id: k.id });
+    const aReceber = (k) => Math.max(0, (Number(k.valor) || 0) - recebidoDaCampanha(k));
+    const totalAReceber = grupos.aguardando_pagamento.reduce((s, k) => s + aReceber(k), 0);
+    const totalContratado = contratosCache.reduce((s, k) => s + (Number(k.valor) || 0), 0);
+
+    definirListaCartao("camp-producao", {
+      titulo: "Campanhas em produção", sub: "Têm vídeo ainda não concluído (ou nenhum vídeo gerado)",
+      itens: grupos.em_producao.sort(porData).map((k) => {
+        const cards = quadroCache.filter((c) => c.contrato_id === k.id);
+        const prontos = cards.filter((c) => final && c.coluna_id === final.id).length;
+        return { nome: nomeCampanha(k), info: cards.length ? `${prontos}/${cards.length} vídeos concluídos` : "Sem vídeos gerados", valor: Number(k.valor) || 0, destino: destino(k) };
+      }),
+    });
+    definirListaCartao("camp-aguardando", {
+      titulo: "Aguardando pagamento", sub: "Produção concluída, mas as parcelas pagas ainda não cobrem o valor da campanha",
+      itens: grupos.aguardando_pagamento.sort(porData).map((k) => ({ nome: nomeCampanha(k), info: `Recebido ${formatarMoeda(recebidoDaCampanha(k))} · falta ${formatarMoeda(aReceber(k))}`, valor: Number(k.valor) || 0, destino: destino(k) })),
+    });
+    definirListaCartao("camp-finalizadas", {
+      titulo: "Campanhas finalizadas", sub: "Produção concluída e valor totalmente recebido",
+      itens: grupos.finalizadas.sort(porData).map((k) => ({ nome: nomeCampanha(k), info: k.data_assinatura ? "Assinada em " + formatarDataBr(k.data_assinatura) : "", valor: Number(k.valor) || 0, destino: destino(k) })),
+    });
+    definirListaCartao("camp-valor", {
+      titulo: "Valor contratado", sub: "Soma do valor de todas as campanhas cadastradas",
+      itens: contratosCache.slice().sort(porData).map((k) => ({ nome: nomeCampanha(k), info: { em_producao: "Em produção", aguardando_pagamento: "Aguardando pagamento", finalizadas: "Finalizada" }[statusCampanha(k)], valor: Number(k.valor) || 0, destino: destino(k) })),
+    });
+    el.innerHTML =
+      htmlCartaoLista("camp-producao", "previsto", "Em produção", formatarNumero(grupos.em_producao.length), "Com vídeo pendente") +
+      htmlCartaoLista("camp-aguardando", "pendente", "Aguardando pagamento", formatarNumero(grupos.aguardando_pagamento.length), `${formatarMoeda(totalAReceber)} a receber`) +
+      htmlCartaoLista("camp-finalizadas", "entradas", "Finalizadas", formatarNumero(grupos.finalizadas.length), "Produzidas e pagas") +
+      htmlCartaoLista("camp-valor", "acumulado", "Valor contratado", formatarMoeda(totalContratado), `${formatarNumero(contratosCache.length)} campanhas no total`);
+  }
+
+  // Oportunidades: abertas / em negociação / fechadas / perdidas / follow-ups atrasados
+  function renderizarCartoesOportunidades() {
+    const el = document.getElementById("cartoesOportunidades");
+    if (!el) return;
+    if (!oportunidadesDisponivel) {
+      el.innerHTML = "";
+      return;
+    }
+    const hoje = hojeIso();
+    const tipoDe = (o) => (etapaOportunidade(o.etapa_id) || { tipo: "aberta" }).tipo;
+    const abertas = oportunidadesCache.filter((o) => tipoDe(o) === "aberta");
+    const idsNegociacao = new Set(etapasOportunidadeCache.filter((e) => e.tipo === "aberta").slice(-2).map((e) => e.id));
+    const negociacao = oportunidadesCache.filter((o) => idsNegociacao.has(o.etapa_id));
+    const ganhas = oportunidadesCache.filter((o) => tipoDe(o) === "ganha");
+    const perdidas = oportunidadesCache.filter((o) => tipoDe(o) === "perdida");
+    const atrasadas = abertas.filter((o) => o.proximo_followup && o.proximo_followup < hoje);
+    const valorDe = (o) => (o.valor_estimado != null ? Number(o.valor_estimado) || 0 : undefined);
+    const soma = (lista) => lista.reduce((s, o) => s + (valorDe(o) || 0), 0);
+    const item = (o) => {
+      const etapa = etapaOportunidade(o.etapa_id);
+      return { nome: nomeEmpresa(o.empresa_id), info: `${etapa ? etapa.nome : "—"}${o.proximo_followup ? " · follow-up " + formatarDataBr(o.proximo_followup) : ""}`, valor: valorDe(o), destino: { tipo: "oportunidade", id: o.id } };
+    };
+    const lista = (chave, titulo, sub, itens) => definirListaCartao(chave, { titulo, sub, itens: itens.map(item) });
+    lista("op-abertas", "Oportunidades abertas", "Ainda em andamento (nem ganhas, nem perdidas)", abertas);
+    lista("op-negociacao", "Em negociação", "As duas etapas abertas mais perto do fechamento", negociacao);
+    lista("op-fechadas", "Oportunidades fechadas", "Marcadas como ganhas", ganhas);
+    lista("op-perdidas", "Oportunidades perdidas", "Marcadas como perdidas", perdidas);
+    lista("op-atrasadas", "Follow-ups atrasados", "Abertas com a data do próximo follow-up já passada", atrasadas);
+    el.innerHTML =
+      htmlCartaoLista("op-abertas", "previsto", "Abertas", formatarNumero(abertas.length), `${formatarMoeda(soma(abertas))} estimados`) +
+      htmlCartaoLista("op-negociacao", "acumulado", "Em negociação", formatarNumero(negociacao.length), `${formatarMoeda(soma(negociacao))} estimados`) +
+      htmlCartaoLista("op-fechadas", "entradas", "Fechadas", formatarNumero(ganhas.length), `${formatarMoeda(soma(ganhas))} fechados`) +
+      htmlCartaoLista("op-perdidas", "saidas", "Perdidas", formatarNumero(perdidas.length), "Total geral") +
+      htmlCartaoLista("op-atrasadas", "pendente", "Follow-ups atrasados", formatarNumero(atrasadas.length), atrasadas.length ? "Precisam de retorno" : "Tudo em dia");
+  }
+
+  // Marcas: as três listas dos cartões do topo
+  function definirListasMarcas() {
+    const camps = (e) => contratosCache.filter((k) => k.empresa_id === e.id);
+    const item = (e) => {
+      const c = camps(e);
+      const emProducao = c.filter((k) => statusCampanha(k) === "em_producao").length;
+      return { nome: e.nome, info: `${c.length} campanha${c.length === 1 ? "" : "s"}${emProducao ? ` · ${emProducao} em produção` : ""}`, destino: { tipo: "empresa", id: e.id } };
+    };
+    const porNome = (a, b) => String(a.nome).localeCompare(String(b.nome), "pt-BR");
+    const ativas = empresasCache.filter((e) => statusEfetivoEmpresa(e) === "Ativo").sort(porNome);
+    const fechadas = empresasCache.filter((e) => statusEfetivoEmpresa(e) === "Fechado").sort(porNome);
+    definirListaCartao("marcas-trabalhadas", { titulo: "Marcas trabalhadas", sub: "Ativas + fechadas", itens: ativas.concat(fechadas).sort(porNome).map(item) });
+    definirListaCartao("marcas-ativas", { titulo: "Marcas ativas", sub: "Com campanha em produção", itens: ativas.map(item) });
+    definirListaCartao("marcas-fechadas", { titulo: "Marcas fechadas", sub: "Todas as campanhas concluídas", itens: fechadas.map(item) });
+  }
+
+  // Resultados: o que compõe cada número do período escolhido
+  function definirListasResultados(contratos, despesas) {
+    const periodo = rotuloPeriodoResultados();
+    const destinoDe = (l) => (l.automatico ? { tipo: "campanha", id: l.id } : null);
+    const tipoDe = (l) => (l.automatico ? "Campanha" : "Manual");
+    const infoDespesa = (d) => `${d.categoria || "—"} · ${formatarDataBr(d.data)} · ${d.status === "Pago" ? "Pago" : "Pendente"}`;
+    definirListaCartao("res-faturado", {
+      titulo: "Total faturado", sub: periodo,
+      itens: contratos.map((l) => ({ nome: l.nome, info: `${tipoDe(l)} · ${formatarDataBr(l.data)}`, valor: l.cache, destino: destinoDe(l) })),
+    });
+    definirListaCartao("res-lucro-bruto", {
+      titulo: "Lucro bruto", sub: `${periodo} — faturado − impostos − descontos, por campanha`,
+      itens: contratos.map((l) => ({ nome: l.nome, info: `Faturado ${formatarMoeda(l.cache)} · impostos ${formatarMoeda(l.impostos)} · descontos ${formatarMoeda(l.descontos)}`, valor: l.liquido, destino: destinoDe(l) })),
+    });
+    definirListaCartao("res-despesas", {
+      titulo: "Despesas da empresa", sub: periodo,
+      itens: despesas.map((d) => ({ nome: d.nome, info: infoDespesa(d), valor: Number(d.valor) || 0 })),
+    });
+    definirListaCartao("res-lucro-liquido", {
+      titulo: "Lucro líquido", sub: `${periodo} — lucro bruto das campanhas menos as despesas da empresa`,
+      itens: contratos
+        .map((l) => ({ nome: l.nome, info: `Entrada · ${tipoDe(l)} · ${formatarDataBr(l.data)}`, valor: l.liquido, destino: destinoDe(l) }))
+        .concat(despesas.map((d) => ({ nome: d.nome, info: `Despesa · ${infoDespesa(d)}`, valor: -(Number(d.valor) || 0) }))),
+    });
+  }
+
+  // ---------------------------------------------------------------
+  // MOVIMENTO: ao abrir uma aba, os blocos entram em sequência, as barras
+  // crescem e os números contam até o valor (CSS em "MOVIMENTO").
+  // ---------------------------------------------------------------
+  (function ligarMovimento() {
+    const reduzir = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduzir) return;
+    const ESCALONAR = ".cartao, .cartao-fluxo, .cartao-numero, .cartao-alerta, .painel-quadro-secao, .linha-fase-andamento, .item-alerta, .notif-linha, .cartao-mensagem, .linha-origem, .card-quadro, .bloco-marcador, .selo, .cartao-meta-receita, .linha-meta, .etapa-funil";
+    const NUMEROS = ".valor-cartao-fluxo, .valor-numero, .numero-resumo, #totalVideosAndamento, .contagem-fase, .etapa-funil .qtd";
+
+    function contarNumeros(raiz) {
+      raiz.querySelectorAll(NUMEROS).forEach((el) => {
+        if (el.children.length || el.offsetParent === null) return;
+        const texto = el.textContent.trim();
+        const m = texto.match(/^(R\$\s?)?(-?[\d.]+)(?:,(\d+))?(%?)$/);
+        if (!m) return;
+        const alvo = parseFloat(m[2].replace(/\./g, "") + (m[3] ? "." + m[3] : ""));
+        if (!isFinite(alvo) || alvo === 0) return;
+        const decimais = m[3] ? m[3].length : 0;
+        const formatar = (v) => (m[1] ? formatarMoeda(v) : v.toLocaleString("pt-BR", { minimumFractionDigits: decimais, maximumFractionDigits: decimais }) + m[4]);
+        const inicio = performance.now();
+        const duracao = 850;
+        let ultimo = formatar(0);
+        el.textContent = ultimo;
+        const passo = (agora) => {
+          if (el.textContent !== ultimo) return; // os dados foram redesenhados no meio: não sobrescreve
+          const p = Math.min(1, (agora - inicio) / duracao);
+          const v = alvo * (1 - Math.pow(1 - p, 4));
+          ultimo = p >= 1 ? texto : formatar(decimais ? v : Math.round(v));
+          el.textContent = ultimo;
+          if (p < 1) requestAnimationFrame(passo);
+        };
+        requestAnimationFrame(passo);
+      });
+    }
+
+    function entrarAba(aba) {
+      aba.querySelectorAll(ESCALONAR).forEach((el, i) => el.style.setProperty("--i", Math.min(i, 14)));
+      aba.classList.remove("entrando");
+      void aba.offsetWidth;
+      aba.classList.add("entrando");
+      clearTimeout(aba._movimento);
+      aba._movimento = setTimeout(() => aba.classList.remove("entrando"), 1500);
+      if (!document.body.classList.contains("ocultar-sensivel")) contarNumeros(aba);
+    }
+
+    const observador = new MutationObserver((mutacoes) =>
+      mutacoes.forEach((m) => {
+        if (!m.target.hidden && m.oldValue !== null) entrarAba(m.target);
+      })
+    );
+    document.querySelectorAll(".painel-aba").forEach((aba) => observador.observe(aba, { attributes: true, attributeFilter: ["hidden"], attributeOldValue: true }));
+    const aberta = document.querySelector(".painel-aba:not([hidden])");
+    if (aberta) entrarAba(aberta);
+  })();
+
+  // ---------------------------------------------------------------
+  // OCULTAR DADOS SENSÍVEIS: botão ao lado do sino. Desfoca valores em R$ e
+  // e-mails em qualquer tela (inclusive janelas), e os cartões de números.
+  // Os textos são marcados por um observador enquanto o modo está ligado.
+  // ---------------------------------------------------------------
+  (function ligarOcultarSensivel() {
+    const CHAVE = "painelOcultarSensivel";
+    const botao = document.getElementById("btnOcultarDados");
+    if (!botao) return;
+    const TESTE = /-?R\$\s?-?[\d.]+(?:,\d+)?|[\w.+-]+@[\w-]+(?:\.[\w-]+)+/;
+    const TUDO = new RegExp(TESTE.source, "g");
+    let ligado = false;
+    try {
+      ligado = localStorage.getItem(CHAVE) === "1";
+    } catch (erro) {}
+
+    function marcar(raiz) {
+      if (!raiz || (raiz.nodeType !== 1 && raiz.nodeType !== 3)) return;
+      const nos = [];
+      if (raiz.nodeType === 3) nos.push(raiz);
+      else {
+        const andador = document.createTreeWalker(raiz, NodeFilter.SHOW_TEXT);
+        while (andador.nextNode()) nos.push(andador.currentNode);
+      }
+      nos.forEach((no) => {
+        const pai = no.parentElement;
+        if (!pai || !TESTE.test(no.nodeValue) || pai.closest("script,style,textarea,option,.dado-sensivel")) return;
+        const texto = no.nodeValue;
+        const fragmento = document.createDocumentFragment();
+        let ultimo = 0;
+        texto.replace(TUDO, (achado, posicao) => {
+          if (posicao > ultimo) fragmento.append(texto.slice(ultimo, posicao));
+          const span = document.createElement("span");
+          span.className = "dado-sensivel";
+          span.textContent = achado;
+          fragmento.append(span);
+          ultimo = posicao + achado.length;
+          return achado;
+        });
+        if (ultimo < texto.length) fragmento.append(texto.slice(ultimo));
+        no.replaceWith(fragmento);
+      });
+    }
+
+    let pendentes = new Set();
+    let agendado = null;
+    const observador = new MutationObserver((mutacoes) => {
+      mutacoes.forEach((m) => {
+        if (m.type === "characterData") pendentes.add(m.target);
+        else m.addedNodes.forEach((n) => pendentes.add(n));
+      });
+      if (agendado) return;
+      agendado = setTimeout(() => {
+        agendado = null;
+        const lote = pendentes;
+        pendentes = new Set();
+        observador.disconnect();
+        lote.forEach((n) => n.isConnected && marcar(n));
+        observar();
+      }, 120);
+    });
+    const observar = () => observador.observe(document.body, { childList: true, subtree: true, characterData: true });
+
+    function aplicar() {
+      document.body.classList.toggle("ocultar-sensivel", ligado);
+      botao.classList.toggle("ativo", ligado);
+      botao.setAttribute("aria-pressed", String(ligado));
+      botao.title = ligado ? "Mostrar dados sensíveis" : "Ocultar dados sensíveis (valores e e-mails)";
+      observador.disconnect();
+      if (ligado) {
+        marcar(document.body);
+        observar();
+      }
+    }
+    botao.addEventListener("click", () => {
+      ligado = !ligado;
+      try {
+        localStorage.setItem(CHAVE, ligado ? "1" : "0");
+      } catch (erro) {}
+      aplicar();
+    });
+    aplicar();
   })();
 
   // ---------------------------------------------------------------
@@ -15169,10 +16424,13 @@
     const base = etapas[0].valor;
     return etapas
       .map((e, i) => {
-        const largura = base ? Math.max((e.valor / base) * 100, 30) : 100;
+        // formato de funil: cada etapa é um trapézio mais estreito que o anterior, em tons que
+        // vão clareando/escurecendo de uma etapa pra outra (a largura segue a posição, não o valor)
+        const largura = 100 - i * (etapas.length > 1 ? 34 / (etapas.length - 1) : 0);
         const anterior = i ? etapas[i - 1].valor : 0;
         const conv = i && anterior ? `<div class="conversao-funil">${Math.round((e.valor / anterior) * 100)}% da etapa anterior</div>` : "";
-        return `${conv}<div class="etapa-funil" style="width:${largura}%; background:${e.cor}"><span>${esc(e.nome)}</span><span class="qtd">${e.valor}</span></div>`;
+        const corBase = degradeNaPosicao(i, etapas.length);
+        return `${conv}<div class="etapa-funil" style="width:${largura}%; background:${corBase}; color:${textoSobreCor(corBase)}"><span>${esc(e.nome)}</span><span class="qtd">${e.valor}</span></div>`;
       })
       .join("");
   }
@@ -15207,9 +16465,9 @@
     const alvoNegociacao = etapaAlvoFunil(/negocia/);
     document.getElementById("dashFunilInbound").innerHTML = htmlFunil(
       [
-        { nome: "Entraram", valor: inbound.length, cor: "#3A3A3A" },
-        { nome: "Foram para negociação", valor: inbound.filter((o) => alcancouEtapa(o, alvoNegociacao)).length, cor: "#5B6F8A" },
-        { nome: "Fechadas", valor: inbound.filter(foiGanha).length, cor: "#2D7A4F" },
+        { nome: "Entraram", valor: inbound.length, cor: PALETA_BALOES[0].suave },
+        { nome: "Foram para negociação", valor: inbound.filter((o) => alcancouEtapa(o, alvoNegociacao)).length, cor: PALETA_BALOES[1].suave },
+        { nome: "Fechadas", valor: inbound.filter(foiGanha).length, cor: PALETA_BALOES[3].suave },
       ],
       avisoSql
     );
@@ -15219,10 +16477,10 @@
     const alvoOrcamento = etapaAlvoFunil(/propost/);
     document.getElementById("dashFunilOutbound").innerHTML = htmlFunil(
       [
-        { nome: "Entraram", valor: outbound.length, cor: "#3A3A3A" },
-        { nome: "Responderam (proposta + negados)", valor: outbound.filter((o) => alcancouEtapa(o, alvoResposta) || foiPerdida(o)).length, cor: "#5B6F8A" },
-        { nome: "Chegaram a orçamento", valor: outbound.filter((o) => alcancouEtapa(o, alvoOrcamento)).length, cor: "#12A594" },
-        { nome: "Fecharam", valor: outbound.filter(foiGanha).length, cor: "#2D7A4F" },
+        { nome: "Entraram", valor: outbound.length, cor: PALETA_BALOES[0].suave },
+        { nome: "Responderam (proposta + negados)", valor: outbound.filter((o) => alcancouEtapa(o, alvoResposta) || foiPerdida(o)).length, cor: PALETA_BALOES[1].suave },
+        { nome: "Chegaram a orçamento", valor: outbound.filter((o) => alcancouEtapa(o, alvoOrcamento)).length, cor: PALETA_BALOES[2].suave },
+        { nome: "Fecharam", valor: outbound.filter(foiGanha).length, cor: PALETA_BALOES[3].suave },
       ],
       avisoSql
     );
@@ -15372,6 +16630,15 @@
   try {
     filtrosTarefas = { ...filtrosTarefas, ...JSON.parse(localStorage.getItem(CHAVE_FILTROS_TAREFAS) || "{}") };
   } catch (erro) {}
+  // concluídas (checklist e produção) escondidas só aqui na página Tarefas; altura manual da faixa de cima
+  const CHAVE_OCULTAR_CONCL_TAREFAS = "painelTarefasOcultarConcluidas";
+  const CHAVE_ALTURA_TOPO_TAREFAS = "painelTarefasAlturaTopo";
+  let ocultarConcluidasTarefas = false;
+  let alturaTopoTarefas = null; // null = automática (cabe tudo)
+  try {
+    ocultarConcluidasTarefas = localStorage.getItem(CHAVE_OCULTAR_CONCL_TAREFAS) === "1";
+    alturaTopoTarefas = Number(localStorage.getItem(CHAVE_ALTURA_TOPO_TAREFAS)) || null;
+  } catch (erro) {}
   let semanaTarefas = inicioDaSemanaTarefas(new Date());
   let miniMesTarefas = new Date(semanaTarefas.getFullYear(), semanaTarefas.getMonth(), 1);
   let arrastandoTar = null; // { tipo: "tarefa" | "sub", id, dia }
@@ -15398,7 +16665,8 @@
       return porDia.get(iso);
     };
     if (filtrosTarefas.subs) {
-      subtarefasAgendadas({ apenasMinhas: true }).forEach((it) => {
+      subtarefasAgendadas({ apenasMinhas: true, incluirConcluidas: true }).forEach((it) => {
+        if (it.concluida && ocultarConcluidasTarefas) return;
         for (let d = new Date(it.ini); d <= it.fim; d = somarDiasData(d, 1)) {
           const iso = formatarDataISO(d);
           if (iso >= inicioIso && iso <= fimIso) pegar(iso).subs.push(it);
@@ -15430,7 +16698,7 @@
     for (let i = 0; i < 7; i++) dias.push(somarDiasData(semanaTarefas, i));
     const isos = dias.map(formatarDataISO);
     const ext = demandasExternasTarefas(isos[0], isos[6]);
-    const tarefas = filtrosTarefas.tarefas ? listaTarefas().filter((t) => t.data) : [];
+    const tarefas = filtrosTarefas.tarefas ? listaTarefas().filter((t) => t.data && !(ocultarConcluidasTarefas && t.feita)) : [];
 
     const fim = dias[6];
     const fmt = (d) => d.getDate() + " " + NOMES_MESES_LT[d.getMonth()].toLowerCase();
@@ -15447,7 +16715,7 @@
         const subs = e.subs
           .map(
             (it) =>
-              `<div class="cal-sub${it.concluida ? " concluida" : ""}" data-cal-card="${it.card.id}" data-drag-sub="${it.s.id}" data-dia="${iso}" draggable="true" title="${esc(it.s.nome + " · " + it.card.titulo)}"><span class="cal-ponto" style="background:${it.cor.ponto}"></span><span class="cal-sub-texto">${esc(it.s.nome)}<em> ${esc(it.card.titulo)}</em></span></div>`
+              `<div class="cal-sub${it.concluida ? " feita" : ""}" style="background:${it.cor.bg};color:${it.cor.fg}" data-cal-card="${it.card.id}" data-drag-sub="${it.s.id}" data-dia="${iso}" draggable="true" title="${esc(it.s.nome + " · " + it.card.titulo)}"><input type="checkbox" class="chk-redondo" data-sub-check="${it.s.id}" ${it.concluida ? "checked" : ""} title="${it.concluida ? "Reabrir (volta para Pendente)" : "Concluir"}"><span class="cal-sub-texto">${esc(it.s.nome)}<em> ${esc(it.card.titulo)}</em></span></div>`
           )
           .join("");
         const cobrancas = e.cobrancas
@@ -15476,8 +16744,8 @@
 
     container.innerHTML = `
       <div class="sem-linha sem-cabecalho">${cabecalho}</div>
-      <div class="sem-linha sem-topo">${topo}</div>
-      <div class="sem-divisor"></div>
+      <div class="sem-linha sem-topo${alturaTopoTarefas ? " manual" : ""}"${alturaTopoTarefas ? ` style="height:${alturaTopoTarefas}px"` : ""}>${topo}</div>
+      <div class="sem-divisor" title="Arraste para ajustar · duplo clique volta ao automático"></div>
       <div class="sem-linha sem-dias-tar">${colunas}</div>`;
   }
 
@@ -15564,6 +16832,11 @@
 
   function renderizarFiltrosTarefas() {
     document.querySelectorAll("[data-filtro-tarefas]").forEach((b) => b.classList.toggle("ativo", !!filtrosTarefas[b.dataset.filtroTarefas]));
+    const btnConcl = document.getElementById("btnConcluidasTarefas");
+    if (btnConcl) {
+      btnConcl.classList.toggle("ativo", ocultarConcluidasTarefas);
+      btnConcl.title = ocultarConcluidasTarefas ? "Mostrar concluídas" : "Ocultar concluídas";
+    }
   }
 
   function renderizarTarefasPagina() {
@@ -15634,7 +16907,57 @@
     });
   });
 
+  document.getElementById("btnConcluidasTarefas").addEventListener("click", () => {
+    ocultarConcluidasTarefas = !ocultarConcluidasTarefas;
+    try {
+      localStorage.setItem(CHAVE_OCULTAR_CONCL_TAREFAS, ocultarConcluidasTarefas ? "1" : "0");
+    } catch (erro) {}
+    renderizarTarefasPagina();
+  });
+
+  // ---- divisor entre as demandas da produção e as tarefas: arrastar ajusta, duplo clique volta ao automático ----
+  const semanaTarefasEl = document.getElementById("semanaTarefas");
+  const salvarAlturaTopo = () => {
+    try {
+      if (alturaTopoTarefas) localStorage.setItem(CHAVE_ALTURA_TOPO_TAREFAS, String(alturaTopoTarefas));
+      else localStorage.removeItem(CHAVE_ALTURA_TOPO_TAREFAS);
+    } catch (erro) {}
+  };
+  semanaTarefasEl.addEventListener("pointerdown", (evento) => {
+    const divisor = evento.target.closest(".sem-divisor");
+    const topo = semanaTarefasEl.querySelector(".sem-topo");
+    if (!divisor || !topo) return;
+    evento.preventDefault();
+    const inicioY = evento.clientY;
+    const alturaInicial = topo.getBoundingClientRect().height;
+    const maximo = () => semanaTarefasEl.clientHeight - semanaTarefasEl.querySelector(".sem-cabecalho").offsetHeight - divisor.offsetHeight - 60;
+    divisor.classList.add("arrastando");
+    divisor.setPointerCapture(evento.pointerId);
+    const mover = (e) => {
+      alturaTopoTarefas = Math.round(Math.min(maximo(), Math.max(46, alturaInicial + e.clientY - inicioY)));
+      topo.classList.add("manual");
+      topo.style.height = alturaTopoTarefas + "px";
+    };
+    const soltar = () => {
+      divisor.classList.remove("arrastando");
+      divisor.removeEventListener("pointermove", mover);
+      divisor.removeEventListener("pointerup", soltar);
+      divisor.removeEventListener("pointercancel", soltar);
+      salvarAlturaTopo();
+    };
+    divisor.addEventListener("pointermove", mover);
+    divisor.addEventListener("pointerup", soltar);
+    divisor.addEventListener("pointercancel", soltar);
+  });
+  semanaTarefasEl.addEventListener("dblclick", (evento) => {
+    if (!evento.target.closest(".sem-divisor")) return;
+    alturaTopoTarefas = null;
+    salvarAlturaTopo();
+    renderizarSemanaTarefas();
+  });
+
   secaoTarefas.addEventListener("click", (evento) => {
+    if (evento.target.closest("[data-sub-check]")) return; // o check não abre o vídeo
     const nav = evento.target.closest("[data-mini-nav]");
     if (nav) {
       miniMesTarefas = new Date(miniMesTarefas.getFullYear(), miniMesTarefas.getMonth() + Number(nav.dataset.miniNav), 1);
@@ -15656,7 +16979,19 @@
     const card = sub && quadroCache.find((c) => c.id === sub.dataset.calCard);
     if (card) abrirModalCard(card);
   });
-  secaoTarefas.addEventListener("change", (evento) => {
+  secaoTarefas.addEventListener("change", async (evento) => {
+    // demanda da produção: o check muda o status da subtarefa (Concluído ↔ Pendente/Em andamento)
+    const chkSub = evento.target.closest("[data-sub-check]");
+    if (chkSub) {
+      const sub = subtarefasCache.find((s) => s.id === chkSub.dataset.subCheck);
+      const status = chkSub.checked ? "concluido" : sub && sub.cronometro_ativo_desde ? "andamento" : "pendente";
+      await atualizarSubtarefa(chkSub.dataset.subCheck, { status, feito: chkSub.checked });
+      renderizarTarefasPagina();
+      try {
+        renderizarCalendarioProd();
+      } catch (erro) {}
+      return;
+    }
     const chk = evento.target.closest("[data-tarefa-check]");
     if (!chk) return;
     atualizarTarefa(chk.dataset.tarefaCheck, { feita: chk.checked, feitaEm: chk.checked ? new Date().toISOString() : null });
@@ -15747,6 +17082,7 @@
       },
       renderizarAlertas,
       renderizarTarefasPagina,
+      () => atualizarInsightTopo(),
     ].forEach((desenhar) => {
       try {
         desenhar();
