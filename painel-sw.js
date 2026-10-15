@@ -15,7 +15,7 @@ self.addEventListener("push", (evento) => {
   evento.waitUntil(
     self.registration.showNotification(dados.titulo || "Painel", {
       body: dados.texto || "",
-      icon: "/imagens/icone-180.png",
+      icon: "/imagens/icone-painel-180.png",
       tag: dados.chave || undefined,
       data: { url: dados.url || "/painel.html" },
     })

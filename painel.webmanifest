@@ -7,7 +7,9 @@
   "background_color": "#f3eee9",
   "theme_color": "#f3eee9",
   "icons": [
-    { "src": "/imagens/icone-180.png", "sizes": "180x180", "type": "image/png" },
-    { "src": "/imagens/icone.svg", "sizes": "any", "type": "image/svg+xml" }
+    { "src": "/imagens/icone-painel-180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/imagens/icone-painel-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/imagens/icone-painel-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/imagens/icone-painel.svg", "sizes": "any", "type": "image/svg+xml" }
   ]
 }
