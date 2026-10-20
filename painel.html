@@ -3796,6 +3796,9 @@
                 <button type="button" class="btn-ferramenta-tabela" id="btnExportarMarcas" title="Exportar .xlsx">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4"/><path d="M7 9l5-5 5 5"/><path d="M5 19h14"/></svg>
                 </button>
+                <button type="button" class="btn-ferramenta-tabela" id="btnImportarMarcas" title="Importar planilha (entram como Lead)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 19h14"/></svg>
+                </button>
                 <button type="button" class="btn-ferramenta-tabela" id="btnConfigMarcas" title="Colunas">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h7"/><circle cx="14" cy="6" r="2"/><path d="M18 6h2"/><path d="M4 12h2"/><circle cx="9" cy="12" r="2"/><path d="M13 12h7"/><path d="M4 18h10"/><circle cx="17" cy="18" r="2"/></svg>
                 </button>
@@ -4713,6 +4716,22 @@
 
 <!-- ===================== MODAL: NOVA/EDITAR EMPRESA ===================== -->
 <!-- ===================== MODAL: NOVA/EDITAR OPORTUNIDADE ===================== -->
+<div class="overlay-modal" id="overlayImportarMarcas" hidden>
+  <div class="modal-quadro">
+    <h3>Importar marcas</h3>
+    <p class="texto-pequeno">Envie uma planilha (.xlsx, .xls ou .csv). Cada marca nova entra como <strong>Lead</strong> na primeira etapa de Oportunidades. Marcas que já existem são ignoradas.</p>
+    <p class="texto-pequeno">Colunas reconhecidas (a primeira linha é o cabeçalho): <strong>Marca</strong> (obrigatória), Nicho, Contato, WhatsApp, E-mail, Instagram, Site, Observações.</p>
+    <input type="file" id="arquivoImportarMarcas" accept=".xlsx,.xls,.csv" style="margin:10px 0;">
+    <div id="resumoImportarMarcas" class="texto-pequeno" style="margin-bottom:10px;"></div>
+    <div class="acoes-modal-quadro">
+      <button type="button" id="btnModeloImportarMarcas" class="btn-cancelar-quadro">Baixar modelo</button>
+      <span style="flex-grow:1"></span>
+      <button type="button" id="btnCancelarImportarMarcas" class="btn-cancelar-quadro">Cancelar</button>
+      <button type="button" id="btnConfirmarImportarMarcas" class="btn-salvar-quadro" disabled>Importar</button>
+    </div>
+  </div>
+</div>
+
 <div class="overlay-modal" id="overlayModalOportunidade" hidden>
   <div class="modal-quadro modal-quadro-grande">
     <h3 id="tituloModalOportunidade">Nova oportunidade</h3>
@@ -12346,6 +12365,161 @@
     XLSX.utils.book_append_sheet(livro, planilha, "Marcas");
     XLSX.writeFile(livro, "marcas.xlsx");
   }
+
+  // --- Importar planilha: cada marca nova vira empresa + oportunidade (Lead) ---
+  const CAMPOS_IMPORTACAO_MARCAS = {
+    nome: ["marca", "nome", "empresa", "nome da marca", "cliente"],
+    segmento: ["nicho", "segmento", "categoria"],
+    contato_principal: ["contato", "pessoa de contato", "contato principal", "responsavel"],
+    whatsapp: ["whatsapp", "whats", "telefone", "celular"],
+    email: ["email", "e-mail"],
+    instagram: ["instagram", "insta", "perfil"],
+    site: ["site", "website", "url"],
+    observacoes: ["observacoes", "observacao", "obs", "notas"],
+  };
+  const overlayImportarMarcas = document.getElementById("overlayImportarMarcas");
+  const arquivoImportarMarcas = document.getElementById("arquivoImportarMarcas");
+  const resumoImportarMarcas = document.getElementById("resumoImportarMarcas");
+  const btnConfirmarImportarMarcas = document.getElementById("btnConfirmarImportarMarcas");
+  let marcasParaImportar = [];
+
+  function normalizarCabecalhoImportacao(texto) {
+    return String(texto || "").normalize("NFD").replace(/[̀-ͯ]/g, "").trim().toLowerCase();
+  }
+
+  function abrirImportacaoMarcas() {
+    marcasParaImportar = [];
+    arquivoImportarMarcas.value = "";
+    resumoImportarMarcas.textContent = "";
+    btnConfirmarImportarMarcas.disabled = true;
+    btnConfirmarImportarMarcas.textContent = "Importar";
+    overlayImportarMarcas.hidden = false;
+  }
+  function fecharImportacaoMarcas() {
+    overlayImportarMarcas.hidden = true;
+  }
+
+  async function lerPlanilhaMarcas(arquivo) {
+    marcasParaImportar = [];
+    btnConfirmarImportarMarcas.disabled = true;
+    if (typeof XLSX === "undefined") {
+      resumoImportarMarcas.textContent = "Não foi possível carregar a biblioteca de leitura de planilhas. Verifique a conexão.";
+      return;
+    }
+    try {
+      const livro = XLSX.read(await arquivo.arrayBuffer(), { type: "array" });
+      const linhas = XLSX.utils.sheet_to_json(livro.Sheets[livro.SheetNames[0]], { header: 1, defval: "", raw: false });
+      if (!linhas.length) throw new Error("vazia");
+      const cabecalho = linhas[0].map(normalizarCabecalhoImportacao);
+      const indice = {};
+      Object.keys(CAMPOS_IMPORTACAO_MARCAS).forEach((campo) => {
+        const i = cabecalho.findIndex((h) => CAMPOS_IMPORTACAO_MARCAS[campo].includes(h));
+        if (i !== -1) indice[campo] = i;
+      });
+      if (indice.nome === undefined) {
+        resumoImportarMarcas.textContent = 'Não encontrei a coluna "Marca" na primeira linha da planilha.';
+        return;
+      }
+      const existentes = new Set(empresasCache.map((e) => e.nome.trim().toLowerCase()));
+      const vistos = new Set();
+      let jaExistem = 0;
+      let repetidas = 0;
+      linhas.slice(1).forEach((linha) => {
+        const nome = String(linha[indice.nome] || "").trim();
+        if (!nome) return;
+        const chave = nome.toLowerCase();
+        if (existentes.has(chave)) return jaExistem++;
+        if (vistos.has(chave)) return repetidas++;
+        vistos.add(chave);
+        const marca = { nome };
+        Object.keys(indice).forEach((campo) => {
+          if (campo !== "nome") marca[campo] = String(linha[indice[campo]] || "").trim() || null;
+        });
+        marcasParaImportar.push(marca);
+      });
+      const partes = [`<strong>${marcasParaImportar.length}</strong> marca(s) nova(s) para importar`];
+      if (jaExistem) partes.push(`${jaExistem} já cadastrada(s), ignorada(s)`);
+      if (repetidas) partes.push(`${repetidas} repetida(s) na planilha, ignorada(s)`);
+      resumoImportarMarcas.innerHTML = partes.join(" · ") + ".";
+      btnConfirmarImportarMarcas.disabled = !marcasParaImportar.length;
+    } catch (erro) {
+      console.error(erro);
+      resumoImportarMarcas.textContent = "Não consegui ler esse arquivo. Use .xlsx, .xls ou .csv.";
+    }
+  }
+
+  async function confirmarImportacaoMarcas() {
+    if (!marcasParaImportar.length) return;
+    if (!oportunidadesDisponivel || !etapasOportunidadeCache.length) {
+      alert("Oportunidades ainda não está configurado (faltam as etapas do funil). Rode o SQL de oportunidades no Supabase.");
+      return;
+    }
+    const etapa = etapasOportunidadeCache.find((e) => e.tipo === "aberta") || etapasOportunidadeCache[0];
+    const hoje = new Date().toISOString().slice(0, 10);
+    const agora = new Date().toISOString();
+    btnConfirmarImportarMarcas.disabled = true;
+    btnConfirmarImportarMarcas.textContent = "Importando…";
+    let criadas = 0;
+    let falhas = 0;
+    const TAMANHO_LOTE = 100;
+    for (let i = 0; i < marcasParaImportar.length; i += TAMANHO_LOTE) {
+      const lote = marcasParaImportar.slice(i, i + TAMANHO_LOTE);
+      try {
+        const { data, error } = await Auth.sb
+          .from("empresas")
+          .insert(lote.map((m) => ({ ...m, updated_at: agora })))
+          .select();
+        if (error) throw error;
+        const { error: erroOp } = await Auth.sb.from("oportunidades").insert(
+          data.map((empresa) => ({
+            empresa_id: empresa.id,
+            contato: empresa.contato_principal,
+            origem_lead: "Importação de planilha",
+            etapa_id: etapa.id,
+            data_entrada: hoje,
+            updated_at: agora,
+          }))
+        );
+        if (erroOp) throw erroOp;
+        criadas += data.length;
+      } catch (erro) {
+        falhas += lote.length;
+        console.error(erro);
+      }
+    }
+    await recarregarComercial();
+    await recarregarOportunidades();
+    fecharImportacaoMarcas();
+    alert(
+      `${criadas} marca(s) importada(s) como Lead em "${etapa.nome}".` +
+        (falhas ? `\n${falhas} não foram importadas (veja se alguma já existe ou tente de novo).` : "")
+    );
+    visualizacaoMarcas = "lead";
+    document.querySelectorAll("#alternadorMarcas [data-vis-marca]").forEach((b) => b.classList.toggle("ativo", b.dataset.visMarca === "lead"));
+    renderizarEmpresas();
+  }
+
+  function baixarModeloImportacaoMarcas() {
+    if (typeof XLSX === "undefined") return;
+    const planilha = XLSX.utils.aoa_to_sheet([
+      ["Marca", "Nicho", "Contato", "WhatsApp", "E-mail", "Instagram", "Site", "Observações"],
+      ["Marca Exemplo", "Beleza", "Maria", "11999999999", "contato@exemplo.com", "@marcaexemplo", "https://exemplo.com", ""],
+    ]);
+    const livro = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(livro, planilha, "Marcas");
+    XLSX.writeFile(livro, "modelo-importar-marcas.xlsx");
+  }
+
+  document.getElementById("btnImportarMarcas").addEventListener("click", abrirImportacaoMarcas);
+  document.getElementById("btnCancelarImportarMarcas").addEventListener("click", fecharImportacaoMarcas);
+  document.getElementById("btnModeloImportarMarcas").addEventListener("click", baixarModeloImportacaoMarcas);
+  overlayImportarMarcas.addEventListener("click", (evento) => {
+    if (evento.target === overlayImportarMarcas) fecharImportacaoMarcas();
+  });
+  arquivoImportarMarcas.addEventListener("change", () => {
+    if (arquivoImportarMarcas.files[0]) lerPlanilhaMarcas(arquivoImportarMarcas.files[0]);
+  });
+  btnConfirmarImportarMarcas.addEventListener("click", confirmarImportacaoMarcas);
 
   const btnFiltrarMarcas = document.getElementById("btnFiltrarMarcas");
   const btnOrdenarMarcas = document.getElementById("btnOrdenarMarcas");
