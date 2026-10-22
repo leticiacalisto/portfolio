@@ -6,3 +6,10 @@ imagens/fotos-ugc-originais/
 
 # Foto de contato em alta (6 MB) fica so na sua maquina, fora do site
 imagens/contato-original.png
+
+# Modelo 3D original do SketchUp (134 MB, passa do limite do GitHub): fica so na sua maquina.
+# O site usa a versao leve em ap-da-le/modelo/ap.glb
+ap-da-le/meu ap.glb
+
+# GLB atualizado do SketchUp (127 MB): so na sua maquina
+ap-da-le/3d/*.glb

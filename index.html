@@ -655,6 +655,33 @@ ul.canais--cel{display:none;}
 /* O nome do nicho sai na League Spartan em caixa alta, no cinza escuro */
 .conteudo__nome .titulo__impacto{font-size:clamp(1.55rem,3.1vw,2.5rem);color:var(--azul);}
 .conteudo__contagem{font-size:.85rem;font-weight:600;color:var(--tinta-suave);opacity:.65;}
+/* Balão de pensamento ao lado de "Casa e Decor": leva para a página da reforma do AP da Lê.
+   Aparece (subindo de leve) quando a seção entra na tela e depois flutua devagar. */
+.pensamento{
+  position:relative;align-self:center;margin-left:clamp(18px,2.2vw,30px);
+  display:inline-flex;align-items:center;gap:8px;white-space:nowrap;text-decoration:none;
+  padding:9px 17px;border-radius:999px;background:#fff;color:var(--tinta);
+  border:1px solid rgba(20,17,13,.14);box-shadow:0 8px 22px rgba(20,17,13,.1);
+  font-size:.82rem;font-weight:600;
+  opacity:0;transform:translateY(8px) scale(.9);transform-origin:0 100%;
+  transition:opacity .5s ease, transform .6s cubic-bezier(.22,.61,.36,1), box-shadow .25s ease, border-color .25s ease;
+}
+.conteudo__topo.em-vista .pensamento,.nl__topo .pensamento{opacity:1;transform:none;}
+.pensamento:hover{border-color:var(--tinta);box-shadow:0 12px 28px rgba(20,17,13,.16);}
+.pensamento svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s ease;}
+.pensamento:hover svg{transform:translateX(3px);}
+/* os dois pontinhos do balão de pensamento, apontando para o título */
+.pensamento::before,.pensamento::after{content:"";position:absolute;border-radius:50%;background:#fff;border:1px solid rgba(20,17,13,.14);}
+.pensamento::before{width:11px;height:11px;left:-13px;bottom:-5px;}
+.pensamento::after{width:6px;height:6px;left:-23px;bottom:-12px;}
+.conteudo__topo.em-vista .pensamento{animation:pensar 4.8s ease-in-out 1s infinite;}
+@keyframes pensar{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+@media(prefers-reduced-motion:reduce){.conteudo__topo.em-vista .pensamento{animation:none;}}
+@media(max-width:620px){
+  .nl__topo{flex-wrap:wrap;row-gap:12px;}
+  .nl__topo .titulo__impacto{white-space:nowrap;}
+  .nl__topo .pensamento{margin-left:18px;font-size:.74rem;padding:7px 13px;}
+}
 .conteudo__descricao{font-family:var(--serif);font-style:italic;font-size:1.02rem;color:var(--tinta-suave);margin-top:10px;}
 .setas{display:flex;gap:10px;flex:none;}
 .seta{
@@ -3209,6 +3236,22 @@ if(IDIOMA === "en"){
 
   /* Desenha os vídeos do nicho escolhido. A página não se mexe: só o título,
      a contagem e os cards mudam de conteúdo. */
+  /* O balão de pensamento só aparece no nicho Casa e Decor */
+  const balaoReforma = function(nicho){
+    return nicho.nome === "Casa e Decor"
+      ? '<a class="pensamento" href="ap-da-le/">' + '' + 'conhecer a reforma do AP da Lê' +
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>'
+      : "";
+  };
+  const topoNichos = $("conteudo-topo");
+  if("IntersectionObserver" in window){
+    new IntersectionObserver(function(entradas, obs){
+      if(entradas[0].isIntersecting){ topoNichos.classList.add("em-vista"); obs.disconnect(); }
+    }, { threshold: 0.6 }).observe(topoNichos);
+  } else {
+    topoNichos.classList.add("em-vista");
+  }
+
   const mostrarNicho = function(indice){
     const nicho = nichosPortfolio[indice];
 
@@ -3217,6 +3260,7 @@ if(IDIOMA === "en"){
         '<div class="conteudo__nome">' +
           '<h3 class="titulo__impacto">' + escapar(nicho.nome) + '</h3>' +
           '<span class="conteudo__contagem">' + (nicho.videos.length < 10 ? "0" : "") + nicho.videos.length + '</span>' +
+          balaoReforma(nicho) +
         '</div>' +
         (nicho.descricao ? '<p class="conteudo__descricao">' + escapar(nicho.descricao) + '</p>' : "") +
       '</div>' +
@@ -3264,7 +3308,7 @@ if(IDIOMA === "en"){
   listaNichos.innerHTML = nichosPortfolio.map(function(n, i){
     return '<section class="nl" data-indice="' + i + '">' +
       '<div class="nl__topo"><h3 class="titulo__impacto">' + escapar(n.nome) + '</h3>' +
-      '<span class="conteudo__contagem">' + (n.videos.length < 10 ? "0" : "") + n.videos.length + '</span></div>' +
+      '<span class="conteudo__contagem">' + (n.videos.length < 10 ? "0" : "") + n.videos.length + '</span>' + balaoReforma(n) + '</div>' +
       '<div class="carrossel' + (n.horizontal ? ' carrossel--horizontal' : '') + '"><div class="carrossel__trilho">' + htmlVideos(n) + '</div></div>' +
     '</section>';
   }).join("");
