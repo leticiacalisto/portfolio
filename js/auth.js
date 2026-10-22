@@ -15,10 +15,11 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
  * Faz login com e-mail e senha.
  * Lança um Error com mensagem amigável em caso de falha.
  */
-async function login(email, senha) {
+async function login(email, senha, captchaToken) {
   const { data, error } = await sb.auth.signInWithPassword({
     email: email,
     password: senha,
+    options: { captchaToken: captchaToken },
   });
 
   if (error) {
@@ -59,8 +60,8 @@ async function logout() {
 /**
  * Envia o e-mail de recuperação de senha.
  */
-async function recuperarSenha(email) {
-  const { error } = await sb.auth.resetPasswordForEmail(email);
+async function recuperarSenha(email, captchaToken) {
+  const { error } = await sb.auth.resetPasswordForEmail(email, { captchaToken: captchaToken });
   if (error) {
     throw new Error(error.message);
   }

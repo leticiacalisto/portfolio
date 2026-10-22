@@ -152,6 +152,7 @@
 
   [hidden]{ display:none !important; }
 
+  .captcha{ margin: 8px 0 4px; min-height: 0; }
   a, button{ font-family: inherit; }
 
   @media (max-width: 480px){
@@ -178,6 +179,8 @@
       <label for="campoSenha">Senha</label>
       <input type="password" id="campoSenha" required autocomplete="current-password">
 
+      <div id="captchaLogin" class="captcha"></div>
+
       <button type="button" class="link-esqueci" id="btnEsqueci">Esqueci minha senha</button>
       <button type="submit" class="btn-entrar" id="btnEntrar">Entrar</button>
     </form>
@@ -186,6 +189,8 @@
     <form id="formRecuperar" novalidate hidden>
       <label for="campoEmailRecuperar">E-mail</label>
       <input type="email" id="campoEmailRecuperar" required autocomplete="username">
+
+      <div id="captchaRecuperar" class="captcha"></div>
 
       <button type="submit" class="btn-entrar" id="btnRecuperar">Enviar link de recuperação</button>
       <button type="button" class="link-esqueci" id="btnVoltarLogin">Voltar para o login</button>
@@ -197,6 +202,28 @@
      assim funciona tanto abrindo direto no navegador quanto publicado -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="../js/auth.js"></script>
+<!-- CAPTCHA (Cloudflare Turnstile): a Site Key é pública; a Secret Key fica só no Supabase -->
+<script>
+  const TURNSTILE_SITE_KEY = "0x4AAAAAAFhPo_gMMg_WBIyE";
+  const captcha = { login: { id: null, token: "" }, recuperar: { id: null, token: "" } };
+  function captchaRenderizar(chave, seletor) {
+    captcha[chave].id = turnstile.render(seletor, {
+      sitekey: TURNSTILE_SITE_KEY,
+      callback: (t) => { captcha[chave].token = t; },
+      "expired-callback": () => { captcha[chave].token = ""; },
+      "error-callback": () => { captcha[chave].token = ""; },
+    });
+  }
+  function captchaReiniciar(chave) {
+    captcha[chave].token = "";
+    if (window.turnstile && captcha[chave].id !== null) turnstile.reset(captcha[chave].id);
+  }
+  window.captchaPronto = function () {
+    captchaRenderizar("login", "#captchaLogin");
+    captchaRenderizar("recuperar", "#captchaRecuperar");
+  };
+</script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=captchaPronto" async defer></script>
 <script>
 (async function () {
   // Se já existe sessão ativa, pula direto para o painel
@@ -253,9 +280,10 @@
     btnEntrar.textContent = "Entrando...";
 
     try {
-      await Auth.login(email, senha);
+      await Auth.login(email, senha, captcha.login.token);
       window.location.href = "../painel.html";
     } catch (erro) {
+      captchaReiniciar("login");
       mostrarErro(erro.message || "Não foi possível entrar. Tente novamente.");
       btnEntrar.disabled = false;
       btnEntrar.textContent = "Entrar";
@@ -272,12 +300,13 @@
     btnRecuperar.textContent = "Enviando...";
 
     try {
-      await Auth.recuperarSenha(email);
+      await Auth.recuperarSenha(email, captcha.recuperar.token);
       mostrarSucesso("Link de recuperação enviado! Confira seu e-mail.");
     } catch (erro) {
       mostrarErro("Não foi possível enviar o link. Verifique o e-mail digitado.");
     }
 
+    captchaReiniciar("recuperar");
     btnRecuperar.disabled = false;
     btnRecuperar.textContent = "Enviar link de recuperação";
   });
