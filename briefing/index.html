@@ -143,6 +143,8 @@ input[type=range]{width:100%;accent-color:var(--tijolo);}
 
 /* Navegação */
 .navegacao{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:30px;padding-top:22px;border-top:1px solid var(--borda);}
+/* O display:flex acima venceria o atributo hidden: sem isto os botões continuam na tela final */
+.navegacao[hidden]{display:none;}
 .btn{border:0;border-radius:99px;padding:13px 26px;font-weight:700;cursor:pointer;font-size:.95rem;transition:transform .1s ease, opacity .15s ease;}
 .btn:active{transform:scale(.98);}
 .btn-principal{background:var(--tijolo);color:#fff;}
