@@ -15632,6 +15632,7 @@
   var briefingsCache = [];
   var briefingsCampanhaCache = [];
   var briefingVinculadoDisponivel = false;
+  var briefingsCarregados = false; // o sino só olha os briefings depois da 1ª leitura
   var URL_BRIEFING = "https://www.leticiacalisto.com/briefing/";
 
   async function carregarBriefings() {
@@ -15645,6 +15646,7 @@
     briefingVinculadoDisponivel = todos.length === 0 ? await testarBriefingVinculado() : "contrato_id" in todos[0];
     briefingsCampanhaCache = todos.filter((b) => b.contrato_id);
     briefingsCache = todos.filter((b) => b.status !== "aguardando");
+    briefingsCarregados = true;
     cartao.hidden = false;
     listaAlerta(
       "alertaBriefings",
@@ -15660,6 +15662,7 @@
     );
     if (typeof renderizarContratos === "function" && contratosCache.length) renderizarContratos();
     if (idContratoEmEdicao) atualizarBlocoBriefing(contratosCache.find((k) => k.id === idContratoEmEdicao));
+    atualizarNotificacoes(); // briefing novo vira aviso no sino (e no aparelho, se ativado)
   }
   // Sem nenhum briefing ainda, pergunta direto se a coluna da campanha existe
   async function testarBriefingVinculado() {
@@ -15965,7 +15968,9 @@
     let vistos = cfgLer(CFG_NOTIF_VISTOS, null);
     const primeira = !vistos;
     vistos = vistos || { leads: [], conquistas: [], metas: [] };
-    const jaVisto = { leads: new Set(vistos.leads), conquistas: new Set(vistos.conquistas), metas: new Set(vistos.metas) };
+    // Briefings entraram depois: na 1ª vez que o sino os vê, os que já existem contam como vistos
+    const primeiraBriefings = primeira || !Array.isArray(vistos.briefings);
+    const jaVisto = { leads: new Set(vistos.leads), conquistas: new Set(vistos.conquistas), metas: new Set(vistos.metas), briefings: new Set(vistos.briefings || []) };
     const eventos = (cfgLer(CFG_NOTIF_EVENTOS, []) || []).slice();
     const novos = [];
     const agora = new Date().toISOString();
@@ -15979,6 +15984,19 @@
           chave: "lead:" + chave, tipo: "lead", titulo: "Nova resposta no formulário",
           texto: `${lead.name || "Sem nome"} · ${lead.source === "popup" ? "Popup" : "Contato"}`,
           em: lead.created_at || agora, destino: { tipo: "aba", tab: "portfolio" },
+        });
+    });
+
+    // Briefing preenchido pela marca (página /briefing). Reenvio com correção avisa de novo.
+    (briefingsCarregados ? briefingsCache : []).forEach((b) => {
+      const chave = b.id + ":" + (b.respondido_em || b.created_at);
+      if (jaVisto.briefings.has(chave)) return;
+      jaVisto.briefings.add(chave);
+      if (!primeiraBriefings)
+        novos.push({
+          chave: "briefing:" + chave, tipo: "briefing", titulo: "Briefing recebido",
+          texto: b.marca + (campanhaDoBriefing(b) ? " · " + campanhaDoBriefing(b) : ""),
+          em: b.respondido_em || b.created_at || agora, destino: { tipo: "briefing", id: b.id },
         });
     });
 
@@ -16022,9 +16040,11 @@
       }
     }
 
-    const mudou = primeira || novos.length || jaVisto.leads.size !== vistos.leads.length || jaVisto.conquistas.size !== vistos.conquistas.length || jaVisto.metas.size !== vistos.metas.length;
+    const mudou = primeira || novos.length || jaVisto.leads.size !== vistos.leads.length || jaVisto.conquistas.size !== vistos.conquistas.length || jaVisto.metas.size !== vistos.metas.length || (briefingsCarregados && (jaVisto.briefings.size !== (vistos.briefings || []).length || !Array.isArray(vistos.briefings)));
     if (!mudou) return;
-    cfgGravar(CFG_NOTIF_VISTOS, { leads: [...jaVisto.leads], conquistas: [...jaVisto.conquistas], metas: [...jaVisto.metas] });
+    // Enquanto os briefings não carregaram, guarda a lista como estava (senão os antigos
+    // virariam "novos" quando chegassem)
+    cfgGravar(CFG_NOTIF_VISTOS, { leads: [...jaVisto.leads], conquistas: [...jaVisto.conquistas], metas: [...jaVisto.metas], briefings: briefingsCarregados ? [...jaVisto.briefings].slice(-500) : vistos.briefings });
     if (novos.length) {
       const limite = Date.now() - 45 * 86400000;
       const todos = eventos.concat(novos).filter((e) => new Date(e.em).getTime() >= limite);
@@ -16059,7 +16079,7 @@
     return lista.sort((a, b) => b.ordem - a.ordem).slice(0, 50);
   }
 
-  const ICONES_NOTIF = { lead: "✉", conquista: "★", meta: "◎", receber: "＋", pagar: "−", prazo: "⏰", direito: "©" };
+  const ICONES_NOTIF = { lead: "✉", briefing: "▤", conquista: "★", meta: "◎", receber: "＋", pagar: "−", prazo: "⏰", direito: "©" };
 
   function atualizarNotificacoes() {
     const btn = document.getElementById("btnNotificacoes");
