@@ -1768,6 +1768,10 @@
   }
   .link-baixar-assinado:hover{ text-decoration:underline; }
   .rotulo-link-autentique{ display:block; margin-top:10px; }
+  .comentarios-roteiro{ margin-top:10px; display:flex; flex-direction:column; gap:8px; }
+  .comentario-roteiro{ background: var(--branco); border-left:3px solid var(--coral); border-radius:0 8px 8px 0; padding:8px 10px; font-size:13px; white-space:pre-wrap; }
+  .comentario-roteiro b{ display:block; font-size:11px; letter-spacing:.08em; text-transform:uppercase; margin-bottom:2px; }
+  .comentario-roteiro .fala-roteiro{ display:block; color: var(--texto-suave, #6b645b); font-style:italic; margin-bottom:4px; }
   .btn-responsavel-etapa{
     display:inline-flex;
     align-items:center;
@@ -4065,6 +4069,18 @@
 
         <label for="campoDescricaoCard" class="rotulo-limpo rotulo-descricao">Descrição</label>
         <textarea id="campoDescricaoCard" class="textarea-limpa" rows="4" placeholder="Briefing, links, observações..."></textarea>
+
+        <div id="blocoRoteiroCard" class="bloco-autentique" hidden>
+          <span class="rotulo-limpo">Roteiro para aprovação da marca</span>
+          <p class="texto-pequeno" id="statusRoteiroCard"></p>
+          <div class="linha-link-autentique" id="linhaLinkRoteiroCard" hidden>
+            <input type="text" id="linkRoteiroCard" class="input-limpo" readonly>
+            <button type="button" class="btn-copiar-link" id="btnCopiarLinkRoteiro">Copiar link</button>
+          </div>
+          <div id="comentariosRoteiroCard" class="comentarios-roteiro" hidden></div>
+          <button type="button" class="btn-verificar-assinatura" id="btnEnviarRoteiro">Enviar roteiro</button>
+          <input type="file" id="arquivoRoteiroCard" accept=".json,application/json" hidden>
+        </div>
        </div>
        <div id="painelListaVideosDetalhes" hidden></div>
       </div>
@@ -7314,6 +7330,7 @@
 
     btnExcluirCard.hidden = !card;
     btnConcluirCard.hidden = !card;
+    if (typeof atualizarBlocoRoteiro === "function") atualizarBlocoRoteiro(card);
     overlayModalQuadro.hidden = false;
     atualizarCabecalhoModalCard();
     alternarAbaCard(abaInicial || "detalhes");
@@ -15948,6 +15965,175 @@
   setInterval(() => carregarBriefings().catch((erro) => console.error(erro)), 120000);
 
   // ---------------------------------------------------------------
+  // ROTEIROS (página pública /roteiro; tabela e funções em
+  // js/roteiros-setup.sql). No card do vídeo, "Enviar roteiro" sobe o
+  // .json que o estúdio gera junto com o PDF, cria o link único e move o
+  // card para "Aprovação de Roteiro". A marca aprova (card vai pra
+  // "Gravar") ou pede ajuste (vai pra "Revisão de Roteiro", com
+  // comentários por cena). Nova versão reaproveita o mesmo link.
+  // Enquanto o SQL não roda, o bloco some sozinho.
+  // ---------------------------------------------------------------
+  var roteirosCache = [];
+  var roteirosDisponivel = false;
+  var roteirosCarregados = false; // o sino só olha os roteiros depois da 1ª leitura
+  var URL_ROTEIRO = "https://www.leticiacalisto.com/roteiro/";
+
+  async function carregarRoteiros() {
+    const { data, error } = await Auth.sb.from("roteiros").select("*");
+    if (error) {
+      roteirosDisponivel = false;
+      if (cardEmEdicaoObjeto) atualizarBlocoRoteiro(cardEmEdicaoObjeto);
+      return;
+    }
+    const antes = new Map(roteirosCache.map((r) => [r.id, r.status + "|" + r.respondido_em]));
+    const respondidosAgora = roteirosCarregados ? (data || []).filter((r) => antes.get(r.id) !== r.status + "|" + r.respondido_em && r.status !== "aprovacao") : [];
+    roteirosCache = data || [];
+    roteirosDisponivel = true;
+    roteirosCarregados = true;
+    // A marca respondeu: o card já mudou de fase no banco, então redesenha o quadro
+    if (respondidosAgora.length) {
+      await recarregarQuadro();
+      const aberto = cardEmEdicaoObjeto && respondidosAgora.find((r) => r.card_id === cardEmEdicaoObjeto.id);
+      const atualizado = aberto && quadroCache.find((c) => c.id === cardEmEdicaoObjeto.id);
+      if (atualizado) {
+        cardEmEdicaoObjeto.coluna_id = atualizado.coluna_id;
+        campoColunaCard.value = atualizado.coluna_id;
+      }
+    }
+    if (cardEmEdicaoObjeto) atualizarBlocoRoteiro(cardEmEdicaoObjeto);
+    atualizarNotificacoes(); // resposta da marca vira aviso no sino (e no aparelho, se ativado)
+  }
+
+  function roteiroDoCard(idCard) {
+    return roteirosCache.find((r) => r.card_id === idCard) || null;
+  }
+  function tituloDoCard(idCard) {
+    const card = quadroCache.find((c) => c.id === idCard);
+    return (card && card.titulo) || "Vídeo";
+  }
+  function dataHoraBr(iso) {
+    return iso ? new Date(iso).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "";
+  }
+
+  function atualizarBlocoRoteiro(card) {
+    const bloco = document.getElementById("blocoRoteiroCard");
+    bloco.hidden = !card || !card.id || !roteirosDisponivel;
+    if (bloco.hidden) return;
+    const r = roteiroDoCard(card.id);
+    const linha = document.getElementById("linhaLinkRoteiroCard");
+    const status = document.getElementById("statusRoteiroCard");
+    const caixaComentarios = document.getElementById("comentariosRoteiroCard");
+    const btn = document.getElementById("btnEnviarRoteiro");
+    linha.hidden = !r;
+    btn.textContent = r ? "Enviar nova versão" : "Enviar roteiro";
+    if (!r) {
+      status.textContent = "Ainda não enviado. Suba o arquivo .json do roteiro (o estúdio gera junto com o PDF).";
+      caixaComentarios.hidden = true;
+      return;
+    }
+    document.getElementById("linkRoteiroCard").value = URL_ROTEIRO + "?r=" + r.token;
+    const versao = r.versao > 1 ? ` (versão ${r.versao})` : "";
+    status.textContent =
+      r.status === "aprovado" ? `Aprovado pela marca em ${dataHoraBr(r.respondido_em)}${versao}.`
+      : r.status === "ajuste" ? `A marca pediu ajuste em ${dataHoraBr(r.respondido_em)}${versao}.`
+      : `Enviado em ${dataHoraBr(r.enviado_em)}${versao}. Aguardando a marca.`;
+
+    const comentarios = r.comentarios || {};
+    const cenas = (r.conteudo && r.conteudo.cenas) || [];
+    const itens = Object.keys(comentarios.cenas || {})
+      .sort((a, b) => Number(a) - Number(b))
+      .map((i) => {
+        const cena = cenas[i] || {};
+        return `<div class="comentario-roteiro"><b>Cena ${String(Number(i) + 1).padStart(2, "0")}${cena.nome ? " · " + esc(cena.nome) : ""}</b>${cena.fala ? `<span class="fala-roteiro">"${esc(cena.fala)}"</span>` : ""}${esc(comentarios.cenas[i])}</div>`;
+      });
+    if (comentarios.geral) itens.push(`<div class="comentario-roteiro"><b>Comentário geral</b>${esc(comentarios.geral)}</div>`);
+    caixaComentarios.innerHTML = itens.join("");
+    caixaComentarios.hidden = !itens.length || r.status === "aprovacao";
+  }
+
+  // Lê e confere o .json do roteiro antes de subir
+  function lerArquivoRoteiro(arquivo) {
+    return arquivo.text().then((texto) => {
+      const conteudo = JSON.parse(texto);
+      if (!conteudo || !conteudo.titulo || !Array.isArray(conteudo.cenas) || !conteudo.cenas.length) throw new Error("formato");
+      return conteudo;
+    });
+  }
+
+  document.getElementById("btnEnviarRoteiro").addEventListener("click", () => {
+    if (!cardEmEdicaoObjeto) return;
+    const r = roteiroDoCard(cardEmEdicaoObjeto.id);
+    if (r && r.status === "aprovado" && !confirm("Este roteiro já foi aprovado. Enviar uma nova versão reabre a aprovação no mesmo link. Continuar?")) return;
+    document.getElementById("arquivoRoteiroCard").click();
+  });
+
+  document.getElementById("arquivoRoteiroCard").addEventListener("change", async (evento) => {
+    const entrada = evento.target;
+    const arquivo = entrada.files && entrada.files[0];
+    entrada.value = "";
+    if (!arquivo || !cardEmEdicaoObjeto) return;
+    const card = cardEmEdicaoObjeto;
+    let conteudo;
+    try {
+      conteudo = await lerArquivoRoteiro(arquivo);
+    } catch (erro) {
+      alert("Esse arquivo não é um roteiro do estúdio. Suba o .json que fica ao lado do PDF do roteiro.");
+      return;
+    }
+    const btn = document.getElementById("btnEnviarRoteiro");
+    btn.disabled = true;
+    const agora = new Date().toISOString();
+    try {
+      const atual = roteiroDoCard(card.id);
+      if (atual) {
+        const anterior = { versao: atual.versao, conteudo: atual.conteudo, status: atual.status, comentarios: atual.comentarios, enviado_em: atual.enviado_em, respondido_em: atual.respondido_em };
+        const { error } = await Auth.sb
+          .from("roteiros")
+          .update({ conteudo, versao: atual.versao + 1, status: "aprovacao", comentarios: {}, historico: (atual.historico || []).concat(anterior), enviado_em: agora, respondido_em: null, updated_at: agora })
+          .eq("id", atual.id);
+        if (error) throw error;
+      } else {
+        const { error } = await Auth.sb.from("roteiros").insert({ card_id: card.id, token: gerarTokenBriefing(), conteudo, enviado_em: agora });
+        if (error) throw error;
+      }
+
+      // Card vai para "Aprovação de Roteiro"
+      const fase = colunaPorNome("Aprovação de Roteiro");
+      if (fase && card.coluna_id !== fase.id) {
+        const concluidoEm = calcularConcluidoEm(fase.id, card.coluna_id, card.concluido_em);
+        const { error } = await Auth.sb.from("quadro_cards").update({ coluna_id: fase.id, concluido_em: concluidoEm, updated_at: agora }).eq("id", card.id);
+        if (error) throw error;
+        card.coluna_id = fase.id;
+        card.concluido_em = concluidoEm;
+        campoColunaCard.value = fase.id;
+        const idx = quadroCache.findIndex((c) => c.id === card.id);
+        if (idx !== -1) quadroCache[idx] = { ...quadroCache[idx], coluna_id: fase.id, concluido_em: concluidoEm };
+        atualizarCamposDerivadosCard();
+        renderizarQuadro();
+        renderizarDashboardProducao();
+      } else if (!fase) {
+        alert('Roteiro enviado, mas não achei a fase "Aprovação de Roteiro" no quadro para mover o card.');
+      }
+
+      await carregarRoteiros();
+      copiarCampoTexto(document.getElementById("linkRoteiroCard"), document.getElementById("btnCopiarLinkRoteiro"));
+    } catch (erro) {
+      alert("Não foi possível enviar o roteiro. Confira se o js/roteiros-setup.sql já rodou no Supabase.");
+      console.error(erro);
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  document.getElementById("btnCopiarLinkRoteiro").addEventListener("click", () =>
+    copiarCampoTexto(document.getElementById("linkRoteiroCard"), document.getElementById("btnCopiarLinkRoteiro"))
+  );
+
+  carregarRoteiros().catch((erro) => console.error(erro));
+  // Resposta da marca com a página aberta: confere de tempos em tempos
+  setInterval(() => carregarRoteiros().catch((erro) => console.error(erro)), 60000);
+
+  // ---------------------------------------------------------------
   // NOTIFICAÇÕES (sino no topo). Duas origens:
   //  - do dia (calculadas na hora, somem sozinhas no dia seguinte): recebimento
   //    e pagamento pra hoje, vídeo que vence amanhã sem concluir, direito de
@@ -15970,7 +16156,9 @@
     vistos = vistos || { leads: [], conquistas: [], metas: [] };
     // Briefings entraram depois: na 1ª vez que o sino os vê, os que já existem contam como vistos
     const primeiraBriefings = primeira || !Array.isArray(vistos.briefings);
-    const jaVisto = { leads: new Set(vistos.leads), conquistas: new Set(vistos.conquistas), metas: new Set(vistos.metas), briefings: new Set(vistos.briefings || []) };
+    // Roteiros também entraram depois: mesma regra dos briefings
+    const primeiraRoteiros = primeira || !Array.isArray(vistos.roteiros);
+    const jaVisto = { leads: new Set(vistos.leads), conquistas: new Set(vistos.conquistas), metas: new Set(vistos.metas), briefings: new Set(vistos.briefings || []), roteiros: new Set(vistos.roteiros || []) };
     const eventos = (cfgLer(CFG_NOTIF_EVENTOS, []) || []).slice();
     const novos = [];
     const agora = new Date().toISOString();
@@ -15997,6 +16185,20 @@
           chave: "briefing:" + chave, tipo: "briefing", titulo: "Briefing recebido",
           texto: b.marca + (campanhaDoBriefing(b) ? " · " + campanhaDoBriefing(b) : ""),
           em: b.respondido_em || b.created_at || agora, destino: { tipo: "briefing", id: b.id },
+        });
+    });
+
+    // Resposta da marca no link do roteiro (aprovou ou pediu ajuste). Cada versão avisa de novo.
+    (roteirosCarregados ? roteirosCache : []).forEach((r) => {
+      if (r.status === "aprovacao" || !r.respondido_em) return;
+      const chave = r.id + ":" + r.versao + ":" + r.status;
+      if (jaVisto.roteiros.has(chave)) return;
+      jaVisto.roteiros.add(chave);
+      if (!primeiraRoteiros)
+        novos.push({
+          chave: "roteiro:" + chave, tipo: "roteiro", titulo: r.status === "aprovado" ? "Roteiro aprovado" : "Marca pediu ajuste no roteiro",
+          texto: tituloDoCard(r.card_id) + (r.versao > 1 ? " · versão " + r.versao : ""),
+          em: r.respondido_em, destino: { tipo: "video", id: r.card_id },
         });
     });
 
@@ -16040,11 +16242,11 @@
       }
     }
 
-    const mudou = primeira || novos.length || jaVisto.leads.size !== vistos.leads.length || jaVisto.conquistas.size !== vistos.conquistas.length || jaVisto.metas.size !== vistos.metas.length || (briefingsCarregados && (jaVisto.briefings.size !== (vistos.briefings || []).length || !Array.isArray(vistos.briefings)));
+    const mudou = primeira || novos.length || jaVisto.leads.size !== vistos.leads.length || jaVisto.conquistas.size !== vistos.conquistas.length || jaVisto.metas.size !== vistos.metas.length || (briefingsCarregados && (jaVisto.briefings.size !== (vistos.briefings || []).length || !Array.isArray(vistos.briefings))) || (roteirosCarregados && (jaVisto.roteiros.size !== (vistos.roteiros || []).length || !Array.isArray(vistos.roteiros)));
     if (!mudou) return;
     // Enquanto os briefings não carregaram, guarda a lista como estava (senão os antigos
     // virariam "novos" quando chegassem)
-    cfgGravar(CFG_NOTIF_VISTOS, { leads: [...jaVisto.leads], conquistas: [...jaVisto.conquistas], metas: [...jaVisto.metas], briefings: briefingsCarregados ? [...jaVisto.briefings].slice(-500) : vistos.briefings });
+    cfgGravar(CFG_NOTIF_VISTOS, { leads: [...jaVisto.leads], conquistas: [...jaVisto.conquistas], metas: [...jaVisto.metas], briefings: briefingsCarregados ? [...jaVisto.briefings].slice(-500) : vistos.briefings, roteiros: roteirosCarregados ? [...jaVisto.roteiros].slice(-500) : vistos.roteiros });
     if (novos.length) {
       const limite = Date.now() - 45 * 86400000;
       const todos = eventos.concat(novos).filter((e) => new Date(e.em).getTime() >= limite);
@@ -16079,7 +16281,7 @@
     return lista.sort((a, b) => b.ordem - a.ordem).slice(0, 50);
   }
 
-  const ICONES_NOTIF = { lead: "✉", briefing: "▤", conquista: "★", meta: "◎", receber: "＋", pagar: "−", prazo: "⏰", direito: "©" };
+  const ICONES_NOTIF = { lead: "✉", briefing: "▤", roteiro: "✎", conquista: "★", meta: "◎", receber: "＋", pagar: "−", prazo: "⏰", direito: "©" };
 
   function atualizarNotificacoes() {
     const btn = document.getElementById("btnNotificacoes");
@@ -16148,7 +16350,7 @@
     if ((cfgLer(CFG_NOTIF_RESOLVIDAS, []) || []).includes(n.chave)) return true;
     const d = n.destino || {};
     try {
-      if (n.tipo === "conquista" || n.tipo === "meta") return lidas.has(n.chave);
+      if (n.tipo === "conquista" || n.tipo === "meta" || n.tipo === "roteiro") return lidas.has(n.chave);
       if (n.tipo === "receber" && financasDisponivel && receitasCache.length) return !recebimentosEmAberto().some((r) => r.chave === d.chave && (!n.dia || r.data === n.dia));
       if (n.tipo === "pagar" && financasDisponivel && despesasFinCache.length) {
         const linha = linhasDespesas().find((l) => l.chave === d.chave);

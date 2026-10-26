@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roteiro para aprovação | Letícia Calisto</title>
+<meta name="description" content="Roteiro UGC da Letícia Calisto para aprovação da marca.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#f3eee9">
+<link rel="icon" href="../imagens/icone.svg" type="image/svg+xml">
+<link rel="icon" href="../imagens/icone-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../imagens/icone-180.png">
+
+<!-- As mesmas fontes do portfólio e do PDF do roteiro -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Allura&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=League+Spartan:wght@500;700;800&family=Mulish:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+<style>
+/* =========================================================
+   PALETA (a mesma do index.html e do briefing)
+   ========================================================= */
+:root{
+  --creme:#f3eee9;
+  --creme-escuro:#e8e0d7;
+  --tinta:#14110d;
+  --tinta-suave:#4a443c;
+  --cinza:#545454;
+  --tijolo:#991a0e;
+  --verde:#1e6b3a;
+  --branco:#fffdfb;
+  --borda:rgba(20,17,13,.14);
+  --sombra:0 1px 2px rgba(20,17,13,.04), 0 12px 32px rgba(20,17,13,.07);
+  --raio:14px;
+  --raio-g:24px;
+  --serif:"Fraunces", Georgia, serif;
+  --sans:"Avenir Next Arabic", "Avenir Next", "Avenir", "Mulish", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --impacto:"League Spartan", system-ui, Arial, sans-serif;
+  --cursiva:"Allura", "Segoe Script", cursive;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0;
+  background-color:var(--creme);
+  background-image:repeating-linear-gradient(90deg, rgba(20,17,13,.016) 0 26px, rgba(20,17,13,0) 26px 52px);
+  color:var(--tinta);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:clip;
+}
+button,input,select,textarea{font:inherit;color:inherit;}
+:focus-visible{outline:3px solid var(--cinza);outline-offset:3px;border-radius:4px;}
+[hidden]{display:none !important;}
+
+.pagina{max-width:760px;margin:0 auto;padding:clamp(28px,6vw,56px) 16px 80px;}
+
+/* ---------- Topo ---------- */
+.topo{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding-bottom:20px;border-bottom:1px solid var(--borda);}
+.logo{font-family:var(--serif);font-weight:600;font-size:1.35rem;letter-spacing:-.01em;}
+.logo em{font-weight:400;}
+.logo .ponto{color:var(--tijolo);}
+.contato{font-size:.72rem;color:var(--tinta-suave);letter-spacing:.12em;text-transform:uppercase;text-align:right;}
+
+/* ---------- Título ---------- */
+.rotulo{display:flex;align-items:center;gap:10px;margin:36px 0 10px;font-size:.72rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--tinta-suave);}
+.rotulo::before{content:"";flex:none;width:34px;height:1px;background:var(--tijolo);}
+h1{font-family:var(--impacto);font-weight:800;font-size:clamp(2rem,7vw,2.9rem);line-height:.98;text-transform:uppercase;margin:0;letter-spacing:-.01em;}
+.cursiva{font-family:var(--cursiva);font-size:clamp(2rem,6vw,2.6rem);color:var(--tinta-suave);line-height:1;margin-top:4px;}
+
+/* ---------- Aviso de status ---------- */
+.aviso{margin:24px 0 0;padding:16px 18px;border-radius:var(--raio);border:1px solid var(--borda);background:var(--branco);font-size:.95rem;}
+.aviso b{display:block;font-family:var(--impacto);font-size:1.05rem;letter-spacing:.04em;text-transform:uppercase;margin-bottom:2px;}
+.aviso.aprovado{border-color:var(--verde);}
+.aviso.aprovado b{color:var(--verde);}
+.aviso.ajuste b{color:var(--tijolo);}
+.instrucao{margin:24px 0 0;color:var(--tinta-suave);font-size:.95rem;}
+
+/* ---------- Ficha ---------- */
+.ficha{display:grid;grid-template-columns:repeat(4,1fr);margin:28px 0 14px;background:var(--branco);border:1px solid var(--borda);border-radius:var(--raio);overflow:hidden;}
+.ficha div{padding:14px 16px;border-right:1px solid var(--borda);}
+.ficha div:last-child{border-right:0;}
+.ficha b{display:block;font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--tijolo);margin-bottom:2px;}
+.ficha span{font-size:.9rem;}
+@media (max-width:620px){
+  .ficha{grid-template-columns:1fr 1fr;}
+  .ficha div:nth-child(2n){border-right:0;}
+  .ficha div:nth-child(-n+2){border-bottom:1px solid var(--borda);}
+}
+.angulo{font-family:var(--serif);font-style:italic;font-size:1.05rem;color:var(--tinta-suave);margin:0;}
+
+/* ---------- Cenas ---------- */
+h2{font-family:var(--impacto);font-weight:700;font-size:1.1rem;letter-spacing:.06em;text-transform:uppercase;margin:40px 0 14px;}
+.cena{display:grid;grid-template-columns:110px 1fr;gap:18px;padding:20px;margin-bottom:12px;background:var(--branco);border:1px solid var(--borda);border-radius:var(--raio);box-shadow:var(--sombra);}
+.cena.destaque{border-color:var(--tijolo);}
+.cena .num{font-family:var(--impacto);font-weight:800;font-size:2rem;line-height:1;color:#cfc4b8;}
+.cena.destaque .num{color:var(--tijolo);}
+.cena .nome{font-weight:700;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;margin-top:8px;}
+.cena .tempo{font-size:.78rem;color:var(--tinta-suave);margin-top:2px;}
+@media (max-width:620px){
+  .cena{grid-template-columns:1fr;gap:6px;padding:18px 16px;}
+  .cena .cab{display:flex;align-items:baseline;gap:10px;}
+  .cena .nome{margin-top:0;}
+}
+.campo{margin:0 0 10px;}
+.campo > b{display:block;font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--cinza);margin-bottom:1px;}
+.fala{font-family:var(--serif);font-size:1.08rem;line-height:1.45;}
+.tela{display:inline-block;background:var(--tinta);color:var(--branco);font-weight:700;font-size:.82rem;padding:4px 10px;border-radius:6px;}
+
+/* ---------- Comentário por cena ---------- */
+.comentar{margin-top:6px;}
+.btn-comentar{background:none;border:0;padding:4px 0;font-size:.85rem;font-weight:700;color:var(--tijolo);cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
+.caixa-comentario{width:100%;min-height:76px;margin-top:6px;padding:10px 12px;border:1px solid var(--borda);border-radius:10px;background:var(--creme);resize:vertical;font-size:.95rem;}
+.caixa-comentario:focus{outline:2px solid var(--tijolo);outline-offset:1px;}
+.comentario-lido{margin-top:8px;padding:10px 12px;border-left:3px solid var(--tijolo);background:var(--creme);border-radius:0 10px 10px 0;font-size:.92rem;white-space:pre-wrap;}
+.comentario-lido b{display:block;font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--tijolo);}
+
+/* ---------- Seções finais ---------- */
+.bloco{background:var(--branco);border:1px solid var(--borda);border-radius:var(--raio);padding:18px 22px;margin-bottom:12px;}
+.bloco ol,.bloco ul{margin:0;padding-left:20px;}
+.bloco li{margin-bottom:6px;}
+.bloco li:last-child{margin-bottom:0;}
+.bloco i{color:var(--tinta-suave);}
+
+/* ---------- Resposta ---------- */
+.resposta{margin-top:40px;background:var(--branco);border:1px solid var(--borda);border-radius:var(--raio-g);box-shadow:var(--sombra);padding:clamp(20px,4vw,32px);}
+.resposta h2{margin-top:0;}
+.resposta p{margin:0 0 12px;color:var(--tinta-suave);}
+.contador{font-size:.88rem;color:var(--tinta-suave);margin:12px 0 0;}
+.botoes{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;}
+.btn{flex:1 1 200px;border-radius:99px;padding:14px 22px;font-weight:700;font-size:1rem;cursor:pointer;border:1px solid var(--tinta);transition:transform .15s ease, opacity .15s ease;}
+.btn:active{transform:scale(.98);}
+.btn:disabled{opacity:.5;cursor:default;}
+.btn-ajuste{background:var(--branco);color:var(--tinta);}
+.btn-aprovar{background:var(--tinta);color:var(--branco);}
+.confirmar{margin-top:16px;padding:14px 16px;border-radius:var(--raio);background:var(--creme);font-size:.95rem;}
+.confirmar .botoes{margin-top:12px;}
+.erro{color:var(--tijolo);font-weight:600;margin-top:12px;}
+
+.rodape{margin-top:48px;padding-top:18px;border-top:1px solid var(--borda);display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:.8rem;color:var(--tinta-suave);}
+.rodape .cursiva{font-size:1.6rem;margin:0;}
+.carregando{padding:80px 0;text-align:center;color:var(--tinta-suave);}
+</style>
+</head>
+<body>
+<main class="pagina">
+  <header class="topo">
+    <div class="logo">Letícia <em>Calisto</em><span class="ponto">.</span></div>
+    <div class="contato">UGC Creator · leticiacalisto.com</div>
+  </header>
+
+  <p class="carregando" id="carregando">Carregando o roteiro…</p>
+
+  <section id="roteiro" hidden></section>
+</main>
+
+<script src="../js/rastreamento.js" defer></script>
+<script>
+(function () {
+  // =====================================================================
+  // APROVAÇÃO DE ROTEIRO. Sem biblioteca, igual ao /briefing: o link
+  // /roteiro/?r=TOKEN (gerado no card do painel) abre o roteiro pela
+  // função roteiro_abrir e responde pela roteiro_responder
+  // (js/roteiros-setup.sql). Aprovar move o card para "Gravar"; pedir
+  // ajuste move para "Revisão de Roteiro" com os comentários por cena.
+  // =====================================================================
+  var SUPABASE_URL = "https://yqshjfzcoyiqikjnukyb.supabase.co";
+  var SUPABASE_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlxc2hqZnpjb3lpcWlram51a3liIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5NzIzNDgsImV4cCI6MjEwNDU0ODM0OH0.QBseFaGdtG_6g2c_7EUeGnbhb9_JIa0hBsA2AzGnkp4";
+  var CABECALHOS = { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY };
+
+  var token = "";
+  try { token = (new URLSearchParams(location.search).get("r") || "").trim(); } catch (erro) {}
+
+  var areaRoteiro = document.getElementById("roteiro");
+  var carregando = document.getElementById("carregando");
+  var dados = null;
+  var chaveRascunho = "";
+
+  function rpc(nome, corpo) {
+    return fetch(SUPABASE_URL + "/rest/v1/rpc/" + nome, {
+      method: "POST",
+      headers: Object.assign({ "Content-Type": "application/json" }, CABECALHOS),
+      body: JSON.stringify(corpo),
+    }).then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    });
+  }
+
+  function esc(valor) {
+    return String(valor == null ? "" : valor).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  // Nas seções o roteiro pode trazer <i> e <b>; o resto é escapado
+  function rico(valor) {
+    return esc(valor).replace(/&lt;(\/?)(i|b)&gt;/g, "<$1$2>");
+  }
+  function dataHora(iso) {
+    try { return new Date(iso).toLocaleString("pt-BR", { day: "2-digit", month: "long", hour: "2-digit", minute: "2-digit" }); } catch (erro) { return ""; }
+  }
+
+  // Rascunho dos comentários neste navegador, pra não perder se a página fechar
+  function lerRascunho() {
+    try { return JSON.parse(localStorage.getItem(chaveRascunho) || "null"); } catch (erro) { return null; }
+  }
+  function salvarRascunho() {
+    try { localStorage.setItem(chaveRascunho, JSON.stringify(coletarComentarios())); } catch (erro) {}
+  }
+  function apagarRascunho() {
+    try { localStorage.removeItem(chaveRascunho); } catch (erro) {}
+  }
+
+  function mostrarErro(texto) {
+    carregando.hidden = false;
+    carregando.textContent = texto;
+    areaRoteiro.hidden = true;
+  }
+
+  function desenhar() {
+    var r = dados.conteudo || {};
+    var status = dados.status;
+    var emAprovacao = status === "aprovacao";
+    var lidos = (dados.comentarios && dados.comentarios.cenas) || {};
+    document.title = "Roteiro " + (r.marca || "") + " " + (r.numero || "") + " · " + (r.titulo || "") + " | Letícia Calisto";
+
+    var aviso = "";
+    if (status === "aprovado") {
+      aviso = '<div class="aviso aprovado"><b>Roteiro aprovado</b>Aprovado em ' + esc(dataHora(dados.respondido_em)) + ". Obrigada! Agora é comigo: vou gravar.</div>";
+    } else if (status === "ajuste") {
+      aviso = '<div class="aviso ajuste"><b>Ajustes enviados</b>Recebi os seus comentários em ' + esc(dataHora(dados.respondido_em)) + ". Vou ajustar e te mando a nova versão neste mesmo link.</div>";
+    } else {
+      aviso = '<p class="instrucao">Leia com calma. Se quiser mudar alguma coisa, toque em <b>Comentar esta cena</b> na cena que precisa de ajuste. No final, é só aprovar ou pedir os ajustes.</p>';
+    }
+
+    var ficha = (r.ficha || []).map(function (par) {
+      return "<div><b>" + esc(par[0]) + "</b><span>" + esc(par[1]) + "</span></div>";
+    }).join("");
+
+    var cenas = (r.cenas || []).map(function (c, i) {
+      var num = String(i + 1).padStart(2, "0");
+      var comentario = "";
+      if (emAprovacao) {
+        comentario = '<div class="comentar"><button type="button" class="btn-comentar" data-abrir="' + i + '">Comentar esta cena</button>' +
+          '<textarea class="caixa-comentario" data-cena="' + i + '" placeholder="O que você gostaria de mudar nesta cena?" hidden aria-label="Comentário da cena ' + num + '"></textarea></div>';
+      } else if (lidos[i]) {
+        comentario = '<div class="comentario-lido"><b>Seu comentário</b>' + esc(lidos[i]) + "</div>";
+      }
+      return '<article class="cena' + (c.destaque ? " destaque" : "") + '">' +
+        '<div class="cab"><div class="num">' + num + '</div><div><div class="nome">' + esc(c.nome) + "</div>" + (c.tempo ? '<div class="tempo">' + esc(c.tempo) + "</div>" : "") + "</div></div>" +
+        "<div>" +
+        '<p class="campo"><b>Visual</b>' + esc(c.visual) + "</p>" +
+        '<p class="campo"><b>Fala</b><span class="fala">"' + esc(c.fala) + '"</span></p>' +
+        (c.tela ? '<p class="campo"><b>Texto na tela</b><span class="tela">' + esc(c.tela) + "</span></p>" : "") +
+        comentario +
+        "</div></article>";
+    }).join("");
+
+    var secoes = (r.secoes || []).map(function (s) {
+      var tag = s.numerada ? "ol" : "ul";
+      return "<h2>" + esc(s.titulo) + '</h2><div class="bloco"><' + tag + ">" + (s.itens || []).map(function (x) { return "<li>" + rico(x) + "</li>"; }).join("") + "</" + tag + "></div>";
+    }).join("");
+
+    var geralLido = dados.comentarios && dados.comentarios.geral;
+    var resposta = "";
+    if (emAprovacao) {
+      resposta = '<section class="resposta" id="resposta">' +
+        "<h2>Sua resposta</h2>" +
+        "<p>Algum comentário geral sobre o roteiro? (opcional)</p>" +
+        '<textarea class="caixa-comentario" id="comentarioGeral" placeholder="Ex: o tom está ótimo, só quero trocar a frase final."></textarea>' +
+        '<p class="contador" id="contador"></p>' +
+        '<div class="botoes" id="botoes">' +
+        '<button type="button" class="btn btn-ajuste" id="btnAjuste">Solicitar ajuste</button>' +
+        '<button type="button" class="btn btn-aprovar" id="btnAprovar">Aprovar roteiro</button>' +
+        "</div>" +
+        '<div class="confirmar" id="confirmar" hidden></div>' +
+        '<p class="erro" id="erro" hidden></p>' +
+        "</section>";
+    } else if (geralLido) {
+      resposta = '<h2>Comentário geral</h2><div class="comentario-lido"><b>Seu comentário</b>' + esc(geralLido) + "</div>";
+    }
+
+    areaRoteiro.innerHTML =
+      '<div class="rotulo">Roteiro UGC · ' + esc(r.marca) + " · " + esc(r.produto) + "</div>" +
+      "<h1>" + esc(r.titulo) + "</h1>" +
+      '<div class="cursiva">roteiro ' + esc(r.numero) + (dados.versao > 1 ? " · versão " + dados.versao : "") + "</div>" +
+      aviso +
+      '<div class="ficha">' + ficha + "</div>" +
+      '<p class="angulo">' + esc(r.angulo) + "</p>" +
+      "<h2>As cenas</h2>" + cenas + secoes + resposta +
+      '<footer class="rodape"><span>Roteiro ' + esc(r.marca) + " " + esc(r.numero) + " · " + esc(r.titulo) + '</span><span class="cursiva">Letícia Calisto</span></footer>';
+
+    carregando.hidden = true;
+    areaRoteiro.hidden = false;
+    if (emAprovacao) ligarResposta();
+  }
+
+  function coletarComentarios() {
+    var cenas = {};
+    Array.prototype.forEach.call(areaRoteiro.querySelectorAll("textarea[data-cena]"), function (t) {
+      var v = t.value.trim();
+      if (v) cenas[t.getAttribute("data-cena")] = v;
+    });
+    var geral = document.getElementById("comentarioGeral");
+    return { cenas: cenas, geral: geral ? geral.value.trim() : "" };
+  }
+  function totalComentarios(c) {
+    return Object.keys(c.cenas).length + (c.geral ? 1 : 0);
+  }
+  function atualizarContador() {
+    var n = Object.keys(coletarComentarios().cenas).length;
+    document.getElementById("contador").textContent = n ? n + (n === 1 ? " cena comentada." : " cenas comentadas.") : "";
+  }
+
+  function ligarResposta() {
+    // Abre a caixa de comentário da cena
+    areaRoteiro.addEventListener("click", function (e) {
+      var botao = e.target.closest("[data-abrir]");
+      if (!botao) return;
+      var caixa = areaRoteiro.querySelector('textarea[data-cena="' + botao.getAttribute("data-abrir") + '"]');
+      caixa.hidden = false;
+      botao.hidden = true;
+      caixa.focus();
+    });
+    areaRoteiro.addEventListener("input", function (e) {
+      if (e.target.tagName !== "TEXTAREA") return;
+      salvarRascunho();
+      atualizarContador();
+    });
+
+    // Rascunho salvo neste aparelho volta pro lugar
+    var rascunho = lerRascunho();
+    if (rascunho) {
+      Object.keys(rascunho.cenas || {}).forEach(function (i) {
+        var caixa = areaRoteiro.querySelector('textarea[data-cena="' + i + '"]');
+        if (!caixa) return;
+        caixa.value = rascunho.cenas[i];
+        caixa.hidden = false;
+        areaRoteiro.querySelector('[data-abrir="' + i + '"]').hidden = true;
+      });
+      if (rascunho.geral) document.getElementById("comentarioGeral").value = rascunho.geral;
+      atualizarContador();
+    }
+
+    var confirmar = document.getElementById("confirmar");
+    var erro = document.getElementById("erro");
+
+    function perguntar(html, rotuloSim, acao) {
+      erro.hidden = true;
+      confirmar.innerHTML = html + '<div class="botoes"><button type="button" class="btn btn-ajuste" id="btnNao">Voltar</button><button type="button" class="btn btn-aprovar" id="btnSim">' + rotuloSim + "</button></div>";
+      confirmar.hidden = false;
+      document.getElementById("botoes").hidden = true;
+      document.getElementById("btnNao").onclick = function () {
+        confirmar.hidden = true;
+        document.getElementById("botoes").hidden = false;
+      };
+      document.getElementById("btnSim").onclick = function () { enviar(acao, this); };
+    }
+
+    document.getElementById("btnAprovar").addEventListener("click", function () {
+      var c = coletarComentarios();
+      var aviso = totalComentarios(c) ? " Os comentários que você escreveu vão junto, só como observação." : "";
+      perguntar("<b>Aprovar o roteiro?</b><br>Depois de aprovado, eu sigo para a gravação." + aviso, "Sim, aprovar", "aprovar");
+    });
+    document.getElementById("btnAjuste").addEventListener("click", function () {
+      var c = coletarComentarios();
+      if (!totalComentarios(c)) {
+        erro.textContent = "Escreva pelo menos um comentário (numa cena ou no comentário geral) para eu saber o que ajustar.";
+        erro.hidden = false;
+        return;
+      }
+      var n = Object.keys(c.cenas).length;
+      perguntar("<b>Enviar os ajustes?</b><br>" + (n ? n + (n === 1 ? " cena comentada" : " cenas comentadas") : "Comentário geral") + ". Eu ajusto e te mando a nova versão neste mesmo link.", "Enviar ajustes", "ajuste");
+    });
+  }
+
+  function enviar(acao, botao) {
+    var erro = document.getElementById("erro");
+    botao.disabled = true;
+    botao.textContent = "Enviando…";
+    var comentarios = coletarComentarios();
+    rpc("roteiro_responder", { p_token: token, p_acao: acao, p_comentarios: comentarios })
+      .then(function (ok) {
+        if (!ok) throw new Error("nao gravou");
+        apagarRascunho();
+        dados.status = acao === "aprovar" ? "aprovado" : "ajuste";
+        dados.comentarios = comentarios;
+        dados.respondido_em = new Date().toISOString();
+        desenhar();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      })
+      .catch(function () {
+        botao.disabled = false;
+        botao.textContent = acao === "aprovar" ? "Sim, aprovar" : "Enviar ajustes";
+        erro.textContent = "Não consegui enviar agora. Confira a internet e tente de novo; seus comentários continuam aqui.";
+        erro.hidden = false;
+      });
+  }
+
+  if (!token) {
+    mostrarErro("Este link de roteiro está incompleto. Confira o link que a Letícia te enviou.");
+    return;
+  }
+  chaveRascunho = "roteiro_rascunho_" + token.slice(0, 12);
+  rpc("roteiro_abrir", { p_token: token })
+    .then(function (resposta) {
+      if (!resposta || !resposta.conteudo) throw new Error("sem roteiro");
+      dados = resposta;
+      desenhar();
+    })
+    .catch(function () {
+      mostrarErro("Não encontrei este roteiro. Confira o link que a Letícia te enviou.");
+    });
+})();
+</script>
+</body>
+</html>
