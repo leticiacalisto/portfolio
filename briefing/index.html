@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Briefing de campanha | Letícia Calisto</title>
+<meta name="description" content="Briefing de campanha UGC com a Letícia Calisto: conte sobre a sua marca, o seu público e o vídeo que você precisa.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#f3eee9">
+<link rel="icon" href="../imagens/icone.svg" type="image/svg+xml">
+<link rel="icon" href="../imagens/icone-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../imagens/icone-180.png">
+
+<!-- As mesmas fontes do portfólio: League Spartan + Allura no título,
+     Fraunces nos títulos das etapas, Mulish no texto -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Allura&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=League+Spartan:wght@500;700;800&family=Mulish:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+<style>
+/* =========================================================
+   PALETA (a mesma do index.html)
+   ========================================================= */
+:root{
+  --creme:#f3eee9;
+  --creme-escuro:#e8e0d7;
+  --tinta:#14110d;
+  --tinta-suave:#4a443c;
+  --cinza:#545454;
+  --tijolo:#991a0e;
+  --branco:#fffdfb;
+  --borda:rgba(20,17,13,.14);
+  --sombra:0 1px 2px rgba(20,17,13,.04), 0 12px 32px rgba(20,17,13,.07);
+  --raio:14px;
+  --raio-g:24px;
+  --serif:"Fraunces", Georgia, serif;
+  --sans:"Avenir Next Arabic", "Avenir Next", "Avenir", "Mulish", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --impacto:"League Spartan", system-ui, Arial, sans-serif;
+  --cursiva:"Allura", "Segoe Script", cursive;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0;
+  background-color:var(--creme);
+  background-image:repeating-linear-gradient(90deg, rgba(20,17,13,.016) 0 26px, rgba(20,17,13,0) 26px 52px);
+  color:var(--tinta);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:clip;
+}
+a{color:inherit;}
+button,input,select,textarea{font:inherit;color:inherit;}
+:focus-visible{outline:3px solid var(--cinza);outline-offset:3px;border-radius:4px;}
+.oculto-visual{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;}
+
+.pagina{max-width:760px;margin:0 auto;padding:clamp(28px,6vw,64px) 16px 80px;}
+
+/* ---------- Topo ---------- */
+.topo{text-align:center;margin-bottom:32px;}
+.topo a.voltar{display:inline-block;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;color:var(--tinta-suave);margin-bottom:22px;}
+.titulo-capa{margin:0;line-height:.9;}
+.titulo-capa .cursiva{display:block;font-family:var(--cursiva);font-weight:400;font-size:clamp(2.6rem,9vw,3.8rem);color:var(--tijolo);}
+.titulo-capa .impacto{display:block;font-family:var(--impacto);font-weight:800;font-size:clamp(1.9rem,7vw,3rem);letter-spacing:.02em;text-transform:uppercase;}
+.topo p{max-width:520px;margin:18px auto 0;color:var(--tinta-suave);}
+
+/* ---------- Progresso ---------- */
+.progresso{margin:0 0 22px;}
+.progresso-trilho{height:6px;background:var(--creme-escuro);border-radius:99px;overflow:hidden;}
+.progresso-barra{height:100%;width:0;background:var(--tijolo);border-radius:99px;transition:width .35s ease;}
+.progresso-texto{display:flex;justify-content:space-between;gap:12px;margin-top:10px;font-size:.82rem;color:var(--tinta-suave);}
+.progresso-texto strong{color:var(--tinta);font-weight:700;}
+
+/* ---------- Cartão da etapa ---------- */
+.cartao{background:var(--branco);border:1px solid var(--borda);border-radius:var(--raio-g);box-shadow:var(--sombra);padding:clamp(22px,4.5vw,40px);}
+.etapa{display:none;}
+.etapa.ativa{display:block;animation:entrar .3s ease;}
+@keyframes entrar{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+.etapa h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.5rem,4.5vw,2rem);line-height:1.1;letter-spacing:-.02em;margin:0 0 6px;}
+.etapa .sub{color:var(--tinta-suave);margin:0 0 26px;}
+
+/* ---------- Campos ---------- */
+.campo{margin-bottom:22px;}
+.campo > label, .campo > .rotulo{display:block;font-weight:700;font-size:.95rem;margin-bottom:6px;}
+.campo .dica{display:block;font-size:.84rem;color:var(--tinta-suave);margin:-2px 0 8px;font-weight:400;}
+.obrigatorio{color:var(--tijolo);}
+input[type=text],input[type=email],input[type=tel],input[type=url],input[type=date],select,textarea{
+  width:100%;padding:12px 14px;border:1px solid var(--borda);border-radius:var(--raio);background:#fff;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+textarea{min-height:96px;resize:vertical;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--tinta);box-shadow:0 0 0 3px rgba(20,17,13,.08);}
+.campo.erro input,.campo.erro textarea,.campo.erro .opcoes{border-color:var(--tijolo);}
+.msg-erro{display:none;color:var(--tijolo);font-size:.84rem;margin-top:6px;}
+.campo.erro .msg-erro{display:block;}
+.dupla{display:grid;grid-template-columns:1fr;gap:0 16px;}
+@media (min-width:620px){.dupla{grid-template-columns:1fr 1fr;}}
+
+/* Opções em "pílulas" (radio e checkbox) */
+.opcoes{display:flex;flex-wrap:wrap;gap:8px;border:1px solid transparent;border-radius:var(--raio);}
+.pilula{position:relative;}
+.pilula input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer;}
+.pilula span{display:inline-block;padding:9px 14px;border:1px solid var(--borda);border-radius:99px;background:#fff;font-size:.9rem;transition:all .15s ease;}
+.pilula input:checked + span{background:var(--tinta);border-color:var(--tinta);color:var(--branco);}
+.pilula input:focus-visible + span{outline:3px solid var(--cinza);outline-offset:2px;}
+.pilula input:disabled + span{opacity:.4;}
+.outro-texto{margin-top:10px;display:none;}
+.outro-texto.visivel{display:block;}
+
+/* Canais: foco principal / segundo plano */
+.canais{display:grid;gap:8px;}
+.canal{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--borda);border-radius:var(--raio);background:#fff;}
+.canal-nome{font-size:.92rem;font-weight:600;}
+.segmentado{display:inline-flex;border:1px solid var(--borda);border-radius:99px;overflow:hidden;}
+.segmentado label{position:relative;}
+.segmentado input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer;}
+.segmentado span{display:block;padding:6px 11px;font-size:.78rem;white-space:nowrap;}
+.segmentado input:checked + span{background:var(--tinta);color:var(--branco);}
+.segmentado input:focus-visible + span{outline:2px solid var(--cinza);outline-offset:-2px;}
+
+/* Tom: régua entre dois polos */
+.regua{margin-bottom:16px;}
+.regua-polos{display:flex;justify-content:space-between;font-size:.86rem;color:var(--tinta-suave);margin-bottom:4px;}
+input[type=range]{width:100%;accent-color:var(--tijolo);}
+
+/* Listas que crescem (produtos, referências) */
+.lista-itens{display:grid;gap:10px;}
+.item-lista{display:grid;grid-template-columns:1fr;gap:8px;padding:12px;border:1px dashed var(--borda);border-radius:var(--raio);position:relative;}
+@media (min-width:620px){.item-lista{grid-template-columns:1fr 1fr;}}
+.btn-remover{position:absolute;top:6px;right:8px;background:none;border:0;font-size:1.2rem;line-height:1;color:var(--tinta-suave);cursor:pointer;padding:4px;}
+.btn-adicionar{margin-top:10px;background:none;border:1px dashed var(--tinta-suave);border-radius:99px;padding:8px 16px;font-size:.88rem;cursor:pointer;}
+.btn-adicionar:hover{border-style:solid;}
+
+/* Anexos */
+.anexos-zona{border:1px dashed var(--tinta-suave);border-radius:var(--raio);padding:18px;text-align:center;background:#fff;cursor:pointer;}
+.anexos-zona.arrastando{background:var(--creme-escuro);}
+.anexos-zona input{display:none;}
+.lista-anexos{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:6px;}
+.lista-anexos li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 12px;background:var(--creme);border-radius:10px;font-size:.88rem;}
+.lista-anexos li.recusado{color:var(--tijolo);}
+
+/* Navegação */
+.navegacao{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:30px;padding-top:22px;border-top:1px solid var(--borda);}
+.btn{border:0;border-radius:99px;padding:13px 26px;font-weight:700;cursor:pointer;font-size:.95rem;transition:transform .1s ease, opacity .15s ease;}
+.btn:active{transform:scale(.98);}
+.btn-principal{background:var(--tijolo);color:#fff;}
+.btn-secundario{background:transparent;color:var(--tinta);border:1px solid var(--borda);}
+.btn[disabled]{opacity:.55;cursor:wait;}
+.btn-secundario[hidden]{display:none;}
+.aviso-envio{margin-top:14px;font-size:.88rem;color:var(--tijolo);display:none;}
+.aviso-envio.visivel{display:block;}
+.consentimento{font-size:.82rem;color:var(--tinta-suave);margin-top:18px;}
+.salvo{font-size:.78rem;color:var(--tinta-suave);text-align:center;margin-top:14px;}
+
+/* Campo invisível contra robôs */
+.campo-mel{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;}
+
+/* Tela final */
+.final{text-align:center;padding:14px 0;}
+.final .cursiva{font-family:var(--cursiva);font-size:3rem;color:var(--tijolo);line-height:1;}
+.final h2{font-family:var(--serif);margin:6px 0 10px;}
+.final p{color:var(--tinta-suave);max-width:480px;margin:0 auto 10px;}
+.resumo{margin:22px 0 0;text-align:left;background:var(--creme);border-radius:var(--raio);padding:16px 18px;font-size:.9rem;}
+.resumo dt{font-weight:700;margin-top:8px;}
+.resumo dd{margin:0;color:var(--tinta-suave);white-space:pre-wrap;}
+
+
+/* Aviso de que dá para pular o que já foi enviado */
+.aviso-pular{background:var(--creme);border-left:3px solid var(--tijolo);border-radius:10px;padding:12px 16px;font-size:.9rem;color:var(--tinta-suave);margin:0 0 26px;}
+.aviso-pular strong{color:var(--tinta);}
+/* Faixa com a campanha, quando o link vem do painel */
+.faixa-campanha{display:none;text-align:center;font-size:.86rem;letter-spacing:.04em;color:var(--tinta-suave);margin:-14px 0 24px;}
+.faixa-campanha.visivel{display:block;}
+.faixa-campanha strong{color:var(--tinta);}
+/* Selo nos campos que mais fazem diferença no roteiro */
+.importante{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:99px;background:var(--creme-escuro);color:var(--tijolo);font-size:.72rem;font-weight:700;letter-spacing:.02em;vertical-align:middle;}
+.campo-condicional{display:none;}
+.campo-condicional.visivel{display:block;}
+
+.rodape{text-align:center;margin-top:28px;font-size:.82rem;color:var(--tinta-suave);}
+</style>
+</head>
+<body>
+<main class="pagina">
+  <header class="topo">
+    <a class="voltar" href="../">leticiacalisto.com</a>
+    <h1 class="titulo-capa"><span class="cursiva">briefing de</span><span class="impacto">Campanha UGC</span></h1>
+    <p>Quanto mais você me contar sobre a sua marca e o seu cliente, mais o vídeo vai falar com quem compra. Leva uns 5 minutos, e o que você preencher fica salvo neste aparelho se precisar parar no meio.</p>
+  </header>
+
+  <p class="faixa-campanha" id="faixaCampanha"></p>
+
+  <div class="progresso" aria-live="polite">
+    <div class="progresso-trilho"><div class="progresso-barra" id="barra"></div></div>
+    <div class="progresso-texto"><span id="nomeEtapa"></span><strong id="contadorEtapa"></strong></div>
+  </div>
+
+  <form class="cartao" id="formBriefing" novalidate>
+    <!-- Campo invisível: pessoas não veem; robôs preenchem e o envio é ignorado -->
+    <div class="campo-mel" aria-hidden="true">
+      <label for="site_empresa">Não preencha</label>
+      <input type="text" id="site_empresa" name="site_empresa" tabindex="-1" autocomplete="off">
+    </div>
+
+    <!-- ===================== ETAPA: A MARCA E VOCÊ ===================== -->
+    <section class="etapa" data-nome="A marca e você">
+      <h2>A marca e você</h2>
+      <p class="sub">Para eu saber com quem estou falando e como te responder.</p>
+      <p class="aviso-pular"><strong>Se você já me mandou alguma destas informações</strong> (por e-mail, WhatsApp ou em outro documento), pode pular a pergunta. Só o que tem <span class="obrigatorio">*</span> é obrigatório.</p>
+      <div class="campo" data-obrigatorio>
+        <label for="marca">Nome da marca <span class="obrigatorio">*</span></label>
+        <input type="text" id="marca" name="marca" autocomplete="organization">
+        <span class="msg-erro">Conta pra mim o nome da marca.</span>
+      </div>
+      <div class="dupla">
+        <div class="campo">
+          <label for="contato_nome">Seu nome</label>
+          <input type="text" id="contato_nome" name="contato_nome" autocomplete="name">
+        </div>
+        <div class="campo" data-obrigatorio data-tipo="email">
+          <label for="contato_email">E-mail <span class="obrigatorio">*</span></label>
+          <input type="email" id="contato_email" name="contato_email" autocomplete="email">
+          <span class="msg-erro">Preciso de um e-mail válido para te responder.</span>
+        </div>
+      </div>
+      <div class="dupla">
+        <div class="campo">
+          <label for="contato_whatsapp">WhatsApp</label>
+          <input type="tel" id="contato_whatsapp" name="contato_whatsapp" autocomplete="tel" placeholder="(00) 00000-0000">
+        </div>
+        <div class="campo">
+          <label for="site">Site da marca</label>
+          <input type="url" id="site" name="site" placeholder="https://">
+        </div>
+      </div>
+      <div class="dupla">
+        <div class="campo">
+          <label for="instagram">Instagram da marca</label>
+          <input type="text" id="instagram" name="instagram" placeholder="@suamarca">
+        </div>
+        <div class="campo">
+          <label for="tiktok">TikTok da marca</label>
+          <input type="text" id="tiktok" name="tiktok" placeholder="@suamarca">
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== ETAPA: A CAMPANHA (só no link genérico) ===================== -->
+    <section class="etapa" data-nome="A campanha" data-so-generico>
+      <h2>A campanha</h2>
+      <p class="sub">Quantos vídeos, para quando e como a marca vai usar.</p>
+      <div class="dupla">
+        <div class="campo">
+          <label for="qtd_videos">Quantidade de vídeos</label>
+          <input type="text" id="qtd_videos" name="qtd_videos" inputmode="numeric" placeholder="Ex.: 3">
+        </div>
+        <div class="campo">
+          <span class="rotulo">Quem escreve o roteiro?</span>
+          <div class="opcoes">
+            <label class="pilula"><input type="radio" name="quem_roteiro" value="A criadora"><span>Você, Letícia</span></label>
+            <label class="pilula"><input type="radio" name="quem_roteiro" value="A marca envia"><span>A marca envia</span></label>
+            <label class="pilula"><input type="radio" name="quem_roteiro" value="Juntas"><span>Juntas</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="dupla">
+        <div class="campo">
+          <label for="prazo_roteiro">Prazo do roteiro</label>
+          <input type="date" id="prazo_roteiro" name="prazo_roteiro">
+        </div>
+        <div class="campo">
+          <label for="prazo_entrega">Prazo de entrega dos vídeos</label>
+          <input type="date" id="prazo_entrega" name="prazo_entrega">
+        </div>
+      </div>
+      <div class="campo">
+        <label for="direito_uso">Direito de uso</label>
+        <span class="dica">Onde a marca vai usar os vídeos e por quanto tempo (ex.: anúncios por 3 meses).</span>
+        <input type="text" id="direito_uso" name="direito_uso">
+      </div>
+      <div class="campo">
+        <span class="rotulo">Além do vídeo, você precisa de</span>
+        <div class="opcoes">
+          <label class="pilula"><input type="checkbox" name="extras" value="Legenda para a rede social"><span>Legenda para a rede social</span></label>
+          <label class="pilula"><input type="checkbox" name="extras" value="Capa"><span>Capa</span></label>
+          <label class="pilula"><input type="checkbox" name="extras" value="Fotos"><span>Fotos</span></label>
+          <label class="pilula"><input type="checkbox" name="extras" value="Versão sem música"><span>Versão sem música</span></label>
+          <label class="pilula"><input type="checkbox" name="extras" value="Arquivos brutos"><span>Arquivos brutos</span></label>
+          <label class="pilula"><input type="checkbox" name="extras" value="Post em collab no meu perfil"><span>Post em collab</span></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== ETAPA: PRODUTO E CLIENTE ===================== -->
+    <section class="etapa" data-nome="Produto e cliente">
+      <h2>Produto e cliente</h2>
+      <p class="sub">O que vamos divulgar e para quem. O vídeo é para o seu cliente.</p>
+      <div class="campo" data-obrigatorio data-tipo="lista" data-lista="produtos">
+        <span class="rotulo">Produtos que serão divulgados <span class="obrigatorio">*</span></span>
+        <span class="dica">Coloque o link de cada um: eu estudo a página antes de escrever o roteiro.</span>
+        <div class="lista-itens" id="listaProdutos"></div>
+        <button type="button" class="btn-adicionar" data-adicionar="produtos">+ Adicionar outro produto</button>
+        <span class="msg-erro">Coloque pelo menos um produto.</span>
+      </div>
+      <div class="campo">
+        <span class="rotulo">Nicho</span>
+        <div class="opcoes">
+          <label class="pilula"><input type="radio" name="nicho" value="Beleza"><span>Beleza</span></label>
+          <label class="pilula"><input type="radio" name="nicho" value="Produto digital (tech)"><span>Produto digital (tech, IA, app)</span></label>
+          <label class="pilula"><input type="radio" name="nicho" value="Casa, reforma e decoração"><span>Casa, reforma e decoração</span></label>
+          <label class="pilula"><input type="radio" name="nicho" value="Moda e acessórios"><span>Moda e acessórios</span></label>
+          <label class="pilula"><input type="radio" name="nicho" value="Fitness e bem-estar"><span>Fitness e bem-estar</span></label>
+          <label class="pilula"><input type="radio" name="nicho" value="Negócios e educação"><span>Negócios e educação</span></label>
+          <label class="pilula"><input type="radio" name="nicho" value="Experiência presencial"><span>Experiência presencial</span></label>
+          <label class="pilula"><input type="radio" name="nicho" value="Viagem e hotelaria"><span>Viagem e hotelaria</span></label>
+          <label class="pilula"><input type="radio" name="nicho" value="Alimentos e bebidas"><span>Alimentos e bebidas</span></label>
+          <label class="pilula"><input type="radio" name="nicho" value="Eletrônicos"><span>Eletrônicos</span></label>
+          <label class="pilula"><input type="radio" name="nicho" value="Outro" data-outro="nicho_outro"><span>Outro</span></label>
+        </div>
+        <input type="text" class="outro-texto" id="nicho_outro" name="nicho_outro" placeholder="Qual?">
+      </div>
+      <div class="campo">
+        <label for="persona">Quem é o cliente principal? <span class="importante">faz diferença no roteiro</span></label>
+        <span class="dica">Ocupação, momento de vida, rotina, poder de compra, o que ele valoriza.</span>
+        <textarea id="persona" name="persona" placeholder="Ex.: mulher de 30 a 40 anos, mãe, trabalha fora, quer se cuidar mas tem pouco tempo..."></textarea>
+      </div>
+      <div class="campo">
+        <label for="problema">Que problema o produto resolve para ele? <span class="importante">faz diferença no roteiro</span></label>
+        <textarea id="problema" name="problema"></textarea>
+      </div>
+      <div class="campo">
+        <label for="objecoes">O que faz o cliente hesitar antes de comprar?</label>
+        <span class="dica">Preço, desconfiança, "será que funciona pra mim?"... É o que o vídeo precisa responder.</span>
+        <textarea id="objecoes" name="objecoes"></textarea>
+      </div>
+      <div class="dupla">
+        <div class="campo">
+          <span class="rotulo">Gênero do público</span>
+          <div class="opcoes">
+            <label class="pilula"><input type="radio" name="genero" value="Feminino"><span>Feminino</span></label>
+            <label class="pilula"><input type="radio" name="genero" value="Masculino"><span>Masculino</span></label>
+            <label class="pilula"><input type="radio" name="genero" value="Diversificado"><span>Diversificado</span></label>
+          </div>
+        </div>
+        <div class="campo">
+          <span class="rotulo">Faixa etária</span>
+          <div class="opcoes">
+            <label class="pilula"><input type="checkbox" name="faixa_etaria" value="18 a 24"><span>18 a 24</span></label>
+            <label class="pilula"><input type="checkbox" name="faixa_etaria" value="25 a 34"><span>25 a 34</span></label>
+            <label class="pilula"><input type="checkbox" name="faixa_etaria" value="35 a 44"><span>35 a 44</span></label>
+            <label class="pilula"><input type="checkbox" name="faixa_etaria" value="45+"><span>45+</span></label>
+            <label class="pilula"><input type="checkbox" name="faixa_etaria" value="Crianças e adolescentes"><span>Crianças e teens</span></label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== ETAPA: O VÍDEO ===================== -->
+    <section class="etapa" data-nome="O vídeo">
+      <h2>O vídeo</h2>
+      <p class="sub">Para que serve, onde vai rodar e qual é a cara dele.</p>
+      <div class="campo" data-obrigatorio data-tipo="grupo" data-grupo-validar="objetivos">
+        <span class="rotulo">Objetivo principal <span class="obrigatorio">*</span></span>
+        <span class="dica">Escolha até 3.</span>
+        <div class="opcoes" data-max="3">
+          <label class="pilula"><input type="checkbox" name="objetivos" value="Vender (conversão)"><span>Vender</span></label>
+          <label class="pilula"><input type="checkbox" name="objetivos" value="Lançar um produto novo"><span>Lançar um produto</span></label>
+          <label class="pilula"><input type="checkbox" name="objetivos" value="Posicionamento e branding"><span>Posicionamento e branding</span></label>
+          <label class="pilula"><input type="checkbox" name="objetivos" value="Educar e tirar dúvidas"><span>Educar e tirar dúvidas</span></label>
+          <label class="pilula"><input type="checkbox" name="objetivos" value="Gerar confiança e quebrar objeções"><span>Gerar confiança</span></label>
+          <label class="pilula"><input type="checkbox" name="objetivos" value="Atrair seguidores"><span>Atrair seguidores</span></label>
+          <label class="pilula"><input type="checkbox" name="objetivos" value="Outro" data-outro="objetivos_outro"><span>Outro</span></label>
+        </div>
+        <input type="text" class="outro-texto" id="objetivos_outro" name="objetivos_outro" placeholder="Qual?">
+        <span class="msg-erro">Escolha pelo menos um objetivo.</span>
+      </div>
+      <div class="campo">
+        <span class="rotulo">Onde o vídeo vai rodar?</span>
+        <span class="dica">Marque o foco principal e o que é segundo plano. Isso muda o ritmo e o tamanho do vídeo.</span>
+        <div class="canais" id="canais"></div>
+      </div>
+      <div class="campo">
+        <span class="rotulo">Formato que você imagina</span>
+        <span class="dica">Pode marcar vários, ou deixar comigo.</span>
+        <div class="opcoes">
+          <label class="pilula"><input type="checkbox" name="formatos" value="A critério da criadora"><span>A seu critério</span></label>
+          <label class="pilula"><input type="checkbox" name="formatos" value="Unboxing"><span>Unboxing</span></label>
+          <label class="pilula"><input type="checkbox" name="formatos" value="Como usar / tutorial"><span>Como usar</span></label>
+          <label class="pilula"><input type="checkbox" name="formatos" value="Review / experiência de uso"><span>Review</span></label>
+          <label class="pilula"><input type="checkbox" name="formatos" value="Inserido na rotina"><span>Na rotina</span></label>
+          <label class="pilula"><input type="checkbox" name="formatos" value="Storytelling criativo"><span>Storytelling criativo</span></label>
+          <label class="pilula"><input type="checkbox" name="formatos" value="Nativo (pouca edição)"><span>Nativo, pouca edição</span></label>
+          <label class="pilula"><input type="checkbox" name="formatos" value="Sensorial / aesthetic"><span>Sensorial</span></label>
+          <label class="pilula"><input type="checkbox" name="formatos" value="Só cenas + texto na tela"><span>Só cenas e texto</span></label>
+          <label class="pilula"><input type="checkbox" name="formatos" value="Falando com a câmera"><span>Falando com a câmera</span></label>
+          <label class="pilula"><input type="checkbox" name="formatos" value="Provador"><span>Provador</span></label>
+          <label class="pilula"><input type="checkbox" name="formatos" value="Trend"><span>Trend</span></label>
+          <label class="pilula"><input type="checkbox" name="formatos" value="Esquete / humor"><span>Esquete ou humor</span></label>
+        </div>
+      </div>
+      <div class="campo">
+        <span class="rotulo">Tom do vídeo</span>
+        <span class="dica">Arraste para o lado que mais combina com a marca. No meio, tanto faz.</span>
+        <div class="regua"><div class="regua-polos"><span>Animado</span><span>Calmo</span></div><input type="range" min="1" max="5" value="3" name="tom_energia" aria-label="Animado ou calmo"></div>
+        <div class="regua"><div class="regua-polos"><span>Com humor</span><span>Sério</span></div><input type="range" min="1" max="5" value="3" name="tom_humor" aria-label="Com humor ou sério"></div>
+        <div class="regua"><div class="regua-polos"><span>Formal</span><span>Casual</span></div><input type="range" min="1" max="5" value="3" name="tom_formalidade" aria-label="Formal ou casual"></div>
+        <div class="regua"><div class="regua-polos"><span>Emocional</span><span>Objetivo</span></div><input type="range" min="1" max="5" value="3" name="tom_emocao" aria-label="Emocional ou objetivo"></div>
+      </div>
+      <div class="campo">
+        <label for="duracao">Duração e versões</label>
+        <input type="text" id="duracao" name="duracao" placeholder="Ex.: até 45 segundos, mais uma versão de 15 s para anúncio">
+      </div>
+    </section>
+
+    <!-- ===================== ETAPA: REGRAS DA MARCA ===================== -->
+    <section class="etapa" data-nome="Regras da marca">
+      <h2>Regras da marca</h2>
+      <p class="sub">O que precisa aparecer e o que não pode de jeito nenhum. É aqui que a gente evita refação.</p>
+      <div class="campo">
+        <label for="falas_obrigatorias">Falas, benefícios ou mensagens obrigatórias</label>
+        <textarea id="falas_obrigatorias" name="falas_obrigatorias" placeholder="Ex.: citar o frete grátis; falar que é vegano"></textarea>
+      </div>
+      <div class="campo">
+        <label for="afirmacoes_aprovadas">Afirmações aprovadas sobre o produto</label>
+        <span class="dica">Principalmente em beleza, saúde e suplementos: o que pode ser dito sobre resultado.</span>
+        <textarea id="afirmacoes_aprovadas" name="afirmacoes_aprovadas"></textarea>
+      </div>
+      <div class="campo">
+        <label for="proibido">O que não pode ser dito ou mostrado</label>
+        <textarea id="proibido" name="proibido" placeholder="Palavras, concorrentes, comparações, cores de roupa..."></textarea>
+      </div>
+      <div class="campo">
+        <label for="mencoes_cupom">Menções, hashtags, cupom ou link</label>
+        <input type="text" id="mencoes_cupom" name="mencoes_cupom" placeholder="Ex.: @suamarca #publi cupom LETICIA10">
+      </div>
+      <div class="campo">
+        <span class="rotulo">Deseja que o vídeo tenha legenda?</span>
+        <div class="opcoes">
+          <label class="pilula"><input type="radio" name="legenda" value="Sim, com legenda das falas" data-mostrar="campoFonte"><span>Sim, com legenda das falas</span></label>
+          <label class="pilula"><input type="radio" name="legenda" value="Não, sem legenda"><span>Não, sem legenda</span></label>
+          <label class="pilula"><input type="radio" name="legenda" value="Tanto faz"><span>Tanto faz</span></label>
+        </div>
+      </div>
+      <div class="campo campo-condicional" id="campoFonte">
+        <label for="fonte">Tem alguma fonte ou estilo de legenda obrigatório?</label>
+        <input type="text" id="fonte" name="fonte">
+      </div>
+    </section>
+
+    <!-- ===================== ETAPA: REFERÊNCIAS ===================== -->
+    <section class="etapa" data-nome="Referências">
+      <h2>Referências</h2>
+      <p class="sub">Vídeos que a marca ama (seus ou de outras marcas) e materiais de apoio.</p>
+      <div class="campo">
+        <span class="rotulo">Vídeos de referência</span>
+        <span class="dica">Cole o link e diga o que você gosta nele: o gancho, o ritmo, a edição, o jeito de falar...</span>
+        <div class="lista-itens" id="listaReferencias"></div>
+        <button type="button" class="btn-adicionar" data-adicionar="referencias">+ Adicionar outra referência</button>
+      </div>
+      <div class="campo">
+        <span class="rotulo">Materiais de apoio</span>
+        <span class="dica">Briefing em PDF, apresentação da marca, guia de marca. PDF ou imagem, até 10 MB cada. Vídeos, mande por link acima.</span>
+        <label class="anexos-zona" id="zonaAnexos">
+          <input type="file" id="anexos" multiple accept="application/pdf,image/png,image/jpeg,image/webp,image/heic">
+          <strong>Clique para escolher</strong> ou arraste os arquivos aqui
+        </label>
+        <ul class="lista-anexos" id="listaAnexos"></ul>
+      </div>
+      <div class="campo">
+        <label for="observacoes">Mais alguma coisa que eu deveria saber?</label>
+        <textarea id="observacoes" name="observacoes"></textarea>
+      </div>
+      <p class="consentimento">Ao enviar, você concorda que as informações sejam usadas pela Letícia Calisto só para preparar e produzir esta campanha.</p>
+    </section>
+
+    <!-- ===================== TELA FINAL ===================== -->
+    <section class="etapa final" id="telaFinal" data-nome="Enviado">
+      <div class="cursiva">obrigada!</div>
+      <h2>Briefing recebido</h2>
+      <p>Eu leio tudo com calma, estudo a marca e o produto e te respondo pelo e-mail ou pelo WhatsApp que você deixou. Se surgir alguma dúvida antes do roteiro, eu te chamo.</p>
+      <dl class="resumo" id="resumo"></dl>
+    </section>
+
+    <div class="navegacao" id="navegacao">
+      <button type="button" class="btn btn-secundario" id="btnVoltar">Voltar</button>
+      <button type="button" class="btn btn-principal" id="btnAvancar">Continuar</button>
+    </div>
+    <p class="aviso-envio" id="avisoEnvio" role="alert"></p>
+    <p class="salvo" id="avisoSalvo"></p>
+  </form>
+
+  <p class="rodape">Dúvidas? <a href="mailto:leticiaacalisto@gmail.com">leticiaacalisto@gmail.com</a></p>
+</main>
+
+<script src="../js/rastreamento.js" defer></script>
+<script>
+(function () {
+  // =====================================================================
+  // BRIEFING DE CAMPANHA. Sem biblioteca: fala com o Supabase por fetch,
+  // igual ao js/rastreamento.js. Dois jeitos de chegar aqui:
+  //  - link genérico (/briefing/): insere uma linha nova em "briefings";
+  //  - link da campanha (/briefing/?b=TOKEN, gerado no painel): abre os
+  //    dados da marca pela função briefing_abrir e responde pela
+  //    briefing_responder (js/briefing-vinculado-setup.sql). Nesse caso a
+  //    etapa "A campanha" some, porque isso já está no contrato.
+  // =====================================================================
+  var SUPABASE_URL = "https://yqshjfzcoyiqikjnukyb.supabase.co";
+  var SUPABASE_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlxc2hqZnpjb3lpcWlram51a3liIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5NzIzNDgsImV4cCI6MjEwNDU0ODM0OH0.QBseFaGdtG_6g2c_7EUeGnbhb9_JIa0hBsA2AzGnkp4";
+  var TAMANHO_MAX = 10 * 1024 * 1024;
+  var TIPOS_ACEITOS = ["application/pdf", "image/png", "image/jpeg", "image/webp", "image/heic"];
+  var CANAIS = ["TikTok", "TikTok Shop", "Reels orgânico", "Anúncios Meta (Instagram e Facebook)", "YouTube Shorts", "YouTube Ads", "E-commerce ou marketplace", "Site da marca", "Página de vendas", "Grupo de WhatsApp"];
+  var CABECALHOS = { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY };
+
+  var token = "";
+  try { token = (new URLSearchParams(location.search).get("b") || "").trim(); } catch (erro) {}
+  var CHAVE_RASCUNHO = "briefing_rascunho_v2" + (token ? "_" + token.slice(0, 12) : "");
+
+  var form = document.getElementById("formBriefing");
+  var todasEtapas = Array.prototype.slice.call(form.querySelectorAll(".etapa:not(.final)"));
+  var etapas = todasEtapas;
+  var telaFinal = document.getElementById("telaFinal");
+  var btnVoltar = document.getElementById("btnVoltar");
+  var btnAvancar = document.getElementById("btnAvancar");
+  var avisoEnvio = document.getElementById("avisoEnvio");
+  var avisoSalvo = document.getElementById("avisoSalvo");
+  var atual = 0;
+  var arquivos = [];
+
+  function json(r) {
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return r.json();
+  }
+  function rpc(nome, corpo) {
+    return fetch(SUPABASE_URL + "/rest/v1/rpc/" + nome, {
+      method: "POST",
+      headers: Object.assign({ "Content-Type": "application/json" }, CABECALHOS),
+      body: JSON.stringify(corpo),
+    }).then(json);
+  }
+
+  // ---------- Canais (foco principal / segundo plano / não se aplica) ----------
+  var caixaCanais = document.getElementById("canais");
+  CANAIS.forEach(function (canal, i) {
+    var nome = "canal_" + i;
+    caixaCanais.insertAdjacentHTML("beforeend",
+      '<div class="canal"><span class="canal-nome">' + canal + '</span><div class="segmentado" role="radiogroup" aria-label="' + canal + '">' +
+      '<label><input type="radio" name="' + nome + '" value="Foco principal"><span>Principal</span></label>' +
+      '<label><input type="radio" name="' + nome + '" value="Segundo plano"><span>Segundo plano</span></label>' +
+      '<label><input type="radio" name="' + nome + '" value="" checked><span>Não</span></label>' +
+      "</div></div>");
+  });
+
+  // ---------- Listas que crescem (produtos e referências) ----------
+  var MOLDES = {
+    produtos: { caixa: document.getElementById("listaProdutos"), campos: [["nome", "Nome do produto"], ["link", "Link do produto"]] },
+    referencias: { caixa: document.getElementById("listaReferencias"), campos: [["link", "Link do vídeo"], ["gosta", "O que você gosta nele?"]] },
+  };
+  function adicionarItem(tipo, valores) {
+    var molde = MOLDES[tipo];
+    var item = document.createElement("div");
+    item.className = "item-lista";
+    molde.campos.forEach(function (c) {
+      var entrada = document.createElement("input");
+      entrada.type = c[0] === "link" ? "url" : "text";
+      entrada.placeholder = c[1];
+      entrada.setAttribute("aria-label", c[1]);
+      entrada.dataset.chave = c[0];
+      entrada.value = (valores && valores[c[0]]) || "";
+      item.appendChild(entrada);
+    });
+    var remover = document.createElement("button");
+    remover.type = "button";
+    remover.className = "btn-remover";
+    remover.setAttribute("aria-label", "Remover");
+    remover.textContent = "×";
+    remover.addEventListener("click", function () {
+      if (molde.caixa.children.length > 1) item.remove();
+      else item.querySelectorAll("input").forEach(function (e) { e.value = ""; });
+      salvarRascunho();
+    });
+    item.appendChild(remover);
+    molde.caixa.appendChild(item);
+  }
+  function lerLista(tipo) {
+    return Array.prototype.slice.call(MOLDES[tipo].caixa.children).map(function (item) {
+      var obj = {};
+      item.querySelectorAll("input").forEach(function (e) { obj[e.dataset.chave] = e.value.trim(); });
+      return obj;
+    }).filter(function (obj) {
+      return Object.keys(obj).some(function (k) { return obj[k]; });
+    });
+  }
+  form.querySelectorAll("[data-adicionar]").forEach(function (b) {
+    b.addEventListener("click", function () { adicionarItem(b.dataset.adicionar); });
+  });
+
+  // ---------- "Outro", campo que aparece com uma resposta e limite de 3 ----------
+  function atualizarCondicionais() {
+    form.querySelectorAll("[data-outro]").forEach(function (e) {
+      document.getElementById(e.dataset.outro).classList.toggle("visivel", e.checked);
+    });
+    form.querySelectorAll("[data-mostrar]").forEach(function (e) {
+      document.getElementById(e.dataset.mostrar).classList.toggle("visivel", e.checked);
+    });
+  }
+  form.addEventListener("change", atualizarCondicionais);
+  form.querySelectorAll("[data-max]").forEach(function (grupo) {
+    var max = Number(grupo.dataset.max);
+    var caixas = grupo.querySelectorAll('input[type="checkbox"]');
+    var limitar = function () {
+      var marcadas = grupo.querySelectorAll("input:checked").length;
+      caixas.forEach(function (c) { c.disabled = !c.checked && marcadas >= max; });
+    };
+    caixas.forEach(function (c) { c.addEventListener("change", limitar); });
+    grupo._limitar = limitar;
+  });
+
+  // ---------- Coleta das respostas ----------
+  function coletar() {
+    var dados = {};
+    form.querySelectorAll("input[name], textarea[name]").forEach(function (e) {
+      if (e.name === "site_empresa") return;
+      if (e.closest("[data-so-generico]") && token) return;
+      if (e.type === "checkbox") {
+        if (!dados[e.name]) dados[e.name] = [];
+        if (e.checked) dados[e.name].push(e.value);
+      } else if (e.type === "radio") {
+        if (e.checked) dados[e.name] = e.value;
+        else if (!(e.name in dados)) dados[e.name] = "";
+      } else {
+        dados[e.name] = e.value.trim();
+      }
+    });
+    dados.produtos = lerLista("produtos");
+    dados.referencias = lerLista("referencias");
+    var canais = {};
+    CANAIS.forEach(function (canal, i) {
+      if (dados["canal_" + i]) canais[canal] = dados["canal_" + i];
+      delete dados["canal_" + i];
+    });
+    dados.canais = canais;
+    if (dados.nicho === "Outro" && dados.nicho_outro) dados.nicho = dados.nicho_outro;
+    return dados;
+  }
+
+  // ---------- Rascunho neste aparelho ----------
+  function salvarRascunho() {
+    try {
+      localStorage.setItem(CHAVE_RASCUNHO, JSON.stringify({ etapa: atual, dados: coletar() }));
+      avisoSalvo.textContent = "Rascunho salvo neste aparelho.";
+    } catch (erro) { /* navegação privada: segue sem rascunho */ }
+  }
+  function aplicarDados(dados, soVazios) {
+    form.querySelectorAll("input[name], textarea[name]").forEach(function (e) {
+      var v = dados[e.name];
+      if (v === undefined || v === null) return;
+      if (e.type === "checkbox") { if (!soVazios) e.checked = Array.isArray(v) && v.indexOf(e.value) !== -1; }
+      else if (e.type === "radio") { if (!soVazios) e.checked = v === e.value; }
+      else if (typeof v !== "object" && (!soVazios || !e.value)) e.value = v;
+    });
+  }
+  function restaurarRascunho() {
+    var salvo = null;
+    try { salvo = JSON.parse(localStorage.getItem(CHAVE_RASCUNHO) || "null"); } catch (erro) {}
+    var dados = (salvo && salvo.dados) || {};
+    (dados.produtos && dados.produtos.length ? dados.produtos : [null]).forEach(function (p) { adicionarItem("produtos", p); });
+    (dados.referencias && dados.referencias.length ? dados.referencias : [null]).forEach(function (r) { adicionarItem("referencias", r); });
+    if (!salvo) {
+      try {
+        var marca = new URLSearchParams(location.search).get("marca");
+        if (marca) document.getElementById("marca").value = marca;
+      } catch (erro) {}
+      return 0;
+    }
+    aplicarDados(dados, false);
+    CANAIS.forEach(function (canal, i) {
+      var v = (dados.canais && dados.canais[canal]) || "";
+      form.querySelectorAll('input[name="canal_' + i + '"]').forEach(function (e) { e.checked = e.value === v; });
+    });
+    atualizarCondicionais();
+    form.querySelectorAll("[data-max]").forEach(function (g) { g._limitar(); });
+    avisoSalvo.textContent = "Continuando de onde você parou.";
+    return salvo.etapa || 0;
+  }
+  form.addEventListener("input", salvarRascunho);
+  form.addEventListener("change", salvarRascunho);
+
+  // ---------- Validação da etapa ----------
+  function validarEtapa(indice) {
+    var ok = true;
+    var primeiroErro = null;
+    etapas[indice].querySelectorAll("[data-obrigatorio]").forEach(function (campo) {
+      var valido = true;
+      if (campo.dataset.tipo === "lista") {
+        valido = lerLista(campo.dataset.lista).some(function (p) { return p.nome || p.link; });
+      } else if (campo.dataset.tipo === "grupo") {
+        valido = campo.querySelectorAll('input[name="' + campo.dataset.grupoValidar + '"]:checked').length > 0;
+      } else {
+        var entrada = campo.querySelector("input, textarea");
+        var valor = entrada.value.trim();
+        valido = !!valor && (campo.dataset.tipo !== "email" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor));
+      }
+      campo.classList.toggle("erro", !valido);
+      if (!valido) {
+        ok = false;
+        if (!primeiroErro) primeiroErro = campo;
+      }
+    });
+    if (primeiroErro) {
+      primeiroErro.scrollIntoView({ behavior: "smooth", block: "center" });
+      var foco = primeiroErro.querySelector("input, textarea");
+      if (foco) setTimeout(function () { foco.focus({ preventScroll: true }); }, 300);
+    }
+    return ok;
+  }
+  form.addEventListener("input", function (evento) {
+    var campo = evento.target.closest(".campo.erro");
+    if (campo) campo.classList.remove("erro");
+  });
+
+  // ---------- Navegação entre etapas ----------
+  function mostrar(indice) {
+    atual = Math.max(0, Math.min(indice, etapas.length - 1));
+    todasEtapas.forEach(function (e) { e.classList.toggle("ativa", e === etapas[atual]); });
+    document.getElementById("barra").style.width = ((atual + 1) / etapas.length) * 100 + "%";
+    document.getElementById("nomeEtapa").textContent = etapas[atual].dataset.nome;
+    document.getElementById("contadorEtapa").textContent = "Etapa " + (atual + 1) + " de " + etapas.length;
+    btnVoltar.hidden = atual === 0;
+    btnAvancar.textContent = atual === etapas.length - 1 ? "Enviar briefing" : "Continuar";
+    avisoEnvio.classList.remove("visivel");
+  }
+  function rolarAoTopo() {
+    document.querySelector(".progresso").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  btnVoltar.addEventListener("click", function () {
+    if (atual > 0) { mostrar(atual - 1); salvarRascunho(); rolarAoTopo(); }
+  });
+  btnAvancar.addEventListener("click", function () {
+    if (!validarEtapa(atual)) return;
+    if (atual < etapas.length - 1) { mostrar(atual + 1); salvarRascunho(); rolarAoTopo(); }
+    else enviar();
+  });
+
+  // ---------- Anexos ----------
+  var entradaAnexos = document.getElementById("anexos");
+  var zona = document.getElementById("zonaAnexos");
+  var listaAnexos = document.getElementById("listaAnexos");
+  function tamanhoLegivel(bytes) {
+    return bytes > 1024 * 1024 ? (bytes / 1024 / 1024).toFixed(1) + " MB" : Math.max(1, Math.round(bytes / 1024)) + " KB";
+  }
+  function desenharAnexos() {
+    listaAnexos.innerHTML = "";
+    arquivos.forEach(function (a, i) {
+      var li = document.createElement("li");
+      if (a.recusado) li.className = "recusado";
+      var nome = document.createElement("span");
+      nome.textContent = a.arquivo.name + " · " + (a.recusado || tamanhoLegivel(a.arquivo.size));
+      var remover = document.createElement("button");
+      remover.type = "button";
+      remover.className = "btn-remover";
+      remover.style.position = "static";
+      remover.setAttribute("aria-label", "Remover " + a.arquivo.name);
+      remover.textContent = "×";
+      remover.addEventListener("click", function () { arquivos.splice(i, 1); desenharAnexos(); });
+      li.appendChild(nome);
+      li.appendChild(remover);
+      listaAnexos.appendChild(li);
+    });
+  }
+  function receberArquivos(lista) {
+    Array.prototype.forEach.call(lista, function (arquivo) {
+      var recusado = "";
+      if (TIPOS_ACEITOS.indexOf(arquivo.type) === -1 && !/\.(pdf|png|jpe?g|webp|heic)$/i.test(arquivo.name)) recusado = "tipo não aceito (mande por link)";
+      else if (arquivo.size > TAMANHO_MAX) recusado = "maior que 10 MB (mande por link)";
+      arquivos.push({ arquivo: arquivo, recusado: recusado });
+    });
+    desenharAnexos();
+  }
+  entradaAnexos.addEventListener("change", function () { receberArquivos(entradaAnexos.files); entradaAnexos.value = ""; });
+  ["dragenter", "dragover"].forEach(function (t) {
+    zona.addEventListener(t, function (e) { e.preventDefault(); zona.classList.add("arrastando"); });
+  });
+  ["dragleave", "drop"].forEach(function (t) {
+    zona.addEventListener(t, function (e) { e.preventDefault(); zona.classList.remove("arrastando"); });
+  });
+  zona.addEventListener("drop", function (e) { if (e.dataTransfer) receberArquivos(e.dataTransfer.files); });
+
+  function nomeSeguro(nome) {
+    return nome.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-zA-Z0-9._-]+/g, "-").slice(-80);
+  }
+  function subirAnexo(arquivo, pasta) {
+    var caminho = pasta + "/" + Date.now().toString(36) + "-" + nomeSeguro(arquivo.name);
+    return fetch(SUPABASE_URL + "/storage/v1/object/briefings/" + caminho, {
+      method: "POST",
+      headers: Object.assign({ "Content-Type": arquivo.type || "application/octet-stream", "x-upsert": "false" }, CABECALHOS),
+      body: arquivo,
+    }).then(function (r) {
+      if (!r.ok) throw new Error("anexo " + r.status);
+      return { nome: arquivo.name, caminho: caminho, tipo: arquivo.type, tamanho: arquivo.size };
+    });
+  }
+
+  // ---------- Envio ----------
+  function gravar(dados, anexos) {
+    if (token) {
+      return rpc("briefing_responder", { p_token: token, p_respostas: dados, p_anexos: anexos }).then(function (ok) {
+        if (ok !== true) throw new Error("token não aceito");
+      });
+    }
+    return fetch(SUPABASE_URL + "/rest/v1/briefings", {
+      method: "POST",
+      headers: Object.assign({ "Content-Type": "application/json", Prefer: "return=minimal" }, CABECALHOS),
+      body: JSON.stringify({
+        marca: dados.marca,
+        contato_nome: dados.contato_nome || null,
+        contato_email: dados.contato_email || null,
+        contato_whatsapp: dados.contato_whatsapp || null,
+        qtd_videos: dados.qtd_videos || null,
+        prazo_entrega: dados.prazo_entrega || null,
+        nicho: dados.nicho || null,
+        respostas: dados,
+        anexos: anexos,
+      }),
+    }).then(function (r) {
+      if (!r.ok) throw new Error("briefing " + r.status);
+    });
+  }
+
+  function enviar() {
+    // Robô preencheu o campo invisível: finge que enviou e não grava nada
+    if (document.getElementById("site_empresa").value) { concluir(coletar()); return; }
+
+    var dados = coletar();
+    btnAvancar.disabled = true;
+    btnVoltar.disabled = true;
+    btnAvancar.textContent = "Enviando...";
+    avisoEnvio.classList.remove("visivel");
+
+    var pasta = new Date().toISOString().slice(0, 7) + "/" + nomeSeguro(dados.marca || "marca").toLowerCase();
+    var falhasAnexo = [];
+    var uploads = arquivos.filter(function (a) { return !a.recusado; }).map(function (a) {
+      return subirAnexo(a.arquivo, pasta).catch(function () { falhasAnexo.push(a.arquivo.name); return null; });
+    });
+
+    Promise.all(uploads).then(function (anexos) {
+      if (falhasAnexo.length) dados.anexos_que_falharam = falhasAnexo;
+      return gravar(dados, anexos.filter(Boolean)).then(function () {
+        if (window.Rastreamento) window.Rastreamento.evento("button_click", "briefing_enviado");
+        concluir(dados, falhasAnexo);
+      });
+    }).catch(function (erro) {
+      console.error(erro);
+      btnAvancar.disabled = false;
+      btnVoltar.disabled = false;
+      btnAvancar.textContent = "Tentar enviar de novo";
+      avisoEnvio.textContent = "Não consegui enviar agora. Suas respostas continuam salvas aqui: tente de novo em instantes ou me mande um e-mail.";
+      avisoEnvio.classList.add("visivel");
+    });
+  }
+
+  function concluir(dados, falhasAnexo) {
+    try { localStorage.removeItem(CHAVE_RASCUNHO); } catch (erro) {}
+    todasEtapas.forEach(function (e) { e.classList.remove("ativa"); });
+    telaFinal.classList.add("ativa");
+    document.getElementById("navegacao").hidden = true;
+    avisoSalvo.textContent = "";
+    document.getElementById("barra").style.width = "100%";
+    document.getElementById("nomeEtapa").textContent = "Enviado";
+    document.getElementById("contadorEtapa").textContent = "";
+    var linhas = [
+      ["Marca", dados.marca],
+      ["Produtos", (dados.produtos || []).map(function (p) { return p.nome || p.link; }).join(", ")],
+      ["Objetivo", (dados.objetivos || []).join(", ")],
+    ];
+    if (falhasAnexo && falhasAnexo.length) linhas.push(["Anexos que não subiram (mande por e-mail)", falhasAnexo.join(", ")]);
+    var resumo = document.getElementById("resumo");
+    linhas.forEach(function (l) {
+      if (!l[1]) return;
+      var dt = document.createElement("dt");
+      dt.textContent = l[0];
+      var dd = document.createElement("dd");
+      dd.textContent = l[1];
+      resumo.appendChild(dt);
+      resumo.appendChild(dd);
+    });
+    rolarAoTopo();
+  }
+
+  // ---------- Início ----------
+  function iniciar(etapaSalva) {
+    mostrar(etapaSalva);
+  }
+  var etapaSalva = restaurarRascunho();
+  if (!token) {
+    iniciar(etapaSalva);
+  } else {
+    // Link da campanha: some a etapa "A campanha" e os dados da marca chegam preenchidos
+    etapas = todasEtapas.filter(function (e) { return !e.hasAttribute("data-so-generico"); });
+    rpc("briefing_abrir", { p_token: token }).then(function (info) {
+      if (!info) throw new Error("link não encontrado");
+      var p = info.prefill || {};
+      aplicarDados({
+        marca: info.marca || p.marca,
+        contato_nome: p.contato_nome,
+        contato_email: p.contato_email,
+        contato_whatsapp: p.contato_whatsapp,
+        site: p.site,
+        instagram: p.instagram,
+        tiktok: p.tiktok,
+      }, true);
+      var faixa = document.getElementById("faixaCampanha");
+      faixa.innerHTML = "";
+      var forte = document.createElement("strong");
+      forte.textContent = (info.marca || p.marca || "") + (p.campanha ? " · " + p.campanha : "");
+      faixa.appendChild(document.createTextNode("Briefing da campanha "));
+      faixa.appendChild(forte);
+      faixa.classList.add("visivel");
+      iniciar(etapaSalva);
+    }).catch(function (erro) {
+      // Link antigo, arquivado ou com erro: segue como formulário genérico
+      console.error(erro);
+      token = "";
+      etapas = todasEtapas;
+      iniciar(etapaSalva);
+    });
+  }
+})();
+</script>
+</body>
+</html>

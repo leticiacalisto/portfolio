@@ -1363,6 +1363,12 @@
   .tabela-contratos tbody tr{ cursor:pointer; transition: background .15s ease; }
   .tabela-contratos tbody tr:hover{ background: var(--creme); }
   .tabela-contratos .btn-gerar-cards{ padding: 7px 12px; font-size:.76rem; }
+  /* Ícone de briefing ao lado do "Gerar cards": sem cor = aguardando a marca; verde = respondido */
+  .acoes-linha-campanha{ display:inline-flex; align-items:center; gap:6px; }
+  .btn-briefing-tabela{ display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:8px; border:1.5px solid rgba(58,58,58,.35); background:none; color:#777; cursor:pointer; padding:0; }
+  .btn-briefing-tabela:hover{ background: rgba(58,58,58,0.08); }
+  .btn-briefing-tabela.respondido{ border-color:#2e7d4f; background:#2e7d4f; color:#fff; }
+  .btn-briefing-tabela.respondido:hover{ background:#256a42; }
   .acoes-modal-quadro{
     display:flex;
     align-items:center;
@@ -3097,6 +3103,10 @@
         </div>
 
         <aside class="principal-direita" aria-label="Lembretes e alertas">
+          <div class="cartao-alerta" id="cartaoBriefings" hidden>
+            <h3>Briefings recebidos</h3>
+            <div id="alertaBriefings"></div>
+          </div>
           <div class="cartao-alerta">
             <h3>Prazos vencendo em breve <button type="button" class="seta-cartao-alerta" data-ir-aba="gp-quadro" title="Ir para Produção" aria-label="Ir para Produção"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button></h3>
             <div id="alertaPrazos"></div>
@@ -4185,10 +4195,21 @@
           <button type="button" class="btn-verificar-assinatura" id="btnVerificarAssinatura" hidden>Verificar assinatura</button>
         </div>
 
+        <div id="blocoBriefingCampanha" class="bloco-autentique" hidden>
+          <span class="rotulo-limpo">Briefing da marca</span>
+          <p class="texto-pequeno" id="statusBriefingCampanha"></p>
+          <div class="linha-link-autentique">
+            <input type="text" id="linkBriefingCampanha" class="input-limpo" readonly>
+            <button type="button" class="btn-copiar-link" id="btnCopiarLinkBriefing">Copiar link</button>
+          </div>
+          <button type="button" class="btn-verificar-assinatura" id="btnVerBriefingCampanha" hidden>Ver briefing preenchido</button>
+        </div>
+
         <div class="acoes-modal-quadro">
           <button type="button" id="btnExcluirContrato" class="btn-excluir-quadro" hidden>Excluir</button>
           <button type="button" id="btnGerarCardsContrato" class="btn-gerar-cards" hidden>Gerar cards</button>
           <button type="button" id="btnGerarContratoAutentique" class="btn-gerar-cards" hidden>Gerar contrato p/ assinatura</button>
+          <button type="button" id="btnEnviarBriefing" class="btn-gerar-cards" hidden>Enviar briefing</button>
           <span style="flex-grow:1"></span>
           <button type="button" id="btnCancelarContrato" class="btn-cancelar-quadro">Cancelar</button>
           <button type="submit" class="btn-salvar-quadro">Salvar</button>
@@ -4252,6 +4273,10 @@
               </button>
               <input type="text" id="campoInstagramEmpresa" class="input-limpo" autocomplete="off" placeholder="@marca">
             </div>
+          </div>
+          <div class="prop-limpa" id="propTiktokEmpresa" hidden>
+            <span class="rotulo-limpo">TikTok</span>
+            <input type="text" id="campoTiktokEmpresa" class="input-limpo" autocomplete="off" placeholder="@marca">
           </div>
           <div class="prop-limpa">
             <span class="rotulo-limpo">Razão social</span>
@@ -4358,6 +4383,24 @@
     <div class="acoes-modal-quadro">
       <strong id="totalListaCartao" style="flex-grow:1"></strong>
       <button type="button" class="btn-salvar-quadro" id="btnFecharListaCartao">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL: BRIEFING RECEBIDO (página /briefing) ===================== -->
+<div class="overlay-modal" id="overlayModalBriefing" hidden>
+  <div class="modal-quadro modal-quadro-grande">
+    <h3 id="tituloBriefing">Briefing</h3>
+    <p class="texto-pequeno" id="subtituloBriefing" style="margin:-8px 0 14px;"></p>
+    <div id="corpoBriefing" style="max-height:58vh; overflow-y:auto; white-space:pre-wrap; font-size:.92rem; line-height:1.55;"></div>
+    <div id="anexosBriefing" style="margin-top:12px;"></div>
+    <div class="acoes-modal-quadro" style="flex-wrap:wrap;">
+      <button type="button" class="btn-cancelar-quadro" id="btnArquivarBriefing">Arquivar</button>
+      <span style="flex-grow:1"></span>
+      <button type="button" class="btn-cancelar-quadro" id="btnFecharBriefing">Fechar</button>
+      <button type="button" class="btn-gerar-cards" id="btnBaixarBriefingPdf">Baixar PDF</button>
+      <button type="button" class="btn-gerar-cards" id="btnBaixarBriefingMd">Baixar .md</button>
+      <button type="button" class="btn-salvar-quadro" id="btnCopiarBriefing">Copiar para o estúdio</button>
     </div>
   </div>
 </div>
@@ -8068,7 +8111,7 @@
         <tr data-contrato-id="${k.id}">
           <td class="celula-nome-clicavel" data-id="${k.id}"><b style="font-weight:600">${esc(k.marca)}</b></td>
           ${colunasVisiveis.map((c) => celulaContratoHtml(k, c.campo)).join("")}
-          <td><button type="button" class="btn-gerar-cards${quadroCache.some((c) => c.contrato_id === k.id) ? " cards-gerados" : ""}" data-gerar-cards="${k.id}" title="${quadroCache.some((c) => c.contrato_id === k.id) ? "Cards já gerados no quadro" : "Gerar cards no quadro"}">Gerar cards</button></td>
+          <td><span class="acoes-linha-campanha"><button type="button" class="btn-gerar-cards${quadroCache.some((c) => c.contrato_id === k.id) ? " cards-gerados" : ""}" data-gerar-cards="${k.id}" title="${quadroCache.some((c) => c.contrato_id === k.id) ? "Cards já gerados no quadro" : "Gerar cards no quadro"}">Gerar cards</button>${htmlBotaoBriefingTabela(k)}</span></td>
         </tr>`
       )
       .join("");
@@ -8619,6 +8662,12 @@
       await gerarCardsDoContrato(gerar.dataset.gerarCards);
       return;
     }
+    const briefing = evento.target.closest("[data-briefing-campanha]");
+    if (briefing) {
+      evento.stopPropagation();
+      abrirBriefingDaCampanha(briefing.dataset.briefingCampanha);
+      return;
+    }
     const nomeCel = evento.target.closest(".celula-nome-clicavel");
     if (nomeCel) {
       const contrato = contratosCache.find((k) => k.id === nomeCel.dataset.id);
@@ -8777,6 +8826,7 @@
     btnExcluirContrato.hidden = !contrato;
     btnGerarCardsContrato.hidden = !contrato;
     atualizarBlocoAutentique(contrato);
+    atualizarBlocoBriefing(contrato);
     prepararPainelFinanceiroCampanha(contrato);
   }
 
@@ -12946,6 +12996,9 @@
     campoEmailEmpresa.value = (empresa && empresa.email) || "";
     campoSiteEmpresa.value = (empresa && empresa.site) || "";
     campoInstagramEmpresa.value = (empresa && empresa.instagram) || "";
+    // TikTok só aparece depois de rodar js/briefing-vinculado-setup.sql (cria a coluna)
+    document.getElementById("propTiktokEmpresa").hidden = !colunaTiktokExiste();
+    document.getElementById("campoTiktokEmpresa").value = (empresa && empresa.tiktok) || "";
     campoRazaoSocialEmpresa.value = (empresa && empresa.razao_social) || "";
     campoCnpjEmpresa.value = (empresa && empresa.cnpj) || "";
     campoEnderecoEmpresa.value = (empresa && empresa.endereco) || "";
@@ -12953,8 +13006,14 @@
     btnExcluirEmpresa.hidden = !empresa;
   }
 
+  function colunaTiktokExiste() {
+    return empresasCache.some((e) => e && "tiktok" in e);
+  }
+
   function coletarDadosFormEmpresa() {
+    const tiktok = colunaTiktokExiste() ? { tiktok: document.getElementById("campoTiktokEmpresa").value.trim() || null } : {};
     return {
+      ...tiktok,
       nome: campoNomeEmpresa.value.trim(),
       segmento: campoSegmentoEmpresa.value.trim() || null,
       contato_principal: campoContatoEmpresa.value.trim() || null,
@@ -15393,7 +15452,7 @@
         .join("") +
       (itens.length > limite ? `<p class="mais-alerta${destinoMais ? " clicavel" : ""}" data-alerta-mais="1">+ ${itens.length - limite} outro(s)</p>` : "");
   }
-  ["alertaPrazos", "alertaRecebimentos", "alertaPendentes", "alertaDireitoUso"].forEach((id) => {
+  ["alertaPrazos", "alertaRecebimentos", "alertaPendentes", "alertaDireitoUso", "alertaBriefings"].forEach((id) => {
     const container = document.getElementById(id);
     const abrir = (evento) => {
       const mais = evento.target.closest("[data-alerta-mais]");
@@ -15438,6 +15497,8 @@
       if (!soJanela) irParaAba("gp-quadro");
       const card = quadroCache.find((c) => c.id === d.id);
       if (card) abrirModalCard(card);
+    } else if (d.tipo === "briefing") {
+      abrirModalBriefing(d.id);
     } else if (d.tipo === "campanha") {
       if (!soJanela) irParaAba("crm-contratos");
       const contrato = contratosCache.find((k) => k.id === d.id);
@@ -15556,6 +15617,332 @@
     );
     atualizarNotificacoes();
   }
+
+  // ---------------------------------------------------------------
+  // BRIEFINGS (página pública /briefing; tabelas e funções em
+  // js/briefing-setup.sql e js/briefing-vinculado-setup.sql).
+  //  - Cartão "Briefings recebidos": tudo que chegou e não foi arquivado.
+  //  - Campanhas: botão "Enviar briefing" gera um link único da campanha
+  //    (status "aguardando", dados da marca pré-preenchidos); na tabela, o
+  //    ícone ao lado do "Gerar cards" fica sem cor esperando e verde quando
+  //    a marca responde. O relatório baixa em PDF (impressão) e .md.
+  // Enquanto o SQL não roda, cada parte some sozinha. "var" de propósito:
+  // a tabela de campanhas pode desenhar antes deste trecho rodar.
+  // ---------------------------------------------------------------
+  var briefingsCache = [];
+  var briefingsCampanhaCache = [];
+  var briefingVinculadoDisponivel = false;
+  var URL_BRIEFING = "https://www.leticiacalisto.com/briefing/";
+
+  async function carregarBriefings() {
+    const resposta = await Auth.sb.from("briefings").select("*").neq("status", "arquivado").order("created_at", { ascending: false }).limit(300);
+    const cartao = document.getElementById("cartaoBriefings");
+    if (resposta.error) {
+      cartao.hidden = true;
+      return;
+    }
+    const todos = resposta.data || [];
+    briefingVinculadoDisponivel = todos.length === 0 ? await testarBriefingVinculado() : "contrato_id" in todos[0];
+    briefingsCampanhaCache = todos.filter((b) => b.contrato_id);
+    briefingsCache = todos.filter((b) => b.status !== "aguardando");
+    cartao.hidden = false;
+    listaAlerta(
+      "alertaBriefings",
+      briefingsCache.slice(0, 50).map((b) => ({
+        nome: (b.status === "novo" ? "● " : "") + b.marca,
+        esquerda: `${campanhaDoBriefing(b) ? campanhaDoBriefing(b) + " · " : b.qtd_videos ? b.qtd_videos + " vídeo(s) · " : ""}${formatarDataBr((b.respondido_em || b.created_at).slice(0, 10))}`,
+        direita: b.prazo_entrega ? "entrega " + formatarDataBr(b.prazo_entrega) : "",
+        classe: b.status === "novo" ? "aviso" : "",
+        destino: { tipo: "briefing", id: b.id },
+      })),
+      "Nenhum briefing novo",
+      5
+    );
+    if (typeof renderizarContratos === "function" && contratosCache.length) renderizarContratos();
+    if (idContratoEmEdicao) atualizarBlocoBriefing(contratosCache.find((k) => k.id === idContratoEmEdicao));
+  }
+  // Sem nenhum briefing ainda, pergunta direto se a coluna da campanha existe
+  async function testarBriefingVinculado() {
+    const { error } = await Auth.sb.from("briefings").select("contrato_id").limit(1);
+    return !error;
+  }
+
+  function campanhaDoBriefing(b) {
+    if (!b.contrato_id) return "";
+    const k = contratosCache.find((c) => c.id === b.contrato_id);
+    return (k && k.nome) || (b.prefill && b.prefill.campanha) || "";
+  }
+  function briefingDaCampanha(idContrato) {
+    return briefingsCampanhaCache.find((b) => b.contrato_id === idContrato) || null;
+  }
+
+  var SVG_FORMULARIO =
+    '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5V3h6v1.5"/><path d="M9 10h6"/><path d="M9 14h6"/><path d="M9 18h3"/></svg>';
+  function htmlBotaoBriefingTabela(k) {
+    const b = (briefingsCampanhaCache || []).find((x) => x.contrato_id === k.id);
+    if (!b) return "";
+    const respondido = b.status !== "aguardando";
+    return `<button type="button" class="btn-briefing-tabela${respondido ? " respondido" : ""}" data-briefing-campanha="${k.id}" title="${respondido ? "Briefing respondido: ver relatório" : "Briefing enviado: aguardando a marca"}" aria-label="Briefing">${SVG_FORMULARIO}</button>`;
+  }
+
+  // ---------- Janela da campanha: "Enviar briefing" ----------
+  var btnEnviarBriefing = document.getElementById("btnEnviarBriefing");
+  function atualizarBlocoBriefing(contrato) {
+    const bloco = document.getElementById("blocoBriefingCampanha");
+    btnEnviarBriefing.hidden = !contrato || !briefingVinculadoDisponivel;
+    const b = contrato ? briefingDaCampanha(contrato.id) : null;
+    bloco.hidden = !b;
+    if (!b) return;
+    btnEnviarBriefing.textContent = "Copiar link do briefing";
+    document.getElementById("linkBriefingCampanha").value = URL_BRIEFING + "?b=" + b.token;
+    const respondido = b.status !== "aguardando";
+    document.getElementById("statusBriefingCampanha").textContent = respondido
+      ? "Respondido em " + new Date(b.respondido_em || b.updated_at).toLocaleString("pt-BR") + "."
+      : "Enviado em " + new Date(b.created_at).toLocaleString("pt-BR") + ". Aguardando a marca preencher.";
+    document.getElementById("btnVerBriefingCampanha").hidden = !respondido;
+  }
+  function gerarTokenBriefing() {
+    const bytes = new Uint8Array(18);
+    crypto.getRandomValues(bytes);
+    return Array.from(bytes, (n) => n.toString(16).padStart(2, "0")).join("");
+  }
+  btnEnviarBriefing.addEventListener("click", async () => {
+    const contrato = contratosCache.find((k) => k.id === idContratoEmEdicao);
+    if (!contrato) return;
+    let b = briefingDaCampanha(contrato.id);
+    if (!b) {
+      const empresa = empresasCache.find((e) => e.id === contrato.empresa_id) || {};
+      const prefill = {
+        marca: empresa.nome || contrato.marca || "",
+        campanha: contrato.nome || "",
+        contato_nome: empresa.contato_principal || empresa.representante || "",
+        contato_email: empresa.email || "",
+        contato_whatsapp: empresa.whatsapp || "",
+        site: empresa.site || "",
+        instagram: empresa.instagram || "",
+        tiktok: empresa.tiktok || "",
+      };
+      btnEnviarBriefing.disabled = true;
+      const { data, error } = await Auth.sb
+        .from("briefings")
+        .insert({ marca: prefill.marca || "Marca", contrato_id: contrato.id, empresa_id: contrato.empresa_id || null, token: gerarTokenBriefing(), prefill, status: "aguardando" })
+        .select()
+        .single();
+      btnEnviarBriefing.disabled = false;
+      if (error) {
+        alert("Não foi possível gerar o briefing. Confira se o js/briefing-vinculado-setup.sql já rodou no Supabase.");
+        console.error(error);
+        return;
+      }
+      b = data;
+      briefingsCampanhaCache.push(b);
+      renderizarContratos();
+    }
+    atualizarBlocoBriefing(contrato);
+    copiarCampoTexto(document.getElementById("linkBriefingCampanha"), btnEnviarBriefing);
+  });
+  document.getElementById("btnCopiarLinkBriefing").addEventListener("click", () =>
+    copiarCampoTexto(document.getElementById("linkBriefingCampanha"), document.getElementById("btnCopiarLinkBriefing"))
+  );
+  document.getElementById("btnVerBriefingCampanha").addEventListener("click", () => abrirBriefingDaCampanha(idContratoEmEdicao));
+
+  function abrirBriefingDaCampanha(idContrato) {
+    const b = briefingDaCampanha(idContrato);
+    if (!b) return;
+    if (b.status === "aguardando") {
+      const contrato = contratosCache.find((k) => k.id === idContrato);
+      if (contrato) abrirModalContrato(contrato); // mostra o link pra reenviar
+      return;
+    }
+    abrirModalBriefing(b.id);
+  }
+
+  // ---------- O relatório ----------
+  var TOM_POLOS = { tom_energia: ["animado", "calmo"], tom_humor: ["com humor", "sério"], tom_formalidade: ["formal", "casual"], tom_emocao: ["emocional", "objetivo"] };
+  function textoTom(r) {
+    if (!Object.keys(TOM_POLOS).some((chave) => r[chave] && Number(r[chave]) !== 3)) return "";
+    return Object.keys(TOM_POLOS)
+      .map((chave) => {
+        const v = Number(r[chave] || 3);
+        const [a, b] = TOM_POLOS[chave];
+        return v === 3 ? `${a} ou ${b}: tanto faz` : v < 3 ? `mais ${a}${v === 1 ? " (bem)" : ""}` : `mais ${b}${v === 5 ? " (bem)" : ""}`;
+      })
+      .join("; ");
+  }
+
+  // Seções do relatório: [título, [[rótulo, valor], ...]]. A mesma estrutura
+  // vira o texto da janela, o .md e o PDF.
+  function secoesBriefing(b) {
+    const r = b.respostas || {};
+    const lista = (v) => (Array.isArray(v) ? v.filter(Boolean).join(", ") : v || "");
+    const contrato = b.contrato_id ? contratosCache.find((k) => k.id === b.contrato_id) : null;
+    const canais = r.canais || {};
+    const secoes = [
+      ["A marca e o contato", [
+        ["Contato", [r.contato_nome, r.contato_cargo].filter(Boolean).join(", ")],
+        ["E-mail", r.contato_email],
+        ["WhatsApp", r.contato_whatsapp],
+        ["Site", r.site],
+        ["Instagram", r.instagram],
+        ["TikTok", r.tiktok],
+      ]],
+      ["A campanha", [
+        ["Campanha", campanhaDoBriefing(b)],
+        ["Escopo", contrato && contrato.escopo],
+        ["Quantidade de vídeos", r.qtd_videos || (contrato && contrato.qtde_videos)],
+        ["Direito de uso", r.direito_uso || (contrato && contrato.direito_uso_meses ? contrato.direito_uso_meses + " meses" : "")],
+        ["Quem escreve o roteiro", r.quem_roteiro],
+        ["Prazo do roteiro", r.prazo_roteiro && formatarDataBr(r.prazo_roteiro)],
+        ["Prazo de entrega", r.prazo_entrega && formatarDataBr(r.prazo_entrega)],
+        ["Entregáveis extras", lista(r.extras)],
+      ]],
+      ["Produto e cliente", [
+        ...(r.produtos || []).map((p, i) => [`Produto ${i + 1}`, [p.nome, p.link].filter(Boolean).join(" · ")]),
+        ["Nicho", r.nicho === "Outro" ? r.nicho_outro : r.nicho],
+        ["Cliente principal", r.persona],
+        ["Problema que o produto resolve", r.problema],
+        ["O que faz hesitar", r.objecoes],
+        ["Gênero", r.genero],
+        ["Faixa etária", lista(r.faixa_etaria)],
+      ]],
+      ["O vídeo", [
+        ["Objetivos", lista((r.objetivos || []).map((o) => (o === "Outro" ? r.objetivos_outro || o : o)))],
+        ["Foco principal", Object.keys(canais).filter((c) => canais[c] === "Foco principal").join(", ")],
+        ["Segundo plano", Object.keys(canais).filter((c) => canais[c] === "Segundo plano").join(", ")],
+        ["Formatos", lista(r.formatos)],
+        ["Tom", textoTom(r)],
+        ["Duração e versões", [r.duracao, r.versoes].filter(Boolean).join("; ")],
+      ]],
+      ["Regras da marca", [
+        ["Obrigatório", r.falas_obrigatorias],
+        ["Afirmações aprovadas", r.afirmacoes_aprovadas],
+        ["Proibido", [r.proibido, r.cores_roupa && "Cores de roupa: " + r.cores_roupa].filter(Boolean).join("\n")],
+        ["Menções, hashtags, cupom ou link", r.mencoes_cupom || [r.hashtags_mencoes, r.cupom_link].filter(Boolean).join(" · ")],
+        ["Legenda", r.legenda || r.legenda_tela],
+        ["Fonte da legenda", r.fonte],
+      ]],
+      ["Referências", [
+        ...(r.referencias || []).map((ref, i) => [`Referência ${i + 1}`, [ref.link, ref.gosta && `gosta de: ${ref.gosta}`].filter(Boolean).join(" · ")]),
+        ...(b.anexos || []).map((a) => ["Anexo", a.nome]),
+        ["Anexos que não subiram", lista(r.anexos_que_falharam)],
+        ["Observações", r.observacoes],
+      ]],
+    ];
+    return secoes.map(([titulo, itens]) => [titulo, itens.filter(([, v]) => v && String(v).trim())]).filter(([, itens]) => itens.length);
+  }
+  function tituloBriefing(b) {
+    const campanha = campanhaDoBriefing(b);
+    return `Briefing · ${b.marca}${campanha ? " · " + campanha : ""}`;
+  }
+  function dataBriefing(b) {
+    return formatarDataBr((b.respondido_em || b.created_at).slice(0, 10));
+  }
+  function textoBriefing(b) {
+    const linhas = [tituloBriefing(b).toUpperCase(), `Recebido em ${dataBriefing(b)}`];
+    secoesBriefing(b).forEach(([titulo, itens]) => {
+      linhas.push("", titulo.toUpperCase());
+      itens.forEach(([rotulo, valor]) => linhas.push(`- ${rotulo}: ${valor}`));
+    });
+    return linhas.join("\n");
+  }
+  function markdownBriefing(b) {
+    const linhas = [`# ${tituloBriefing(b)}`, "", `Recebido em ${dataBriefing(b)} pelo formulário leticiacalisto.com/briefing.`];
+    secoesBriefing(b).forEach(([titulo, itens]) => {
+      linhas.push("", `## ${titulo}`, "");
+      itens.forEach(([rotulo, valor]) => linhas.push(`- **${rotulo}:** ${String(valor).replace(/\n/g, " / ")}`));
+    });
+    return linhas.join("\n") + "\n";
+  }
+  function nomeArquivoBriefing(b, extensao) {
+    const limpar = (s) => String(s || "").replace(/[\\/:*?"<>|]+/g, "-").trim();
+    const campanha = campanhaDoBriefing(b);
+    return `Briefing - ${limpar(b.marca)}${campanha ? " - " + limpar(campanha) : ""}.${extensao}`;
+  }
+  function baixarMarkdownBriefing(b) {
+    const blob = new Blob([markdownBriefing(b)], { type: "text/markdown;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = nomeArquivoBriefing(b, "md");
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(link.href), 2000);
+  }
+  // PDF: abre uma página de impressão limpa; no diálogo, "Salvar como PDF"
+  function baixarPdfBriefing(b) {
+    const janela = window.open("", "_blank");
+    if (!janela) return alert("O navegador bloqueou a janela. Libere pop-ups para o painel e tente de novo.");
+    const corpo = secoesBriefing(b)
+      .map(([titulo, itens]) => `<h2>${esc(titulo)}</h2><dl>${itens.map(([r, v]) => `<dt>${esc(r)}</dt><dd>${esc(v)}</dd>`).join("")}</dl>`)
+      .join("");
+    janela.document.write(`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>${esc(nomeArquivoBriefing(b, "pdf").replace(/\.pdf$/, ""))}</title>
+      <style>
+        body{font-family:"Mulish",Arial,sans-serif;color:#14110d;max-width:720px;margin:32px auto;padding:0 24px;line-height:1.5;font-size:12.5px;}
+        h1{font-family:Georgia,serif;font-size:24px;margin:0 0 4px;} .data{color:#4a443c;margin:0 0 18px;}
+        h2{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#991a0e;border-bottom:1px solid #e8e0d7;padding-bottom:4px;margin:22px 0 8px;}
+        dt{font-weight:700;margin-top:8px;} dd{margin:2px 0 0;white-space:pre-wrap;color:#2b2620;}
+        @page{margin:16mm;}
+      </style></head><body><h1>${esc(tituloBriefing(b))}</h1><p class="data">Recebido em ${esc(dataBriefing(b))}</p>${corpo}</body></html>`);
+    janela.document.close();
+    janela.focus();
+    setTimeout(() => janela.print(), 300);
+  }
+
+  async function abrirModalBriefing(id) {
+    const b = briefingsCache.find((x) => x.id === id) || briefingsCampanhaCache.find((x) => x.id === id);
+    if (!b) return;
+    const overlay = document.getElementById("overlayModalBriefing");
+    overlay._briefing = b;
+    document.getElementById("tituloBriefing").textContent = tituloBriefing(b);
+    document.getElementById("subtituloBriefing").textContent = `Recebido em ${dataBriefing(b)}${b.contato_nome ? " · " + b.contato_nome : ""}`;
+    document.getElementById("corpoBriefing").textContent = textoBriefing(b).split("\n").slice(2).join("\n").trim();
+    const caixaAnexos = document.getElementById("anexosBriefing");
+    caixaAnexos.innerHTML = "";
+    overlay.hidden = false;
+    for (const a of b.anexos || []) {
+      const { data } = await Auth.sb.storage.from("briefings").createSignedUrl(a.caminho, 3600);
+      if (data && data.signedUrl) caixaAnexos.insertAdjacentHTML("beforeend", `<a class="texto-pequeno" href="${esc(data.signedUrl)}" target="_blank" rel="noopener" style="display:block;">📎 ${esc(a.nome)}</a>`);
+    }
+    if (b.status === "novo") {
+      await Auth.sb.from("briefings").update({ status: "lido", updated_at: new Date().toISOString() }).eq("id", b.id);
+      b.status = "lido";
+      carregarBriefings();
+    }
+  }
+
+  (function ligarModalBriefing() {
+    const overlay = document.getElementById("overlayModalBriefing");
+    const fechar = () => (overlay.hidden = true);
+    document.getElementById("btnFecharBriefing").addEventListener("click", fechar);
+    overlay.addEventListener("click", (evento) => {
+      if (evento.target === overlay) fechar();
+    });
+    document.getElementById("btnBaixarBriefingMd").addEventListener("click", () => overlay._briefing && baixarMarkdownBriefing(overlay._briefing));
+    document.getElementById("btnBaixarBriefingPdf").addEventListener("click", () => overlay._briefing && baixarPdfBriefing(overlay._briefing));
+    document.getElementById("btnCopiarBriefing").addEventListener("click", async () => {
+      const b = overlay._briefing;
+      if (!b) return;
+      const botao = document.getElementById("btnCopiarBriefing");
+      try {
+        await navigator.clipboard.writeText(`Chegou um briefing. Roteiro UGC da ${b.marca}:\n\n${markdownBriefing(b)}`);
+        botao.textContent = "Copiado!";
+      } catch (erro) {
+        botao.textContent = "Não deu pra copiar";
+      }
+      setTimeout(() => (botao.textContent = "Copiar para o estúdio"), 2000);
+    });
+    document.getElementById("btnArquivarBriefing").addEventListener("click", async () => {
+      const b = overlay._briefing;
+      if (!b) return;
+      await Auth.sb.from("briefings").update({ status: "arquivado", updated_at: new Date().toISOString() }).eq("id", b.id);
+      fechar();
+      carregarBriefings();
+    });
+  })();
+
+  carregarBriefings().catch((erro) => console.error(erro));
+  // Briefing novo chega com a página aberta: confere de tempos em tempos
+  setInterval(() => carregarBriefings().catch((erro) => console.error(erro)), 120000);
 
   // ---------------------------------------------------------------
   // NOTIFICAÇÕES (sino no topo). Duas origens:
