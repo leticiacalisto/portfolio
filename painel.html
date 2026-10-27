@@ -2558,6 +2558,10 @@
   .linha-parcela-fech label{ display:flex; align-items:center; gap:5px; font-size:.78rem; margin:0; white-space:nowrap; }
   .linha-parcela-fech label input{ width:auto; }
   .linha-parcela-fech .vinculada{ font-size:.66rem; color:#7A5CC8; }
+  .selo-situacao{ display:inline-block; font-size:.74rem; font-weight:600; padding:2px 10px; border-radius:999px; }
+  .selo-situacao.ok{ background:#E3F4EA; color:#2F8A5A; }
+  .selo-situacao.devendo{ background:#FDE5EC; color:#C23A68; }
+  .nota-devendo{ color:#C23A68 !important; font-weight:600; }
   .btn-coracao{ background:none; border:0; padding:0 6px 0 0; cursor:pointer; vertical-align:middle; line-height:0; }
   .btn-coracao svg{ width:16px; height:16px; fill:none; stroke:#C9C1D6; transition: transform .2s var(--ease-mov), fill .2s, stroke .2s; }
   .btn-coracao:hover svg{ stroke:#E0689A; transform: scale(1.15); }
@@ -10818,12 +10822,14 @@
           <td>${esc(i.nome || "—")}${lista.assinado ? ` <span class="texto-pequeno">(${i.ehSaida ? "saída" : "entrada"})</span>` : ""}</td>
           <td>${celulaDataFluxo(i.data)}</td>
           <td>${formatarMoeda(valorAssinado(i))}</td>
-          <td>${i.pago ? (i.ehSaida ? "Pago" : "Recebido") : "Em aberto"}</td>
+          <td>${i.pago ? `<span class="selo-situacao ok">✓ ${i.ehSaida ? "Pago" : "Recebido"}</span>` : `<span class="selo-situacao devendo">${i.ehSaida && lista.destacarDevendo ? "Devendo" : "Em aberto"}</span>`}</td>
         </tr>`
           )
           .join("")
       : `<tr><td colspan="4" class="texto-vazio">Nada neste cartão.</td></tr>`;
-    document.getElementById("totalListaFluxo").textContent = "Total: " + formatarMoeda(itens.reduce((s, i) => s + valorAssinado(i), 0));
+    document.getElementById("totalListaFluxo").textContent = lista.destacarDevendo
+      ? `Pagas: ${formatarMoeda(itens.filter((i) => i.pago).reduce((s, i) => s + i.valor, 0))} · Devendo: ${formatarMoeda(itens.filter((i) => !i.pago).reduce((s, i) => s + i.valor, 0))}`
+      : "Total: " + formatarMoeda(itens.reduce((s, i) => s + valorAssinado(i), 0));
     document.getElementById("overlayModalListaFluxo").hidden = false;
   }
   document.getElementById("cartoesFluxo").addEventListener("click", (evento) => {
@@ -10864,6 +10870,8 @@
     const recebidos = entradas.filter((i) => i.pago);
     const pendentes = entradas.filter((i) => !i.pago);
     const pagos = saidas.filter((i) => i.pago);
+    // contas em aberto: do período, atrasadas de meses anteriores e sem data
+    const devendo = itensDespesa.filter((i) => !i.pago && (!i.data || i.data <= fim));
     const previsto = somar(entradas);
     const recebido = somar(recebidos);
     const pendente = somar(pendentes);
@@ -10878,7 +10886,8 @@
     texto("fluxoPendente", formatarMoeda(pendente));
     texto("fluxoNotaPendente", pendentes.length ? `${pendentes.length} em aberto` : "Nada em aberto");
     texto("fluxoPagos", formatarMoeda(totalPagos));
-    texto("fluxoNotaPagos", `${pagos.length} de ${saidas.length} pagos`);
+    texto("fluxoNotaPagos", devendo.length ? `${pagos.length} pagos · ${devendo.length} devendo (${formatarMoeda(somar(devendo))})` : `${pagos.length} pagos · nada devendo`);
+    document.getElementById("fluxoNotaPagos").classList.toggle("nota-devendo", devendo.length > 0);
     texto("fluxoAcumulado", formatarMoeda(acumulado));
     texto("fluxoNotaAcumulado", acumulado < 0 ? "⚠ Caixa no negativo" : "Caixa positivo");
     document.getElementById("cartaoFluxoAcumulado").classList.toggle("negativo", acumulado < 0);
@@ -10887,7 +10896,11 @@
       previsto: { titulo: "Previsto", sub: "Entradas previstas no período", itens: entradas },
       recebido: { titulo: "Recebido", sub: "Entradas já recebidas no período", itens: recebidos },
       pendente: { titulo: "Pendente", sub: "Entradas ainda em aberto no período", itens: pendentes },
-      pagos: { titulo: "Pagos", sub: "Saídas já pagas no período", itens: pagos },
+      pagos: {
+        titulo: "Contas do período", destacarDevendo: true,
+        sub: "Pagas (✓ verde) e ainda devendo (vermelho): as do período, as atrasadas de antes e as sem data",
+        itens: [...pagos, ...devendo],
+      },
       acumulado: {
         titulo: "Caixa acumulado",
         sub: "Todas as entradas e saídas até o fim do período (saídas em negativo)",
