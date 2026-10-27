@@ -2489,6 +2489,58 @@
   .coluna-fase.zerada .contagem-fase, .coluna-fase.zerada .nome-fase{ color: var(--cinza-claro); }
   .painel-aba.entrando .seg-fase{ transform-origin:left center; animation: crescerX .95s var(--ease-mov) backwards; animation-delay:.2s; }
 
+  /* ---- Início: visual sem contornos cinza, só tons suaves e sombra leve ---- */
+  #painel-principal .cartao{ border:none; box-shadow: 0 6px 28px rgba(90,70,140,.07); }
+  #painel-principal .cartao-meta-receita,
+  #painel-principal .foco-conquista,
+  #painel-principal .coluna-fase,
+  #painel-principal .chip-meta,
+  #painel-principal .bolinha.feita,
+  #painel-principal .bolinha.pendente,
+  #painel-principal .btn-recolher,
+  #painel-principal .navegacao-mes-meta button,
+  #painel-principal .linha-meta,
+  #painel-principal .cartao-alerta{ border:none; }
+  #painel-principal .linha-bolinhas,
+  #painel-principal .item-alerta{ border-top:none; }
+  #painel-principal .linha-bolinhas{ padding:12px 2px; }
+  #painel-principal .bolinha.pendente{ background:#F2EFF8; color:#B0A8C2; }
+  #painel-principal .btn-recolher, #painel-principal .navegacao-mes-meta button{ background:#F3F0F9; }
+  #painel-principal .btn-recolher:hover, #painel-principal .navegacao-mes-meta button:hover{ background:#E9E3F6; }
+  #painel-principal .meta-campo input{ border:none; background:#fff; box-shadow: inset 0 0 0 1.5px #E6DDF6; }
+  #painel-principal .meta-campo input:focus{ outline:none; box-shadow: inset 0 0 0 2px #A58BE6; }
+  #painel-principal .coluna-fase{ background:#FAF8FD; position:relative; overflow:hidden; padding-top:16px; }
+  #painel-principal .coluna-fase::before{ content:""; position:absolute; left:0; right:0; top:0; height:5px; background: var(--cor-fase); }
+  #painel-principal .pipeline-barra{ height:18px; }
+  #painel-principal .item-linha-tempo, #painel-principal .resumo-jornada .caixa-resumo{ border:none; background:#FAF8FD; }
+
+  /* metas personalizadas: telhas suaves em grade */
+  .grade-metas{ display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap:12px; }
+  #painel-principal .linha-meta{ background:#FAF8FD; border-radius:16px; padding:14px 16px; align-items:center; }
+  #painel-principal .linha-meta .titulo-meta{ font-size:.9rem; }
+  #painel-principal .linha-meta .trilho-meta{ height:8px; background:#ECE6F6; margin-top:8px; }
+  #painel-principal .preenchido-meta{ background: linear-gradient(90deg, #F8A9CB, #9B83E2); }
+  #painel-principal .linha-meta input[type="checkbox"]{
+    appearance:none; -webkit-appearance:none; width:22px; height:22px; border-radius:50%; background:#fff;
+    box-shadow: inset 0 0 0 2px #D6CBEF; display:grid; place-content:center; transition: background .2s ease, box-shadow .2s ease;
+  }
+  #painel-principal .linha-meta input[type="checkbox"]:checked{ background: linear-gradient(135deg, #F8A9CB, #9B83E2); box-shadow:none; }
+  #painel-principal .linha-meta input[type="checkbox"]:checked::after{ content:"✓"; color:#fff; font-size:.8rem; font-weight:700; line-height:1; }
+  #painel-principal .linha-meta.feita{ background:#F6F3FA; opacity:.8; padding:10px 16px; }
+  #painel-principal .linha-meta.feita .titulo-meta{ color: var(--texto-suave); }
+
+  /* alertas da direita: mesma família de tons do resto, planos e sem contorno */
+  #painel-principal .cartao-alerta{ background: var(--a-fundo-1); box-shadow:none; }
+  #painel-principal .cartao-alerta::before{ display:none; }
+  #painel-principal .cartao-alerta h3{ position:relative; padding-left:14px; }
+  #painel-principal .cartao-alerta h3::before{ content:""; position:absolute; left:0; top:50%; width:7px; height:7px; margin-top:-3.5px; border-radius:50%; background: var(--a-forte); }
+  #painel-principal .alerta-rosa{ --a-fundo-1:#FDF1F7; --a-forte:#C2528A; }
+  #painel-principal .alerta-amarelo{ --a-fundo-1:#FFF7E6; --a-forte:#B98512; }
+  #painel-principal .alerta-verde{ --a-fundo-1:#EEF8F2; --a-forte:#3A9262; }
+  #painel-principal .alerta-coral{ --a-fundo-1:#FFF2EA; --a-forte:#D1683A; }
+  #painel-principal .alerta-lilas{ --a-fundo-1:#F4F0FC; --a-forte:#7557C9; }
+  #painel-principal .alerta-azul{ --a-fundo-1:#EBF4FD; --a-forte:#3C7DBE; }
+
   .resumo-jornada{ display:flex; gap:12px; margin-bottom:18px; flex-wrap:wrap; }
   .resumo-jornada .caixa-resumo{ flex:1; min-width:120px; max-width:220px; border:1px solid var(--borda); border-radius:14px; padding:14px; text-align:center; }
   .resumo-jornada .numero-resumo{ display:block; font-family: var(--fonte-impacto); font-weight:600; font-size:1.6rem; }
@@ -15053,24 +15105,27 @@
     document.getElementById("totalVideosAndamento").textContent = formatarNumero(somatorio);
     // Pipeline na horizontal: uma barra única dividida por fase (só as que têm vídeo)
     // e, embaixo, uma coluna por fase na ordem da Produção, com o número em destaque.
-    const barra = fases
-      .map((f, i) => ({ f, i, total: porFase.get(f.id) }))
-      .filter((x) => x.total)
-      .map((x) => `<div class="seg-fase" style="flex:${x.total}; background:${degradeBarra(x.i, fases.length)}" title="${esc(`${x.f.nome}: ${x.total} vídeo(s) · ${Math.round((x.total / somatorio) * 100)}%`)}"></div>`)
+    // Fases sem vídeo ficam ocultas; cada fase tem uma cor bem distinta (a cor segue a posição na Produção).
+    const PALETA_FASES = ["#F29BC4", "#F7B27A", "#EFCB5A", "#8FD3A8", "#6FCBC6", "#7FB6EE", "#A58BE6", "#D58BDB"];
+    const ativas = fases.map((f, i) => ({ f, cor: PALETA_FASES[i % PALETA_FASES.length], total: porFase.get(f.id) })).filter((x) => x.total);
+    if (!ativas.length) {
+      container.innerHTML = textoVazio("Nenhum vídeo em andamento.");
+      return;
+    }
+    const barra = ativas
+      .map((x) => `<div class="seg-fase" style="flex:${x.total}; background:${x.cor}" title="${esc(`${x.f.nome}: ${x.total} vídeo(s) · ${Math.round((x.total / somatorio) * 100)}%`)}"></div>`)
       .join("");
-    const colunas = fases
-      .map((f, i) => {
-        const total = porFase.get(f.id);
-        const pct = somatorio ? Math.round((total / somatorio) * 100) : 0;
-        return `<div class="coluna-fase ${total ? "" : "zerada"}" title="${esc(`${total} vídeo(s) · ${pct}% do total`)}">
-          <span class="contagem-fase">${total}</span>
-          <span class="ponto-fase" style="background:${degradeNaPosicao(i, fases.length)}"></span>
-          <span class="nome-fase">${esc(f.nome)}</span>
-          <span class="pct-fase">${total ? pct + "%" : "—"}</span>
+    const colunas = ativas
+      .map((x) => {
+        const pct = Math.round((x.total / somatorio) * 100);
+        return `<div class="coluna-fase" style="--cor-fase:${x.cor}" title="${esc(`${x.total} vídeo(s) · ${pct}% do total`)}">
+          <span class="contagem-fase">${x.total}</span>
+          <span class="nome-fase">${esc(x.f.nome)}</span>
+          <span class="pct-fase">${pct}%</span>
         </div>`;
       })
       .join("");
-    container.innerHTML = `<div class="pipeline-barra">${barra || `<div class="seg-fase vazio" style="flex:1"></div>`}</div><div class="pipeline-colunas">${colunas}</div>`;
+    container.innerHTML = `<div class="pipeline-barra">${barra}</div><div class="pipeline-colunas">${colunas}</div>`;
   }
 
   // ---- DADOS DA JORNADA: séries com data, usadas por metas e conquistas ----
@@ -15228,7 +15283,7 @@
           </div>
         </div>
       </div>
-      ${linhas || `<p class="vazio-jornada">Nenhuma meta personalizada para este mês. Clique em "+ Nova meta".</p>`}`;
+      ${linhas ? `<div class="grade-metas">${linhas}</div>` : `<p class="vazio-jornada">Nenhuma meta personalizada para este mês. Clique em "+ Nova meta".</p>`}`;
   }
 
   const overlayModalMeta = document.getElementById("overlayModalMeta");
@@ -15386,7 +15441,7 @@
   // ---- ANÁLISE DO TOPO: uma frase sobre o seu momento, abaixo do cumprimento ----
   // Escolhe a ideia de maior prioridade entre: perto da meta de faturamento,
   // perto de bater o melhor mês (faturamento, marcas, vídeos, campanhas),
-  // perto da próxima conquista, ou parabéns por já ter batido algo.
+  // ou parabéns por já ter batido algo.
   function textoInsightTopo() {
     const mes = hojeIso().slice(0, 7);
     const series = seriesDaJornada();
@@ -15439,18 +15494,7 @@
       });
     }
 
-    // próxima conquista: a que está mais perto (a partir de 85% do marco)
-    const proximas = new Map();
-    calcularConquistas().forEach((c) => {
-      if (c.desbloqueada || c.cat.booleano) return;
-      if (!proximas.has(c.cat.id)) proximas.set(c.cat.id, c);
-    });
-    proximas.forEach((c) => {
-      if (!(c.marco > 0) || c.atual / c.marco < 0.85) return;
-      const falta = c.marco - c.atual;
-      const faltaTxt = c.cat.id === "faturamento" ? formatarMoeda(falta) : nf(falta);
-      ideias.push({ p: 85 + (c.atual / c.marco) * 3, t: `Falta${c.cat.id !== "faturamento" && falta !== 1 ? "m" : ""} apenas ${faltaTxt} para sua próxima conquista: ${c.cat.nome(c.marco)}.` });
-    });
+    // (a próxima conquista já aparece no cartão Conquistas, então não repete aqui)
 
     if (ideias.length) return ideias.sort((a, b) => b.p - a.p)[0].t;
     if (alvo > 0) return `Você está em ${Math.round((faturado / alvo) * 100)}% da meta de faturamento de ${nomeDoMes(mes)} (${formatarMoeda(faturado)}).`;
@@ -15629,6 +15673,79 @@
       });
     });
   });
+
+  // ---- CONFETE: comemora conquista nova ou meta batida ----
+  // As chaves já comemoradas ficam na configuração ("celebradas"). Na primeira vez
+  // só registra o que já foi batido, pra não fazer festa por coisa antiga.
+  function confete() {
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const tela = document.createElement("canvas");
+    tela.style.cssText = "position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:200";
+    const ctx = tela.getContext("2d");
+    const dpr = window.devicePixelRatio || 1;
+    tela.width = innerWidth * dpr;
+    tela.height = innerHeight * dpr;
+    ctx.scale(dpr, dpr);
+    document.body.appendChild(tela);
+    const cores = ["#F29BC4", "#F7B27A", "#EFCB5A", "#8FD3A8", "#6FCBC6", "#7FB6EE", "#A58BE6", "#D58BDB"];
+    const pecas = Array.from({ length: 170 }, (_, i) => {
+      const lado = i % 2 ? 1 : -1; // dois "canhões" nos cantos de baixo
+      return {
+        x: lado > 0 ? innerWidth * 0.12 : innerWidth * 0.88,
+        y: innerHeight * 0.92,
+        vx: -lado * (3 + Math.random() * 9),
+        vy: -(11 + Math.random() * 12),
+        w: 6 + Math.random() * 7, h: 4 + Math.random() * 6,
+        rot: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.4,
+        cor: cores[Math.floor(Math.random() * cores.length)],
+        redondo: Math.random() < 0.3,
+      };
+    });
+    const inicio = performance.now();
+    (function quadro(agora) {
+      const t = (agora - inicio) / 1000;
+      ctx.clearRect(0, 0, innerWidth, innerHeight);
+      pecas.forEach((p) => {
+        p.vy += 0.32; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, Math.min(1, 3.6 - t));
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.cor;
+        if (p.redondo) { ctx.beginPath(); ctx.arc(0, 0, p.w / 2.4, 0, 6.28); ctx.fill(); }
+        else ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.restore();
+      });
+      if (t < 3.6) requestAnimationFrame(quadro);
+      else tela.remove();
+    })(inicio);
+  }
+  function verificarComemoracoes(conquistas) {
+    if (!financasDisponivel || !quadroDisponivel || !contratosCache.length) return; // só com os dados completos
+    const mes = hojeIso().slice(0, 7);
+    const series = seriesDaJornada();
+    const novas = [];
+    conquistas.filter((c) => c.desbloqueada).forEach((c) => {
+      novas.push({ chave: `c:${c.cat.id}:${c.marco}`, texto: `🎉 Nova conquista: ${c.cat.nome(c.marco)}!` });
+    });
+    const alvo = metaReceitaDoMes(mes);
+    const faturado = series.faturamento.filter((f) => f.data.startsWith(mes)).reduce((s, f) => s + f.valor, 0);
+    if (alvo > 0 && faturado >= alvo) novas.push({ chave: `m:receita:${mes}`, texto: "🎉 Meta de receita do mês batida!" });
+    (cfgLer("metas", []) || []).filter((m) => m.mes === mes).forEach((m) => {
+      if (metaConcluida(m, progressoMeta(m, mes, series))) novas.push({ chave: `m:${m.id}`, texto: "🎉 Meta concluída!" });
+    });
+    const vistas = cfgLer("celebradas", null);
+    const todas = novas.map((n) => n.chave);
+    if (!Array.isArray(vistas)) {
+      cfgGravar("celebradas", todas);
+      return;
+    }
+    const inedita = novas.filter((n) => !vistas.includes(n.chave));
+    if (!inedita.length) return;
+    cfgGravar("celebradas", vistas.concat(inedita.map((n) => n.chave)));
+    confete();
+    mostrarAviso(inedita.length > 1 ? `🎉 ${inedita.length} conquistas novas!` : inedita[0].texto);
+  }
 
   // ---- minimizar o cartão de Conquistas (lembra a escolha neste navegador) ----
   const cartaoConquistas = document.getElementById("cartaoConquistas");
@@ -18066,6 +18183,7 @@
         const conquistas = calcularConquistas();
         renderizarJornadaConquistas(conquistas);
         renderizarJornadaTimeline(conquistas);
+        verificarComemoracoes(conquistas);
       },
       renderizarAlertas,
       renderizarTarefasPagina,
