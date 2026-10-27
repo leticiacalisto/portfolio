@@ -4817,6 +4817,11 @@
             </div>
           </div>
         </div>
+        <div class="lanc-linha" id="lancLinhaCusto" hidden title="Mês em que esta despesa conta como custo em Resultados. Vazio = mesma data do pagamento.">
+          <svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M21 19H3"/></svg>
+          <span class="lanc-rotulo">Data do custo (Resultados)</span>
+          <input type="date" id="lancDataCusto" class="lanc-input" style="max-width:150px;">
+        </div>
         <div class="lanc-resumo-parcelas" id="lancResumoParcelas" hidden></div>
 
         <div class="lanc-linha">
@@ -11797,6 +11802,10 @@
     document.getElementById("lancPainelDespesa").hidden = !parcelado || ed !== editoresLanc.despesa;
     document.getElementById("lancLinhaObs").hidden = !lancObsDisponivel || fatura;
     campoLancObs.value = reg && reg.observacao ? reg.observacao : "";
+    // mesma despesa, duas datas: vencimento/pagamento (Fluxo) e custo (Resultados)
+    const campoLancDataCusto = document.getElementById("lancDataCusto");
+    document.getElementById("lancLinhaCusto").hidden = !ehDespesa || fatura || !migracaoCompetenciaOk || !!(reg && reg.so_fluxo);
+    campoLancDataCusto.value = ehDespesa && reg && !reg.so_fluxo ? competenciaDespesa(reg) : "";
     const temDetalhes = lanc.novo || parcelado || !!(reg && reg.grupo_repeticao);
     document.getElementById("btnLancDetalhes").hidden = fatura || soDetalhes || !temDetalhes;
 
@@ -11913,6 +11922,9 @@
         data: parcelado ? (lanc.reg && lanc.reg.data) || null : dataVenc || dataPag, updated_at: agora,
         ...(lancObsDisponivel ? { observacao: campoLancObs.value.trim() || null } : {}),
       };
+      if (migracaoCompetenciaOk && !(lanc.reg && (lanc.reg.so_fluxo || lanc.reg.eh_fatura))) {
+        dados.data_competencia = document.getElementById("lancDataCusto").value || dados.data || null;
+      }
       if (lanc.reg) {
         verificarErro(await Auth.sb.from("financas_despesas").update(dados).eq("id", lanc.reg.id));
         await ed.persistir({ paiId: lanc.reg.id, categoria });
@@ -11987,7 +11999,9 @@
       const copias = [];
       for (let i = 1; i < total; i++) {
         const dataI = deslocarData(base, i, periodo);
-        const zerar = ehDespesa ? { data: dataI, pago_em: null } : { vencimento: dataI, pagamento: null };
+        const zerar = ehDespesa
+          ? { data: dataI, pago_em: null, ...("data_competencia" in primeira ? { data_competencia: primeira.data_competencia ? deslocarData(primeira.data_competencia, i, periodo) : null } : {}) }
+          : { vencimento: dataI, pagamento: null };
         copias.push({ ...primeira, ...zerar, valor_pago: 0, status: "Pendente" });
       }
       if (copias.length) verificarErro(await Auth.sb.from(tabela).insert(copias));
@@ -12659,7 +12673,11 @@
     const linha = evento.target.closest("tr[data-id]");
     if (!linha) return;
     const reg = despesasFinCache.find((d) => d.id === linha.dataset.id);
-    if (reg) abrirDespesaEmpresa(reg);
+    if (!reg) return;
+    // despesa lançada no Fluxo: abre a MESMA janela do Fluxo (é a mesma despesa); só a depreciação (que não existe no Fluxo) usa a janela de custo
+    const linhaFluxo = reg.so_resultado ? null : linhasDespesas().find((l) => l.chave === "d" + reg.id);
+    if (linhaFluxo) abrirLancamento(true, linhaFluxo);
+    else abrirDespesaEmpresa(reg);
   });
 
   async function salvarDespesaEmpresa() {
