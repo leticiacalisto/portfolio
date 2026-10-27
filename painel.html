@@ -2512,6 +2512,88 @@
   .bolinha-prox{ display:flex; flex-direction:column; align-items:center; gap:1px; }
   .anel-bol{ position:relative; width:54px; height:54px; }
   .anel-bol b{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:.72rem; font-weight:700; }
+  /* ---- Início: últimos 7 dias, hoje em destaque ---- */
+  .numeros-recentes{ display:grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap:14px; margin-bottom:24px; }
+  .numero-recente{ display:flex; flex-direction:column; gap:4px; text-align:left; font:inherit; color:inherit; cursor:pointer; background:#fff; border:none; border-radius:18px; padding:14px 16px 12px; box-shadow:0 6px 28px rgba(90,70,140,.07); transition: transform .25s var(--ease-mov), box-shadow .25s; }
+  .numero-recente:hover{ transform: translateY(-2px); box-shadow:0 10px 32px rgba(90,70,140,.12); }
+  .rotulo-recente{ font-size:.68rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--texto-suave); }
+  .valor-recente{ font-family: var(--fonte-impacto); font-size:1.55rem; font-weight:600; line-height:1.1; display:flex; align-items:baseline; gap:6px; flex-wrap:wrap; }
+  .valor-recente small{ font-family: var(--fonte-sans); font-size:.7rem; font-weight:500; color:var(--texto-suave); }
+  .hoje-recente{ align-self:flex-start; font-size:.72rem; color:var(--texto-suave); background:#F5F2FA; border-radius:999px; padding:2px 9px; }
+  .hoje-recente b{ font-weight:700; color:var(--grafite); }
+  .hoje-recente.tem{ background:#EFE8FB; color:#5B4A8C; }
+  .barras-recentes{ display:flex; align-items:flex-end; gap:5px; height:46px; margin-top:6px; }
+  .dia-recente{ flex:1; height:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:2px; }
+  .dia-recente i{ display:block; width:100%; border-radius:5px; background:#E6DFF3; }
+  .dia-recente.hoje i{ background:linear-gradient(180deg,#B79CF0,#8E6FDB); }
+  .dia-recente em{ font-style:normal; font-size:.58rem; color:var(--cinza-claro); line-height:1; }
+  .dia-recente.hoje em{ color:#5B4A8C; font-weight:700; }
+  @media (max-width: 1100px){ .numeros-recentes{ grid-template-columns: repeat(3, minmax(0,1fr)); } }
+  @media (max-width: 640px){ .numeros-recentes{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+  /* Janela da oportunidade: mesma linguagem da janela do vídeo (cabeçalho e rodapé fixos, seções, campos suaves) */
+  .modal-op-clean{ padding-top:0; border-radius:24px; }
+  .modal-op-clean .cabecalho-modal-op{ position:sticky; top:0; z-index:6; margin:0 -28px 6px; padding:22px 28px 12px; background:rgba(255,255,255,.96); backdrop-filter:blur(6px); }
+  .modal-op-clean .eyebrow-modal-op{ font-size:.66rem; text-transform:uppercase; letter-spacing:.09em; color:#9A8CC4; }
+  .modal-op-clean .cabecalho-modal-op h3{ margin:2px 0 0; font-size:1.3rem; }
+  .secao-modal-op{ margin:20px 0 -4px; font-size:.68rem; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#9A8CC4; }
+  .secao-modal-op:first-child{ margin-top:8px; }
+  .modal-op-clean label{ font-size:.78rem; font-weight:500; color:var(--texto-suave); margin:12px 0 5px; }
+  .modal-op-clean input, .modal-op-clean select, .modal-op-clean textarea{ border:1.5px solid transparent; background:#F8F6FB; border-radius:12px; transition: background .15s, border-color .15s; }
+  .modal-op-clean input:hover, .modal-op-clean select:hover, .modal-op-clean textarea:hover{ background:#F3F0F9; }
+  .modal-op-clean input:focus, .modal-op-clean select:focus, .modal-op-clean textarea:focus{ background:#fff; border-color:#CDBDF0; }
+  .modal-op-clean .acoes-modal-quadro{ position:sticky; bottom:0; background:rgba(255,255,255,.96); margin:16px -28px 0; padding:14px 28px 18px; z-index:5; }
+  .bloco-parcelas-fech{ background:#F8F6FB; border-radius:14px; padding:12px 14px; margin-top:6px; }
+  .barra-parcelas-fech{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px; }
+  .barra-parcelas-fech label{ display:flex; align-items:center; gap:6px; font-size:.8rem; margin:0; }
+  .barra-parcelas-fech input[type=number]{ width:64px; padding:6px 8px; }
+  .barra-parcelas-fech select{ width:auto; max-width:230px; padding:6px 8px; font-size:.8rem; }
+  .linha-parcela-fech{ display:grid; grid-template-columns: 26px 1fr 1.2fr auto 24px; gap:8px; align-items:center; padding:5px 0; }
+  .linha-parcela-fech .num-parcela-fech{ font-size:.75rem; color:var(--texto-suave); text-align:center; }
+  .linha-parcela-fech input[type=number], .linha-parcela-fech input[type=date]{ padding:6px 8px; font-size:.85rem; }
+  .linha-parcela-fech label{ display:flex; align-items:center; gap:5px; font-size:.78rem; margin:0; white-space:nowrap; }
+  .linha-parcela-fech label input{ width:auto; }
+  .linha-parcela-fech .vinculada{ font-size:.66rem; color:#7A5CC8; }
+  .btn-coracao{ background:none; border:0; padding:0 6px 0 0; cursor:pointer; vertical-align:middle; line-height:0; }
+  .btn-coracao svg{ width:16px; height:16px; fill:none; stroke:#C9C1D6; transition: transform .2s var(--ease-mov), fill .2s, stroke .2s; }
+  .btn-coracao:hover svg{ stroke:#E0689A; transform: scale(1.15); }
+  .btn-coracao.ligado svg{ fill:#E0689A; stroke:#E0689A; }
+  /* ---- Campanhas > Plataformas ---- */
+  .painel-plataformas{ display:flex; flex-direction:column; gap:16px; }
+  .topo-plataformas{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  .seletor-ano{ display:flex; align-items:center; gap:8px; }
+  .seletor-ano strong{ font-family: var(--fonte-impacto); font-size:1.2rem; font-weight:600; min-width:48px; text-align:center; }
+  .chips-plataformas{ display:flex; flex-wrap:wrap; gap:6px; }
+  .chip-plataforma{ display:inline-flex; align-items:center; gap:6px; font:inherit; font-size:.8rem; padding:5px 12px; border-radius:999px; border:1px solid var(--borda); background:#fff; color:var(--grafite); cursor:pointer; }
+  .chip-plataforma i{ width:9px; height:9px; border-radius:50%; display:inline-block; }
+  .chip-plataforma:hover{ background:#F5F1FB; }
+  .chip-plataforma.ativo{ background:#EFE8FB; border-color:#CDBDF0; color:#5B4A8C; font-weight:600; }
+  .cartoes-plataformas{ grid-template-columns: repeat(3, 1fr); margin-bottom:0; }
+  .grade-plataformas{ display:grid; grid-template-columns: 260px 1fr; gap:16px; }
+  @media (max-width: 900px){ .grade-plataformas, .cartoes-plataformas{ grid-template-columns: 1fr; } }
+  .cartao-plat{ background:#fff; border:1px solid var(--borda); border-radius:18px; padding:16px 18px; }
+  .cartao-plat h3{ margin:0 0 10px; font-size:.82rem; letter-spacing:.06em; text-transform:uppercase; color:var(--texto-suave); font-weight:700; }
+  .cartao-plat h3 small{ text-transform:none; letter-spacing:0; font-weight:500; margin-left:6px; }
+  .rosca-plataformas{ width:180px; height:180px; display:block; margin:0 auto; }
+  .rosca-num{ font-family: var(--fonte-impacto); font-size:26px; font-weight:600; fill:var(--grafite); }
+  .rosca-leg{ font-size:9px; fill:var(--texto-suave); }
+  .barras-plataformas{ width:100%; height:auto; display:block; }
+  .barra-num{ font-size:11px; font-weight:700; fill:var(--grafite); }
+  .barra-mes{ font-size:11px; fill:var(--texto-suave); cursor:pointer; }
+  .barra-mes.atual{ fill:#5B4A8C; font-weight:700; }
+  .linha-plat{ display:grid; grid-template-columns: minmax(180px,1.1fr) 2fr minmax(160px,1fr); gap:14px; align-items:center; padding:10px 0; border-top:1px solid var(--borda); }
+  .linha-plat:first-of-type{ border-top:0; }
+  .plat-nome{ display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 8px; }
+  .plat-nome i{ width:10px; height:10px; border-radius:50%; align-self:center; }
+  .plat-nome span{ font-size:.75rem; color:var(--texto-suave); }
+  .plat-barra{ height:10px; background:#F2EEF8; border-radius:999px; overflow:hidden; }
+  .plat-barra span{ display:block; height:100%; border-radius:999px; }
+  .plat-valores{ display:flex; flex-direction:column; text-align:right; font-weight:600; font-size:.9rem; }
+  .plat-valores small{ font-weight:400; color:var(--texto-suave); font-size:.72rem; }
+  @media (max-width: 700px){ .linha-plat{ grid-template-columns: 1fr; } .plat-valores{ text-align:left; } }
+
+  .bolinha-prox{ background:none; border:0; padding:2px 4px; border-radius:12px; cursor:pointer; font-family:inherit; color:inherit; transition: background .2s, transform .2s var(--ease-mov); }
+  .bolinha-prox:hover{ background:#F5F1FB; transform: translateY(-1px); }
+  .bolinha-prox.em-foco{ background:#EFE8FB; }
   .bolinha-prox small{ font-size:.7rem; font-weight:600; color:#7A5CC8; }
   .bolinha-foco .anel-fundo, .anel-bol .anel-fundo{ stroke-width:5; }
   .bolinha-foco .anel-prog, .anel-bol .anel-prog{ stroke-width:5; stroke:#A58BE6; }
@@ -3317,6 +3399,7 @@
 
     <!-- ===================== ABA: MENU PRINCIPAL ===================== -->
     <section id="painel-principal" class="painel-aba">
+      <div class="numeros-recentes" id="numerosRecentes" aria-label="Últimos 7 dias"></div>
       <div class="principal-grade">
         <div class="principal-esquerda">
           <div class="cartao cartao-jornada">
@@ -4035,6 +4118,7 @@
             <button type="button" class="btn-alternador" data-vis-marca="todas">Todas</button>
             <button type="button" class="btn-alternador" data-vis-marca="lead">Lead</button>
             <button type="button" class="btn-alternador" data-vis-marca="fechadas">Fechadas</button>
+            <button type="button" class="btn-alternador" data-vis-marca="favoritas" title="Marcas favoritas">♥ Favoritas</button>
           </div>
           <div class="acoes-topo-quadro">
             <div class="barra-ferramentas-tabela" id="barraFerramentasMarcas">
@@ -4103,6 +4187,7 @@
             <button type="button" class="btn-alternador" data-vis-campanha="aguardando_pagamento">Aguardando pagamento</button>
             <button type="button" class="btn-alternador" data-vis-campanha="finalizadas">Fechadas</button>
             <button type="button" class="btn-alternador" data-vis-campanha="trafego_pago">Tráfego Pago</button>
+            <button type="button" class="btn-alternador" data-vis-campanha="plataformas">Plataformas</button>
           </div>
           <div class="acoes-topo-quadro" id="acoesTopoCampanhas">
             <div class="barra-ferramentas-tabela" id="barraFerramentasCampanhas">
@@ -4136,6 +4221,8 @@
             <tbody id="corpoTabelaContratos"></tbody>
           </table>
         </div>
+
+        <div id="painelPlataformas" class="painel-plataformas" hidden></div>
 
         <div id="painelTrafegoPago" hidden>
           <div id="avisoMigracaoTrafegoPago" class="aviso-migracao-fluxo" hidden>Falta rodar <strong>js/direitos-extensao-setup.sql</strong> no Supabase (SQL Editor) pra liberar o botão de renovar o direito de uso direto por aqui.</div>
@@ -4934,7 +5021,7 @@
      no Resultado dos Contratos. Só edita/exclui aquela linha, não mexe no
      resto do fluxo de campanhas. -->
 <div class="overlay-modal" id="overlayNovoFechamento" hidden>
-  <div class="modal-quadro">
+  <div class="modal-quadro modal-quadro-grande">
     <h3 id="tituloNovoFechamento">Nova receita</h3>
 
     <div class="prop-limpa">
@@ -4956,6 +5043,23 @@
     <div class="prop-limpa" id="linhaFechamentoNfTaxa" hidden>
       <span class="rotulo-limpo">Taxa da NF (%)</span>
       <input type="number" min="0" step="0.1" id="campoFechamentoNfTaxa" class="input-limpo" value="6">
+    </div>
+    <div class="prop-limpa" id="linhaFechamentoCategoria">
+      <span class="rotulo-limpo">Categoria</span>
+      <select id="campoFechamentoCategoria" class="input-limpo"></select>
+    </div>
+    <div class="prop-limpa">
+      <span class="rotulo-limpo">Receber em parcelas</span>
+      <label class="chave-liga"><input type="checkbox" id="campoFechamentoParcelado"><span class="trilho-chave"></span></label>
+    </div>
+    <div id="blocoFechamentoParcelas" class="bloco-parcelas-fech" hidden>
+      <div class="barra-parcelas-fech">
+        <label>Nº de parcelas <input type="number" min="1" max="36" id="campoFechamentoQtdParcelas" value="2"></label>
+        <button type="button" class="btn-fases" id="btnDividirParcelasFech">Dividir igualmente</button>
+        <select id="campoFechamentoVincular" title="Vincular um lançamento que já existe no Fluxo de Caixa"></select>
+      </div>
+      <div id="listaFechamentoParcelas"></div>
+      <p class="texto-pequeno" id="resumoFechamentoParcelas"></p>
     </div>
 
     <div class="acoes-modal-quadro">
@@ -5060,9 +5164,13 @@
 </div>
 
 <div class="overlay-modal" id="overlayModalOportunidade" hidden>
-  <div class="modal-quadro modal-quadro-grande">
-    <h3 id="tituloModalOportunidade">Nova oportunidade</h3>
+  <div class="modal-quadro modal-quadro-grande modal-op-clean">
+    <div class="cabecalho-modal-op">
+      <span class="eyebrow-modal-op">Oportunidade</span>
+      <h3 id="tituloModalOportunidade">Nova oportunidade</h3>
+    </div>
     <form id="formOportunidade">
+      <p class="secao-modal-op">Marca e contato</p>
       <label for="campoEmpresaOportunidade">Marca</label>
       <select id="campoEmpresaOportunidade" required></select>
       <div id="blocoNovaEmpresaOportunidade" hidden style="margin-top:10px;">
@@ -5081,6 +5189,7 @@
         </div>
       </div>
 
+      <p class="secao-modal-op">Origem</p>
       <div id="blocoCaptacaoOportunidade">
         <label for="campoCaptacaoOportunidade">Captação</label>
         <select id="campoCaptacaoOportunidade">
@@ -5101,6 +5210,7 @@
         </div>
       </div>
 
+      <p class="secao-modal-op">Negociação</p>
       <div class="linha-dupla-modal">
         <div>
           <label for="campoValorOportunidade">Valor estimado (R$)</label>
@@ -5128,6 +5238,7 @@
         </div>
       </div>
 
+      <p class="secao-modal-op">Datas</p>
       <div class="linha-dupla-modal">
         <div>
           <label for="campoEntradaOportunidade">Data de entrada</label>
@@ -5144,6 +5255,7 @@
         <input type="text" id="campoMotivoPerdaOportunidade" autocomplete="off">
       </div>
 
+      <p class="secao-modal-op">Anotações</p>
       <label for="campoObservacoesOportunidade">Observações</label>
       <textarea id="campoObservacoesOportunidade" rows="3"></textarea>
 
@@ -8630,12 +8742,15 @@
       visualizacaoCampanhas = botao.dataset.visCampanha;
       alternadorCampanhas.querySelectorAll(".btn-alternador").forEach((b) => b.classList.toggle("ativo", b === botao));
       const ehTrafego = visualizacaoCampanhas === "trafego_pago";
-      document.getElementById("tabelaCampanhasWrap").hidden = ehTrafego;
-      document.getElementById("acoesTopoCampanhas").hidden = ehTrafego;
+      const ehPlataformas = visualizacaoCampanhas === "plataformas";
+      document.getElementById("tabelaCampanhasWrap").hidden = ehTrafego || ehPlataformas;
+      document.getElementById("acoesTopoCampanhas").hidden = ehTrafego || ehPlataformas;
       document.getElementById("painelTrafegoPago").hidden = !ehTrafego;
-      document.getElementById("cartoesCampanhas").hidden = ehTrafego;
+      document.getElementById("painelPlataformas").hidden = !ehPlataformas;
+      document.getElementById("cartoesCampanhas").hidden = ehTrafego || ehPlataformas;
       document.getElementById("cartoesTrafegoPago").hidden = !ehTrafego;
       if (ehTrafego) renderizarTrafegoPago();
+      else if (ehPlataformas) renderizarPlataformas();
       else renderizarContratos();
     });
   }
@@ -8649,6 +8764,133 @@
   // renovação, se tiver). Vencendo = vence dentro de 30 dias; Vencido = já
   // passou a data; Ativo = o resto.
   // ---------------------------------------------------------------
+  // ---------------------------------------------------------------
+  // PLATAFORMAS — campanhas por plataforma/agência (gráficos, sem tabela).
+  // Conta pela data de assinatura da campanha. Sem plataforma = "Direto".
+  // ---------------------------------------------------------------
+  let anoPlataformas = new Date().getFullYear();
+  let mesPlataformas = new Date().getMonth(); // 0-11
+  let filtroPlataforma = ""; // "" = todas
+  const MESES_ABREV_PLAT = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+  const CORES_PLATAFORMAS = ["#A58BE6", "#F29BC4", "#7FB6EE", "#EFCB5A", "#8FD3A8", "#F7B27A", "#6FCBC6", "#D58BDB", "#B9B3C4"];
+
+  function renderizarPlataformas() {
+    const el = document.getElementById("painelPlataformas");
+    if (!el) return;
+    const nomeDe = (k) => String(k.plataforma_agencia || "").trim() || "Direto";
+    const todas = contratosCache
+      .map((k) => ({ k, plataforma: nomeDe(k), data: k.data_assinatura || diaIso(k.created_at) || "", valor: Number(k.valor) || 0 }))
+      .filter((c) => c.data);
+    const doAno = todas.filter((c) => c.data.startsWith(String(anoPlataformas)));
+    // plataformas do ano, da mais usada para a menos usada (cor fixa pela posição)
+    const contagemAno = new Map();
+    doAno.forEach((c) => contagemAno.set(c.plataforma, (contagemAno.get(c.plataforma) || 0) + 1));
+    const nomes = [...contagemAno.keys()].sort((a, b) => contagemAno.get(b) - contagemAno.get(a) || a.localeCompare(b, "pt-BR"));
+    const corDe = (n) => CORES_PLATAFORMAS[Math.min(nomes.indexOf(n), CORES_PLATAFORMAS.length - 1)] || "#B9B3C4";
+    if (filtroPlataforma && !nomes.includes(filtroPlataforma)) filtroPlataforma = "";
+    const visiveis = doAno.filter((c) => !filtroPlataforma || c.plataforma === filtroPlataforma);
+    const prefixoMes = anoPlataformas + "-" + String(mesPlataformas + 1).padStart(2, "0");
+    const doMes = visiveis.filter((c) => c.data.startsWith(prefixoMes));
+
+    // por plataforma (ano)
+    const resumo = nomes
+      .map((n) => {
+        const l = doAno.filter((c) => c.plataforma === n);
+        const receita = l.reduce((s, c) => s + c.valor, 0);
+        return { n, qtd: l.length, receita, ticket: l.length ? receita / l.length : 0, mes: l.filter((c) => c.data.startsWith(prefixoMes)).length };
+      })
+      .filter((r) => !filtroPlataforma || r.n === filtroPlataforma);
+    const totalAno = resumo.reduce((s, r) => s + r.qtd, 0);
+    const maxQtd = Math.max(1, ...resumo.map((r) => r.qtd));
+
+    // rosca: participação de cada plataforma no ano
+    const R = 52, C = 2 * Math.PI * R;
+    let acumulado = 0;
+    const fatias = resumo
+      .map((r) => {
+        const parte = totalAno ? r.qtd / totalAno : 0;
+        const tracado = `<circle cx="70" cy="70" r="${R}" fill="none" stroke="${corDe(r.n)}" stroke-width="22" stroke-dasharray="${(parte * C).toFixed(2)} ${(C - parte * C).toFixed(2)}" stroke-dashoffset="${(-acumulado * C).toFixed(2)}" transform="rotate(-90 70 70)"><title>${esc(r.n)}: ${r.qtd} (${Math.round(parte * 100)}%)</title></circle>`;
+        acumulado += parte;
+        return tracado;
+      })
+      .join("");
+    const rosca = `<svg viewBox="0 0 140 140" class="rosca-plataformas" role="img" aria-label="Campanhas por plataforma no ano">
+      <circle cx="70" cy="70" r="${R}" fill="none" stroke="#EFEAF6" stroke-width="22"/>${fatias}
+      <text x="70" y="68" text-anchor="middle" class="rosca-num">${totalAno}</text>
+      <text x="70" y="84" text-anchor="middle" class="rosca-leg">em ${anoPlataformas}</text>
+    </svg>`;
+
+    // barras empilhadas por mês (ano)
+    const porMes = Array.from({ length: 12 }, (_, m) => {
+      const pref = anoPlataformas + "-" + String(m + 1).padStart(2, "0");
+      const l = visiveis.filter((c) => c.data.startsWith(pref));
+      return { m, total: l.length, por: nomes.map((n) => ({ n, q: l.filter((c) => c.plataforma === n).length })).filter((x) => x.q) };
+    });
+    const maxMes = Math.max(1, ...porMes.map((x) => x.total));
+    const LARG = 600, ALT = 190, BASE = 160, ALTURA_MAX = 130, passo = LARG / 12, larguraBarra = passo * 0.56;
+    const barras = porMes
+      .map((x) => {
+        const cx = x.m * passo + passo / 2;
+        let y = BASE;
+        const segmentos = x.por
+          .map((p) => {
+            const h = (p.q / maxMes) * ALTURA_MAX;
+            y -= h;
+            return `<rect x="${(cx - larguraBarra / 2).toFixed(1)}" y="${y.toFixed(1)}" width="${larguraBarra.toFixed(1)}" height="${h.toFixed(1)}" rx="3" fill="${corDe(p.n)}" stroke="#fff" stroke-width="1"><title>${esc(MESES_ABREV_PLAT[x.m])}: ${p.q} em ${esc(p.n)}</title></rect>`;
+          })
+          .join("");
+        const num = x.total ? `<text x="${cx.toFixed(1)}" y="${(y - 6).toFixed(1)}" text-anchor="middle" class="barra-num">${x.total}</text>` : "";
+        const destaque = x.m === mesPlataformas ? `<rect x="${(cx - passo / 2 + 2).toFixed(1)}" y="8" width="${(passo - 4).toFixed(1)}" height="${BASE + 26}" rx="8" fill="#F5F1FB" opacity=".7"/>` : "";
+        return `${destaque}${segmentos}${num}<text x="${cx.toFixed(1)}" y="${BASE + 18}" text-anchor="middle" class="barra-mes${x.m === mesPlataformas ? " atual" : ""}">${MESES_ABREV_PLAT[x.m]}</text>`;
+      })
+      .join("");
+    const grafico = `<svg viewBox="0 0 ${LARG} ${ALT}" class="barras-plataformas" role="img" aria-label="Campanhas fechadas por mês">
+      <line x1="0" y1="${BASE}" x2="${LARG}" y2="${BASE}" stroke="#E7E2EE"/>${barras}</svg>`;
+
+    const chips =
+      `<button type="button" class="chip-plataforma${filtroPlataforma ? "" : " ativo"}" data-plataforma="">Todas</button>` +
+      nomes.map((n) => `<button type="button" class="chip-plataforma${filtroPlataforma === n ? " ativo" : ""}" data-plataforma="${esc(n)}"><i style="background:${corDe(n)}"></i>${esc(n)}</button>`).join("");
+
+    const linhas = resumo.length
+      ? resumo
+          .map(
+            (r) => `<div class="linha-plat">
+              <div class="plat-nome"><i style="background:${corDe(r.n)}"></i><strong>${esc(r.n)}</strong><span>${r.qtd} campanha${r.qtd === 1 ? "" : "s"} · ${totalAno ? Math.round((r.qtd / totalAno) * 100) : 0}%</span></div>
+              <div class="plat-barra"><span style="width:${((r.qtd / maxQtd) * 100).toFixed(1)}%; background:${corDe(r.n)}"></span></div>
+              <div class="plat-valores"><span class="dado-sensivel">${formatarMoeda(r.receita)}</span><small>ticket médio <span class="dado-sensivel">${formatarMoeda(r.ticket)}</span> · ${r.mes} em ${MESES_ABREV_PLAT[mesPlataformas]}</small></div>
+            </div>`
+          )
+          .join("")
+      : textoVazio("Nenhuma campanha em " + anoPlataformas + ".");
+
+    const receitaMes = doMes.reduce((s, c) => s + c.valor, 0);
+    el.innerHTML = `
+      <div class="topo-plataformas">
+        <div class="seletor-ano"><button type="button" class="btn-seta-mes" data-ano-plat="-1" title="Ano anterior">‹</button><strong>${anoPlataformas}</strong><button type="button" class="btn-seta-mes" data-ano-plat="1" title="Próximo ano">›</button></div>
+        <div class="chips-plataformas">${chips}</div>
+      </div>
+      <div class="cartoes-fluxo cartoes-plataformas">
+        <div class="cartao-fluxo entradas"><span class="rotulo-cartao-fluxo">Fechadas em ${MESES_ABREV_PLAT[mesPlataformas]}/${anoPlataformas}</span><span class="valor-cartao-fluxo">${doMes.length}</span><span class="nota-cartao-fluxo dado-sensivel">${formatarMoeda(receitaMes)} em contratos</span></div>
+        <div class="cartao-fluxo acumulado"><span class="rotulo-cartao-fluxo">Fechadas no ano</span><span class="valor-cartao-fluxo">${totalAno}</span><span class="nota-cartao-fluxo">${filtroPlataforma ? esc(filtroPlataforma) : "Todas as plataformas"}</span></div>
+        <div class="cartao-fluxo previsto"><span class="rotulo-cartao-fluxo">Plataformas no ano</span><span class="valor-cartao-fluxo">${nomes.length}</span><span class="nota-cartao-fluxo">${nomes.length ? "Mais usada: " + esc(nomes[0]) : "—"}</span></div>
+      </div>
+      <div class="grade-plataformas">
+        <div class="cartao-plat cartao-plat-rosca"><h3>Participação no ano</h3>${rosca}</div>
+        <div class="cartao-plat cartao-plat-barras"><h3>Campanhas por mês <small>clique num mês para destacar</small></h3>${grafico}</div>
+      </div>
+      <div class="cartao-plat"><h3>Relação por plataforma</h3>${linhas}</div>`;
+  }
+  document.getElementById("painelPlataformas").addEventListener("click", (evento) => {
+    const ano = evento.target.closest("[data-ano-plat]");
+    const chip = evento.target.closest("[data-plataforma]");
+    const mes = evento.target.closest(".barras-plataformas .barra-mes");
+    if (ano) anoPlataformas += Number(ano.dataset.anoPlat);
+    else if (chip) filtroPlataforma = chip.dataset.plataforma;
+    else if (mes) mesPlataformas = MESES_ABREV_PLAT.indexOf(mes.textContent.trim());
+    else return;
+    renderizarPlataformas();
+  });
+
   let filtroTrafegoAtual = "todos";
   let paginaTrafegoPago = 1;
   const PAGINA_TRAFEGO = 10;
@@ -12211,6 +12453,135 @@
   const btnExcluirFechamento = document.getElementById("btnExcluirFechamento");
   let fechamentoEmEdicao = null;
 
+  // Parcelas da receita: cada linha é um recebimento (financas_receitas com
+  // parent_id = a receita). Linhas com id já existem no banco (criadas aqui
+  // antes ou lançamentos do Fluxo vinculados agora); as sem id são novas.
+  const campoFechamentoCategoria = document.getElementById("campoFechamentoCategoria");
+  const campoFechamentoParcelado = document.getElementById("campoFechamentoParcelado");
+  const blocoFechamentoParcelas = document.getElementById("blocoFechamentoParcelas");
+  const campoFechamentoQtdParcelas = document.getElementById("campoFechamentoQtdParcelas");
+  const campoFechamentoVincular = document.getElementById("campoFechamentoVincular");
+  const listaFechamentoParcelas = document.getElementById("listaFechamentoParcelas");
+  let parcelasFech = [];
+  let parcelasFechRemovidas = []; // ids de parcelas que já existiam e foram tiradas da lista
+  let uidParcelaFech = 0;
+
+  function renderizarParcelasFech() {
+    listaFechamentoParcelas.innerHTML = parcelasFech
+      .map(
+        (p, i) => `<div class="linha-parcela-fech" data-uid="${p.uid}">
+          <span class="num-parcela-fech">${i + 1}</span>
+          <input type="number" min="0" step="0.01" data-campo="valor" value="${p.valor === "" ? "" : p.valor}" placeholder="Valor">
+          <input type="date" data-campo="data" value="${esc(p.data || "")}">
+          <label><input type="checkbox" data-campo="pago" ${p.pago ? "checked" : ""}> Recebida</label>
+          <button type="button" class="btn-remover-parcela" data-remover-parcela="${p.uid}" title="Tirar essa parcela">✕</button>
+          ${p.vinculada ? '<span class="vinculada" style="grid-column:2 / -1">vinculada do Fluxo de Caixa</span>' : ""}
+        </div>`
+      )
+      .join("");
+    const soma = parcelasFech.reduce((s, p) => s + (Number(p.valor) || 0), 0);
+    const total = Number(campoFechamentoValor.value) || 0;
+    const resumo = document.getElementById("resumoFechamentoParcelas");
+    const dif = arredondar(total - soma);
+    resumo.textContent = parcelasFech.length
+      ? `Parcelas somam ${formatarMoeda(soma)} de ${formatarMoeda(total)}` + (Math.abs(dif) > 0.005 ? (dif > 0 ? ` · faltam ${formatarMoeda(dif)}` : ` · passou ${formatarMoeda(-dif)}`) : " · fechou certinho")
+      : "";
+    resumo.style.color = Math.abs(dif) > 0.005 && parcelasFech.length ? "#B25E00" : "";
+  }
+  // Divide o que falta (total menos o já recebido) igualmente entre as parcelas ainda não recebidas
+  function redistribuirParcelasFech() {
+    const total = Number(campoFechamentoValor.value) || 0;
+    const abertas = parcelasFech.filter((p) => !p.pago);
+    if (!abertas.length) return;
+    const restante = Math.max(0, total - parcelasFech.filter((p) => p.pago).reduce((s, p) => s + (Number(p.valor) || 0), 0));
+    const cada = Math.floor((restante / abertas.length) * 100) / 100;
+    abertas.forEach((p, i) => {
+      p.valor = i === abertas.length - 1 ? arredondar(restante - cada * (abertas.length - 1)) : cada;
+    });
+  }
+  function ajustarQuantidadeParcelasFech(qtd) {
+    qtd = Math.max(1, Math.min(36, Number(qtd) || 1));
+    while (parcelasFech.length < qtd) {
+      const ultima = parcelasFech[parcelasFech.length - 1];
+      parcelasFech.push({ uid: ++uidParcelaFech, id: null, valor: "", data: somarDiasIso((ultima && ultima.data) || campoFechamentoData.value || hojeIso(), parcelasFech.length ? 30 : 0), pago: false });
+    }
+    while (parcelasFech.length > qtd) {
+      const alvo = [...parcelasFech].reverse().find((p) => !p.pago) || parcelasFech[parcelasFech.length - 1];
+      if (alvo.id) parcelasFechRemovidas.push(alvo.id);
+      parcelasFech = parcelasFech.filter((p) => p !== alvo);
+    }
+    campoFechamentoQtdParcelas.value = parcelasFech.length;
+  }
+  function atualizarOpcoesVincularFech() {
+    const filhosDe = new Set(receitasCache.filter((r) => r.parent_id).map((r) => r.parent_id));
+    const jaNaLista = new Set(parcelasFech.map((p) => p.id).filter(Boolean));
+    const opcoes = receitasCache
+      .filter((r) => !r.contrato_id && !r.parent_id && !filhosDe.has(r.id) && !(fechamentoEmEdicao && r.id === fechamentoEmEdicao.id) && !jaNaLista.has(r.id) && Number(r.cache) > 0)
+      .sort((a, b) => String(b.pagamento || b.contratacao || "").localeCompare(String(a.pagamento || a.contratacao || "")));
+    campoFechamentoVincular.innerHTML =
+      `<option value="">Vincular lançamento existente…</option>` +
+      opcoes
+        .map((r) => `<option value="${esc(r.id)}">${esc(r.marca || r.descricao || "Sem nome")} · ${formatarMoeda(r.cache)} · ${formatarDataBr(r.pagamento || r.vencimento || r.contratacao || "")}</option>`)
+        .join("");
+  }
+  campoFechamentoParcelado.addEventListener("change", () => {
+    blocoFechamentoParcelas.hidden = !campoFechamentoParcelado.checked;
+    if (campoFechamentoParcelado.checked && !parcelasFech.length) {
+      ajustarQuantidadeParcelasFech(2);
+      redistribuirParcelasFech();
+    }
+    atualizarOpcoesVincularFech();
+    renderizarParcelasFech();
+  });
+  document.getElementById("btnDividirParcelasFech").addEventListener("click", () => {
+    ajustarQuantidadeParcelasFech(campoFechamentoQtdParcelas.value);
+    redistribuirParcelasFech();
+    renderizarParcelasFech();
+  });
+  campoFechamentoVincular.addEventListener("change", () => {
+    const r = receitasCache.find((x) => x.id === campoFechamentoVincular.value);
+    if (!r) return;
+    parcelasFech.push({
+      uid: ++uidParcelaFech, id: r.id, valor: Number(r.cache) || 0, data: r.status === "Pago" && r.pago_em ? r.pago_em : r.pagamento || r.vencimento || "",
+      pago: r.status === "Pago", pagoEm: r.pago_em || null, vinculada: true,
+    });
+    campoFechamentoQtdParcelas.value = parcelasFech.length;
+    atualizarOpcoesVincularFech();
+    renderizarParcelasFech();
+  });
+  campoFechamentoValor.addEventListener("input", () => {
+    if (!blocoFechamentoParcelas.hidden) renderizarParcelasFech();
+  });
+  listaFechamentoParcelas.addEventListener("change", (evento) => {
+    const linha = evento.target.closest("[data-uid]");
+    const p = linha && parcelasFech.find((x) => String(x.uid) === linha.dataset.uid);
+    if (!p || !evento.target.dataset.campo) return;
+    const campo = evento.target.dataset.campo;
+    if (campo === "valor") p.valor = evento.target.value === "" ? "" : Number(evento.target.value);
+    else if (campo === "data") p.data = evento.target.value;
+    else if (campo === "pago") {
+      p.pago = evento.target.checked;
+      if (p.pago && !p.pagoEm) p.pagoEm = p.data || hojeIso();
+    }
+    renderizarParcelasFech();
+  });
+  listaFechamentoParcelas.addEventListener("click", (evento) => {
+    const botao = evento.target.closest("[data-remover-parcela]");
+    if (!botao) return;
+    const p = parcelasFech.find((x) => String(x.uid) === botao.dataset.removerParcela);
+    if (!p) return;
+    if (p.id) {
+      if (p.vinculada) {
+        // foi vinculada só agora: apenas tira da lista (o lançamento do Fluxo continua como estava)
+      } else if (!confirm("Essa parcela já está salva. Remover vai apagá-la do Fluxo de Caixa. Continuar?")) return;
+      else parcelasFechRemovidas.push(p.id);
+    }
+    parcelasFech = parcelasFech.filter((x) => x !== p);
+    campoFechamentoQtdParcelas.value = parcelasFech.length || 1;
+    atualizarOpcoesVincularFech();
+    renderizarParcelasFech();
+  });
+
   function abrirNovoFechamento(reg) {
     fechamentoEmEdicao = reg || null;
     document.getElementById("tituloNovoFechamento").textContent = reg ? "Editar receita" : "Nova receita";
@@ -12220,6 +12591,27 @@
     campoFechamentoNf.checked = !!(reg && reg.emissao_nf);
     campoFechamentoNfTaxa.value = reg && reg.nf_taxa != null ? reg.nf_taxa : 6;
     linhaFechamentoNfTaxa.hidden = !campoFechamentoNf.checked;
+    // categoria (só existe depois do SQL do Fluxo de Caixa)
+    const categorias = categoriasDoTipo("receita").filter((n) => n !== "Campanhas");
+    const atual = reg && reg.categoria ? reg.categoria : "";
+    if (atual && !categorias.includes(atual)) categorias.push(atual);
+    campoFechamentoCategoria.innerHTML = `<option value="">Sem categoria</option>` + categorias.map((n) => `<option value="${esc(n)}">${esc(n)}</option>`).join("");
+    campoFechamentoCategoria.value = atual;
+    document.getElementById("linhaFechamentoCategoria").hidden = !migracaoFluxoOk;
+    // parcelas já existentes dessa receita
+    parcelasFechRemovidas = [];
+    parcelasFech = reg
+      ? receitasCache
+          .filter((r) => r.parent_id === reg.id)
+          .sort((a, b) => String(a.pagamento || "").localeCompare(String(b.pagamento || "")))
+          .map((r) => ({ uid: ++uidParcelaFech, id: r.id, valor: Number(r.cache) || 0, data: (r.status === "Pago" && r.pago_em) || r.pagamento || "", pago: r.status === "Pago", pagoEm: r.pago_em || null }))
+      : [];
+    campoFechamentoParcelado.checked = parcelasFech.length > 0;
+    campoFechamentoParcelado.disabled = parcelasFech.length > 0;
+    blocoFechamentoParcelas.hidden = !parcelasFech.length;
+    campoFechamentoQtdParcelas.value = parcelasFech.length || 2;
+    atualizarOpcoesVincularFech();
+    renderizarParcelasFech();
     btnExcluirFechamento.hidden = !reg;
     overlayNovoFechamento.hidden = false;
   }
@@ -12257,13 +12649,43 @@
     const nf = campoFechamentoNf.checked;
     const taxa = Number(campoFechamentoNfTaxa.value) || 0;
     const dados = { marca: nome, contratacao: data, cache: valor, emissao_nf: nf, nf_taxa: taxa, updated_at: new Date().toISOString() };
+    if (migracaoFluxoOk) dados.categoria = campoFechamentoCategoria.value || null;
+    const parcelado = campoFechamentoParcelado.checked && parcelasFech.length > 0;
+    if (parcelado && parcelasFech.some((p) => !p.data)) {
+      alert("Preencha a data de cada parcela (é a data prevista de entrada no Fluxo de Caixa).");
+      return;
+    }
     try {
+      let paiId;
       if (fechamentoEmEdicao) {
         verificarErro(await Auth.sb.from("financas_receitas").update(dados).eq("id", fechamentoEmEdicao.id));
+        paiId = fechamentoEmEdicao.id;
       } else {
-        verificarErro(
-          await Auth.sb.from("financas_receitas").insert({ ...dados, contrato_id: null, parent_id: null, status: valor > 0 ? "Pendente" : "Permuta" })
-        );
+        const { data: criada, error } = await Auth.sb
+          .from("financas_receitas")
+          .insert({ ...dados, contrato_id: null, parent_id: null, status: valor > 0 ? "Pendente" : "Permuta" })
+          .select()
+          .single();
+        if (error) throw error;
+        paiId = criada.id;
+      }
+      if (parcelado) {
+        const agora = new Date().toISOString();
+        for (const id of parcelasFechRemovidas) verificarErro(await Auth.sb.from("financas_receitas").delete().eq("id", id));
+        const total = parcelasFech.length;
+        for (let i = 0; i < total; i++) {
+          const p = parcelasFech[i];
+          const campos = {
+            cache: Number(p.valor) || 0, pagamento: p.data, status: p.pago ? "Pago" : "Pendente", pago_em: p.pago ? p.pagoEm || p.data || hojeIso() : null,
+            parent_id: paiId, updated_at: agora,
+          };
+          if (migracaoFluxoOk) {
+            campos.valor_pago = p.pago ? Number(p.valor) || 0 : 0;
+            campos.categoria = dados.categoria;
+          }
+          if (p.id) verificarErro(await Auth.sb.from("financas_receitas").update(campos).eq("id", p.id));
+          else verificarErro(await Auth.sb.from("financas_receitas").insert({ ...campos, marca: nome, tipo: "parcela", descricao: `Parcela ${i + 1}/${total}`, contrato_id: null }));
+        }
       }
       fecharNovoFechamento();
       await recarregarFinancas();
@@ -12276,8 +12698,10 @@
 
   btnExcluirFechamento.addEventListener("click", async () => {
     if (!fechamentoEmEdicao) return;
-    if (!confirm(`Excluir o fechamento "${fechamentoEmEdicao.marca}"?`)) return;
+    const temParcelas = receitasCache.some((r) => r.parent_id === fechamentoEmEdicao.id);
+    if (!confirm(`Excluir o fechamento "${fechamentoEmEdicao.marca}"?` + (temParcelas ? " As parcelas dele no Fluxo de Caixa também serão apagadas." : ""))) return;
     try {
+      if (temParcelas) verificarErro(await Auth.sb.from("financas_receitas").delete().eq("parent_id", fechamentoEmEdicao.id));
       verificarErro(await Auth.sb.from("financas_receitas").delete().eq("id", fechamentoEmEdicao.id));
       fecharNovoFechamento();
       await recarregarFinancas();
@@ -12457,7 +12881,23 @@
   // ela fica implícita pela visualização escolhida).
   let visualizacaoMarcas = "ativas"; // "ativas" | "todas" | "lead" | "fechadas"
 
+  // Favoritas: ids guardados em painel_config ("marcas_favoritas"), sem precisar de SQL
+  function marcaEhFavorita(id) {
+    try {
+      return (cfgLer("marcas_favoritas", []) || []).includes(id);
+    } catch (erro) {
+      return false;
+    }
+  }
+  async function alternarMarcaFavorita(id) {
+    const atuais = cfgLer("marcas_favoritas", []) || [];
+    const novas = atuais.includes(id) ? atuais.filter((x) => x !== id) : atuais.concat(id);
+    await cfgGravar("marcas_favoritas", novas);
+    renderizarEmpresas();
+  }
+
   function empresaPassaVisualizacao(empresa) {
+    if (visualizacaoMarcas === "favoritas") return marcaEhFavorita(empresa.id);
     if (visualizacaoMarcas === "todas") return true;
     const status = statusEfetivoEmpresa(empresa);
     if (visualizacaoMarcas === "ativas") return status === "Ativo";
@@ -12468,7 +12908,7 @@
 
   function colunasVisiveisEfetivas() {
     return colunasMarcas
-      .map((c) => (c.campo === "status" && visualizacaoMarcas !== "todas" ? { ...c, visivel: false } : c))
+      .map((c) => (c.campo === "status" && visualizacaoMarcas !== "todas" && visualizacaoMarcas !== "favoritas" ? { ...c, visivel: false } : c))
       .filter((c) => c.visivel);
   }
 
@@ -12705,8 +13145,17 @@
       tr.dataset.empresaId = e.id;
       const tdNome = document.createElement("td");
       tdNome.className = "celula-nome-clicavel";
-      tdNome.innerHTML = `<b style="font-weight:600">${esc(e.nome)}</b>`;
-      tdNome.addEventListener("click", () => abrirModalEmpresa(e));
+      const fav = marcaEhFavorita(e.id);
+      tdNome.innerHTML = `<button type="button" class="btn-coracao${fav ? " ligado" : ""}" data-favoritar="${esc(e.id)}" title="${fav ? "Tirar dos favoritos" : "Favoritar"}" aria-pressed="${fav}"><svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.7 7.8 3.6 4.5 6.9 4.5c2 0 3.9 1.2 5.1 3 1.2-1.8 3.1-3 5.1-3 3.3 0 5.2 3.3 4.1 6.6-1.7 4.8-9.2 9.4-9.2 9.4Z"/></svg></button><b style="font-weight:600">${esc(e.nome)}</b>`;
+      tdNome.addEventListener("click", (evento) => {
+        const coracao = evento.target.closest("[data-favoritar]");
+        if (coracao) {
+          evento.stopPropagation();
+          alternarMarcaFavorita(coracao.dataset.favoritar);
+          return;
+        }
+        abrirModalEmpresa(e);
+      });
       tr.appendChild(tdNome);
       colunasVisiveis.forEach((c) => tr.appendChild(criarCelulaEmpresa(e, c.campo)));
       corpo.appendChild(tr);
@@ -15237,8 +15686,8 @@
       } catch (erro) {}
     });
   });
-  // T / M / P / C / O abrem Tarefas, Marcas, Produção, Campanhas e Oportunidades (só fora de digitação)
-  const ATALHOS_PAGINAS = { t: "gp-tarefas", m: "comercial-empresas", p: "gp-quadro", c: "crm-contratos", o: "comercial-oportunidades" };
+  // I / D / T / M / P / C / O / R / F abrem Início, Dashboard, Tarefas, Marcas, Produção, Campanhas, Oportunidades, Resultados e Fluxo de caixa (só fora de digitação)
+  const ATALHOS_PAGINAS = { i: "principal", d: "gp-dashboard", t: "gp-tarefas", m: "comercial-empresas", p: "gp-quadro", c: "crm-contratos", o: "comercial-oportunidades", r: "fin-resultados", f: "fin-fluxo-caixa" };
   document.addEventListener("keydown", (evento) => {
     const aba = ATALHOS_PAGINAS[evento.key.toLowerCase()];
     if (!aba || evento.ctrlKey || evento.metaKey || evento.altKey) return;
@@ -15530,7 +15979,10 @@
       const atual = primeiraPorMarca.get(c.chave);
       if (!atual || c.data < atual) primeiraPorMarca.set(c.chave, c.data);
     });
-    const marcas = [...primeiraPorMarca.values()].map((data) => ({ data }));
+    // mesma conta do cartão "Marcas trabalhadas" (ativas + fechadas, inclusive as antigas sem campanha)
+    const marcas = empresasCache
+      .filter((e) => ["Ativo", "Fechado"].includes(statusEfetivoEmpresa(e)))
+      .map((e) => ({ data: primeiraPorMarca.get(e.id) || primeiraPorMarca.get(normalizarTexto(e.nome)) || diaIso(e.created_at) || hoje }));
     const intl = contratos.filter((c) => c.k.moeda && c.k.moeda !== "BRL");
     const seuInfluencer = contratos.filter((c) => normalizarTexto(c.k.plataforma_agencia).includes("seu influ"));
     const faturamento = financasDisponivel
@@ -15766,7 +16218,7 @@
       dica: "Atualize o número em estrela > Customizar.",
     },
     { id: "seuinfluencer", titulo: "Campanhas Seu Influêncer", fonte: "seuInfluencer", marcos: [20, 50, 100, 200], nome: (n) => `${n} campanhas Seu Influêncer` },
-    { id: "metora", titulo: "Metora", manual: "alunas_metora", marcos: [1, 5, 10, 50, 100, 300, 500, 1000], nome: (n) => (n === 1 ? "1 aluna" : `${nf(n)} alunas`), dica: "Atualize o número de alunas em estrela > Customizar." },
+    { id: "metora", titulo: "Metora", manual: "alunas_metora", marcos: [1, 5, 10, 50, 100, 300, 500, 1000], nome: (n) => (n === 1 ? "1 aluna" : `${nf(n)} alunas`), dica: "Conta as receitas da categoria Alunas; ou atualize o número em estrela > Customizar." },
     { id: "infoprodutora", titulo: "Infoprodutora", manual: "infoprodutora", booleano: true, marcos: [1], nome: () => "Meu primeiro lançamento", dica: "Marque em estrela > Customizar quando lançar." },
   ];
 
@@ -15787,6 +16239,12 @@
       let itens = [];
       if (cat.manual) {
         atual = cat.booleano ? (numeros[cat.manual] ? 1 : 0) : Number(numeros[cat.manual]) || 0;
+        // Metora: cada receita da categoria "Alunas" no Fluxo/Resultados conta como uma aluna
+        // (vale o maior entre esse total e o número digitado à mão)
+        if (cat.id === "metora" && financasDisponivel) {
+          const alunas = receitasCache.filter((r) => !r.parent_id && !r.contrato_id && normalizarTexto(r.categoria) === "alunas").length;
+          atual = Math.max(atual, alunas);
+        }
       } else {
         itens = series[cat.fonte].slice().sort((a, b) => a.data.localeCompare(b.data));
         atual = cat.soma ? itens.reduce((s, i) => s + i.valor, 0) : itens.length;
@@ -15911,13 +16369,30 @@
       <circle class="anel-prog" cx="24" cy="24" r="${r}" stroke-dasharray="${circ}" stroke-dashoffset="${circ * (1 - pct / 100)}" transform="rotate(-90 24 24)"/>
     </svg>`;
   }
+  // 12.345 -> "12,3k" (valores em dinheiro dentro das bolinhas, sem o R$)
+  function abreviarProgresso(n) {
+    n = Number(n) || 0;
+    if (n >= 1000000) return (Math.round(n / 100000) / 10).toLocaleString("pt-BR") + "M";
+    if (n >= 1000) return (Math.round(n / 100) / 10).toLocaleString("pt-BR") + "k";
+    return nf(Math.round(n));
+  }
+  let conquistaEmFoco = null; // id da categoria que o usuário clicou para destacar
+  let ultimasConquistas = [];
+  document.getElementById("jornadaConquistas").addEventListener("click", (evento) => {
+    const botao = evento.target.closest("[data-foco-conquista]");
+    if (!botao) return;
+    conquistaEmFoco = botao.dataset.focoConquista;
+    renderizarJornadaConquistas(ultimasConquistas);
+  });
   function renderizarJornadaConquistas(conquistas) {
+    ultimasConquistas = conquistas;
     const container = document.getElementById("jornadaConquistas");
     const total = conquistas.length;
     const ganhas = conquistas.filter((c) => c.desbloqueada).length;
     const pctDe = (c) => (c.cat.booleano || !c.marco ? 0 : Math.min(100, Math.round((c.atual / c.marco) * 100)));
     const proximas = CATEGORIAS_CONQUISTAS.map((cat) => conquistas.find((c) => c.cat === cat && !c.desbloqueada)).filter(Boolean);
-    const foco = proximas.slice().sort((a, b) => pctDe(b) - pctDe(a))[0];
+    const escolhida = proximas.find((c) => c.cat.id === conquistaEmFoco);
+    const foco = escolhida || proximas.slice().sort((a, b) => pctDe(b) - pctDe(a))[0];
 
     let hero;
     if (foco) {
@@ -15952,10 +16427,11 @@
           }
           if (c === prox) {
             const p = pctDe(c);
-            return `<span class="bolinha-prox" title="${esc(nome + apelido)}">
-              <span class="anel-bol">${anelBolinha(p, 54)}<b>${cat.booleano ? "→" : p + "%"}</b></span>
-              <small>${esc(rotulo)}</small>
-            </span>`;
+            const andamento = cat.booleano ? "–" : cat.soma ? abreviarProgresso(c.atual) : nf(c.atual);
+            return `<button type="button" class="bolinha-prox${foco && foco.cat === cat ? " em-foco" : ""}" data-foco-conquista="${esc(cat.id)}" title="${esc(nome + apelido + " · " + p + "% · clique para destacar")}">
+              <span class="anel-bol">${anelBolinha(p, 54)}<b>${esc(rotulo)}</b></span>
+              <small>${esc(andamento)}</small>
+            </button>`;
           }
           return `<span class="bolinha pendente" title="${esc(nome + apelido)}">${esc(rotulo)}</span>`;
         })
@@ -16189,6 +16665,10 @@
 
   // Seta no título de cada cartão: aí sim vai pra página (ex.: Fluxo de Caixa)
   document.querySelectorAll("[data-ir-aba]").forEach((botao) => botao.addEventListener("click", () => irParaAba(botao.dataset.irAba)));
+  document.getElementById("numerosRecentes").addEventListener("click", (evento) => {
+    const botao = evento.target.closest("[data-ir-aba]");
+    if (botao) irParaAba(botao.dataset.irAba);
+  });
   // Leva pra página/janela de um alerta ou notificação.
   //  { tipo: "aba", tab }                      -> abre a aba do menu
   //  { tipo: "jornada", aba }                  -> Menu Principal > Metas/Conquistas
@@ -18530,6 +19010,47 @@
     await atualizarSubtarefa(sub.id, campos);
   });
 
+  // Faixa do topo do Início: últimos 7 dias (barrinhas, hoje em destaque) + o que aconteceu hoje
+  function renderizarNumerosRecentes() {
+    const el = document.getElementById("numerosRecentes");
+    if (!el) return;
+    const hoje = hojeIso();
+    const dias = Array.from({ length: 7 }, (_, i) => somarDiasIso(hoje, i - 6));
+    const series = seriesDaJornada();
+    const recebidos = financasDisponivel
+      ? linhasReceitas().flatMap((l) => l.itens.filter((i) => i.pago && i.valor > 0).map((i) => ({ data: i.data, valor: i.valor })))
+      : [];
+    const novasOportunidades = oportunidadesCache.filter((o) => o.data_entrada).map((o) => ({ data: o.data_entrada }));
+    const metricas = [
+      { rotulo: "Vídeos concluídos", lista: series.videos, destino: "gp-quadro" },
+      { rotulo: "Campanhas fechadas", lista: series.contratos, destino: "crm-contratos" },
+      { rotulo: "Novas oportunidades", lista: novasOportunidades, destino: "comercial-oportunidades" },
+      { rotulo: "Faturado", lista: series.faturamento, dinheiro: true, destino: "fin-resultados" },
+      { rotulo: "Recebido", lista: recebidos, dinheiro: true, destino: "fin-fluxo-caixa" },
+    ];
+    el.innerHTML = metricas
+      .map((m) => {
+        const porDia = dias.map((d) => m.lista.filter((x) => x.data === d).reduce((s, x) => s + (m.dinheiro ? x.valor || 0 : 1), 0));
+        const total = porDia.reduce((s, n) => s + n, 0);
+        const deHoje = porDia[6];
+        const maximo = Math.max(...porDia, 1);
+        const fmt = (n) => (m.dinheiro ? formatarMoeda(n) : nf(n));
+        const barras = porDia
+          .map((n, i) => {
+            const letra = "DSTQQSS"[new Date(dias[i] + "T00:00:00").getDay()];
+            return `<span class="dia-recente${i === 6 ? " hoje" : ""}" title="${esc(formatarDataBr(dias[i]) + ": " + fmt(n))}"><i style="height:${n ? Math.max(12, Math.round((n / maximo) * 100)) : 6}%"></i><em>${letra}</em></span>`;
+          })
+          .join("");
+        return `<button type="button" class="numero-recente" data-ir-aba="${m.destino}" title="Ir para ${esc(m.rotulo)}">
+          <span class="rotulo-recente">${esc(m.rotulo)}</span>
+          <span class="valor-recente${m.dinheiro ? " dado-sensivel" : ""}">${esc(fmt(total))}<small>7 dias</small></span>
+          <span class="hoje-recente${deHoje ? " tem" : ""}">Hoje <b class="${m.dinheiro ? "dado-sensivel" : ""}">${esc(fmt(deHoje))}</b></span>
+          <span class="barras-recentes">${barras}</span>
+        </button>`;
+      })
+      .join("");
+  }
+
   function atualizarMenuPrincipal() {
     try {
       renderizarDashboard();
@@ -18538,6 +19059,7 @@
     }
     if (!cfgPronta) return;
     [
+      renderizarNumerosRecentes,
       renderizarCampanhasAndamento,
       renderizarJornadaMetas,
       () => {
