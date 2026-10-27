@@ -2199,6 +2199,32 @@
     display:flex; align-items:center; justify-content:space-between; gap:8px;
   }
   .alerta-vazio{ margin:0; font-size:.85rem; font-style:italic; color: var(--cinza-claro); }
+  /* Cartões coloridos da coluna direita: cada um com seu tom (--a-fundo-1/2 degradê, --a-borda, --a-forte título) */
+  .cartao-alerta{
+    --a-fundo-1:#fff; --a-fundo-2:#fff; --a-borda:var(--borda); --a-forte:var(--grafite);
+    background: linear-gradient(145deg, var(--a-fundo-1), var(--a-fundo-2));
+    border-color: var(--a-borda);
+    position:relative; overflow:hidden;
+  }
+  .cartao-alerta::before{ /* fita colorida no topo */
+    content:""; position:absolute; left:0; right:0; top:0; height:4px; background: var(--a-forte); opacity:.85;
+  }
+  .cartao-alerta h3{ color: var(--a-forte); }
+  .cartao-alerta .seta-cartao-alerta{ color: var(--a-forte); }
+  .cartao-alerta .seta-cartao-alerta:hover, .cartao-alerta .item-alerta.clicavel:hover{ background: rgba(255,255,255,.65); }
+  .cartao-alerta .item-alerta{ border-top-color: var(--a-borda); }
+  .cartao-alerta .alerta-vazio{ color: var(--a-forte); opacity:.6; }
+  .alerta-rosa{ --a-fundo-1:#FFF0F7; --a-fundo-2:#FCDDEC; --a-borda:#F3B8D4; --a-forte:#C2367F; }
+  .alerta-amarelo{ --a-fundo-1:#FFF8E1; --a-fundo-2:#FFEDB8; --a-borda:#F2D27A; --a-forte:#9A6B00; }
+  .alerta-verde{ --a-fundo-1:#EDFBF2; --a-fundo-2:#D2F2DF; --a-borda:#9BDDB5; --a-forte:#1B7A45; }
+  .alerta-coral{ --a-fundo-1:#FFF1EB; --a-fundo-2:#FFDCCD; --a-borda:#F5B79E; --a-forte:#C2491D; }
+  .alerta-lilas{ --a-fundo-1:#F5F0FF; --a-fundo-2:#E4D9FB; --a-borda:#C7B3F0; --a-forte:#6B46C1; }
+  .alerta-azul{ --a-fundo-1:#EDF6FF; --a-fundo-2:#D3E8FD; --a-borda:#9CC8F2; --a-forte:#1F6CB0; }
+  /* ao carregar: sobem em cascata e a fita colorida "desenha" da esquerda pra direita */
+  @keyframes fitaAlerta{ from{ transform: scaleX(0); } }
+  .painel-aba.entrando .cartao-alerta::before{
+    transform-origin:left center; animation: fitaAlerta .9s var(--ease-mov) backwards; animation-delay: calc(.15s + var(--i, 0) * 70ms);
+  }
   /* ---- Alertas clicáveis (coluna direita do Menu Principal) ---- */
   .seta-cartao-alerta{ background:none; border:none; padding:3px; border-radius:6px; cursor:pointer; color: var(--cinza-menu); display:flex; align-items:center; flex:none; }
   .seta-cartao-alerta:hover{ background: var(--creme); color: var(--grafite); }
@@ -2901,7 +2927,7 @@
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>
         </svg>
-        <span class="rotulo-item">Menu Principal</span>
+        <span class="rotulo-item">Início</span>
       </button>
 
       <button class="item-nav" data-tab="gp-dashboard">
@@ -3083,6 +3109,25 @@
     <section id="painel-principal" class="painel-aba">
       <div class="principal-grade">
         <div class="principal-esquerda">
+          <div class="cartao cartao-jornada">
+            <div class="topo-jornada">
+              <h2>Metas</h2>
+            </div>
+            <div id="jornadaMetas"></div>
+          </div>
+
+          <div class="cartao cartao-jornada">
+            <div class="topo-jornada">
+              <h2>Conquistas</h2>
+              <div class="alternador-visualizacao alternador-mini" id="alternadorJornada">
+                <button type="button" class="btn-alternador ativo" data-jornada="conquistas">Conquistas</button>
+                <button type="button" class="btn-alternador" data-jornada="timeline">Timeline</button>
+              </div>
+            </div>
+            <div id="jornadaConquistas"></div>
+            <div id="jornadaTimeline" hidden></div>
+          </div>
+
           <div class="cartao">
             <div class="topo-jornada">
               <h2>Vídeos em andamento</h2>
@@ -3090,44 +3135,30 @@
             </div>
             <div id="listaCampanhasAndamento"></div>
           </div>
-
-          <div class="cartao cartao-jornada">
-            <div class="topo-jornada">
-              <h2>Minha jornada</h2>
-              <div class="alternador-visualizacao alternador-mini" id="alternadorJornada">
-                <button type="button" class="btn-alternador ativo" data-jornada="metas">Metas</button>
-                <button type="button" class="btn-alternador" data-jornada="conquistas">Conquistas</button>
-                <button type="button" class="btn-alternador" data-jornada="timeline">Timeline</button>
-              </div>
-            </div>
-            <div id="jornadaMetas"></div>
-            <div id="jornadaConquistas" hidden></div>
-            <div id="jornadaTimeline" hidden></div>
-          </div>
         </div>
 
         <aside class="principal-direita" aria-label="Lembretes e alertas">
-          <div class="cartao-alerta" id="cartaoBriefings" hidden>
+          <div class="cartao-alerta alerta-rosa" id="cartaoBriefings" hidden>
             <h3>Briefings recebidos</h3>
             <div id="alertaBriefings"></div>
           </div>
-          <div class="cartao-alerta">
+          <div class="cartao-alerta alerta-amarelo">
             <h3>Prazos vencendo em breve <button type="button" class="seta-cartao-alerta" data-ir-aba="gp-quadro" title="Ir para Produção" aria-label="Ir para Produção"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button></h3>
             <div id="alertaPrazos"></div>
           </div>
-          <div class="cartao-alerta">
+          <div class="cartao-alerta alerta-verde">
             <h3>Próximos recebimentos <button type="button" class="seta-cartao-alerta" data-ir-aba="fin-fluxo-caixa" title="Ir para Fluxo de Caixa" aria-label="Ir para Fluxo de Caixa"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button></h3>
             <div id="alertaRecebimentos"></div>
           </div>
-          <div class="cartao-alerta">
+          <div class="cartao-alerta alerta-coral">
             <h3>Pagamentos pendentes <button type="button" class="seta-cartao-alerta" data-ir-aba="fin-fluxo-caixa" title="Ir para Fluxo de Caixa" aria-label="Ir para Fluxo de Caixa"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button></h3>
             <div id="alertaPendentes"></div>
           </div>
-          <div class="cartao-alerta">
+          <div class="cartao-alerta alerta-lilas">
             <h3>Direito de uso expirando <button type="button" class="seta-cartao-alerta" data-ir-aba="crm-contratos" title="Ir para Campanhas" aria-label="Ir para Campanhas"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button></h3>
             <div id="alertaDireitoUso"></div>
           </div>
-          <div class="cartao-alerta">
+          <div class="cartao-alerta alerta-azul">
             <h3>Follow-ups pendentes <button type="button" class="seta-cartao-alerta" data-ir-aba="comercial-oportunidades" title="Ir para Oportunidades" aria-label="Ir para Oportunidades"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button></h3>
             <p class="alerta-vazio">Em construção.</p>
           </div>
@@ -4997,7 +5028,7 @@
   // ---------------------------------------------------------------
   const botoesNav = document.querySelectorAll(".item-nav");
   const titulosAba = {
-    principal: "Menu Principal",
+    principal: "Início",
     portfolio: "Portfólio",
     "gp-dashboard": "Dashboard",
     "gp-tarefas": "Tarefas",
@@ -15305,7 +15336,7 @@
 
     if (ideias.length) return ideias.sort((a, b) => b.p - a.p)[0].t;
     if (alvo > 0) return `Você está em ${Math.round((faturado / alvo) * 100)}% da meta de faturamento de ${nomeDoMes(mes)} (${formatarMoeda(faturado)}).`;
-    if (faturado > 0) return `Você já faturou ${formatarMoeda(faturado)} em ${nomeDoMes(mes)}. Defina uma meta em Minha jornada para acompanhar o progresso.`;
+    if (faturado > 0) return `Você já faturou ${formatarMoeda(faturado)} em ${nomeDoMes(mes)}. Defina uma meta em Metas para acompanhar o progresso.`;
     return "";
   }
   function atualizarInsightTopo(principal) {
@@ -15435,11 +15466,11 @@
     if (editar) abrirModalMomento((cfgLer("momentos", []) || []).find((m) => m.id === editar.dataset.editarMomento));
   });
 
-  // ---- alternador Metas / Conquistas / Timeline ----
+  // ---- alternador Conquistas / Timeline (Metas agora é um cartão próprio) ----
   document.querySelectorAll("#alternadorJornada .btn-alternador").forEach((botao) => {
     botao.addEventListener("click", () => {
       document.querySelectorAll("#alternadorJornada .btn-alternador").forEach((b) => b.classList.toggle("ativo", b === botao));
-      ["metas", "conquistas", "timeline"].forEach((v) => {
+      ["conquistas", "timeline"].forEach((v) => {
         document.getElementById("jornada" + v.charAt(0).toUpperCase() + v.slice(1)).hidden = v !== botao.dataset.jornada;
       });
     });
