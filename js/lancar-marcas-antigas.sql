@@ -3,7 +3,7 @@
 --
 --  1) Renomeia "Broche e Crachá" -> "Laser Design" (mesma marca, não cria nova).
 --  2) Cadastra as marcas antigas como FECHADAS, sem campanha vinculada.
---  3) Cria as campanhas de 2026 de: Life by Vivara, Hotel Renar, Espaço Laser,
+--  3) Cria as campanhas de 2026 de: Ave Rara, Hotel Renar, Espaço Laser,
 --     Havan, Glam (1 vídeo, permuta, já concluído) e Webhoje (R$ 80, sem vídeo,
 --     paga em 17/07).
 --
@@ -11,6 +11,13 @@
 -- existe com a mesma marca e data). Tudo numa transação só.
 -- Depende do painel já publicado com "Fechado" para marca sem campanha.
 -- =====================================================================
+
+alter table contratos add column if not exists status_manual text;
+
+-- se a campanha errada "Life by Vivara" (01/04) já tinha sido criada numa rodada anterior, remove
+delete from quadro_subtarefas where card_id in (select id from quadro_cards where contrato_id in (select id from contratos where marca = 'Life by Vivara' and data_assinatura = date '2026-04-01' and valor = 0));
+delete from quadro_cards where contrato_id in (select id from contratos where marca = 'Life by Vivara' and data_assinatura = date '2026-04-01' and valor = 0);
+delete from contratos where marca = 'Life by Vivara' and data_assinatura = date '2026-04-01' and valor = 0;
 
 do $$
 declare
@@ -46,8 +53,8 @@ begin
   -- 2) marcas antigas, sem campanha: ficam como Fechado
   for v in
     select unnest(array[
-      'Comfort','Simple Organic','Mercado Livre','Gold Spel','Basico.com','Alphahall','Lof',
-      'The Therapy','Portallar','Bisyou','Wishin','Ave Rara','MAC','Laser Design'
+      'Comfort','Simple Organic','Mercado Livre','Life by Vivara','Gold Spel','Basico.com','Alphahall','Lof',
+      'The Therapy','Portallar','Bisyou','Wishin','MAC','Laser Design'
     ]) as nome
   loop
     insert into empresas (nome, status) values (v.nome, 'Fechado')
@@ -60,7 +67,7 @@ begin
       -- marca,           video,                 plataforma,        escopo,                          contrato,          enviado,           concluido,         cache
       ('Havan',           'Havan 01',            null,              '1 vídeo UGC (permuta)',         date '2026-06-28', date '2026-06-28', date '2026-06-28', 0::numeric),
       ('Hotel Renar',     'Hotel Renar 01',      null,              '1 vídeo UGC (permuta)',         date '2026-06-05', date '2026-06-05', date '2026-06-05', 0),
-      ('Life by Vivara',  'Life by Vivara 01',   'Seu Influêncer',  '1 vídeo (influenciador, permuta)', date '2026-04-01', date '2026-05-29', date '2026-06-01', 0),
+      ('Ave Rara',        'Ave Rara 01',         'Seu Influêncer',  '1 vídeo (influenciador, permuta)', date '2026-04-01', date '2026-05-29', date '2026-06-01', 0),
       ('Espaço Laser',    'Espaço Laser 01',     'Seu Influêncer',  '1 vídeo (influenciador, permuta)', date '2026-03-23', date '2026-03-25', date '2026-03-25', 0),
       ('Glam',            'Glam 01',             null,              '1 vídeo UGC (permuta)',         date '2026-05-26', date '2026-05-26', date '2026-05-26', 0)
     ) as t(marca, video, plataforma, escopo, contrato, enviado, concluido, cache)
@@ -94,8 +101,8 @@ begin
   else
     insert into empresas (nome) values ('Webhoje') on conflict ((lower(trim(nome)))) do nothing;
     select id into v_empresa from empresas where lower(trim(nome)) = 'webhoje';
-    insert into contratos (marca, empresa_id, escopo, qtde_videos, data_assinatura, valor)
-    values ('Webhoje', v_empresa, 'Combo de stories', 0, date '2026-07-17', 80)
+    insert into contratos (marca, empresa_id, escopo, qtde_videos, data_assinatura, valor, status_manual)
+    values ('Webhoje', v_empresa, 'Combo de stories', 0, date '2026-07-17', 80, 'finalizadas')
     returning id into v_contrato;
     insert into financas_receitas
       (marca, contrato_id, tipo, categoria, descricao, contratacao, pagamento, pago_em, cache, produto, videos, status, valor_pago, etiquetas)
@@ -107,6 +114,6 @@ end $$;
 -- Conferência
 select e.nome, e.status, count(k.id) as campanhas
 from empresas e left join contratos k on k.empresa_id = e.id
-where lower(e.nome) in ('comfort','simple organic','mercado livre','life by vivara','gold spel','basico.com','alphahall','lof',
+where lower(e.nome) in ('comfort','simple organic','mercado livre','life by vivara','ave rara','gold spel','basico.com','alphahall','lof',
   'the therapy','portallar','bisyou','wishin','ave rara','hotel renar','espaço laser','mac','laser design','webhoje','havan','glam')
 group by e.nome, e.status order by e.nome;

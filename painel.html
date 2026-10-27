@@ -4099,9 +4099,10 @@
         </div>
         <div class="topo-quadro">
           <div class="alternador-visualizacao alternador-mini" id="alternadorCampanhas">
+            <button type="button" class="btn-alternador" data-vis-campanha="lead">Lead</button>
             <button type="button" class="btn-alternador ativo" data-vis-campanha="em_producao">Em produção</button>
             <button type="button" class="btn-alternador" data-vis-campanha="aguardando_pagamento">Aguardando pagamento</button>
-            <button type="button" class="btn-alternador" data-vis-campanha="finalizadas">Finalizadas</button>
+            <button type="button" class="btn-alternador" data-vis-campanha="finalizadas">Fechadas</button>
             <button type="button" class="btn-alternador" data-vis-campanha="trafego_pago">Tráfego Pago</button>
           </div>
           <div class="acoes-topo-quadro" id="acoesTopoCampanhas">
@@ -4409,6 +4410,16 @@
               <option value="EUR">EUR (euro)</option>
               <option value="GBP">GBP (libra)</option>
               <option value="OUTRA">Outra moeda</option>
+            </select>
+          </div>
+          <div class="prop-limpa" id="propStatusContrato" hidden>
+            <span class="rotulo-limpo">Status da campanha</span>
+            <select id="campoStatusContrato" class="input-limpo">
+              <option value="">Automático</option>
+              <option value="lead">Lead</option>
+              <option value="em_producao">Em produção</option>
+              <option value="aguardando_pagamento">Aguardando pagamento</option>
+              <option value="finalizadas">Fechada</option>
             </select>
           </div>
           <div class="prop-limpa">
@@ -8278,11 +8289,14 @@
   // terminada a produção, olha se as parcelas (financas_receitas
   // tipo='parcela' ligadas a esta campanha) já cobrem o valor do
   // contrato.
+  const STATUS_CAMPANHA_VALIDOS = ["lead", "em_producao", "aguardando_pagamento", "finalizadas"];
+  const ROTULO_STATUS_CAMPANHA = { lead: "Lead", em_producao: "Em produção", aguardando_pagamento: "Aguardando pagamento", finalizadas: "Fechada" };
   function statusCampanha(contrato) {
     const cards = quadroCache.filter((c) => c.contrato_id === contrato.id);
     const final = colunaFinal();
-    const semVideos = !cards.length && contrato.qtde_videos != null && Number(contrato.qtde_videos) === 0; // ex.: combo de stories
-    const emProducao = semVideos ? false : !cards.length || cards.some((c) => !final || c.coluna_id !== final.id);
+    if (STATUS_CAMPANHA_VALIDOS.includes(contrato.status_manual)) return contrato.status_manual; // definido à mão
+    if (!cards.length) return "lead"; // nada vinculado ainda
+    const emProducao = cards.some((c) => !final || c.coluna_id !== final.id);
     if (emProducao) return "em_producao";
     return recebidoDaCampanha(contrato) >= Number(contrato.valor || 0) - 0.005 ? "finalizadas" : "aguardando_pagamento";
   }
@@ -9005,6 +9019,10 @@
   const campoMarcaContrato = document.getElementById("campoMarcaContrato");
   const campoEscopoContrato = document.getElementById("campoEscopoContrato");
   const campoNomeContrato = document.getElementById("campoNomeContrato");
+  const campoStatusContrato = document.getElementById("campoStatusContrato");
+  // O status manual precisa da coluna contratos.status_manual (js/campanha-status-setup.sql)
+  let statusManualDisponivel = false;
+  Auth.sb.from("contratos").select("status_manual").limit(1).then((r) => (statusManualDisponivel = !r.error)).catch(() => {});
   const campoQtdeVideosContrato = document.getElementById("campoQtdeVideosContrato");
   const campoDireitoUsoContrato = document.getElementById("campoDireitoUsoContrato");
   const seletorPlataformaContrato = document.getElementById("seletorPlataformaContrato");
@@ -9125,6 +9143,9 @@
   function preencherFormContrato(contrato, prefill) {
     campoMarcaContrato.value = contrato ? contrato.marca : prefill && prefill.empresa ? prefill.empresa.nome : "";
     campoNomeContrato.value = (contrato && contrato.nome) || "";
+    document.getElementById("propStatusContrato").hidden = !statusManualDisponivel || !contrato;
+    campoStatusContrato.value = (contrato && contrato.status_manual) || "";
+    if (contrato) campoStatusContrato.options[0].textContent = "Automático (" + ROTULO_STATUS_CAMPANHA[statusCampanha({ ...contrato, status_manual: null })] + ")";
     campoEscopoContrato.value = (contrato && contrato.escopo) || (prefill && prefill.oportunidade && prefill.oportunidade.servico_interesse) || "";
     campoQtdeVideosContrato.value = contrato && contrato.qtde_videos != null ? contrato.qtde_videos : "";
     campoDireitoUsoContrato.value = contrato && contrato.direito_uso_meses != null ? contrato.direito_uso_meses : "";
@@ -9930,6 +9951,7 @@
       updated_at: new Date().toISOString(),
     };
     if (coluna_moeda_existe()) dados.moeda = campoMoedaContrato.value || "BRL";
+    if (statusManualDisponivel && idContratoEmEdicao) dados.status_manual = campoStatusContrato.value || null;
 
     try {
       // Marca: cria/atualiza a partir do que estiver na aba Marca agora
@@ -12368,7 +12390,7 @@
   //    quanto pra cadastro direto, e também reativa uma marca Fechada;
   //  - com campanhas e todos os cards concluídos: Fechado.
   function statusEfetivoEmpresa(empresa) {
-    const campanhas = contratosCache.filter((k) => k.empresa_id === empresa.id);
+    const campanhas = contratosCache.filter((k) => k.empresa_id === empresa.id && statusCampanha(k) !== "lead");
     if (!campanhas.length) return empresa.status === "Fechado" ? "Fechado" : "Lead"; // Fechado sem campanha = marca já trabalhada (campanhas antigas)
     return campanhas.some((k) => statusCampanha(k) === "em_producao") ? "Ativo" : "Fechado";
   }
@@ -17406,7 +17428,7 @@
       return;
     }
     const final = colunaFinal();
-    const grupos = { em_producao: [], aguardando_pagamento: [], finalizadas: [] };
+    const grupos = { lead: [], em_producao: [], aguardando_pagamento: [], finalizadas: [] };
     contratosCache.forEach((k) => grupos[statusCampanha(k)].push(k));
     const nomeCampanha = (k) => (k.marca || "—") + (k.nome ? " · " + k.nome : "");
     const porData = (a, b) => (b.data_assinatura || "").localeCompare(a.data_assinatura || "");
@@ -17433,7 +17455,7 @@
     });
     definirListaCartao("camp-valor", {
       titulo: "Valor contratado", sub: "Soma do valor de todas as campanhas cadastradas",
-      itens: contratosCache.slice().sort(porData).map((k) => ({ nome: nomeCampanha(k), info: { em_producao: "Em produção", aguardando_pagamento: "Aguardando pagamento", finalizadas: "Finalizada" }[statusCampanha(k)], valor: Number(k.valor) || 0, destino: destino(k) })),
+      itens: contratosCache.slice().sort(porData).map((k) => ({ nome: nomeCampanha(k), info: ROTULO_STATUS_CAMPANHA[statusCampanha(k)], valor: Number(k.valor) || 0, destino: destino(k) })),
     });
     el.innerHTML =
       htmlCartaoLista("camp-producao", "previsto", "Em produção", formatarNumero(grupos.em_producao.length), "Com vídeo pendente") +
