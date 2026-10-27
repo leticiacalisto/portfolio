@@ -110,6 +110,14 @@
     var marcado = evt.target.closest("[data-rastrear]");
     if (marcado) {
       evento("button_click", marcado.dataset.rastrear);
+      return;
+    }
+    // Qualquer outro botão ou link do site também conta (o nome vem do texto), para o
+    // painel não ficar com "0 cliques" só porque o botão não foi marcado à mão.
+    var alvo = evt.target.closest("button, a[href]");
+    if (alvo) {
+      var rotulo = (alvo.getAttribute("aria-label") || alvo.textContent || alvo.getAttribute("href") || "").replace(/\s+/g, " ").trim().slice(0, 50);
+      if (rotulo) evento("button_click", "botao: " + rotulo);
     }
   });
 })();

@@ -143,6 +143,7 @@
     padding: 0 6px;
     white-space: nowrap;
     overflow: hidden;
+    flex-shrink: 0;
   }
   .logo-sidebar .ponto{ color: var(--coral); }
   .logo-sidebar .logo-icone{ display:none; width:30px; height:30px; border-radius:8px; margin:0 auto; }
@@ -2562,7 +2563,10 @@
   .selo-situacao.ok{ background:#E3F4EA; color:#2F8A5A; }
   .selo-situacao.devendo{ background:#FDE5EC; color:#C23A68; }
   .nota-devendo{ color:#C23A68 !important; font-weight:600; }
-  .btn-coracao{ background:none; border:0; padding:0 6px 0 0; cursor:pointer; vertical-align:middle; line-height:0; }
+  .btn-coracao{ background:none; border:0; padding:4px; cursor:pointer; vertical-align:middle; line-height:0; }
+  #tabelaEmpresas th.col-favorito, #tabelaEmpresas td.col-favorito{ width:44px; text-align:right; padding-right:14px; }
+  #tabelaEmpresas td:not(:first-child):not(.col-favorito){ padding-left:18px; padding-right:18px; }
+  .contagem-tabela{ margin:8px 4px 0; text-align:right; font-size:.74rem; color:var(--cinza-claro); }
   .btn-coracao svg{ width:16px; height:16px; fill:none; stroke:#C9C1D6; transition: transform .2s var(--ease-mov), fill .2s, stroke .2s; }
   .btn-coracao:hover svg{ stroke:#E0689A; transform: scale(1.15); }
   .btn-coracao.ligado svg{ fill:#E0689A; stroke:#E0689A; }
@@ -3240,7 +3244,7 @@
       </svg>
     </button>
 
-    <div class="logo-sidebar"><img class="logo-icone" src="imagens/icone-painel-192.png" alt="" width="30" height="30"><span class="logo-texto">meu</span><span class="ponto">.</span><span class="logo-texto">painel</span></div>
+    <div class="logo-sidebar"><svg class="logo-icone" viewBox="0 0 100 100" width="30" height="30" aria-hidden="true"><rect width="100" height="100" rx="22" fill="#F3EEE9"/><path d="M23 80V36a15 15 0 0 1 30 0v16h10a14 14 0 0 1 0 28z" fill="#9A1B0E"/></svg><span class="logo-texto">meu</span><span class="ponto">.</span><span class="logo-texto">painel</span></div>
 
     <nav class="nav-sidebar" aria-label="Navegação do painel">
       <button class="item-nav ativo" data-tab="principal">
@@ -4152,6 +4156,7 @@
             <tbody id="corpoTabelaEmpresas"></tbody>
           </table>
         </div>
+        <p class="contagem-tabela" id="contagemMarcas"></p>
       </div>
     </section>
     <section id="painel-crm-contratos" class="painel-aba" hidden>
@@ -5404,6 +5409,9 @@
         botao.dataset.tab === "gp-quadro" || botao.dataset.tab === "crm-contratos" || botao.dataset.tab === "comercial-oportunidades"
       );
 
+      try {
+        localStorage.setItem("painelAbaAtiva", botao.dataset.tab);
+      } catch (erro) {}
       fecharMenuMobile();
     });
   });
@@ -5455,7 +5463,7 @@
     document.getElementById("barraSalvos").hidden = !ehPrincipal;
     if (typeof atualizarInsightTopo === "function") atualizarInsightTopo(ehPrincipal);
   }
-  atualizarTopo("principal");
+  atualizarTopo((document.querySelector(".item-nav.ativo") || { dataset: {} }).dataset.tab || "principal");
 
   // ---------------------------------------------------------------
   // MENU LATERAL EM GAVETA (MOBILE)
@@ -5788,7 +5796,7 @@
     const rotuloPeriodo = { tudo: "no total", "7d": "7 dias", "30d": "30 dias", "90d": "90 dias" }[periodoAtual];
     cartoes.innerHTML = metricas
       .map((m) => {
-        const porDia = dias.map((d) => contar(m.todos.filter((e) => String(e.created_at).slice(0, 10) === d), m.unicos));
+        const porDia = dias.map((d) => contar(m.todos.filter((e) => diaLocalDe(e.created_at) === d), m.unicos));
         const maximo = Math.max(...porDia, 1);
         const deHoje = porDia[6];
         const barras = porDia
@@ -9720,6 +9728,11 @@
   const btnMaisDetalhesCampanha = document.getElementById("btnMaisDetalhesCampanha");
   const painelMaisDetalhesCampanha = document.getElementById("painelMaisDetalhesCampanha");
 
+  // dia (no fuso do navegador) de um carimbo de data/hora do banco, que vem em UTC
+  function diaLocalDe(ts) {
+    const d = new Date(ts);
+    return isNaN(d) ? "" : d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
   function hojeIso() {
     const d = new Date();
     return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
@@ -13330,17 +13343,17 @@
       return td;
     }
     if (campo === "instagram") {
-      td.textContent = empresa.instagram || "—";
-      td.className = "celula-acao-tabela";
-      aoClicarComDuploClique(
-        td,
-        () => {
-          if (!empresa.instagram) return;
+      const temInsta = !!empresa.instagram;
+      td.innerHTML = `
+      <button type="button" class="btn-icone-linha compacto" ${temInsta ? "" : "disabled"} title="${temInsta ? "Abrir Instagram (" + esc(empresa.instagram) + ")" : "Sem Instagram cadastrado"}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6" fill="currentColor"/></svg>
+      </button>`;
+      if (temInsta) {
+        td.querySelector("button").addEventListener("click", () => {
           const url = /^https?:\/\//i.test(empresa.instagram) ? empresa.instagram : "https://instagram.com/" + empresa.instagram.replace(/^@/, "");
           window.open(url, "_blank", "noopener");
-        },
-        () => iniciarEdicaoCelulaSimplesEmpresa(td, empresa.id, "instagram", empresa.instagram)
-      );
+        });
+      }
       return td;
     }
     td.textContent = empresa[campo] || "—";
@@ -13351,7 +13364,7 @@
     const tr = document.getElementById("linhaCabecalhoEmpresas");
     if (!tr) return;
     const colunas = colunasVisiveisEfetivas();
-    tr.innerHTML = "<th>Marca</th>" + colunas.map((c) => `<th>${esc(COLUNAS_MARCAS_DEF[c.campo].rotulo)}</th>`).join("");
+    tr.innerHTML = "<th>Marca</th>" + colunas.map((c) => `<th>${esc(COLUNAS_MARCAS_DEF[c.campo].rotulo)}</th>`).join("") + `<th class="col-favorito" title="Favoritas"></th>`;
   }
 
   function renderizarEmpresas() {
@@ -13373,7 +13386,7 @@
     }
     const corpo = document.getElementById("corpoTabelaEmpresas");
     if (!corpo) return;
-    const colspan = colunasVisiveisEfetivas().length + 1;
+    const colspan = colunasVisiveisEfetivas().length + 2;
     if (!comercialDisponivel) {
       corpo.innerHTML = `<tr><td colspan="${colspan}" class="texto-vazio">Ainda falta rodar js/comercial-setup.sql no Supabase.</td></tr>`;
       return;
@@ -13383,6 +13396,8 @@
       return;
     }
     const lista = listaMarcasVisivel();
+    const contagem = document.getElementById("contagemMarcas");
+    if (contagem) contagem.textContent = `${lista.length} ${lista.length === 1 ? "marca" : "marcas"}` + (lista.length !== empresasCache.length ? ` de ${empresasCache.length}` : "");
     if (!lista.length) {
       corpo.innerHTML = `<tr><td colspan="${colspan}" class="texto-vazio">Nenhuma marca bate com o filtro/busca atual.</td></tr>`;
       return;
@@ -13394,19 +13409,17 @@
       tr.dataset.empresaId = e.id;
       const tdNome = document.createElement("td");
       tdNome.className = "celula-nome-clicavel";
-      const fav = marcaEhFavorita(e.id);
-      tdNome.innerHTML = `<button type="button" class="btn-coracao${fav ? " ligado" : ""}" data-favoritar="${esc(e.id)}" title="${fav ? "Tirar dos favoritos" : "Favoritar"}" aria-pressed="${fav}"><svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.7 7.8 3.6 4.5 6.9 4.5c2 0 3.9 1.2 5.1 3 1.2-1.8 3.1-3 5.1-3 3.3 0 5.2 3.3 4.1 6.6-1.7 4.8-9.2 9.4-9.2 9.4Z"/></svg></button><b style="font-weight:600">${esc(e.nome)}</b>`;
-      tdNome.addEventListener("click", (evento) => {
-        const coracao = evento.target.closest("[data-favoritar]");
-        if (coracao) {
-          evento.stopPropagation();
-          alternarMarcaFavorita(coracao.dataset.favoritar);
-          return;
-        }
-        abrirModalEmpresa(e);
-      });
+      tdNome.innerHTML = `<b style="font-weight:600">${esc(e.nome)}</b>`;
+      tdNome.addEventListener("click", () => abrirModalEmpresa(e));
       tr.appendChild(tdNome);
       colunasVisiveis.forEach((c) => tr.appendChild(criarCelulaEmpresa(e, c.campo)));
+      // coração de favoritar: sempre a última coluna, à direita
+      const fav = marcaEhFavorita(e.id);
+      const tdFav = document.createElement("td");
+      tdFav.className = "col-favorito";
+      tdFav.innerHTML = `<button type="button" class="btn-coracao${fav ? " ligado" : ""}" title="${fav ? "Tirar dos favoritos" : "Favoritar"}" aria-pressed="${fav}"><svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.7 7.8 3.6 4.5 6.9 4.5c2 0 3.9 1.2 5.1 3 1.2-1.8 3.1-3 5.1-3 3.3 0 5.2 3.3 4.1 6.6-1.7 4.8-9.2 9.4-9.2 9.4Z"/></svg></button>`;
+      tdFav.querySelector("button").addEventListener("click", () => alternarMarcaFavorita(e.id));
+      tr.appendChild(tdFav);
       corpo.appendChild(tr);
     });
   }
@@ -18082,6 +18095,26 @@
         console.error(erro);
       }
     }, 120000);
+    // visitas e cliques do portfólio também chegam com a página aberta: atualiza a cada minuto,
+    // ao voltar para a aba do navegador e ao abrir a página Portfólio
+    let atualizandoEventos = false;
+    async function atualizarEventosPortfolio() {
+      if (atualizandoEventos) return;
+      atualizandoEventos = true;
+      try {
+        eventosCache = await buscarTudo("portfolio_events");
+        renderizarPrincipal();
+        renderizarPortfolio();
+      } catch (erro) {
+        console.error("Atualizar visitas do portfólio:", erro);
+      }
+      atualizandoEventos = false;
+    }
+    setInterval(atualizarEventosPortfolio, 60000);
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) atualizarEventosPortfolio();
+    });
+    document.querySelector('.item-nav[data-tab="portfolio"]').addEventListener("click", atualizarEventosPortfolio);
   })();
 
   // ---------------------------------------------------------------
@@ -19423,6 +19456,12 @@
   recarregarOportunidades();
   recarregarVideosPortfolio();
   recarregarAfiliados();
+  // Ao atualizar a página, volta para a aba em que você estava (não para o Início)
+  try {
+    const abaSalva = localStorage.getItem("painelAbaAtiva");
+    const botaoSalvo = abaSalva && abaSalva !== "principal" && [...botoesNav].find((b) => b.dataset.tab === abaSalva);
+    if (botaoSalvo) botaoSalvo.click();
+  } catch (erro) {}
 })();
 </script>
 </body>
