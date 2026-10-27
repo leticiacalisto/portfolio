@@ -8281,7 +8281,8 @@
   function statusCampanha(contrato) {
     const cards = quadroCache.filter((c) => c.contrato_id === contrato.id);
     const final = colunaFinal();
-    const emProducao = !cards.length || cards.some((c) => !final || c.coluna_id !== final.id);
+    const semVideos = !cards.length && contrato.qtde_videos != null && Number(contrato.qtde_videos) === 0; // ex.: combo de stories
+    const emProducao = semVideos ? false : !cards.length || cards.some((c) => !final || c.coluna_id !== final.id);
     if (emProducao) return "em_producao";
     return recebidoDaCampanha(contrato) >= Number(contrato.valor || 0) - 0.005 ? "finalizadas" : "aguardando_pagamento";
   }
@@ -12368,7 +12369,7 @@
   //  - com campanhas e todos os cards concluídos: Fechado.
   function statusEfetivoEmpresa(empresa) {
     const campanhas = contratosCache.filter((k) => k.empresa_id === empresa.id);
-    if (!campanhas.length) return "Lead";
+    if (!campanhas.length) return empresa.status === "Fechado" ? "Fechado" : "Lead"; // Fechado sem campanha = marca já trabalhada (campanhas antigas)
     return campanhas.some((k) => statusCampanha(k) === "em_producao") ? "Ativo" : "Fechado";
   }
 
