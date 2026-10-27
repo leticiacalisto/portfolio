@@ -1611,19 +1611,9 @@
   #alternadorAbaCard .btn-alternador svg{ width:14px; height:14px; flex:none; }
   #alternadorAbaCard .btn-alternador.ativo{ background:#fff; color:#4B3A86; box-shadow:0 2px 8px rgba(80,60,140,.14); }
   #alternadorAbaCard .btn-alternador:not(.ativo):hover{ color:#4B3A86; background:rgba(255,255,255,.55); }
-  .modal-video-clean .grade-propriedades-limpa{ gap:10px 12px; }
-  .modal-video-clean .prop-limpa{ border-bottom:none; background:#FAF8FD; border-radius:14px; padding:10px 14px; min-height:62px; transition:background .2s; }
-  .modal-video-clean .prop-limpa:hover{ background:#F4F0FA; }
-  .modal-video-clean .rotulo-limpo{ font-size:.64rem; text-transform:uppercase; letter-spacing:.08em; color:#9A8CC4; margin-bottom:3px; }
-  .modal-video-clean select.input-limpo, .modal-video-clean input.input-limpo{ padding:4px 0; }
-  .modal-video-clean select.input-limpo:hover, .modal-video-clean input.input-limpo:hover,
-  .modal-video-clean select.input-limpo:focus, .modal-video-clean input.input-limpo:focus{ background:none; }
-  .modal-video-clean .valor-limpo{ padding:4px 0; font-weight:500; }
-  .modal-video-clean textarea.textarea-limpa{ background:#FAF8FD; border-radius:14px; padding:12px 14px; }
-  .modal-video-clean textarea.textarea-limpa:hover, .modal-video-clean textarea.textarea-limpa:focus{ background:#F4F0FA; }
   .modal-video-clean .acoes-modal-quadro{ position:sticky; bottom:0; background:rgba(255,255,255,.96); margin:16px -28px 0; padding:14px 28px 18px; z-index:5; }
   .modal-video-clean .tabela-etapas-producao tbody tr{ transition:background .15s; }
-  .modal-video-clean .tabela-etapas-producao tbody tr:hover{ background:#FAF8FD; }
+  .modal-video-clean .tabela-etapas-producao tbody tr:hover{ background: var(--creme); }
 
   /* Aba "Etapa da produção": subtarefas em linha (nome / início / fim /
      status / responsável / tempo rastreado), substitui o antigo
@@ -2981,6 +2971,14 @@
   .lanc-chips input[type="date"]{ border:none; background: var(--creme); border-radius:999px; padding:6px 12px; font-family:inherit; font-size:.85rem; }
   .lanc-resumo-parcelas{ font-size:.85rem; color: var(--texto-suave); padding:12px 0; border-bottom:1px solid var(--borda); }
   .lanc-resumo-parcelas strong{ color: var(--grafite); }
+  /* receita ligada a campanha: só o painel "Mais detalhes" (total, recebido, pendente, parcelas) */
+  .lanc-topo-det, .lanc-acoes-det{ display:none; }
+  .modal-lanc.so-detalhes .lanc-col-principal{ display:none; }
+  .modal-lanc.so-detalhes .lanc-col-detalhes{ width:760px; }
+  .modal-lanc.so-detalhes .lanc-col-detalhes-interno{ border-left:none; }
+  .modal-lanc.so-detalhes .lanc-topo-det, .modal-lanc.so-detalhes .lanc-acoes-det{ display:flex; }
+  .modal-lanc.so-detalhes #lancSubtituloDet{ display:none; }
+  .lanc-acoes-det{ margin-top:22px; }
   .lanc-btn-detalhes{
     display:flex; align-items:center; gap:6px; margin:18px 0 0 auto; background:none; border:none;
     font-family:inherit; font-size:1.05rem; font-weight:600; color: var(--grafite); cursor:pointer; padding:6px 0;
@@ -3051,6 +3049,15 @@
 
   /* Resultados: tabelas inteiras na página (sem rolagem interna), mesmo visual leve do Início */
   #painel-fin-resultados .painel-quadro-secao{ background:#FAF8FD; border:none; border-radius:20px; padding:20px 22px 12px; box-shadow:none; }
+  /* Fluxo de Caixa: tabelas de Entradas e Saídas contínuas, sem rolagem interna */
+  #painel-fin-fluxo-caixa .painel-quadro-secao{ background:#FAF8FD; border:none; border-radius:20px; padding:20px 22px 12px; box-shadow:none; }
+  #painel-fin-fluxo-caixa .painel-quadro-secao .tabela-cheia-wrap{ height:auto; min-height:0; overflow:visible; }
+  #painel-fin-fluxo-caixa .tabela-contratos th{ background:none; border:none; font-size:.68rem; text-transform:uppercase; letter-spacing:.07em; color:#9A8CC4; padding:8px 14px; }
+  #painel-fin-fluxo-caixa .tabela-contratos td{ border:none; border-top:1px solid rgba(120,100,180,.08); padding:11px 14px; }
+  #painel-fin-fluxo-caixa .tabela-contratos tbody tr:hover{ background:rgba(155,131,226,.07); }
+  #painel-fin-fluxo-caixa .linha-total-resultado td{ background:rgba(155,131,226,.1); }
+  .linha-clicavel-lista{ cursor:pointer; }
+  .linha-clicavel-lista:hover{ background: var(--creme); }
   #painel-fin-resultados .painel-quadro-secao .tabela-cheia-wrap{ height:auto; min-height:0; overflow:visible; }
   #painel-fin-resultados .tabela-contratos th{ background:none; border:none; font-size:.68rem; text-transform:uppercase; letter-spacing:.07em; color:#9A8CC4; padding:8px 14px; }
   #painel-fin-resultados .tabela-contratos td{ border:none; border-top:1px solid rgba(120,100,180,.08); padding:11px 14px; }
@@ -3883,23 +3890,18 @@
 
         <div class="painel-quadro-secao">
           <div class="topo-quadro topo-quadro-centro">
-            <h2 style="margin-bottom:0;">Receitas</h2>
+            <h2 style="margin-bottom:0;">Entradas</h2>
             <div class="acoes-topo-quadro">
-              <div class="alternador-visualizacao alternador-mini" id="filtroStatusReceita">
-                <button type="button" class="btn-alternador ativo" data-status-filtro="todas">Todas</button>
-                <button type="button" class="btn-alternador" data-status-filtro="abertas">Em aberto</button>
-                <button type="button" class="btn-alternador" data-status-filtro="pagas">Pagas</button>
-              </div>
               <button type="button" class="btn-ferramenta-tabela" id="btnCategoriasReceita" title="Categorias">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h7"/><circle cx="14" cy="6" r="2"/><path d="M18 6h2"/><path d="M4 12h2"/><circle cx="9" cy="12" r="2"/><path d="M13 12h7"/><path d="M4 18h10"/><circle cx="17" cy="18" r="2"/></svg>
               </button>
-              <button type="button" class="btn-novo-card" id="btnNovaReceita">+ Nova receita</button>
+              <button type="button" class="btn-novo-card" id="btnNovaReceita">+ Nova entrada</button>
             </div>
           </div>
           <div class="tabela-cheia-wrap">
             <table class="tabela-contratos" id="tabelaReceitas">
               <thead>
-                <tr><th>Descrição</th><th>Contratação</th><th>Pagamento</th><th>Valor</th><th>Pago</th><th>Produto</th><th>Status</th><th>Categoria</th></tr>
+                <tr><th>Descrição</th><th>Data do recebimento</th><th>Valor</th><th>Categoria</th></tr>
               </thead>
               <tbody id="corpoTabelaReceitas"></tbody>
             </table>
@@ -3908,13 +3910,8 @@
 
         <div class="painel-quadro-secao">
           <div class="topo-quadro topo-quadro-centro">
-            <h2 style="margin-bottom:0;">Despesas</h2>
+            <h2 style="margin-bottom:0;">Saídas</h2>
             <div class="acoes-topo-quadro">
-              <div class="alternador-visualizacao alternador-mini" id="filtroStatusDespesa">
-                <button type="button" class="btn-alternador ativo" data-status-filtro="todas">Todas</button>
-                <button type="button" class="btn-alternador" data-status-filtro="abertas">Em aberto</button>
-                <button type="button" class="btn-alternador" data-status-filtro="pagas">Pagas</button>
-              </div>
               <button type="button" class="btn-ferramenta-tabela" id="btnCategoriasDespesa" title="Categorias">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h7"/><circle cx="14" cy="6" r="2"/><path d="M18 6h2"/><path d="M4 12h2"/><circle cx="9" cy="12" r="2"/><path d="M13 12h7"/><path d="M4 18h10"/><circle cx="17" cy="18" r="2"/></svg>
               </button>
@@ -3922,13 +3919,13 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/><path d="M7 15h4"/></svg>
               </button>
               <input type="file" id="campoArquivoOfx" accept=".ofx,.OFX,text/plain" hidden>
-              <button type="button" class="btn-novo-card" id="btnNovaDespesaFin">+ Nova despesa</button>
+              <button type="button" class="btn-novo-card" id="btnNovaDespesaFin">+ Nova saída</button>
             </div>
           </div>
           <div class="tabela-cheia-wrap">
             <table class="tabela-contratos" id="tabelaDespesasFin">
               <thead>
-                <tr><th>Descrição</th><th>Vencimento</th><th>Pagamento</th><th>Valor</th><th>Pago</th><th>Status</th><th>Categoria</th></tr>
+                <tr><th>Descrição</th><th>Data do pagamento</th><th>Valor</th><th>Categoria</th></tr>
               </thead>
               <tbody id="corpoTabelaDespesasFin"></tbody>
             </table>
@@ -4128,7 +4125,6 @@
                 </button>
               </div>
             </div>
-            <button type="button" class="btn-ferramenta-tabela" id="btnLimparParcelas" title="Revisar todas as campanhas e apagar parcelas em aberto de quem já foi 100% recebido" style="width:auto; padding:0 12px; font-size:.78rem; font-weight:600;">Revisar parcelas</button>
             <button type="button" class="btn-novo-card" id="btnNovoContrato">+ Nova campanha</button>
           </div>
         </div>
@@ -4708,7 +4704,7 @@
             <span class="lanc-rotulo" id="lancRotuloPaga">Foi recebida</span>
             <label class="chave-liga"><input type="checkbox" id="lancPaga"><span class="trilho-chave"></span></label>
           </div>
-          <div class="lanc-linha">
+          <div class="lanc-linha" id="lancLinhaPago">
             <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg>
             <span class="lanc-rotulo" id="lancRotuloPago">Já recebido (R$)</span>
             <input type="number" min="0" step="0.01" id="lancPago" class="lanc-input" style="max-width:120px; text-align:right;" placeholder="0,00">
@@ -4745,6 +4741,11 @@
           <select id="lancCategoria" class="lanc-input"></select>
         </div>
 
+        <div class="lanc-linha" id="lancLinhaObs" hidden>
+          <svg viewBox="0 0 24 24"><path d="M4 20l4-1 11-11-3-3L5 16l-1 4z"/></svg>
+          <input type="text" id="lancObs" class="lanc-input" placeholder="Observação (ex.: conta usada)">
+        </div>
+
         <button type="button" class="lanc-btn-detalhes" id="btnLancDetalhes">
           Mais detalhes
           <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
@@ -4761,7 +4762,11 @@
 
       <div class="lanc-col-detalhes">
         <div class="lanc-col-detalhes-interno">
-          <h4>Mais detalhes</h4>
+          <div class="lanc-topo lanc-topo-det">
+            <h3 id="lancTituloDet">Editar entrada</h3>
+            <button type="button" class="lanc-fechar" id="btnFecharLancDet" aria-label="Fechar">✕</button>
+          </div>
+          <h4 id="lancSubtituloDet">Mais detalhes</h4>
           <div id="lancBlocoRecorrencia">
             <div class="lanc-linha">
               <svg viewBox="0 0 24 24"><path d="M12 17v5M5 17h14v-1.8a2 2 0 0 0-1.1-1.8l-1.8-.9A2 2 0 0 1 15 10.8V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1v3.8a2 2 0 0 1-1.1 1.8l-1.8.9A2 2 0 0 0 5 15.2z"/></svg>
@@ -4788,6 +4793,11 @@
           <div id="lancPainelReceita" class="painel-financeiro-campanha" style="margin-top:22px;" hidden></div>
           <div id="lancPainelContrato" class="painel-financeiro-campanha" style="margin-top:22px;" hidden></div>
           <div id="lancPainelDespesa" class="painel-financeiro-campanha" style="margin-top:22px;" hidden></div>
+          <div class="lanc-acoes lanc-acoes-det">
+            <span style="flex-grow:1"></span>
+            <button type="button" id="btnCancelarLancDet" class="btn-cancelar-quadro">Cancelar</button>
+            <button type="submit" class="btn-salvar-quadro">Salvar</button>
+          </div>
         </div>
       </div>
     </form>
@@ -9826,7 +9836,6 @@
       console.error(erro);
     }
   }
-  document.getElementById("btnLimparParcelas").addEventListener("click", limparParcelasSobrando);
 
   btnMaisDetalhesCampanha.addEventListener("click", () => {
     const vaiAbrir = painelMaisDetalhesCampanha.hidden;
@@ -10196,7 +10205,7 @@
   const arredondar = (n) => Math.round(n * 100) / 100;
 
   function statusFinanceiro(valor, pago, atrasado, produto) {
-    if (valor <= 0) return produto > 0 ? "Permuta" : pago > 0 ? "Pago" : "Pendente";
+    if (valor <= 0) return produto > 0 ? "Permuta" : "Pago"; // R$ 0 não tem nada a receber/pagar: situação fechada
     if (pago >= valor - 0.005) return "Pago";
     if (atrasado) return "Atrasado";
     if (pago > 0) return "Pgto Parcial";
@@ -10216,7 +10225,7 @@
     if (p.parcelas.length) {
       itens = p.parcelas.map((x) => {
         const pg = x.status === "Pago";
-        return { data: (pg && x.pago_em) || vencParcela(x) || referencia, valor: valorParcela(x), pago: pg };
+        return { data: (pg && x.pago_em) || vencParcela(x) || referencia, valor: valorParcela(x), pago: pg, rotulo: x.descricao || x.nome || "" };
       });
       pago = itens.filter((i) => i.pago).reduce((s, i) => s + i.valor, 0);
       pagamento = p.parcelas.filter((x) => x.status === "Pago" && x.pago_em).map((x) => x.pago_em).sort().pop() || "";
@@ -10348,28 +10357,31 @@
 
     const todas = linhasReceitas();
     linhasReceitasPorChave = new Map(todas.map((l) => [l.chave, l]));
-    const lista = filtrarLinhasFluxo(todas, filtroStatusReceitaAtual);
-    lista.sort((a, b) => (b.contratacao || b.datas[0] || "").localeCompare(a.contratacao || a.datas[0] || ""));
+    // Entradas = o que de fato foi recebido no período (mesma lista do cartão "Recebido")
+    const itens = todas
+      .flatMap((l) => l.itens.filter((i) => i.pago && i.valor > 0 && noPeriodo(i.data)).map((i) => ({ l, i })))
+      .sort((a, b) => (b.i.data || "").localeCompare(a.i.data || ""));
 
-    if (!lista.length) {
-      corpo.innerHTML = `<tr><td colspan="8" class="texto-vazio">Nenhuma receita neste período.</td></tr>`;
+    if (!itens.length) {
+      corpo.innerHTML = `<tr><td colspan="4" class="texto-vazio">Nenhuma entrada neste período.</td></tr>`;
       return;
     }
-    corpo.innerHTML = lista
-      .map(
-        (l) => `
+    const total = itens.reduce((s, x) => s + x.i.valor, 0);
+    corpo.innerHTML =
+      itens
+        .map(
+          ({ l, i }) => `
         <tr data-linha-chave="${l.chave}">
-          <td>${esc(l.descricao)}</td>
-          <td>${celulaDataFluxo(l.contratacao)}</td>
-          <td>${celulaDataFluxo(l.pagamento)}</td>
-          <td>${formatarMoeda(l.valor)}</td>
-          <td>${celulaMoedaFluxo(l.pago)}</td>
-          <td>${celulaMoedaFluxo(l.produto)}</td>
-          <td><span class="pilula-status ${classeStatusReceita(l.status)}">${l.status}</span></td>
+          <td>${esc(l.descricao)}${i.rotulo ? ` <span class="texto-pequeno">· ${esc(i.rotulo)}</span>` : ""}</td>
+          <td>${celulaDataFluxo(i.data)}</td>
+          <td>${formatarMoeda(i.valor)}</td>
           <td>${pilulaCategoria(l.categoria)}</td>
         </tr>`
-      )
-      .join("");
+        )
+        .join("") + `<tr class="linha-total-resultado"><td colspan="2">Total ${rotuloPeriodoFluxo()}</td><td>${formatarMoeda(total)}</td><td></td></tr>`;
+  }
+  function rotuloPeriodoFluxo() {
+    return periodoMes ? MESES_PT[periodoMes - 1] + "/" + periodoAno : String(periodoAno);
   }
 
   function renderizarDespesasFin() {
@@ -10384,32 +10396,33 @@
 
     const todas = linhasDespesas();
     linhasDespesasPorChave = new Map(todas.map((l) => [l.chave, l]));
-    const lista = filtrarLinhasFluxo(todas, filtroStatusDespesaAtual);
-    lista.sort((a, b) => (b.vencimentoColuna || b.datas[0] || "").localeCompare(a.vencimentoColuna || a.datas[0] || ""));
+    // Saídas = o que de fato saiu do caixa no período (mesma lista do cartão "Pagos")
+    const itens = todas
+      .flatMap((l) => l.itens.filter((i) => i.pago && i.valor > 0 && noPeriodo(i.data)).map((i) => ({ l, i })))
+      .sort((a, b) => (b.i.data || "").localeCompare(a.i.data || ""));
 
-    if (!lista.length) {
-      corpo.innerHTML = `<tr><td colspan="7" class="texto-vazio">Nenhuma despesa neste período.</td></tr>`;
+    if (!itens.length) {
+      corpo.innerHTML = `<tr><td colspan="4" class="texto-vazio">Nenhuma saída neste período.</td></tr>`;
       return;
     }
-    corpo.innerHTML = lista
-      .map((l) => {
-        const aberta = l.fatura && faturasAbertas.has(l.reg.id);
-        const nome = l.fatura
-          ? `<span class="caret-fatura">▸</span>${esc(l.descricao)}<button type="button" class="btn-editar-fatura" data-editar-fatura="1">editar</button>`
-          : esc(l.descricao);
-        const filhas = aberta ? l.comprasFatura.map((c) => linhaCompraFaturaHtml(c)).join("") : "";
-        return `
+    const total = itens.reduce((s, x) => s + x.i.valor, 0);
+    corpo.innerHTML =
+      itens
+        .map(({ l, i }) => {
+          const aberta = l.fatura && faturasAbertas.has(l.reg.id);
+          const nome = l.fatura
+            ? `<span class="caret-fatura">▸</span>${esc(l.descricao)}<button type="button" class="btn-editar-fatura" data-editar-fatura="1">editar</button>`
+            : esc(l.descricao) + (i.rotulo ? ` <span class="texto-pequeno">· ${esc(i.rotulo)}</span>` : "");
+          const filhas = aberta ? l.comprasFatura.map((c) => linhaCompraFaturaHtml(c)).join("") : "";
+          return `
         <tr data-linha-chave="${l.chave}" class="${l.fatura ? "linha-fatura" + (aberta ? " aberta" : "") : ""}">
           <td>${nome}</td>
-          <td>${celulaDataFluxo(l.vencimentoColuna)}</td>
-          <td>${celulaDataFluxo(l.pagamento)}</td>
-          <td>${formatarMoeda(l.valor)}</td>
-          <td>${celulaMoedaFluxo(l.pago)}</td>
-          <td><span class="pilula-status ${classeStatusReceita(l.status)}">${l.status}</span></td>
+          <td>${celulaDataFluxo(i.data)}</td>
+          <td>${formatarMoeda(i.valor)}</td>
           <td>${pilulaCategoria(l.categoria)}</td>
         </tr>${filhas}`;
-      })
-      .join("");
+        })
+        .join("") + `<tr class="linha-total-resultado"><td colspan="2">Total ${rotuloPeriodoFluxo()}</td><td>${formatarMoeda(total)}</td><td></td></tr>`;
   }
 
   // Compras de uma fatura de cartão (linhas filhas, abertas ao clicar na fatura).
@@ -10422,10 +10435,7 @@
         <tr class="linha-filha-fatura" data-compra-id="${c.id}">
           <td>${esc(c.nome)}</td>
           <td>${celulaDataFluxo(c.data)}</td>
-          <td>${vazioFluxo}</td>
           <td>${formatarMoeda(c.valor)}</td>
-          <td>${vazioFluxo}</td>
-          <td>${vazioFluxo}</td>
           <td><select data-compra-categoria="${c.id}">${opcoes}</select></td>
         </tr>`;
   }
@@ -10470,7 +10480,7 @@
     document.getElementById("corpoListaFluxo").innerHTML = itens.length
       ? itens
           .map(
-            (i) => `<tr>
+            (i) => `<tr data-abrir-chave="${esc(i.chave || "")}" data-saida="${i.ehSaida ? 1 : 0}" class="linha-clicavel-lista">
           <td>${esc(i.nome || "—")}${lista.assinado ? ` <span class="texto-pequeno">(${i.ehSaida ? "saída" : "entrada"})</span>` : ""}</td>
           <td>${celulaDataFluxo(i.data)}</td>
           <td>${formatarMoeda(valorAssinado(i))}</td>
@@ -10498,11 +10508,21 @@
   overlayModalListaFluxo.addEventListener("click", (evento) => {
     if (evento.target === overlayModalListaFluxo) overlayModalListaFluxo.hidden = true;
   });
+  // clicar numa linha da lista (ex.: Pendente) abre o lançamento financeiro dela
+  document.getElementById("corpoListaFluxo").addEventListener("click", (evento) => {
+    const tr = evento.target.closest("tr[data-abrir-chave]");
+    if (!tr || !tr.dataset.abrirChave) return;
+    const saida = tr.dataset.saida === "1";
+    const linha = (saida ? linhasDespesasPorChave : linhasReceitasPorChave).get(tr.dataset.abrirChave);
+    if (!linha) return;
+    overlayModalListaFluxo.hidden = true;
+    abrirLancamento(saida, linha);
+  });
 
   function renderizarCardsFluxo() {
     if (!document.getElementById("fluxoPrevisto")) return;
-    const itensReceita = linhasReceitas().flatMap((l) => l.itens.map((i) => ({ ...i, nome: l.descricao, ehSaida: false })));
-    const itensDespesa = linhasDespesas().flatMap((l) => l.itens.map((i) => ({ ...i, nome: l.descricao, ehSaida: true })));
+    const itensReceita = linhasReceitas().flatMap((l) => l.itens.filter((i) => i.valor > 0).map((i) => ({ ...i, nome: l.descricao, ehSaida: false, chave: l.chave })));
+    const itensDespesa = linhasDespesas().flatMap((l) => l.itens.filter((i) => i.valor > 0).map((i) => ({ ...i, nome: l.descricao, ehSaida: true, chave: l.chave })));
     const { fim } = limitesPeriodo();
     const somar = (itens) => itens.reduce((s, i) => s + i.valor, 0);
     const entradas = itensReceita.filter((i) => noPeriodo(i.data));
@@ -11072,6 +11092,13 @@
   const campoLancRepetir = document.getElementById("lancRepetir");
   const campoLancVezes = document.getElementById("lancVezes");
   const campoLancPeriodo = document.getElementById("lancPeriodo");
+  const campoLancObs = document.getElementById("lancObs");
+  // O campo Observação precisa da coluna "observacao" nas duas tabelas (js/financas-observacao-setup.sql);
+  // sem ela, o campo some e nada muda ao salvar.
+  let lancObsDisponivel = false;
+  Promise.all([Auth.sb.from("financas_receitas").select("observacao").limit(1), Auth.sb.from("financas_despesas").select("observacao").limit(1)])
+    .then((rs) => (lancObsDisponivel = rs.every((r) => !r.error)))
+    .catch(() => {});
 
   const editoresLanc = {
     receita: criarEditorFinanceiro(document.getElementById("lancPainelReceita"), {
@@ -11108,12 +11135,12 @@
 
   // Data exibida: pagamento se já entrou dinheiro, senão vencimento.
   function contextoDataLanc() {
-    return Number(campoLancPago.value) > 0 ? "pagamento" : "vencimento";
+    return Number(campoLancPago.value) > 0 || campoLancPaga.checked ? "pagamento" : "vencimento";
   }
   function renderizarDataLanc() {
     const ctx = contextoDataLanc();
     const data = ctx === "pagamento" ? lanc.dataPagamento : lanc.dataVencimento;
-    const rotulo = ctx === "pagamento" ? (lanc.ehDespesa ? "Data do pagamento" : "Data do recebimento") : "Vencimento";
+    const rotulo = ctx === "pagamento" ? (lanc.ehDespesa ? "Data do pagamento" : "Data do recebimento") : "Data prevista";
     document.getElementById("lancRotuloData").textContent = rotulo;
     const hoje = hojeIso();
     const ontem = somarDiasIso(hoje, -1);
@@ -11165,12 +11192,12 @@
 
     modalLanc.classList.toggle("lanc-despesa", ehDespesa);
     modalLanc.classList.remove("expandido", "repetindo");
-    document.getElementById("tituloLanc").textContent = (linha ? "Editar " : "Nova ") + (ehDespesa ? "despesa" : "receita");
+    document.getElementById("tituloLanc").textContent = ehDespesa ? (linha ? "Editar saída" : "Nova saída") : linha ? "Editar entrada" : "Nova entrada";
     document.getElementById("lancRotuloPaga").textContent = ehDespesa ? "Foi paga" : "Foi recebida";
     document.getElementById("lancRotuloPago").textContent = ehDespesa ? "Já pago (R$)" : "Já recebido (R$)";
-    document.getElementById("lancRotuloFixa").textContent = ehDespesa ? "Despesa fixa" : "Receita fixa";
-    document.getElementById("lancLinhaContratacao").hidden = ehDespesa;
-    document.getElementById("lancLinhaProduto").hidden = ehDespesa;
+    document.getElementById("lancRotuloFixa").textContent = ehDespesa ? "Despesa fixa" : "Entrada fixa";
+    document.getElementById("lancLinhaContratacao").hidden = true;
+    document.getElementById("lancLinhaProduto").hidden = true;
     document.getElementById("lancPainelReceita").hidden = ed !== editoresLanc.receita;
     document.getElementById("lancPainelContrato").hidden = ed !== editoresLanc.contrato;
     document.getElementById("lancPainelDespesa").hidden = ed !== editoresLanc.despesa;
@@ -11216,6 +11243,23 @@
     notaSerie.hidden = !(reg && reg.grupo_repeticao);
     notaSerie.textContent = "Este lançamento faz parte de uma série repetida — editar aqui altera só este.";
     atualizarNotaRepeticao();
+
+    // Receita de campanha: só o painel "Mais detalhes". Entrada/saída avulsa: formulário simples
+    // (valor, foi paga, data, descrição, categoria, observação); parcelas só se o lançamento já tem.
+    const soDetalhes = !!contrato;
+    const parcelado = modoParcelado();
+    modalLanc.classList.toggle("so-detalhes", soDetalhes);
+    modalLanc.classList.toggle("expandido", soDetalhes);
+    document.getElementById("lancTituloDet").textContent = soDetalhes ? (linha.descricao || "Campanha") : ehDespesa ? "Saída" : "Entrada";
+    const parcialAntes = !!linha && !contrato && !parcelado && linha.pago > 0 && linha.valor > 0 && linha.pago < linha.valor - 0.005;
+    document.getElementById("lancLinhaPago").hidden = !parcialAntes;
+    document.getElementById("lancPainelReceita").hidden = soDetalhes || !parcelado || ed !== editoresLanc.receita;
+    document.getElementById("lancPainelDespesa").hidden = !parcelado || ed !== editoresLanc.despesa;
+    document.getElementById("lancLinhaObs").hidden = !lancObsDisponivel || fatura;
+    campoLancObs.value = reg && reg.observacao ? reg.observacao : "";
+    const temDetalhes = lanc.novo || parcelado || !!(reg && reg.grupo_repeticao);
+    document.getElementById("btnLancDetalhes").hidden = fatura || soDetalhes || !temDetalhes;
+
     overlayLanc.hidden = false;
     (linha ? campoLancDescricao : campoLancValor).focus();
   }
@@ -11277,6 +11321,8 @@
   document.getElementById("btnNovaDespesaFin").addEventListener("click", () => abrirLancamento(true, null));
   document.getElementById("btnCancelarLanc").addEventListener("click", fecharLancamento);
   document.getElementById("btnFecharLanc").addEventListener("click", fecharLancamento);
+  document.getElementById("btnFecharLancDet").addEventListener("click", fecharLancamento);
+  document.getElementById("btnCancelarLancDet").addEventListener("click", fecharLancamento);
   overlayLanc.addEventListener("keydown", (evento) => {
     if (evento.key === "Escape" && !document.getElementById("popoverNF") && !document.getElementById("popoverConfirmarPagamento")) fecharLancamento();
   });
@@ -11325,6 +11371,7 @@
       const dados = {
         nome: desc, valor, categoria, valor_pago: pagoDireto, pago_em: dataPag, status: quitado ? "Pago" : "Pendente",
         data: parcelado ? (lanc.reg && lanc.reg.data) || null : dataVenc || dataPag, updated_at: agora,
+        ...(lancObsDisponivel ? { observacao: campoLancObs.value.trim() || null } : {}),
       };
       if (lanc.reg) {
         verificarErro(await Auth.sb.from("financas_despesas").update(dados).eq("id", lanc.reg.id));
@@ -11370,6 +11417,7 @@
       pagamento: dataPag, vencimento: dataVenc,
       status: valor === 0 && produto > 0 ? "Permuta" : quitado ? "Pago" : totalPago > 0 ? "Pgto Parcial" : "Pendente",
       emissao_nf: ed.estado.nf.ativo, nf_taxa: ed.estado.nf.taxa, updated_at: agora,
+      ...(lancObsDisponivel ? { observacao: campoLancObs.value.trim() || null } : {}),
     };
     if (lanc.reg) {
       verificarErro(await Auth.sb.from("financas_receitas").update(dados).eq("id", lanc.reg.id));
@@ -11425,7 +11473,7 @@
       return;
     }
     const ehDespesa = lanc.ehDespesa;
-    const botoes = formLanc.querySelectorAll(".lanc-acoes button");
+    const botoes = formLanc.querySelectorAll(".lanc-acoes button, .lanc-acoes-det button");
     botoes.forEach((b) => (b.disabled = true));
     try {
       const salvou = await gravarLancamento(desc, Number(campoLancValor.value) || 0);
@@ -11852,7 +11900,7 @@
       const base = valor > 0 ? topo : y0;
       return `<rect x="${x}" y="${base}" width="${bw}" height="${alto}" rx="${r}" fill="${cor}"><title>${titulo}</title></rect>`;
     };
-    const rotuloValor = (cx, valor, cor) => (valor ? `<text class="valor-barra" x="${cx}" y="${valor > 0 ? y(valor) - 6 : y(valor) + 14}" text-anchor="middle" fill="${cor}">${compacto(valor)}</text>` : "");
+    const rotuloValor = () => "";
     let barras = "", rotulos = "", metas = "", pontos = [], marcas = "";
     dados.forEach((d, idx) => {
       const cx = ml + gw * idx + gw / 2;
@@ -11860,10 +11908,10 @@
       const xs = cx + 2;
       barras += barra(xe, d.ent, "#8FD3A8", `${d.rotulo} · Faturamento: ${formatarMoeda(d.ent)}`) + rotuloValor(xe + bw / 2, d.ent, "#2F7A4F");
       barras += barra(xs, d.sai, "#F29B9B", `${d.rotulo} · Custos e despesas: ${formatarMoeda(d.sai)}`) + rotuloValor(xs + bw / 2, d.sai, "#B5484B");
-      if (d.meta) metas += `<line x1="${xe - 5}" x2="${xe + bw + 5}" y1="${y(d.meta)}" y2="${y(d.meta)}" stroke="#7A5CC8" stroke-width="2" stroke-dasharray="4 3" stroke-linecap="round"><title>${d.rotulo} · Meta: ${formatarMoeda(d.meta)}</title></line>`;
+      if (d.meta) metas += `<line x1="${xe - 5}" x2="${xe + bw + 5}" y1="${y(d.meta)}" y2="${y(d.meta)}" stroke="transparent" stroke-width="16"><title>${d.rotulo} · Meta: ${formatarMoeda(d.meta)}</title></line><line x1="${xe - 5}" x2="${xe + bw + 5}" y1="${y(d.meta)}" y2="${y(d.meta)}" stroke="#7A5CC8" stroke-width="2" stroke-dasharray="4 3" stroke-linecap="round"><title>${d.rotulo} · Meta: ${formatarMoeda(d.meta)}</title></line>`;
       rotulos += `<text x="${cx}" y="${H - 10}" text-anchor="middle">${d.rotulo}</text>`;
       pontos.push(`${cx},${y(d.saldo)}`);
-      marcas += `<circle cx="${cx}" cy="${y(d.saldo)}" r="4.5" fill="#7FB6EE" stroke="#fff" stroke-width="2"><title>${d.rotulo} · Lucro líquido: ${formatarMoeda(d.saldo)}</title></circle><text class="valor-barra" x="${cx}" y="${y(d.saldo) - 10}" text-anchor="middle" fill="#2F6FB5">${compacto(d.saldo)}</text>`;
+      marcas += `<circle cx="${cx}" cy="${y(d.saldo)}" r="11" fill="transparent"><title>${d.rotulo} · Lucro líquido: ${formatarMoeda(d.saldo)}</title></circle><circle cx="${cx}" cy="${y(d.saldo)}" r="4.5" fill="#7FB6EE" pointer-events="none" stroke="#fff" stroke-width="2"><title>${d.rotulo} · Lucro líquido: ${formatarMoeda(d.saldo)}</title></circle>`;
     });
     return `<div class="legenda-grafico-barras">
         <span><i style="background:#8FD3A8"></i>Faturamento</span><span><i style="background:#F29B9B"></i>Custos e despesas</span><span><i class="linha" style="background:#7FB6EE"></i>Lucro líquido</span><span><i class="linha" style="background:#7A5CC8"></i>Meta do mês</span>
@@ -15169,6 +15217,18 @@
       } catch (erro) {}
     });
   });
+  // T / M / P / C / O abrem Tarefas, Marcas, Produção, Campanhas e Oportunidades (só fora de digitação)
+  const ATALHOS_PAGINAS = { t: "gp-tarefas", m: "comercial-empresas", p: "gp-quadro", c: "crm-contratos", o: "comercial-oportunidades" };
+  document.addEventListener("keydown", (evento) => {
+    const aba = ATALHOS_PAGINAS[evento.key.toLowerCase()];
+    if (!aba || evento.ctrlKey || evento.metaKey || evento.altKey) return;
+    if ((evento.target.closest && evento.target.closest("input, textarea, select, [contenteditable]")) || document.querySelector(".overlay-modal:not([hidden])")) return;
+    const botao = document.querySelector(`.item-nav[data-tab="${aba}"]`);
+    if (!botao) return;
+    evento.preventDefault();
+    botao.click();
+  });
+
   // V alterna a visualização em qualquer página que tenha mais de uma
   const ALTERNADORES_V = ["alternadorProducao", "alternadorVisaoResultados", "alternadorVisaoFluxo", "alternadorPortfolio", "alternadorOportunidades", "alternadorCampanhas", "alternadorMarcas", "alternadorJornada"];
   document.addEventListener("keydown", (evento) => {
