@@ -698,22 +698,22 @@
     gap:10px;
     overflow-x:auto;
     padding: 4px 2px 0;
-    height: calc(100vh - 200px);
+    height: calc(100vh - 170px);
     min-height: 380px;
     scrollbar-width: thin;
-    scrollbar-color: var(--cinza-claro) transparent;
+    scrollbar-color: #DCD7E6 transparent;
   }
   .quadro-wrap::-webkit-scrollbar{ height: 6px; }
   .quadro-wrap::-webkit-scrollbar-track{ background: transparent; }
-  .quadro-wrap::-webkit-scrollbar-thumb{ background: var(--cinza-claro); border-radius: 999px; }
-  .quadro-wrap::-webkit-scrollbar-thumb:hover{ background: var(--texto-suave); }
+  .quadro-wrap::-webkit-scrollbar-thumb{ background:#DCD7E6; border-radius: 999px; }
+  .quadro-wrap::-webkit-scrollbar-thumb:hover{ background:#C3BBD6; }
 
   /* Linha do tempo */
   .linha-tempo-layout{ display:flex; gap:14px; align-items:stretch; }
   .linha-tempo-layout .linha-tempo-wrap{ flex:1 1 auto; min-width:0; }
   .tl-sem-data{
     flex:0 0 260px;
-    height: calc(100vh - 200px);
+    height: calc(100vh - 170px);
     min-height: 380px;
     overflow-y:auto;
     border: 1px solid var(--borda);
@@ -755,7 +755,7 @@
   @media (max-width: 900px){ .linha-tempo-layout{ flex-direction:column; } .tl-sem-data{ flex-basis:auto; height:auto; max-height:320px; min-height:0; } }
   .linha-tempo-wrap{
     overflow: auto;
-    height: calc(100vh - 200px);
+    height: calc(100vh - 170px);
     min-height: 380px;
     border: 1px solid var(--borda);
     border-radius: 16px;
@@ -765,6 +765,10 @@
   .linha-tempo-wrap::-webkit-scrollbar{ height:6px; width:6px; }
   .linha-tempo-wrap::-webkit-scrollbar-track{ background: transparent; }
   .linha-tempo-wrap::-webkit-scrollbar-thumb{ background: var(--cinza-claro); border-radius: 999px; }
+
+  /* Produção: seletor Kanban / Timeline com ícones, mais fácil de acertar */
+  #alternadorProducao{ padding:3px; }
+  #alternadorProducao .btn-alternador{ display:inline-flex; align-items:center; gap:7px; padding:8px 18px; font-size:.82rem; }
 
   .cabecalho-lt{ display:flex; position:sticky; top:0; z-index:3; background: var(--branco); }
   .canto-lt{
@@ -2013,30 +2017,30 @@
   .chip-fase-lista .ponto-fase{ width:8px; height:8px; border-radius:50%; }
 
   /* ================= TAREFAS ================= */
-  .tarefas-grade{ display:grid; grid-template-columns: minmax(0, 4fr) minmax(230px, 1fr); gap:28px; align-items:start; }
+  .tarefas-grade{ display:block; }
   .topo-semana-tarefas{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:10px; }
   .nav-semana-tarefas{ display:flex; align-items:center; gap:2px; }
   .titulo-semana-tarefas{ font-weight:600; font-size:.9rem; min-width:160px; text-align:center; }
   .filtros-demanda{ display:flex; gap:2px; }
   .filtro-demanda{ opacity:.35; }
   .filtro-demanda.ativo{ opacity:1; background: var(--creme); border-color: var(--borda); color: var(--grafite); }
-  .semana-tarefas{ border:1px solid var(--borda); border-radius:14px; overflow:hidden; display:flex; flex-direction:column; height:clamp(500px, 74vh, 800px); background: var(--branco); }
+  .semana-tarefas{ border:1px solid var(--borda); border-radius:14px; overflow:hidden; display:flex; flex-direction:column; height:clamp(600px, 82vh, 1100px); background: var(--branco); }
   .sem-linha{ display:grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
   .sem-cabecalho{ flex:0 0 auto; }
-  .sem-cab-dia{ display:flex; align-items:center; justify-content:center; gap:6px; padding:7px 4px; font-size:.74rem; color: var(--cinza-menu); }
-  .sem-cab-dia b{ font-size:.86rem; font-weight:600; color: var(--grafite); min-width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; border-radius:999px; }
+  .sem-cab-dia{ display:flex; align-items:center; justify-content:center; gap:8px; padding:12px 4px; font-size:.82rem; color: var(--cinza-menu); text-transform:capitalize; }
+  .sem-cab-dia b{ font-size:1.05rem; font-weight:600; color: var(--grafite); min-width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center; border-radius:999px; }
   .sem-cab-dia.hoje b{ background:#E5484D; color:#fff; }
   /* altura automática (cabe tudo, até 70% do calendário); ao arrastar o divisor vira altura manual */
   .sem-topo{ flex:0 0 auto; max-height:70%; min-height:46px; overflow:auto; border-top:1px solid var(--borda); }
   .sem-topo.manual{ max-height:none; }
-  .sem-topo-dia{ border-left:1px solid var(--borda); padding:4px 4px 6px; display:flex; flex-direction:column; gap:3px; min-width:0; }
+  .sem-topo-dia{ border-left:1px solid var(--borda); padding:6px 6px 8px; display:flex; flex-direction:column; gap:5px; min-width:0; }
   .sem-topo-dia:first-child, .sem-coluna-tar:first-child{ border-left:none; }
   .sem-divisor{ flex:0 0 auto; height:10px; cursor:row-resize; position:relative; touch-action:none; user-select:none; }
   .sem-divisor::before{ content:""; position:absolute; left:0; right:0; top:4px; border-top:2px solid var(--borda); }
   .sem-divisor::after{ content:""; position:absolute; left:50%; top:2px; width:34px; height:6px; margin-left:-17px; border-radius:3px; background: var(--borda); }
   .sem-divisor:hover::before, .sem-divisor.arrastando::before{ border-top-color: var(--cinza-menu); }
   .sem-divisor:hover::after, .sem-divisor.arrastando::after{ background: var(--cinza-menu); }
-  .sem-topo .cal-sub{ align-items:flex-start; padding:3px 6px; border-radius:6px; }
+  .sem-topo .cal-sub{ align-items:flex-start; padding:6px 8px; border-radius:8px; font-size:.82rem; }
   .sem-topo .cal-sub .chk-redondo{ margin-top:1px; }
   .sem-topo .cal-sub-texto{ white-space:normal; overflow:visible; overflow-wrap:anywhere; }
   .sem-topo .cal-sub-texto em{ color:inherit; opacity:.7; }
@@ -2047,13 +2051,13 @@
   .sem-coluna-tar .chip-tarefa-dia{ align-items:flex-start; }
   .sem-coluna-tar .chip-tarefa-dia .tit{ white-space:normal; overflow-wrap:anywhere; }
   .sem-dias-tar{ flex:1 1 0; min-height:0; overflow-y:auto; align-items:stretch; }
-  .sem-coluna-tar{ border-left:1px solid var(--borda); padding:6px 4px; display:flex; flex-direction:column; gap:4px; min-width:0; }
-  .sem-coluna-tar.hoje{ background: rgba(229,72,77,.03); }
+  .sem-coluna-tar{ border-left:1px solid var(--borda); padding:8px 6px; display:flex; flex-direction:column; gap:6px; min-width:0; }
+  .sem-coluna-tar.hoje{ background: rgba(229,72,77,.05); }
   .alvo-soltar{ outline:2px dashed var(--cinza-menu); outline-offset:-3px; background-color: rgba(58,58,58,.06); }
-  .chip-demanda{ font-size:.72rem; font-weight:600; padding:3px 8px; border-radius:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .chip-demanda{ font-size:.8rem; font-weight:600; padding:6px 9px; border-radius:8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .chip-demanda.cobranca{ background:#DDF1E4; color:#1E6B3A; }
   .chip-demanda.pagamento{ background:#FADADD; color:#8F2330; }
-  .chip-tarefa-dia{ display:flex; align-items:center; gap:6px; background:#F6E7DF; border-radius:6px; padding:3px 6px; font-size:.74rem; cursor:grab; }
+  .chip-tarefa-dia{ display:flex; align-items:center; gap:8px; background:#F6E7DF; border-radius:9px; padding:7px 9px; font-size:.84rem; cursor:grab; }
   .chip-tarefa-dia .tit{ min-width:0; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:600; }
   .feita .tit{ text-decoration:line-through; color: var(--cinza-menu); }
   .chip-tarefa-dia.feita{ opacity:.6; }
@@ -2073,7 +2077,15 @@
   .item-tarefa .tit{ min-width:0; flex:1; overflow-wrap:anywhere; }
   .meta-tarefa{ font-size:.72rem; color: var(--texto-suave); white-space:nowrap; }
 
-  .tarefas-direita{ display:flex; flex-direction:column; gap:22px; }
+  /* calendário do mês: balão sobreposto, aberto pelo botão ao lado da semana */
+  .wrap-mini-mes{ position:relative; margin-left:6px; }
+  .pop-mini-mes{ position:absolute; top:calc(100% + 8px); left:0; z-index:60; background: var(--branco); border-radius:16px; padding:14px 16px 12px; width:268px; box-shadow:0 14px 38px rgba(40,30,70,.18); transform-origin: top left; animation: menuEntra .25s var(--ease-mov) backwards; }
+  .pop-mini-mes .mini-mes{ max-width:none; }
+  #btnMiniMes.ativo{ background: var(--creme); color: var(--grafite); }
+  .bloco-lista-sem-data{ margin-top:24px; padding:18px 22px; border-radius:18px; background:#FAF8FD; }
+  .listas-tarefas-quatro{ display:grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap:28px; margin-top:26px; }
+  @media (max-width: 1100px){ .listas-tarefas-quatro{ grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 640px){ .listas-tarefas-quatro{ grid-template-columns: 1fr; } }
   .mini-mes{ width:100%; max-width:230px; }
   .mini-topo{ display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; font-size:.8rem; }
   .mini-topo > span{ display:flex; gap:0; }
@@ -2099,7 +2111,7 @@
   .txt-tarefa:focus{ outline:none; }
   .txt-tarefa::placeholder{ color: var(--cinza-claro); }
   .linha-lista-tarefa.alvo-soltar, #listaTarefasSemData.alvo-soltar{ outline-offset:4px; }
-  @media (max-width: 1000px){ .tarefas-grade{ grid-template-columns: 1fr; } .listas-tarefas-tres{ grid-template-columns: 1fr; } }
+
 
   /* ================= DASHBOARD ================= */
   .mes-corrente-dash{ margin:0; font-family: var(--fonte-impacto); font-size:1.25rem; font-weight:600; }
@@ -2129,13 +2141,6 @@
   .grafico-dash h3{ margin:0 0 6px; font-size:.78rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
   .grafico-dash svg{ width:100%; max-width:380px; height:auto; display:block; }
   .dash-duas-colunas{ display:grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap:20px; margin-top:26px; align-items:start; }
-  .dash-duas-colunas .cartao{ margin-bottom:0; }
-  .linha-tempo-fase{ display:flex; align-items:center; gap:12px; padding:7px 0; font-size:.88rem; }
-  .linha-tempo-fase .nome-tempo{ width:120px; flex-shrink:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .linha-tempo-fase .trilho-fase{ flex-grow:1; height:9px; border-radius:999px; background:#EFEFEF; overflow:hidden; }
-  .linha-tempo-fase .preenchido-fase{ height:100%; border-radius:999px; background: var(--coral); }
-  .linha-tempo-fase .valor-tempo{ width:74px; text-align:right; font-variant-numeric: tabular-nums; font-weight:600; }
-  .total-tempo-fase{ display:flex; justify-content:space-between; margin-top:10px; padding-top:10px; border-top:1px solid var(--borda); font-weight:700; }
   .subtitulo-dash{ display:flex; align-items:center; gap:9px; margin:0 0 12px; font-family: var(--fonte-impacto); font-size:1.05rem; font-weight:600; color: var(--grafite); }
   .subtitulo-dash svg{ width:20px; height:20px; color: var(--texto-suave); flex-shrink:0; }
   .subtitulo-dash-secao{ margin-top:34px; }
@@ -2156,6 +2161,24 @@
   .etapa-funil .qtd{ font-weight:700; }
   .conversao-funil{ text-align:center; font-size:.72rem; color: var(--cinza-menu); margin:-2px 0 6px; }
   #dashFunilTotais{ margin-top:20px; }
+
+  /* ---- Dashboard: mesmo visual do Início (sem contornos, tons suaves, sombra leve) ---- */
+  #painel-gp-dashboard .nav-mes-dash button{ border:none; background:#F3F0F9; }
+  #painel-gp-dashboard .nav-mes-dash button:hover:not(:disabled){ background:#E9E3F6; }
+  #painel-gp-dashboard .mes-corrente-dash{ font-size:1.4rem; min-width:170px; text-align:center; }
+  #painel-gp-dashboard .cartao-fluxo{ border:none; border-radius:16px; padding:18px 20px; }
+  #painel-gp-dashboard .cartao-fluxo.marcador.selecionavel:hover{ box-shadow:0 6px 18px rgba(90,70,140,.12); }
+  #painel-gp-dashboard .mini-marcador{ border:none; background:#FAF8FD; border-radius:12px; }
+  #painel-gp-dashboard .dash-detalhes{ border:none; background:#FAF8FD; border-radius:18px; padding:18px 22px; }
+  #painel-gp-dashboard .cartao{ border:none; box-shadow: 0 6px 28px rgba(90,70,140,.07); }
+  #painel-gp-dashboard #dashFinanceiro{ margin-top:26px; }
+  #painel-gp-dashboard .subtitulo-dash svg{ width:32px; height:32px; padding:7px; border-radius:50%; background:#F1ECFB; color:#7A5CC8; }
+  #painel-gp-dashboard #dashReputacao{ background:#FAF8FD; border-radius:18px; padding:20px 24px; }
+  #painel-gp-dashboard .termometro span{ height:8px; }
+  #painel-gp-dashboard .btn-mais-detalhes-campanha{ margin-top:4px; }
+  /* funis: a largura de cada barra segue o número (tudo zero = barras iguais, alinhadas) */
+  #painel-gp-dashboard .etapa-funil{ clip-path:none; border-radius:12px; padding:13px 20px; min-width:170px; }
+  #painel-gp-dashboard .conversao-funil{ margin:0 0 6px; }
   @media (max-width: 1100px){
     .grade-marcadores{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .dash-duas-colunas, .dash-funis{ grid-template-columns: 1fr; }
@@ -3158,7 +3181,6 @@
       <div class="bloco-titulo-topo">
         <h1 id="tituloTopo" class="titulo-saudacao">Olá</h1>
         <p class="subtitulo-topo" id="subtituloTopo"></p>
-        <p class="insight-topo" id="insightTopo" hidden></p>
       </div>
       <!-- Salvos: a estrela abre, para a esquerda, atalhos de copiar (só na tela inicial) -->
       <div class="barra-ferramentas-tabela barra-salvos colapsada" id="barraSalvos">
@@ -3273,9 +3295,9 @@
         </div>
 
         <aside class="principal-direita" aria-label="Lembretes e alertas">
-          <div class="cartao-alerta alerta-rosa" id="cartaoBriefings" hidden>
-            <h3>Briefings recebidos</h3>
-            <div id="alertaBriefings"></div>
+          <div class="cartao-alerta alerta-rosa">
+            <h3>Tarefas de hoje <button type="button" class="seta-cartao-alerta" data-ir-aba="gp-tarefas" title="Ir para Tarefas" aria-label="Ir para Tarefas"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button></h3>
+            <div id="alertaTarefasHoje"></div>
           </div>
           <div class="cartao-alerta alerta-amarelo">
             <h3>Prazos vencendo em breve <button type="button" class="seta-cartao-alerta" data-ir-aba="gp-quadro" title="Ir para Produção" aria-label="Ir para Produção"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button></h3>
@@ -3441,16 +3463,7 @@
         <div class="graficos-dash" data-dash-graficos="geral"></div>
       </div>
 
-      <div class="dash-duas-colunas">
-        <div>
-          <div class="grade-marcadores grade-2" id="dashFinanceiro"></div>
-        </div>
-        <div class="cartao cartao-tempo-fase">
-          <h2>Tempo por fase</h2>
-          <p class="texto-pequeno" id="dashTempoNota"></p>
-          <div id="dashTempoFases"></div>
-        </div>
-      </div>
+      <div class="grade-marcadores grade-2" id="dashFinanceiro"></div>
 
       <h3 class="subtitulo-dash subtitulo-dash-secao">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5.5"/><path d="M8.6 13.6 7 21l5-2.6 5 2.6-1.6-7.4"/></svg>
@@ -3498,6 +3511,14 @@
               <button type="button" class="btn-ferramenta-tabela" id="btnSemanaHoje" title="Ir para hoje">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16"/><path d="M8 3v4"/><path d="M16 3v4"/><circle cx="12" cy="15" r="1.6" fill="currentColor"/></svg>
               </button>
+              <div class="wrap-mini-mes">
+                <button type="button" class="btn-ferramenta-tabela" id="btnMiniMes" title="Ver o mês" aria-expanded="false">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 17.5h.01M12 17.5h.01"/></svg>
+                </button>
+                <div class="pop-mini-mes" id="popMiniMes" hidden>
+                  <div class="mini-mes" id="miniMesTarefas"></div>
+                </div>
+              </div>
             </div>
             <div class="filtros-demanda" aria-label="Mostrar no calendário">
               <button type="button" class="btn-ferramenta-tabela filtro-demanda" data-filtro-tarefas="tarefas" title="Tarefas">
@@ -3522,7 +3543,12 @@
           </div>
           <div class="semana-tarefas" id="semanaTarefas"></div>
 
-          <div class="listas-tarefas-tres">
+          <div class="bloco-lista-sem-data">
+            <h3 class="titulo-lista-tarefas">Lista de tarefas <small>(sem data · arraste para um dia)</small></h3>
+            <div id="listaTarefasSemData"></div>
+          </div>
+
+          <div class="listas-tarefas-quatro">
             <div>
               <h3 class="titulo-lista-tarefas">A fazer hoje</h3>
               <div id="listaTarefasHoje"></div>
@@ -3531,24 +3557,16 @@
               <h3 class="titulo-lista-tarefas">Próximos dias</h3>
               <div id="listaTarefasProximas"></div>
             </div>
+            <div id="blocoAtrasadas">
+              <h3 class="titulo-lista-tarefas atrasadas">Atrasadas <span id="contagemAtrasadas"></span></h3>
+              <div id="listaTarefasAtrasadas"></div>
+            </div>
             <div>
               <h3 class="titulo-lista-tarefas">Concluídas <small>(esta semana)</small></h3>
               <div id="listaTarefasConcluidas"></div>
             </div>
           </div>
         </div>
-
-        <aside class="tarefas-direita">
-          <div class="mini-mes" id="miniMesTarefas"></div>
-          <div>
-            <h3 class="titulo-lista-tarefas">Lista de tarefas</h3>
-            <div id="listaTarefasSemData"></div>
-          </div>
-          <div id="blocoAtrasadas">
-            <h3 class="titulo-lista-tarefas atrasadas">Atrasadas <span id="contagemAtrasadas"></span></h3>
-            <div id="listaTarefasAtrasadas"></div>
-          </div>
-        </aside>
       </div>
     </section>
 
@@ -3557,10 +3575,14 @@
         <div class="aviso-migracao-fluxo" id="avisoDuplicadosProducao" hidden></div>
         <div class="topo-quadro">
           <div class="alternador-visualizacao alternador-mini" id="alternadorProducao">
-            <button type="button" class="btn-alternador ativo" data-visualizacao="kanban">Kanban</button>
-            <button type="button" class="btn-alternador" data-visualizacao="lista">Lista</button>
-            <button type="button" class="btn-alternador" data-visualizacao="linha-tempo">Timeline</button>
-            <button type="button" class="btn-alternador" data-visualizacao="calendario">Calendário</button>
+            <button type="button" class="btn-alternador ativo" data-visualizacao="kanban" title="Kanban (tecla V alterna)">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="4.5" height="16" rx="1.2"/><rect x="10" y="4" width="4.5" height="10" rx="1.2"/><rect x="16" y="4" width="4" height="13" rx="1.2"/></svg>
+              Kanban
+            </button>
+            <button type="button" class="btn-alternador" data-visualizacao="linha-tempo" title="Timeline (tecla V alterna)">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h9"/><path d="M8 12h11"/><path d="M5 17h8"/></svg>
+              Timeline
+            </button>
           </div>
           <div class="acoes-topo-quadro">
             <div class="navegacao-calendario" data-vistas="calendario" hidden>
@@ -14878,7 +14900,27 @@
     renderizarLinhaTempo();
     renderizarCalendarioProd();
   });
-  aplicarVistaProducao("kanban");
+  // lembra a última vista (Kanban ou Timeline) e a tecla V alterna entre elas
+  const CHAVE_VISTA_PRODUCAO = "painelProducaoVista";
+  let vistaSalvaProducao = "kanban";
+  try {
+    if (localStorage.getItem(CHAVE_VISTA_PRODUCAO) === "linha-tempo") vistaSalvaProducao = "linha-tempo";
+  } catch (erro) {}
+  document.querySelectorAll("#alternadorProducao .btn-alternador").forEach((botao) => {
+    botao.addEventListener("click", () => {
+      try {
+        localStorage.setItem(CHAVE_VISTA_PRODUCAO, botao.dataset.visualizacao);
+      } catch (erro) {}
+    });
+  });
+  document.addEventListener("keydown", (evento) => {
+    if (evento.key.toLowerCase() !== "v" || evento.ctrlKey || evento.metaKey || evento.altKey) return;
+    if (document.getElementById("painel-gp-quadro").hidden) return;
+    if (evento.target.closest("input, textarea, select, [contenteditable]") || document.querySelector(".overlay-modal:not([hidden])")) return;
+    const proxima = vistaProducaoAtual === "kanban" ? "linha-tempo" : "kanban";
+    document.querySelector(`#alternadorProducao [data-visualizacao="${proxima}"]`).click();
+  });
+  aplicarVistaProducao(vistaSalvaProducao);
 
   // ---------------------------------------------------------------
   // MENU PRINCIPAL: salvos (estrela), campanhas em andamento, minha
@@ -15785,7 +15827,7 @@
         .join("") +
       (itens.length > limite ? `<p class="mais-alerta${destinoMais ? " clicavel" : ""}" data-alerta-mais="1">+ ${itens.length - limite} outro(s)</p>` : "");
   }
-  ["alertaPrazos", "alertaRecebimentos", "alertaPendentes", "alertaDireitoUso", "alertaBriefings"].forEach((id) => {
+  ["alertaTarefasHoje", "alertaPrazos", "alertaRecebimentos", "alertaPendentes", "alertaDireitoUso"].forEach((id) => {
     const container = document.getElementById(id);
     const abrir = (evento) => {
       const mais = evento.target.closest("[data-alerta-mais]");
@@ -15903,7 +15945,26 @@
     return itens.sort((a, b) => a.data.localeCompare(b.data));
   }
 
+  // Tarefas de hoje: checklist do dia + demandas da produção que caem hoje
+  function renderizarAlertaTarefasHoje() {
+    const hoje = hojeIso();
+    const checklist = listaTarefas().filter((t) => !t.feita && t.data === hoje).map((t) => ({
+      nome: t.titulo,
+      esquerda: "Tarefa",
+      destino: { tipo: "aba", tab: "gp-tarefas" },
+    }));
+    const producao = subtarefasAgendadas({ apenasMinhas: true })
+      .filter((it) => !it.concluida && formatarDataISO(it.ini) <= hoje && formatarDataISO(it.fim) >= hoje)
+      .map((it) => ({ nome: it.s.nome, esquerda: it.card.titulo, destino: { tipo: "video", id: it.card.id } }));
+    listaAlerta("alertaTarefasHoje", checklist.concat(producao), "Nada para hoje 🎉", 5, { tipo: "aba", tab: "gp-tarefas" });
+  }
+
   function renderizarAlertas() {
+    try {
+      renderizarAlertaTarefasHoje();
+    } catch (erro) {
+      if (!/before initialization/.test(String(erro && erro.message))) console.error("Tarefas de hoje:", erro);
+    }
     const recebimentos = recebimentosEmAberto();
     const destinoRec = (i) => ({ tipo: "lancamento", ehDespesa: false, chave: i.chave });
     listaAlerta(
@@ -15973,29 +16034,12 @@
 
   async function carregarBriefings() {
     const resposta = await Auth.sb.from("briefings").select("*").neq("status", "arquivado").order("created_at", { ascending: false }).limit(300);
-    const cartao = document.getElementById("cartaoBriefings");
-    if (resposta.error) {
-      cartao.hidden = true;
-      return;
-    }
+    if (resposta.error) return;
     const todos = resposta.data || [];
     briefingVinculadoDisponivel = todos.length === 0 ? await testarBriefingVinculado() : "contrato_id" in todos[0];
     briefingsCampanhaCache = todos.filter((b) => b.contrato_id);
     briefingsCache = todos.filter((b) => b.status !== "aguardando");
     briefingsCarregados = true;
-    cartao.hidden = false;
-    listaAlerta(
-      "alertaBriefings",
-      briefingsCache.slice(0, 50).map((b) => ({
-        nome: (b.status === "novo" ? "● " : "") + b.marca,
-        esquerda: `${campanhaDoBriefing(b) ? campanhaDoBriefing(b) + " · " : b.qtd_videos ? b.qtd_videos + " vídeo(s) · " : ""}${formatarDataBr((b.respondido_em || b.created_at).slice(0, 10))}`,
-        direita: b.prazo_entrega ? "entrega " + formatarDataBr(b.prazo_entrega) : "",
-        classe: b.status === "novo" ? "aviso" : "",
-        destino: { tipo: "briefing", id: b.id },
-      })),
-      "Nenhum briefing novo",
-      5
-    );
     if (typeof renderizarContratos === "function" && contratosCache.length) renderizarContratos();
     if (idContratoEmEdicao) atualizarBlocoBriefing(contratosCache.find((k) => k.id === idContratoEmEdicao));
     atualizarNotificacoes(); // briefing novo vira aviso no sino (e no aparelho, se ativado)
@@ -17432,48 +17476,6 @@
     return lista;
   }
 
-  const formatarHoras = (seg) => {
-    const h = Math.floor(seg / 3600);
-    const m = Math.floor((seg % 3600) / 60);
-    return h ? `${h}h ${String(m).padStart(2, "0")}min` : m ? `${m}min` : `${Math.round(seg)}s`;
-  };
-
-  function renderizarTempoPorFase(agora) {
-    const inicioMes = new Date(Number(agora.slice(0, 4)), Number(agora.slice(5, 7)) - 1, 1).getTime();
-    const mapa = new Map();
-    subtarefasCache.forEach((sub) => {
-      const chave = normalizarTexto(sub.nome);
-      if (!chave) return;
-      let seg = 0;
-      (Array.isArray(sub.tempo_registros) ? sub.tempo_registros : []).forEach((r) => {
-        const ref = r.fim || r.inicio;
-        if (ref && isoLocalDeData(new Date(ref)).slice(0, 7) === agora) seg += Number(r.segundos) || 0;
-      });
-      if (sub.cronometro_ativo_desde) {
-        const desde = Math.max(new Date(sub.cronometro_ativo_desde).getTime(), inicioMes);
-        seg += Math.max(0, Math.floor((Date.now() - desde) / 1000));
-      }
-      if (!seg) return;
-      const item = mapa.get(chave) || { nome: sub.nome.trim(), seg: 0 };
-      item.seg += seg;
-      mapa.set(chave, item);
-    });
-    const lista = [...mapa.values()].sort((a, b) => b.seg - a.seg);
-    const total = lista.reduce((s, i) => s + i.seg, 0);
-    document.getElementById("dashTempoNota").textContent = "Tempo cronometrado nas subtarefas dos vídeos, neste mês.";
-    document.getElementById("dashTempoFases").innerHTML = lista.length
-      ? lista
-          .map(
-            (i) => `<div class="linha-tempo-fase" title="${esc(Math.round((i.seg / total) * 100) + "% do total")}">
-              <span class="nome-tempo">${esc(i.nome)}</span>
-              <div class="trilho-fase"><div class="preenchido-fase" style="width:${(i.seg / lista[0].seg) * 100}%"></div></div>
-              <span class="valor-tempo">${esc(formatarHoras(i.seg))}</span>
-            </div>`
-          )
-          .join("") + `<div class="total-tempo-fase"><span>Total</span><span>${esc(formatarHoras(total))}</span></div>`
-      : textoVazio("Nenhum tempo registrado neste mês ainda.");
-  }
-
   // Reputação: envios para aprovação dos últimos 60 dias, no prazo x atrasados.
   // Prazo = vencimento geral do vídeo (contrato + recebimento do produto).
   const NIVEIS_REPUTACAO = [
@@ -17528,9 +17530,9 @@
     const base = etapas[0].valor;
     return etapas
       .map((e, i) => {
-        // formato de funil: cada etapa é um trapézio mais estreito que o anterior, em tons que
-        // vão clareando/escurecendo de uma etapa pra outra (a largura segue a posição, não o valor)
-        const largura = 100 - i * (etapas.length > 1 ? 34 / (etapas.length - 1) : 0);
+        // a largura segue o número: a 1ª etapa ocupa tudo e as outras são proporcionais a ela
+        // (com um mínimo pra caber o texto). Tudo zerado: barras iguais, alinhadas.
+        const largura = base > 0 ? Math.max(40, (e.valor / base) * 100) : 100;
         const anterior = i ? etapas[i - 1].valor : 0;
         const conv = i && anterior ? `<div class="conversao-funil">${Math.round((e.valor / anterior) * 100)}% da etapa anterior</div>` : "";
         const corBase = degradeNaPosicao(i, etapas.length);
@@ -17674,7 +17676,6 @@
       htmlBlocoMarcador({ rotulo: "Faturamento", fmt: formatarMoeda, st: estatisticasMes(valoresPorMes("faturamento", s), agora), nota: `total: ${formatarMoeda(somaTotal("faturamento"))}` }) +
       htmlBlocoMarcador({ rotulo: "Lucro", fmt: formatarMoeda, st: estatisticasMes(valoresPorMes("lucro", s), agora), nota: `total: ${formatarMoeda(somaTotal("lucro"))}` });
 
-    renderizarTempoPorFase(agora);
     renderizarReputacao();
     renderizarFunis(agora, s);
   }
@@ -17951,6 +17952,7 @@
       renderizarMiniMesTarefas();
       renderizarListaSemData(false);
       renderizarListasTarefas();
+      renderizarAlertaTarefasHoje();
     } catch (erro) {
       console.error("Tarefas:", erro);
     }
@@ -18000,6 +18002,22 @@
   document.getElementById("btnSemanaAnterior").addEventListener("click", () => irParaSemana(somarDiasData(semanaTarefas, -7)));
   document.getElementById("btnSemanaProxima").addEventListener("click", () => irParaSemana(somarDiasData(semanaTarefas, 7)));
   document.getElementById("btnSemanaHoje").addEventListener("click", () => irParaSemana(new Date()));
+  // calendário do mês: balão que abre ao clicar no botão e fecha ao escolher um dia ou clicar fora
+  const popMiniMes = document.getElementById("popMiniMes");
+  const btnMiniMes = document.getElementById("btnMiniMes");
+  const alternarMiniMes = (abrir) => {
+    popMiniMes.hidden = !abrir;
+    btnMiniMes.classList.toggle("ativo", abrir);
+    btnMiniMes.setAttribute("aria-expanded", String(abrir));
+  };
+  btnMiniMes.addEventListener("click", () => alternarMiniMes(popMiniMes.hidden));
+  document.addEventListener("click", (evento) => {
+    // composedPath: o clique em "mês anterior/próximo" redesenha o balão, então o alvo já saiu da página
+    if (!popMiniMes.hidden && !evento.composedPath().includes(popMiniMes.parentElement)) alternarMiniMes(false);
+  });
+  document.addEventListener("keydown", (evento) => {
+    if (evento.key === "Escape" && !popMiniMes.hidden) alternarMiniMes(false);
+  });
   document.querySelectorAll("[data-filtro-tarefas]").forEach((botao) => {
     botao.addEventListener("click", () => {
       const chave = botao.dataset.filtroTarefas;
@@ -18072,6 +18090,7 @@
     if (dia) {
       semanaTarefas = inicioDaSemanaTarefas(dataDoIso(dia.dataset.miniDia));
       renderizarTarefasPagina();
+      alternarMiniMes(false);
       return;
     }
     const excluir = evento.target.closest("[data-tarefa-excluir]");
