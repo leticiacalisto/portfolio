@@ -4099,7 +4099,6 @@
         </div>
         <div class="topo-quadro">
           <div class="alternador-visualizacao alternador-mini" id="alternadorCampanhas">
-            <button type="button" class="btn-alternador" data-vis-campanha="lead">Lead</button>
             <button type="button" class="btn-alternador ativo" data-vis-campanha="em_producao">Em produção</button>
             <button type="button" class="btn-alternador" data-vis-campanha="aguardando_pagamento">Aguardando pagamento</button>
             <button type="button" class="btn-alternador" data-vis-campanha="finalizadas">Fechadas</button>
@@ -4416,7 +4415,6 @@
             <span class="rotulo-limpo">Status da campanha</span>
             <select id="campoStatusContrato" class="input-limpo">
               <option value="">Automático</option>
-              <option value="lead">Lead</option>
               <option value="em_producao">Em produção</option>
               <option value="aguardando_pagamento">Aguardando pagamento</option>
               <option value="finalizadas">Fechada</option>
@@ -8289,14 +8287,13 @@
   // terminada a produção, olha se as parcelas (financas_receitas
   // tipo='parcela' ligadas a esta campanha) já cobrem o valor do
   // contrato.
-  const STATUS_CAMPANHA_VALIDOS = ["lead", "em_producao", "aguardando_pagamento", "finalizadas"];
-  const ROTULO_STATUS_CAMPANHA = { lead: "Lead", em_producao: "Em produção", aguardando_pagamento: "Aguardando pagamento", finalizadas: "Fechada" };
+  const STATUS_CAMPANHA_VALIDOS = ["em_producao", "aguardando_pagamento", "finalizadas"];
+  const ROTULO_STATUS_CAMPANHA = { em_producao: "Em produção", aguardando_pagamento: "Aguardando pagamento", finalizadas: "Fechada" };
   function statusCampanha(contrato) {
     const cards = quadroCache.filter((c) => c.contrato_id === contrato.id);
     const final = colunaFinal();
     if (STATUS_CAMPANHA_VALIDOS.includes(contrato.status_manual)) return contrato.status_manual; // definido à mão
-    if (!cards.length) return "lead"; // nada vinculado ainda
-    const emProducao = cards.some((c) => !final || c.coluna_id !== final.id);
+    const emProducao = !cards.length || cards.some((c) => !final || c.coluna_id !== final.id);
     if (emProducao) return "em_producao";
     return recebidoDaCampanha(contrato) >= Number(contrato.valor || 0) - 0.005 ? "finalizadas" : "aguardando_pagamento";
   }
@@ -12390,7 +12387,7 @@
   //    quanto pra cadastro direto, e também reativa uma marca Fechada;
   //  - com campanhas e todos os cards concluídos: Fechado.
   function statusEfetivoEmpresa(empresa) {
-    const campanhas = contratosCache.filter((k) => k.empresa_id === empresa.id && statusCampanha(k) !== "lead");
+    const campanhas = contratosCache.filter((k) => k.empresa_id === empresa.id);
     if (!campanhas.length) return empresa.status === "Fechado" ? "Fechado" : "Lead"; // Fechado sem campanha = marca já trabalhada (campanhas antigas)
     return campanhas.some((k) => statusCampanha(k) === "em_producao") ? "Ativo" : "Fechado";
   }
@@ -17428,7 +17425,7 @@
       return;
     }
     const final = colunaFinal();
-    const grupos = { lead: [], em_producao: [], aguardando_pagamento: [], finalizadas: [] };
+    const grupos = { em_producao: [], aguardando_pagamento: [], finalizadas: [] };
     contratosCache.forEach((k) => grupos[statusCampanha(k)].push(k));
     const nomeCampanha = (k) => (k.marca || "—") + (k.nome ? " · " + k.nome : "");
     const porData = (a, b) => (b.data_assinatura || "").localeCompare(a.data_assinatura || "");
