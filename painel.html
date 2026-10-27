@@ -108,8 +108,8 @@
     }
     .sidebar:not(.pairando):not(.fixada) .item-nav{ justify-content:center; padding:10px; }
     .sidebar:not(.pairando):not(.fixada) .btn-sair{ font-size:.78rem; padding:10px 4px; }
-    .sidebar:not(.pairando):not(.fixada) .logo-sidebar{ text-align:center; padding:0; }
-    .sidebar:not(.pairando):not(.fixada) .btn-pin{ position:static; margin:0 auto 20px; }
+    .sidebar:not(.pairando):not(.fixada) .logo-sidebar{ justify-content:center; padding:0; }
+    .sidebar:not(.pairando):not(.fixada) .btn-pin{ display:none; } /* recolhido: o L ocupa o lugar do fixar; o fixar só aparece ao expandir */
   }
 
   .btn-pin{
@@ -144,6 +144,9 @@
     white-space: nowrap;
     overflow: hidden;
     flex-shrink: 0;
+    height: 30px;
+    display: flex;
+    align-items: center;
   }
   .logo-sidebar .ponto{ color: var(--coral); }
   .logo-sidebar .logo-icone{ display:none; width:30px; height:30px; border-radius:8px; margin:0 auto; }
