@@ -109,6 +109,7 @@
     .sidebar:not(.pairando):not(.fixada) .item-nav{ justify-content:center; padding:10px; }
     .sidebar:not(.pairando):not(.fixada) .btn-sair{ font-size:.78rem; padding:10px 4px; }
     .sidebar:not(.pairando):not(.fixada) .logo-sidebar{ justify-content:center; padding:0; }
+    .sidebar:not(.pairando):not(.fixada) .logo-sidebar .logo-icone{ margin:0; }
     .sidebar:not(.pairando):not(.fixada) .btn-pin{ display:none; } /* recolhido: o L ocupa o lugar do fixar; o fixar só aparece ao expandir */
   }
 
@@ -148,12 +149,8 @@
     display: flex;
     align-items: center;
   }
-  .logo-sidebar .ponto{ color: var(--coral); }
-  .logo-sidebar .logo-icone{ display:none; width:30px; height:30px; border-radius:8px; margin:0 auto; }
-  @media (min-width: 861px){
-    .sidebar:not(.pairando):not(.fixada) .logo-sidebar .logo-icone{ display:block; }
-    .sidebar:not(.pairando):not(.fixada) .logo-sidebar .ponto{ display:none; }
-  }
+  .logo-sidebar .ponto, .logo-sidebar .logo-texto{ display:none; }
+  .logo-sidebar .logo-icone{ display:block; width:30px; height:30px; border-radius:8px; margin:0 auto 0 0; }
 
   .nav-sidebar{
     display:flex;
