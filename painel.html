@@ -767,8 +767,8 @@
   .linha-tempo-wrap::-webkit-scrollbar-thumb{ background: var(--cinza-claro); border-radius: 999px; }
 
   /* Produção: seletor Kanban / Timeline com ícones, mais fácil de acertar */
-  #alternadorProducao{ padding:3px; }
-  #alternadorProducao .btn-alternador{ display:inline-flex; align-items:center; gap:7px; padding:8px 18px; font-size:.82rem; }
+  #alternadorProducao .btn-alternador{ display:inline-flex; align-items:center; gap:5px; }
+  #alternadorProducao .btn-alternador svg{ width:12px; height:12px; }
 
   .cabecalho-lt{ display:flex; position:sticky; top:0; z-index:3; background: var(--branco); }
   .canto-lt{
@@ -1596,6 +1596,35 @@
   textarea.textarea-limpa{ width:100%; margin:0; padding: 8px 10px; }
   .prop-limpa .chave-liga{ margin-top:2px; }
 
+  /* Janela do vídeo: cabeçalho fixo, abas em seletor com ícones, campos em
+     blocos suaves (sem linhas de contorno), mesma linguagem do Início. */
+  .modal-video-clean{ padding-top:0; border-radius:24px; }
+  .modal-video-clean .cabecalho-modal-video{
+    position:sticky; top:0; z-index:6; margin:0 -28px 20px; padding:22px 28px 14px;
+    background:rgba(255,255,255,.96); backdrop-filter:blur(6px); align-items:center;
+  }
+  .modal-video-clean .eyebrow-modal-video{ font-size:.66rem; text-transform:uppercase; letter-spacing:.09em; color:#9A8CC4; }
+  .modal-video-clean .titulo-input-limpo{ font-size:1.3rem; }
+  .modal-video-clean .linha-titulo-com-acao .titulo-input-limpo{ flex:0 1 520px; }
+  #alternadorAbaCard{ background:#F3F0F9; padding:4px; border-radius:14px; border:none; gap:2px; }
+  #alternadorAbaCard .btn-alternador{ display:inline-flex; align-items:center; gap:6px; padding:8px 14px; font-size:.78rem; border-radius:10px; color:#7C7394; }
+  #alternadorAbaCard .btn-alternador svg{ width:14px; height:14px; flex:none; }
+  #alternadorAbaCard .btn-alternador.ativo{ background:#fff; color:#4B3A86; box-shadow:0 2px 8px rgba(80,60,140,.14); }
+  #alternadorAbaCard .btn-alternador:not(.ativo):hover{ color:#4B3A86; background:rgba(255,255,255,.55); }
+  .modal-video-clean .grade-propriedades-limpa{ gap:10px 12px; }
+  .modal-video-clean .prop-limpa{ border-bottom:none; background:#FAF8FD; border-radius:14px; padding:10px 14px; min-height:62px; transition:background .2s; }
+  .modal-video-clean .prop-limpa:hover{ background:#F4F0FA; }
+  .modal-video-clean .rotulo-limpo{ font-size:.64rem; text-transform:uppercase; letter-spacing:.08em; color:#9A8CC4; margin-bottom:3px; }
+  .modal-video-clean select.input-limpo, .modal-video-clean input.input-limpo{ padding:4px 0; }
+  .modal-video-clean select.input-limpo:hover, .modal-video-clean input.input-limpo:hover,
+  .modal-video-clean select.input-limpo:focus, .modal-video-clean input.input-limpo:focus{ background:none; }
+  .modal-video-clean .valor-limpo{ padding:4px 0; font-weight:500; }
+  .modal-video-clean textarea.textarea-limpa{ background:#FAF8FD; border-radius:14px; padding:12px 14px; }
+  .modal-video-clean textarea.textarea-limpa:hover, .modal-video-clean textarea.textarea-limpa:focus{ background:#F4F0FA; }
+  .modal-video-clean .acoes-modal-quadro{ position:sticky; bottom:0; background:rgba(255,255,255,.96); margin:16px -28px 0; padding:14px 28px 18px; z-index:5; }
+  .modal-video-clean .tabela-etapas-producao tbody tr{ transition:background .15s; }
+  .modal-video-clean .tabela-etapas-producao tbody tr:hover{ background:#FAF8FD; }
+
   /* Aba "Etapa da produção": subtarefas em linha (nome / início / fim /
      status / responsável / tempo rastreado), substitui o antigo
      checklist em acordeão. */
@@ -2024,11 +2053,11 @@
   .filtros-demanda{ display:flex; gap:2px; }
   .filtro-demanda{ opacity:.35; }
   .filtro-demanda.ativo{ opacity:1; background: var(--creme); border-color: var(--borda); color: var(--grafite); }
-  .semana-tarefas{ border:1px solid var(--borda); border-radius:14px; overflow:hidden; display:flex; flex-direction:column; height:clamp(600px, 82vh, 1100px); background: var(--branco); }
+  .semana-tarefas{ border:1px solid var(--borda); border-radius:14px; overflow:hidden; display:flex; flex-direction:column; height:clamp(400px, 56vh, 580px); background: var(--branco); }
   .sem-linha{ display:grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
   .sem-cabecalho{ flex:0 0 auto; }
-  .sem-cab-dia{ display:flex; align-items:center; justify-content:center; gap:8px; padding:12px 4px; font-size:.82rem; color: var(--cinza-menu); text-transform:capitalize; }
-  .sem-cab-dia b{ font-size:1.05rem; font-weight:600; color: var(--grafite); min-width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center; border-radius:999px; }
+  .sem-cab-dia{ display:flex; align-items:center; justify-content:center; gap:6px; padding:6px 4px; font-size:.74rem; color: var(--cinza-menu); text-transform:capitalize; }
+  .sem-cab-dia b{ font-size:.82rem; font-weight:600; color: var(--grafite); min-width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; border-radius:999px; }
   .sem-cab-dia.hoje b{ background:#E5484D; color:#fff; }
   /* altura automática (cabe tudo, até 70% do calendário); ao arrastar o divisor vira altura manual */
   .sem-topo{ flex:0 0 auto; max-height:70%; min-height:46px; overflow:auto; border-top:1px solid var(--borda); }
@@ -2040,7 +2069,7 @@
   .sem-divisor::after{ content:""; position:absolute; left:50%; top:2px; width:34px; height:6px; margin-left:-17px; border-radius:3px; background: var(--borda); }
   .sem-divisor:hover::before, .sem-divisor.arrastando::before{ border-top-color: var(--cinza-menu); }
   .sem-divisor:hover::after, .sem-divisor.arrastando::after{ background: var(--cinza-menu); }
-  .sem-topo .cal-sub{ align-items:flex-start; padding:6px 8px; border-radius:8px; font-size:.82rem; }
+  .sem-topo .cal-sub{ align-items:flex-start; padding:4px 7px; border-radius:7px; font-size:.74rem; }
   .sem-topo .cal-sub .chk-redondo{ margin-top:1px; }
   .sem-topo .cal-sub-texto{ white-space:normal; overflow:visible; overflow-wrap:anywhere; }
   .sem-topo .cal-sub-texto em{ color:inherit; opacity:.7; }
@@ -2051,13 +2080,13 @@
   .sem-coluna-tar .chip-tarefa-dia{ align-items:flex-start; }
   .sem-coluna-tar .chip-tarefa-dia .tit{ white-space:normal; overflow-wrap:anywhere; }
   .sem-dias-tar{ flex:1 1 0; min-height:0; overflow-y:auto; align-items:stretch; }
-  .sem-coluna-tar{ border-left:1px solid var(--borda); padding:8px 6px; display:flex; flex-direction:column; gap:6px; min-width:0; }
+  .sem-coluna-tar{ border-left:1px solid var(--borda); padding:6px 5px; display:flex; flex-direction:column; gap:5px; min-width:0; }
   .sem-coluna-tar.hoje{ background: rgba(229,72,77,.05); }
   .alvo-soltar{ outline:2px dashed var(--cinza-menu); outline-offset:-3px; background-color: rgba(58,58,58,.06); }
-  .chip-demanda{ font-size:.8rem; font-weight:600; padding:6px 9px; border-radius:8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .chip-demanda{ font-size:.74rem; font-weight:600; padding:4px 8px; border-radius:7px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .chip-demanda.cobranca{ background:#DDF1E4; color:#1E6B3A; }
   .chip-demanda.pagamento{ background:#FADADD; color:#8F2330; }
-  .chip-tarefa-dia{ display:flex; align-items:center; gap:8px; background:#F6E7DF; border-radius:9px; padding:7px 9px; font-size:.84rem; cursor:grab; }
+  .chip-tarefa-dia{ display:flex; align-items:center; gap:7px; background:#F6E7DF; border-radius:8px; padding:5px 8px; font-size:.78rem; cursor:grab; }
   .chip-tarefa-dia .tit{ min-width:0; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:600; }
   .feita .tit{ text-decoration:line-through; color: var(--cinza-menu); }
   .chip-tarefa-dia.feita{ opacity:.6; }
@@ -3011,6 +3040,30 @@
   .legenda-grafico-barras i.linha{ height:3px; width:16px; border-radius:2px; }
   .svg-barras-fluxo{ width:100%; height:auto; display:block; }
   .svg-barras-fluxo text{ font-family: var(--fonte-sans); font-size:11px; fill: var(--texto-suave); }
+  .svg-barras-resultados text.valor-barra{ font-size:11px; font-weight:700; }
+
+  /* setas de mês ao lado dos seletores (Resultados e Fluxo de Caixa) */
+  .grupo-seletores-mes{ align-items:center; }
+  .btn-seta-mes{ width:34px; height:34px; display:inline-flex; align-items:center; justify-content:center; border:none; border-radius:10px; background:#F3F0F9; color:#6B5BA8; cursor:pointer; padding:0; transition:background .15s, transform .15s; }
+  .btn-seta-mes svg{ width:16px; height:16px; }
+  .btn-seta-mes:hover{ background:#E8E1F6; }
+  .btn-seta-mes:active{ transform:scale(.93); }
+
+  /* Resultados: tabelas inteiras na página (sem rolagem interna), mesmo visual leve do Início */
+  #painel-fin-resultados .painel-quadro-secao{ background:#FAF8FD; border:none; border-radius:20px; padding:20px 22px 12px; box-shadow:none; }
+  #painel-fin-resultados .painel-quadro-secao .tabela-cheia-wrap{ height:auto; min-height:0; overflow:visible; }
+  #painel-fin-resultados .tabela-contratos th{ background:none; border:none; font-size:.68rem; text-transform:uppercase; letter-spacing:.07em; color:#9A8CC4; padding:8px 14px; }
+  #painel-fin-resultados .tabela-contratos td{ border:none; border-top:1px solid rgba(120,100,180,.08); padding:11px 14px; }
+  #painel-fin-resultados .tabela-contratos tbody tr:hover{ background:rgba(155,131,226,.07); }
+  #painel-fin-resultados .linha-total-resultado td{ background:rgba(155,131,226,.1); }
+  #painel-fin-resultados .linha-subtotal-custos td{ font-weight:600; color:#6B5BA8; background:none; }
+  #painel-fin-resultados .linha-custo-campanha{ cursor:default; }
+  #painel-fin-resultados .tabela-dre-resumo tr.linha-dre-subtotal td, #painel-fin-resultados .tabela-dre-resumo tr.linha-dre-final td{ border-top:1px solid rgba(120,100,180,.18); }
+  #painel-fin-resultados .cartao-grafico{ background:#FAF8FD; border:none; border-radius:20px; }
+  #painel-fin-resultados .cartao-meta-receita{ border:none; border-radius:20px; }
+  #painel-fin-resultados .trilho-meta{ background:#ECE6F6; }
+  #painel-fin-resultados .preenchido-meta{ background: linear-gradient(90deg, #F8A9CB, #9B83E2); }
+  #painel-fin-resultados .topo-meta-receita input{ border:none; background:#fff; }
   .cartao-fluxo.analise{ border:1px solid var(--borda); border-top:3px solid var(--cinza-claro); border-left:1px solid var(--borda); }
   .cartao-fluxo.analise.entradas{ border-top-color: var(--verde-sucesso); }
   .cartao-fluxo.analise.saidas{ border-top-color: var(--vermelho-erro); }
@@ -3649,8 +3702,10 @@
 
       <div class="seletores-periodo-fluxo">
         <div class="grupo-seletores-mes" id="grupoSeletoresMesResultados">
+          <button type="button" class="btn-seta-mes" data-seta-mes="-1" data-sel-mes="campoMesResultados" data-sel-ano="campoAnoResultados" title="Mês anterior" aria-label="Mês anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
           <select id="campoMesResultados" title="Mês"></select>
           <select id="campoAnoResultados" title="Ano"></select>
+          <button type="button" class="btn-seta-mes" data-seta-mes="1" data-sel-mes="campoMesResultados" data-sel-ano="campoAnoResultados" title="Próximo mês" aria-label="Próximo mês"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
         </div>
         <div class="alternador-visualizacao alternador-mini" id="alternadorVisaoResultados">
           <button type="button" class="btn-alternador ativo" data-visao-resultados="mes">Mês atual</button>
@@ -3694,11 +3749,11 @@
         <div class="painel-quadro-secao">
           <div class="topo-quadro">
             <div>
-              <h2 style="margin-bottom:2px;">Resultado dos Contratos</h2>
-              <p class="texto-pequeno">Uma linha por campanha fechada (automática) ou serviço avulso lançado manualmente.</p>
+              <h2 style="margin-bottom:2px;">Receitas do período</h2>
+              <p class="texto-pequeno">Uma linha por campanha fechada (automática) ou receita avulsa lançada manualmente.</p>
             </div>
             <div class="acoes-topo-quadro">
-              <button type="button" class="btn-novo-card" id="btnNovoFechamento">+ Novo fechamento</button>
+              <button type="button" class="btn-novo-card" id="btnNovoFechamento">+ Nova receita</button>
             </div>
           </div>
           <div class="tabela-cheia-wrap">
@@ -3713,7 +3768,10 @@
 
         <div class="painel-quadro-secao">
           <div class="topo-quadro topo-quadro-centro">
-            <h2 style="margin-bottom:0;">Despesas da empresa</h2>
+            <div>
+              <h2 style="margin-bottom:2px;">Custos do período</h2>
+              <p class="texto-pequeno">Custos das campanhas (no mês da campanha) e despesas da empresa. É o que aparece negativo no DRE, não o que saiu do caixa.</p>
+            </div>
             <div class="acoes-topo-quadro">
               <div class="alternador-visualizacao alternador-mini" id="filtroStatusDespesaEmpresa">
                 <button type="button" class="btn-alternador ativo" data-status-filtro="todas">Todas</button>
@@ -3723,13 +3781,13 @@
               <button type="button" class="btn-ferramenta-tabela" id="btnCategoriasDespesaEmpresa" title="Categorias">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h7"/><circle cx="14" cy="6" r="2"/><path d="M18 6h2"/><path d="M4 12h2"/><circle cx="9" cy="12" r="2"/><path d="M13 12h7"/><path d="M4 18h10"/><circle cx="17" cy="18" r="2"/></svg>
               </button>
-              <button type="button" class="btn-novo-card" id="btnNovaDespesaEmpresa">+ Nova despesa</button>
+              <button type="button" class="btn-novo-card" id="btnNovaDespesaEmpresa">+ Novo custo</button>
             </div>
           </div>
           <div class="tabela-cheia-wrap">
             <table class="tabela-contratos" id="tabelaDespesasEmpresa">
               <thead>
-                <tr><th>Nome</th><th>Categoria</th><th>Data</th><th>Recorrência</th><th>Status</th><th>Valor</th></tr>
+                <tr><th>Nome</th><th>Categoria</th><th>Data</th><th>Origem</th><th>Status</th><th>Valor</th></tr>
               </thead>
               <tbody id="corpoDespesasEmpresa"></tbody>
             </table>
@@ -3740,7 +3798,7 @@
           <div class="topo-quadro">
             <div>
               <h2 style="margin-bottom:2px;">DRE</h2>
-              <p class="texto-pequeno">Soma das duas tabelas acima, no período selecionado.</p>
+              <p class="texto-pequeno">Soma das receitas e dos custos acima, no período selecionado.</p>
             </div>
           </div>
           <div class="tabela-cheia-wrap">
@@ -3773,7 +3831,7 @@
         <div class="cartao-grafico" style="margin-top:18px; padding:0;">
           <h3 style="padding:18px 22px 0;">Detalhamento mensal</h3>
           <table class="tabela-contratos tabela-detalhe-mensal">
-            <thead><tr><th>Mês</th><th>Faturamento</th><th>Despesas</th><th>Lucro líquido</th><th>Margem</th><th></th></tr></thead>
+            <thead><tr><th>Mês</th><th>Faturamento</th><th>Custos e despesas</th><th>Lucro líquido</th><th>Margem</th><th></th></tr></thead>
             <tbody id="corpoDetalheMensalResultados"></tbody>
           </table>
         </div>
@@ -3783,8 +3841,10 @@
       <div id="avisoMigracaoFluxo" class="aviso-migracao-fluxo" hidden>Falta rodar <strong>js/financas-fluxo-caixa-setup.sql</strong> no Supabase (SQL Editor) pra liberar as colunas novas do Fluxo de Caixa. Até lá, dá pra ver as tabelas, mas não salvar pela janela nova.</div>
       <div class="seletores-periodo-fluxo">
         <div class="grupo-seletores-mes" id="grupoSeletoresMes">
+          <button type="button" class="btn-seta-mes" data-seta-mes="-1" data-sel-mes="campoMesFluxo" data-sel-ano="campoAnoFluxo" title="Mês anterior" aria-label="Mês anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
           <select id="campoMesFluxo" title="Mês"></select>
           <select id="campoAnoFluxo" title="Ano"></select>
+          <button type="button" class="btn-seta-mes" data-seta-mes="1" data-sel-mes="campoMesFluxo" data-sel-ano="campoAnoFluxo" title="Próximo mês" aria-label="Próximo mês"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
         </div>
         <div class="alternador-visualizacao alternador-mini" id="alternadorVisaoFluxo">
           <button type="button" class="btn-alternador ativo" data-visao-fluxo="mes">Mês atual</button>
@@ -4068,6 +4128,7 @@
                 </button>
               </div>
             </div>
+            <button type="button" class="btn-ferramenta-tabela" id="btnLimparParcelas" title="Revisar todas as campanhas e apagar parcelas em aberto de quem já foi 100% recebido" style="width:auto; padding:0 12px; font-size:.78rem; font-weight:600;">Revisar parcelas</button>
             <button type="button" class="btn-novo-card" id="btnNovoContrato">+ Nova campanha</button>
           </div>
         </div>
@@ -4163,10 +4224,10 @@
         </div>
       </div>
       <div class="alternador-visualizacao alternador-mini" id="alternadorAbaCard">
-        <button type="button" class="btn-alternador ativo" data-aba-card="detalhes">Detalhes</button>
-        <button type="button" class="btn-alternador" data-aba-card="producao">Etapa da produção</button>
-        <button type="button" class="btn-alternador" data-aba-card="campanha">Campanha</button>
-        <button type="button" class="btn-alternador" data-aba-card="marca">Marca</button>
+        <button type="button" class="btn-alternador ativo" data-aba-card="detalhes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h9"/></svg>Detalhes</button>
+        <button type="button" class="btn-alternador" data-aba-card="producao"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l11 0M9 12l11 0M9 18l11 0"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>Etapa da produção</button>
+        <button type="button" class="btn-alternador" data-aba-card="campanha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11v3l11 4V7L4 11Z"/><path d="M18 9.5a3.5 3.5 0 0 1 0 5"/></svg>Campanha</button>
+        <button type="button" class="btn-alternador" data-aba-card="marca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9l1.5-4h13L20 9"/><path d="M5 9v10h14V9"/><path d="M9 19v-5h6v5"/></svg>Marca</button>
       </div>
     </div>
     <form id="formCardQuadro">
@@ -4798,7 +4859,7 @@
      série inteira. -->
 <div class="overlay-modal" id="overlayDespesaEmpresa" hidden>
   <div class="modal-quadro">
-    <h3 id="tituloDespesaEmpresa">Nova despesa da empresa</h3>
+    <h3 id="tituloDespesaEmpresa">Novo custo</h3>
 
     <div class="prop-limpa">
       <span class="rotulo-limpo">Nome</span>
@@ -4855,7 +4916,7 @@
      resto do fluxo de campanhas. -->
 <div class="overlay-modal" id="overlayNovoFechamento" hidden>
   <div class="modal-quadro">
-    <h3 id="tituloNovoFechamento">Novo fechamento</h3>
+    <h3 id="tituloNovoFechamento">Nova receita</h3>
 
     <div class="prop-limpa">
       <span class="rotulo-limpo">Nome / marca</span>
@@ -6750,6 +6811,9 @@
     if (!colunaId || campoColunaCard.value === colunaId) return;
     campoColunaCard.value = colunaId;
     campoColunaCard.dispatchEvent(new Event("change")); // atualiza campos derivados + o seletor
+    // vídeo já existente: a Etapa da produção acompanha na hora (a pergunta de "Concluído" continua no salvar)
+    const final = colunaFinal();
+    if (cardEmEdicaoObjeto && !(final && colunaId === final.id)) sincronizarSubtarefasComFase(cardEmEdicaoObjeto.id, colunaId);
   }
   (function ligarSeletorStatusCard() {
     const menu = document.getElementById("menuStatusCard");
@@ -7058,6 +7122,42 @@
       console.error(erro);
     }
   });
+
+  // Etapa da produção acompanha o status do vídeo: ao chegar em "Gravar" o
+  // Roteiro já está pronto, em "Editar" a Gravação, em "Pronto para Enviar"
+  // a Edição. Só avança (voltar de fase não reabre nada) e pede um OK antes.
+  const ETAPAS_CONCLUIDAS_PELA_FASE = [
+    { etapa: "roteiro", fase: "Gravar" },
+    { etapa: "gravação", fase: "Editar" },
+    { etapa: "edição", fase: "Pronto para Enviar" },
+  ];
+  async function sincronizarSubtarefasComFase(cardId, colunaId) {
+    const idxAtual = colunasCache.findIndex((c) => c.id === colunaId);
+    if (idxAtual === -1) return;
+    const devidas = ETAPAS_CONCLUIDAS_PELA_FASE.filter((r) => {
+      const fase = colunaPorNome(r.fase);
+      return fase && idxAtual >= colunasCache.findIndex((c) => c.id === fase.id);
+    }).map((r) => r.etapa);
+    const abertas = subtarefasCache.filter((s) => s.card_id === cardId && devidas.includes(s.nome.trim().toLowerCase()) && statusSubtarefa(s) !== "concluido");
+    if (!abertas.length) return;
+    const nomes = abertas.map((s) => "• " + s.nome.trim()).join("\n");
+    if (!confirm("Concluir " + (abertas.length > 1 ? "as etapas" : "a etapa") + " que ficaram para trás?\n\n" + nomes)) return;
+    const agora = new Date().toISOString();
+    try {
+      await Promise.all(abertas.map((s) => Auth.sb.from("quadro_subtarefas").update({ status: "concluido", feito: true, updated_at: agora }).eq("id", s.id)));
+      abertas.forEach((s) => {
+        const idx = subtarefasCache.findIndex((x) => x.id === s.id);
+        if (idx !== -1) subtarefasCache[idx] = { ...subtarefasCache[idx], status: "concluido", feito: true };
+      });
+      try {
+        renderizarSubtarefasModal();
+        renderizarLinhaTempo();
+      } catch (erro) {}
+    } catch (erro) {
+      alert("Não foi possível concluir as etapas.");
+      console.error(erro);
+    }
+  }
 
   // Quando um vídeo chega na última fase (Concluído) com subtarefas ainda
   // abertas, pergunta se é pra concluir todas elas.
@@ -7756,6 +7856,7 @@
         if (dados.formato === "publipost") await garantirEtapasPublipost(idCardEmEdicao);
         const colunaFinalSalvar = colunaFinal();
         if (colunaFinalSalvar && novaColunaId === colunaFinalSalvar.id && colunaAnteriorId !== colunaFinalSalvar.id) await perguntarConcluirSubtarefas(idCardEmEdicao);
+        else if (colunaAnteriorId !== novaColunaId) await sincronizarSubtarefasComFase(idCardEmEdicao, novaColunaId);
       } else {
         // Já existe um vídeo igual (mesmo título na mesma campanha) criado há poucos minutos? Era um
         // envio repetido: atualiza esse em vez de criar outro.
@@ -7822,6 +7923,7 @@
         .eq("id", id);
       const colunaFinalMover = colunaFinal();
       if (colunaFinalMover && novaColunaId === colunaFinalMover.id && colunaAnteriorId !== colunaFinalMover.id) await perguntarConcluirSubtarefas(id);
+      else if (colunaAnteriorId !== novaColunaId) await sincronizarSubtarefasComFase(id, novaColunaId);
       await recarregarQuadro();
       if (card && card.contrato_id) await sincronizarParcelasAutomaticasContrato(card.contrato_id);
     } catch (erro) {
@@ -9625,7 +9727,9 @@
   async function sincronizarParcelasAutomaticasSemFila(contratoId) {
     const contrato = contratosCache.find((k) => k.id === contratoId);
     if (!contrato) return;
-    const esperadas = parcelasEsperadasContrato(contrato);
+    // campanha já 100% recebida não ganha (nem mantém) parcela automática em aberto
+    const quitada = Number(contrato.valor || 0) > 0 && recebidoDaCampanha(contrato) >= Number(contrato.valor || 0) - 0.005;
+    const esperadas = quitada ? [] : parcelasEsperadasContrato(contrato);
     const existentesAuto = receitasCache.filter((r) => r.contrato_id === contratoId && r.auto_gerada && r.status !== "Pago");
 
     for (const existente of existentesAuto) {
@@ -9683,6 +9787,46 @@
     renderizarContratos();
     if (idContratoEmEdicao === contratoId) renderizarPainelFinanceiroCampanha();
   }
+
+  // Revisão de todas as campanhas: onde o valor do contrato já foi 100% recebido
+  // e sobraram parcelas em aberto (ex.: Entrada/Entrega de 175 ao lado de um
+  // pagamento de 350 já pago), mostra a lista e apaga só essas sobras, depois do OK.
+  function parcelasSobrandoDasCampanhas() {
+    const achados = [];
+    contratosCache.forEach((k) => {
+      const valor = Number(k.valor || 0);
+      if (valor <= 0 || recebidoDaCampanha(k) < valor - 0.005) return;
+      const sobras = receitasCache.filter((r) => r.contrato_id === k.id && r.tipo === "parcela" && r.status !== "Pago" && !(Number(r.valor_pago) > 0));
+      if (sobras.length) achados.push({ contrato: k, sobras });
+    });
+    return achados;
+  }
+  async function limparParcelasSobrando() {
+    const achados = parcelasSobrandoDasCampanhas();
+    if (!achados.length) {
+      alert("Revisei todas as campanhas: nenhuma tem parcela em aberto sobrando.");
+      return;
+    }
+    const total = achados.reduce((s, a) => s + a.sobras.length, 0);
+    const lista = achados
+      .map((a) => `• ${a.contrato.marca || "—"}${a.contrato.nome ? " (" + a.contrato.nome + ")" : ""}: ${a.sobras.map((r) => `${r.descricao || "Parcela"} ${formatarMoeda(Number(r.cache) || 0)}`).join(", ")}`)
+      .join("\n");
+    if (!confirm(`Achei ${total} parcela${total === 1 ? "" : "s"} em aberto em ${achados.length} campanha${achados.length === 1 ? "" : "s"} que já foram 100% recebidas:\n\n${lista}\n\nApagar essas parcelas sobrando?`)) return;
+    try {
+      const ids = achados.flatMap((a) => a.sobras.map((r) => r.id));
+      const { error } = await Auth.sb.from("financas_receitas").delete().in("id", ids);
+      if (error) throw error;
+      receitasCache = receitasCache.filter((r) => !ids.includes(r.id));
+      renderizarReceitas();
+      renderizarContratos();
+      if (typeof renderizarResultados === "function") renderizarResultados();
+      alert(`${ids.length} parcela${ids.length === 1 ? "" : "s"} apagada${ids.length === 1 ? "" : "s"}.`);
+    } catch (erro) {
+      alert("Não foi possível apagar as parcelas." + (erro && erro.message ? "\n\nDetalhe: " + erro.message : ""));
+      console.error(erro);
+    }
+  }
+  document.getElementById("btnLimparParcelas").addEventListener("click", limparParcelasSobrando);
 
   btnMaisDetalhesCampanha.addEventListener("click", () => {
     const vaiAbrir = painelMaisDetalhesCampanha.hidden;
@@ -11381,6 +11525,25 @@
       .filter((d) => !d.contrato_id && d.data && noPeriodoResultados(d.data))
       .sort((a, b) => a.data.localeCompare(b.data));
   }
+  // Custos das campanhas, pelo mês da campanha (não pela data em que foram
+  // pagos): é o "Custos de campanhas" negativo do DRE.
+  function linhasCustosCampanhas() {
+    return despesasFinCache
+      .filter((d) => d.contrato_id)
+      .map((d) => {
+        const k = contratosCache.find((c) => c.id === d.contrato_id);
+        return { d, k, competencia: k && k.data_assinatura ? k.data_assinatura : null };
+      })
+      .filter((x) => x.k && x.competencia && noPeriodoResultados(x.competencia))
+      .sort((a, b) => a.competencia.localeCompare(b.competencia));
+  }
+  function linhasCustosFiltradas() {
+    const filtro = (d) => (filtroStatusDespesaEmpresaAtual === "abertas" ? d.status !== "Pago" : filtroStatusDespesaEmpresaAtual === "pagas" ? d.status === "Pago" : true);
+    return {
+      campanhas: linhasCustosCampanhas().filter((x) => filtro(x.d)),
+      empresa: linhasDespesasEmpresa().filter(filtro),
+    };
+  }
   function linhasDespesasEmpresaFiltradas() {
     const linhas = linhasDespesasEmpresa();
     if (filtroStatusDespesaEmpresaAtual === "abertas") return linhas.filter((d) => d.status !== "Pago");
@@ -11464,28 +11627,48 @@
   function renderizarDespesasEmpresa() {
     const corpo = document.getElementById("corpoDespesasEmpresa");
     if (!corpo) return;
-    const linhas = linhasDespesasEmpresaFiltradas();
-    if (!linhas.length) {
-      corpo.innerHTML = `<tr><td colspan="6" class="texto-vazio">Nenhuma despesa da empresa lançada nesse período.</td></tr>`;
+    const { campanhas, empresa } = linhasCustosFiltradas();
+    if (!campanhas.length && !empresa.length) {
+      corpo.innerHTML = `<tr><td colspan="6" class="texto-vazio">Nenhum custo nesse período.</td></tr>`;
       return;
     }
-    let total = 0;
-    const linhasHtml = linhas
-      .map((d) => {
-        const valor = Number(d.valor) || 0;
-        total += valor;
-        return `
+    const pilula = (d) => `<span class="pilula-status ${d.status === "Pago" ? "status-pago" : "status-pendente"}">${d.status === "Pago" ? "Pago" : "Pendente"}</span>`;
+    const somar = (lista) => lista.reduce((s, d) => s + (Number(d.valor) || 0), 0);
+    const totalCampanhas = somar(campanhas.map((x) => x.d));
+    const totalEmpresa = somar(empresa);
+    const htmlCampanhas = campanhas
+      .map(
+        ({ d, k, competencia }) => `
+        <tr class="linha-custo-campanha" title="Custo de campanha: edite pela campanha">
+          <td>${esc(d.nome)}</td>
+          <td>${esc(d.categoria || "Campanhas")}</td>
+          <td>${formatarDataBr(competencia)}</td>
+          <td>Campanha · ${esc(k.marca || "—")}</td>
+          <td>${pilula(d)}</td>
+          <td>${formatarMoeda(Number(d.valor) || 0)}</td>
+        </tr>`
+      )
+      .join("");
+    const htmlEmpresa = empresa
+      .map(
+        (d) => `
         <tr data-id="${d.id}">
           <td>${esc(d.nome)}</td>
           <td>${esc(d.categoria || "—")}</td>
           <td>${formatarDataBr(d.data)}</td>
-          <td>${rotuloRecorrenciaDespesa(d)}</td>
-          <td><span class="pilula-status ${d.status === "Pago" ? "status-pago" : "status-pendente"}">${d.status === "Pago" ? "Pago" : "Pendente"}</span></td>
-          <td>${formatarMoeda(valor)}</td>
-        </tr>`;
-      })
+          <td>Empresa · ${rotuloRecorrenciaDespesa(d)}</td>
+          <td>${pilula(d)}</td>
+          <td>${formatarMoeda(Number(d.valor) || 0)}</td>
+        </tr>`
+      )
       .join("");
-    corpo.innerHTML = linhasHtml + `<tr class="linha-total-resultado"><td colspan="5">Total ${rotuloPeriodoResultados()}</td><td>${formatarMoeda(total)}</td></tr>`;
+    const sub = (rotulo, total) => `<tr class="linha-subtotal-custos"><td colspan="5">${rotulo}</td><td>${formatarMoeda(total)}</td></tr>`;
+    corpo.innerHTML =
+      htmlCampanhas +
+      (campanhas.length ? sub("Subtotal · custos de campanhas", totalCampanhas) : "") +
+      htmlEmpresa +
+      (empresa.length ? sub("Subtotal · despesas da empresa", totalEmpresa) : "") +
+      `<tr class="linha-total-resultado"><td colspan="5">Total ${rotuloPeriodoResultados()}</td><td>${formatarMoeda(totalCampanhas + totalEmpresa)}</td></tr>`;
   }
 
   function renderizarDreResumo() {
@@ -11558,10 +11741,37 @@
   document.getElementById("campoMesResultados").addEventListener("change", (evento) => {
     resultadosMes = Number(evento.target.value);
     renderizarPainelResultados();
+    atualizarMetaFaturamentoResultados();
   });
   document.getElementById("campoAnoResultados").addEventListener("change", (evento) => {
     resultadosAno = Number(evento.target.value);
     renderizarPainelResultados();
+    atualizarMetaFaturamentoResultados();
+  });
+  // setas de mês (Resultados e Fluxo de Caixa): passam o mês pra frente/trás, virando o ano quando precisa
+  document.addEventListener("click", (evento) => {
+    const seta = evento.target.closest("[data-seta-mes]");
+    if (!seta) return;
+    const selMes = document.getElementById(seta.dataset.selMes);
+    const selAno = document.getElementById(seta.dataset.selAno);
+    if (!selMes || !selAno) return;
+    let mes = Number(selMes.value);
+    let ano = Number(selAno.value);
+    const passo = Number(seta.dataset.setaMes);
+    if (!mes) ano += passo; // "Todos os meses": a seta anda de ano em ano
+    else {
+      mes += passo;
+      if (mes < 1) { mes = 12; ano--; }
+      if (mes > 12) { mes = 1; ano++; }
+    }
+    if (![...selAno.options].some((o) => Number(o.value) === ano)) {
+      selAno.add(new Option(String(ano), String(ano)));
+      [...selAno.options].sort((a, b) => b.value - a.value).forEach((o) => selAno.add(o));
+    }
+    selAno.value = String(ano);
+    selAno.dispatchEvent(new Event("change"));
+    selMes.value = String(mes);
+    selMes.dispatchEvent(new Event("change"));
   });
   ligarFiltroStatus("filtroStatusDespesaEmpresa", (f) => {
     filtroStatusDespesaEmpresaAtual = f;
@@ -11588,21 +11798,26 @@
   function atualizarMetaFaturamentoResultados() {
     const campo = document.getElementById("campoMetaFaturamentoResultados");
     if (!campo || typeof cfgLer !== "function" || typeof seriesDaJornada !== "function") return;
-    const mesAtual = hojeIso().slice(0, 7);
-    const alvo = metaReceitaDoMes(mesAtual);
+    // acompanha o mês escolhido no seletor ("Todos os meses" soma as metas do ano)
+    const prefixo = resultadosMes ? `${resultadosAno}-${String(resultadosMes).padStart(2, "0")}` : String(resultadosAno);
+    const alvo = resultadosMes ? metaReceitaDoMes(prefixo) : Array.from({ length: 12 }, (_, i) => metaReceitaDoMes(`${resultadosAno}-${String(i + 1).padStart(2, "0")}`)).reduce((s, v) => s + v, 0);
+    campo.disabled = !resultadosMes;
+    campo.title = resultadosMes ? "" : "Escolha um mês para definir a meta";
     if (document.activeElement !== campo) campo.value = alvo || "";
     const convertido = seriesDaJornada()
-      .faturamento.filter((f) => f.data.startsWith(mesAtual))
+      .faturamento.filter((f) => f.data.startsWith(prefixo))
       .reduce((s, f) => s + f.valor, 0);
     const pct = alvo > 0 ? Math.min(100, Math.round((convertido / alvo) * 100)) : 0;
     document.getElementById("preenchidoMetaResultados").style.width = pct + "%";
-    document.getElementById("resultadosMetaConvertido").textContent = `${formatarMoeda(convertido)} convertidos no mês atual`;
+    const rotuloMeta = resultadosMes ? `Meta de ${MESES_PT[resultadosMes - 1].toLowerCase()}/${resultadosAno}` : `Meta de ${resultadosAno}`;
+    document.querySelector("#painel-fin-resultados .topo-meta-receita .rotulo").textContent = rotuloMeta;
+    document.getElementById("resultadosMetaConvertido").textContent = `${formatarMoeda(convertido)} convertidos no período`;
     document.getElementById("resultadosMetaPct").textContent = pct + "%";
   }
   document.getElementById("campoMetaFaturamentoResultados").addEventListener("change", async (evento) => {
     const valor = Number(evento.target.value) || 0;
-    if (typeof cfgGravar !== "function") return;
-    await gravarMetaReceitaDoMes(hojeIso().slice(0, 7), valor);
+    if (typeof cfgGravar !== "function" || !resultadosMes) return;
+    await gravarMetaReceitaDoMes(`${resultadosAno}-${String(resultadosMes).padStart(2, "0")}`, valor);
     atualizarMetaFaturamentoResultados();
     if (typeof atualizarMenuPrincipal === "function") atualizarMenuPrincipal();
   });
@@ -11610,11 +11825,50 @@
   // ---- Análises: faturamento, despesas e lucro por mês (mesmo padrão do
   // Fluxo de Caixa, com os dados de Resultados) ----
   let periodoAnaliseResultados = 6;
+  // Gráfico próprio de Resultados: valores escritos em cima de cada barra
+  // (sem precisar do mouse) e um traço com a meta de faturamento de cada mês.
   function svgBarrasAnaliseResultados(dados) {
-    return svgBarrasAnalise(dados)
-      .replace(">Entradas<", ">Faturamento<")
-      .replace(">Saídas<", ">Despesas<")
-      .replace(">Saldo<", ">Lucro líquido<");
+    const W = 1000, H = 360, ml = 58, mr = 16, mt = 30, mb = 34;
+    const todos = dados.flatMap((d) => [d.ent, d.sai, d.saldo, d.meta || 0, 0]);
+    let yMin = Math.min(...todos), yMax = Math.max(...todos);
+    if (yMax === yMin) yMax = yMin + 1;
+    const passo = passoBonito((yMax - yMin) / 5);
+    yMin = Math.floor(yMin / passo) * passo;
+    yMax = Math.ceil(yMax / passo) * passo;
+    const y = (v) => mt + (1 - (v - yMin) / (yMax - yMin)) * (H - mt - mb);
+    const gw = (W - ml - mr) / dados.length;
+    const bw = Math.min(34, gw * 0.3);
+    const y0 = y(0);
+    const compacto = (v) => (Math.abs(v) >= 1000 ? (v / 1000).toFixed(Math.abs(v) >= 10000 ? 0 : 1).replace(".", ",") + "k" : String(Math.round(v)));
+    let grade = "";
+    for (let v = yMin; v <= yMax + passo / 2; v += passo) {
+      grade += `<line x1="${ml}" x2="${W - mr}" y1="${y(v)}" y2="${y(v)}" stroke="${Math.abs(v) < passo / 100 ? "rgba(80,60,140,.28)" : "rgba(80,60,140,.07)"}" stroke-width="1"/><text x="${ml - 8}" y="${y(v) + 4}" text-anchor="end">${rotuloEixo(v)}</text>`;
+    }
+    const barra = (x, valor, cor, titulo) => {
+      if (!valor) return "";
+      const topo = y(valor);
+      const alto = Math.max(Math.abs(y0 - topo), 1);
+      const r = Math.min(6, alto, bw / 2);
+      const base = valor > 0 ? topo : y0;
+      return `<rect x="${x}" y="${base}" width="${bw}" height="${alto}" rx="${r}" fill="${cor}"><title>${titulo}</title></rect>`;
+    };
+    const rotuloValor = (cx, valor, cor) => (valor ? `<text class="valor-barra" x="${cx}" y="${valor > 0 ? y(valor) - 6 : y(valor) + 14}" text-anchor="middle" fill="${cor}">${compacto(valor)}</text>` : "");
+    let barras = "", rotulos = "", metas = "", pontos = [], marcas = "";
+    dados.forEach((d, idx) => {
+      const cx = ml + gw * idx + gw / 2;
+      const xe = cx - bw - 2;
+      const xs = cx + 2;
+      barras += barra(xe, d.ent, "#8FD3A8", `${d.rotulo} · Faturamento: ${formatarMoeda(d.ent)}`) + rotuloValor(xe + bw / 2, d.ent, "#2F7A4F");
+      barras += barra(xs, d.sai, "#F29B9B", `${d.rotulo} · Custos e despesas: ${formatarMoeda(d.sai)}`) + rotuloValor(xs + bw / 2, d.sai, "#B5484B");
+      if (d.meta) metas += `<line x1="${xe - 5}" x2="${xe + bw + 5}" y1="${y(d.meta)}" y2="${y(d.meta)}" stroke="#7A5CC8" stroke-width="2" stroke-dasharray="4 3" stroke-linecap="round"><title>${d.rotulo} · Meta: ${formatarMoeda(d.meta)}</title></line>`;
+      rotulos += `<text x="${cx}" y="${H - 10}" text-anchor="middle">${d.rotulo}</text>`;
+      pontos.push(`${cx},${y(d.saldo)}`);
+      marcas += `<circle cx="${cx}" cy="${y(d.saldo)}" r="4.5" fill="#7FB6EE" stroke="#fff" stroke-width="2"><title>${d.rotulo} · Lucro líquido: ${formatarMoeda(d.saldo)}</title></circle><text class="valor-barra" x="${cx}" y="${y(d.saldo) - 10}" text-anchor="middle" fill="#2F6FB5">${compacto(d.saldo)}</text>`;
+    });
+    return `<div class="legenda-grafico-barras">
+        <span><i style="background:#8FD3A8"></i>Faturamento</span><span><i style="background:#F29B9B"></i>Custos e despesas</span><span><i class="linha" style="background:#7FB6EE"></i>Lucro líquido</span><span><i class="linha" style="background:#7A5CC8"></i>Meta do mês</span>
+      </div>
+      <svg class="svg-barras-fluxo svg-barras-resultados" viewBox="0 0 ${W} ${H}" role="img" aria-label="Faturamento, custos, lucro e meta por mês">${grade}${barras}${metas}<polyline points="${pontos.join(" ")}" fill="none" stroke="#7FB6EE" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>${marcas}${rotulos}</svg>`;
   }
   function renderizarAnaliseResultados() {
     if (!document.getElementById("cartoesAnaliseResultados")) return;
@@ -11640,11 +11894,13 @@
       ];
       const faturamento = contratosDoMes.reduce((s, l) => s + l.cache, 0);
       const lucroBruto = contratosDoMes.reduce((s, l) => s + l.cache + l.impostos + l.descontos, 0);
-      const despesas = despesasFinCache
+      const despesasEmpresa = despesasFinCache
         .filter((x) => !x.contrato_id && x.data && x.data.slice(0, 7) === chave)
         .reduce((s, x) => s + (Number(x.valor) || 0), 0);
-      const lucro = lucroBruto - despesas;
-      dados.push({ chave, rotulo: abrevMes(chave), ent: faturamento, sai: despesas, saldo: lucro });
+      const custosCampanhas = -contratosDoMes.reduce((s, l) => s + l.descontos, 0);
+      const despesas = despesasEmpresa + custosCampanhas;
+      const lucro = lucroBruto - despesasEmpresa;
+      dados.push({ chave, rotulo: abrevMes(chave), ent: faturamento, sai: despesas, saldo: lucro, meta: metaReceitaDoMes(chave) });
     }
     const totalFat = dados.reduce((s, d) => s + d.ent, 0);
     const totalDesp = dados.reduce((s, d) => s + d.sai, 0);
@@ -11654,7 +11910,7 @@
     const margemTotal = totalFat ? (lucroTotal / totalFat) * 100 : 0;
     document.getElementById("cartoesAnaliseResultados").innerHTML = `
       <div class="cartao-fluxo analise entradas"><span class="rotulo-cartao-fluxo">↑ Total faturado</span><span class="valor-cartao-fluxo">${formatarMoeda(totalFat)}</span><span class="nota-cartao-fluxo">Média ${formatarMoeda(totalFat / n)}/mês</span></div>
-      <div class="cartao-fluxo analise saidas"><span class="rotulo-cartao-fluxo">↓ Total despesas</span><span class="valor-cartao-fluxo">${formatarMoeda(totalDesp)}</span><span class="nota-cartao-fluxo">Média ${formatarMoeda(totalDesp / n)}/mês</span></div>
+      <div class="cartao-fluxo analise saidas"><span class="rotulo-cartao-fluxo">↓ Custos e despesas</span><span class="valor-cartao-fluxo">${formatarMoeda(totalDesp)}</span><span class="nota-cartao-fluxo">Média ${formatarMoeda(totalDesp / n)}/mês</span></div>
       <div class="cartao-fluxo analise saldo ${lucroTotal < 0 ? "negativo" : ""}"><span class="rotulo-cartao-fluxo">= Lucro do período</span><span class="valor-cartao-fluxo">${formatarMoeda(lucroTotal)}</span><span class="nota-cartao-fluxo">Margem de ${margemTotal.toFixed(1)}%</span></div>
       <div class="cartao-fluxo analise melhor"><span class="rotulo-cartao-fluxo">Melhor mês</span><span class="valor-cartao-fluxo">${melhor && (melhor.ent || melhor.sai) ? melhor.rotulo : "—"}</span><span class="nota-cartao-fluxo">${melhor && (melhor.ent || melhor.sai) ? "Lucro " + formatarMoeda(melhor.saldo) : "Sem movimento"}</span></div>`;
     document.getElementById("graficoBarrasAnaliseResultados").innerHTML = svgBarrasAnaliseResultados(dados);
@@ -11743,7 +11999,7 @@
   function abrirDespesaEmpresa(reg) {
     popularCategoriasDespesaEmpresa();
     despesaEmpresaEmEdicao = reg || null;
-    document.getElementById("tituloDespesaEmpresa").textContent = reg ? "Editar despesa" : "Nova despesa da empresa";
+    document.getElementById("tituloDespesaEmpresa").textContent = reg ? "Editar custo" : "Novo custo";
     campoDespesaEmpresaNome.value = reg ? reg.nome || "" : "";
     if (reg && reg.categoria) campoDespesaEmpresaCategoria.value = reg.categoria;
     campoDespesaEmpresaFixa.checked = !!(reg && reg.fixa);
@@ -11889,7 +12145,7 @@
 
   function abrirNovoFechamento(reg) {
     fechamentoEmEdicao = reg || null;
-    document.getElementById("tituloNovoFechamento").textContent = reg ? "Editar fechamento" : "Novo fechamento";
+    document.getElementById("tituloNovoFechamento").textContent = reg ? "Editar receita" : "Nova receita";
     campoFechamentoNome.value = reg ? reg.marca || "" : "";
     campoFechamentoData.value = reg ? reg.contratacao || "" : hojeIso();
     campoFechamentoValor.value = reg ? reg.cache || "" : "";
@@ -14913,12 +15169,18 @@
       } catch (erro) {}
     });
   });
+  // V alterna a visualização em qualquer página que tenha mais de uma
+  const ALTERNADORES_V = ["alternadorProducao", "alternadorVisaoResultados", "alternadorVisaoFluxo", "alternadorPortfolio", "alternadorOportunidades", "alternadorCampanhas", "alternadorMarcas", "alternadorJornada"];
   document.addEventListener("keydown", (evento) => {
     if (evento.key.toLowerCase() !== "v" || evento.ctrlKey || evento.metaKey || evento.altKey) return;
-    if (document.getElementById("painel-gp-quadro").hidden) return;
-    if (evento.target.closest("input, textarea, select, [contenteditable]") || document.querySelector(".overlay-modal:not([hidden])")) return;
-    const proxima = vistaProducaoAtual === "kanban" ? "linha-tempo" : "kanban";
-    document.querySelector(`#alternadorProducao [data-visualizacao="${proxima}"]`).click();
+    if ((evento.target.closest && evento.target.closest("input, textarea, select, [contenteditable]")) || document.querySelector(".overlay-modal:not([hidden])")) return;
+    const barra =ALTERNADORES_V.map((id) => document.getElementById(id)).find((el) => el && el.offsetParent !== null);
+    if (!barra) return;
+    const botoes = [...barra.querySelectorAll(".btn-alternador")].filter((b) => !b.hidden);
+    if (botoes.length < 2) return;
+    const i = botoes.findIndex((b) => b.classList.contains("ativo"));
+    botoes[(i + 1) % botoes.length].click();
+    evento.preventDefault();
   });
   aplicarVistaProducao(vistaSalvaProducao);
 
