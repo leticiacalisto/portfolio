@@ -4177,6 +4177,7 @@
         </div>
         <div class="topo-quadro">
           <div class="alternador-visualizacao alternador-mini" id="alternadorCampanhas">
+            <button type="button" class="btn-alternador" data-vis-campanha="geral">Geral</button>
             <button type="button" class="btn-alternador ativo" data-vis-campanha="em_producao">Em produção</button>
             <button type="button" class="btn-alternador" data-vis-campanha="aguardando_pagamento">Aguardando pagamento</button>
             <button type="button" class="btn-alternador" data-vis-campanha="finalizadas">Fechadas</button>
@@ -4216,6 +4217,7 @@
           </table>
         </div>
 
+        <div id="painelGeral" class="painel-plataformas" hidden></div>
         <div id="painelPlataformas" class="painel-plataformas" hidden></div>
 
         <div id="painelTrafegoPago" hidden>
@@ -8779,14 +8781,17 @@
       alternadorCampanhas.querySelectorAll(".btn-alternador").forEach((b) => b.classList.toggle("ativo", b === botao));
       const ehTrafego = visualizacaoCampanhas === "trafego_pago";
       const ehPlataformas = visualizacaoCampanhas === "plataformas";
-      document.getElementById("tabelaCampanhasWrap").hidden = ehTrafego || ehPlataformas;
-      document.getElementById("acoesTopoCampanhas").hidden = ehTrafego || ehPlataformas;
+      const ehGeral = visualizacaoCampanhas === "geral";
+      document.getElementById("tabelaCampanhasWrap").hidden = ehTrafego || ehPlataformas || ehGeral;
+      document.getElementById("acoesTopoCampanhas").hidden = ehTrafego || ehPlataformas || ehGeral;
+      document.getElementById("painelGeral").hidden = !ehGeral;
       document.getElementById("painelTrafegoPago").hidden = !ehTrafego;
       document.getElementById("painelPlataformas").hidden = !ehPlataformas;
       document.getElementById("cartoesCampanhas").hidden = ehTrafego;
       document.getElementById("cartoesTrafegoPago").hidden = !ehTrafego;
       if (ehTrafego) renderizarTrafegoPago();
       else if (ehPlataformas) renderizarPlataformas();
+      else if (ehGeral) renderizarGeral();
       else renderizarContratos();
     });
   }
@@ -8965,6 +8970,165 @@
       mesPlataformas = m === mesPlataformas ? -1 : m;
     } else return;
     renderizarPlataformas();
+  });
+
+  // ---------------------------------------------------------------
+  // GERAL — todas as campanhas fechadas (pela data de assinatura), mês a mês
+  // e no ano. Mesma linguagem de Plataformas; as barras e a rosca são por
+  // situação (em produção / aguardando pagamento / fechada).
+  // ---------------------------------------------------------------
+  let anoGeral = new Date().getFullYear();
+  let mesGeral = new Date().getMonth(); // 0-11; -1 = ano inteiro
+  let filtroStatusGeral = ""; // "" = todas as situações
+  const STATUS_GERAL = [
+    { id: "em_producao", cor: "#A58BE6" },
+    { id: "aguardando_pagamento", cor: "#F2CF6B" },
+    { id: "finalizadas", cor: "#8FD3A8" },
+  ];
+
+  function renderizarGeral() {
+    const el = document.getElementById("painelGeral");
+    if (!el) return;
+    const corStatus = (s) => (STATUS_GERAL.find((x) => x.id === s) || {}).cor || "#B9B3C4";
+    const todas = contratosCache
+      .map((k) => ({ k, status: statusCampanha(k), data: k.data_assinatura || diaIso(k.created_at) || "", valor: Number(k.valor) || 0 }))
+      .filter((c) => c.data);
+    const doAno = todas.filter((c) => c.data.startsWith(String(anoGeral)));
+    const filtradasAno = doAno.filter((c) => !filtroStatusGeral || c.status === filtroStatusGeral);
+    const prefixoMes = anoGeral + "-" + String(mesGeral + 1).padStart(2, "0");
+    const doMes = filtradasAno.filter((c) => c.data.startsWith(prefixoMes));
+    const periodoSel = mesGeral >= 0 ? doMes : filtradasAno;
+    const rotuloSel = mesGeral >= 0 ? `${MESES_ABREV_PLAT[mesGeral]}/${anoGeral}` : String(anoGeral);
+    const nomeCamp = (c) => (c.k.marca || "—") + (c.k.nome ? " · " + c.k.nome : "");
+    const porDataDesc = (a, b) => b.data.localeCompare(a.data);
+    const itemLista = (c) => ({ nome: nomeCamp(c), info: `${c.k.plataforma_agencia || "Direto"} · ${formatarDataBr(c.data)} · ${ROTULO_STATUS_CAMPANHA[c.status]}`, valor: c.valor, destino: { tipo: "campanha", id: c.k.id } });
+    const mesCartao = MESES_ABREV_PLAT[Math.max(mesGeral, 0)];
+    const soma = (l) => l.reduce((s, c) => s + c.valor, 0);
+    const marcasDoAno = new Set(filtradasAno.map((c) => c.k.empresa_id || normalizarTexto(c.k.marca)));
+
+    definirListaCartao("ger-mes", { titulo: `Campanhas de ${mesCartao}/${anoGeral}`, sub: filtroStatusGeral ? ROTULO_STATUS_CAMPANHA[filtroStatusGeral] : "Todas as situações", itens: doMes.slice().sort(porDataDesc).map(itemLista) });
+    definirListaCartao("ger-ano", { titulo: `Campanhas de ${anoGeral}`, sub: filtroStatusGeral ? ROTULO_STATUS_CAMPANHA[filtroStatusGeral] : "Todas as situações", itens: filtradasAno.slice().sort(porDataDesc).map(itemLista) });
+    definirListaCartao("ger-valor", { titulo: `Valor contratado em ${anoGeral}`, sub: "Soma das campanhas do ano", itens: filtradasAno.slice().sort(porDataDesc).map(itemLista) });
+    definirListaCartao("ger-marcas", { titulo: `Marcas em ${anoGeral}`, sub: "Marcas com campanha no ano", itens: [...marcasDoAno].map((chave) => {
+      const l = filtradasAno.filter((c) => (c.k.empresa_id || normalizarTexto(c.k.marca)) === chave);
+      return { nome: l[0].k.marca || "—", info: `${l.length} campanha${l.length === 1 ? "" : "s"}`, valor: soma(l) };
+    }) });
+    const cartoes = document.getElementById("cartoesCampanhas");
+    if (cartoes) {
+      cartoes.innerHTML =
+        htmlCartaoLista("ger-mes", "entradas", `Fechadas em ${mesCartao}`, formatarNumero(doMes.length), `${formatarMoeda(soma(doMes))} em contratos`) +
+        htmlCartaoLista("ger-ano", "acumulado", "Fechadas no ano", formatarNumero(filtradasAno.length), String(anoGeral)) +
+        htmlCartaoLista("ger-valor", "pendente", "Valor contratado", formatarMoeda(soma(filtradasAno)), filtradasAno.length ? `ticket médio ${formatarMoeda(soma(filtradasAno) / filtradasAno.length)}` : "no ano") +
+        htmlCartaoLista("ger-marcas", "previsto", "Marcas no ano", formatarNumero(marcasDoAno.size), "com campanha fechada");
+    }
+
+    // rosca por situação (do período escolhido)
+    const porStatus = STATUS_GERAL.map((s) => ({ ...s, qtd: periodoSel.filter((c) => c.status === s.id).length })).filter((r) => r.qtd);
+    const totalSel = porStatus.reduce((s, r) => s + r.qtd, 0);
+    const R = 62;
+    const C = 2 * Math.PI * R;
+    let acum = 0;
+    const fatias = porStatus
+      .map((r) => {
+        const parte = r.qtd / totalSel;
+        const traco = Math.max(0, parte * C - 2);
+        const arco = `<circle class="fatia-plat" data-status-geral="${r.id}" cx="90" cy="90" r="${R}" fill="none" stroke="${r.cor}" stroke-width="24" stroke-dasharray="${traco.toFixed(2)} ${(C - traco).toFixed(2)}" stroke-dashoffset="${(-acum * C).toFixed(2)}" transform="rotate(-90 90 90)"><title>${ROTULO_STATUS_CAMPANHA[r.id]}: ${r.qtd} (${Math.round(parte * 100)}%)</title></circle>`;
+        acum += parte;
+        return arco;
+      })
+      .join("");
+    const rosca = `<svg viewBox="0 0 180 180" class="rosca-plataformas" role="img" aria-label="Campanhas por situação">
+      <circle cx="90" cy="90" r="${R}" fill="none" stroke="#F1ECF8" stroke-width="24"/>${fatias}
+      <text x="90" y="92" text-anchor="middle" class="rosca-num">${totalSel}</text>
+      <text x="90" y="110" text-anchor="middle" class="rosca-leg">${esc(rotuloSel)}</text></svg>`;
+    const legenda = porStatus.length
+      ? porStatus.map((r) => `<button type="button" class="leg-plat${filtroStatusGeral === r.id ? " ativo" : ""}" data-status-geral="${r.id}"><i style="background:${r.cor}"></i>${ROTULO_STATUS_CAMPANHA[r.id]}<b>${r.qtd}</b></button>`).join("")
+      : `<p class="texto-pequeno">Nenhuma campanha em ${esc(rotuloSel)}.</p>`;
+
+    // barras por mês, empilhadas por situação
+    const porMes = Array.from({ length: 12 }, (_, m) => {
+      const pref = anoGeral + "-" + String(m + 1).padStart(2, "0");
+      const l = filtradasAno.filter((c) => c.data.startsWith(pref));
+      return { m, l, total: l.length, valor: soma(l), por: STATUS_GERAL.map((s) => ({ s, q: l.filter((c) => c.status === s.id).length })).filter((x) => x.q) };
+    });
+    const maxMes = Math.max(2, ...porMes.map((x) => x.total));
+    const LARG = 900;
+    const BASE = 190;
+    const ALTURA_MAX = 140;
+    const passo = LARG / 12;
+    const lb = 34;
+    const barras = porMes
+      .map((x) => {
+        const cx = x.m * passo + passo / 2;
+        let y = BASE;
+        const segmentos = x.por
+          .map((p) => {
+            const h = (p.q / maxMes) * ALTURA_MAX;
+            y -= h;
+            return `<rect x="${(cx - lb / 2).toFixed(1)}" y="${y.toFixed(1)}" width="${lb}" height="${h.toFixed(1)}" rx="5" fill="${p.s.cor}" stroke="#fff" stroke-width="1.5"><title>${MESES_ABREV_PLAT[x.m]}: ${p.q} ${ROTULO_STATUS_CAMPANHA[p.s.id].toLowerCase()}</title></rect>`;
+          })
+          .join("");
+        const sel = x.m === mesGeral;
+        return `<g class="coluna-mes" data-mes-geral="${x.m}"><rect x="${(cx - passo / 2 + 3).toFixed(1)}" y="6" width="${(passo - 6).toFixed(1)}" height="${BASE + 30}" rx="10" fill="${sel ? "#F3EEFB" : "transparent"}"/>${segmentos}${x.total ? `<text x="${cx.toFixed(1)}" y="${(y - 5).toFixed(1)}" text-anchor="middle" class="barra-num">${x.total}</text>` : ""}<text x="${cx.toFixed(1)}" y="${BASE + 20}" text-anchor="middle" class="barra-mes${sel ? " atual" : ""}">${MESES_ABREV_PLAT[x.m]}</text></g>`;
+      })
+      .join("");
+    const grafico = `<svg viewBox="0 0 ${LARG} ${BASE + 30}" class="barras-plataformas" role="img" aria-label="Campanhas fechadas por mês"><line x1="0" y1="${BASE}" x2="${LARG}" y2="${BASE}" stroke="#ECE7F3"/>${barras}</svg>`;
+
+    const chips =
+      `<button type="button" class="chip-plataforma${filtroStatusGeral ? "" : " ativo"}" data-status-geral="">Todas</button>` +
+      STATUS_GERAL.map((s) => `<button type="button" class="chip-plataforma${filtroStatusGeral === s.id ? " ativo" : ""}" data-status-geral="${s.id}"><i style="background:${s.cor}"></i>${ROTULO_STATUS_CAMPANHA[s.id]}</button>`).join("");
+
+    // mês a mês (ano inteiro) e lista das campanhas do período escolhido
+    const maxValor = Math.max(1, ...porMes.map((x) => x.valor));
+    const linhasMes = porMes
+      .filter((x) => x.total)
+      .map(
+        (x) => `<button type="button" class="linha-plat" data-mes-geral="${x.m}">
+          <span class="plat-nome"><strong>${MESES_PT[x.m]}</strong><span>${x.total} campanha${x.total === 1 ? "" : "s"}</span></span>
+          <span class="plat-barra"><span style="width:${((x.valor / maxValor) * 100).toFixed(1)}%; background:#A58BE6"></span></span>
+          <span class="plat-valores dado-sensivel">${formatarMoeda(x.valor)}<small>ticket médio ${formatarMoeda(x.total ? x.valor / x.total : 0)}</small></span></button>`
+      )
+      .join("");
+    const relacionadas = periodoSel.slice().sort(porDataDesc);
+    const listaRel = relacionadas.length
+      ? relacionadas
+          .map(
+            (c) => `<button type="button" class="linha-rel" data-campanha-geral="${esc(c.k.id)}">
+          <i style="background:${corStatus(c.status)}"></i><strong>${esc(nomeCamp(c))}</strong><span>${esc(c.k.plataforma_agencia || "Direto")}</span><span>${formatarDataBr(c.data)}</span><em class="status-rel">${esc(ROTULO_STATUS_CAMPANHA[c.status])}</em><b class="dado-sensivel">${formatarMoeda(c.valor)}</b></button>`
+          )
+          .join("")
+      : textoVazio("Nenhuma campanha neste período.");
+    const verAno = mesGeral >= 0 ? ` · <a href="#" data-mes-geral="-1">ver o ano todo</a>` : "";
+
+    el.innerHTML = `
+      <div class="topo-plataformas">
+        <div class="seletor-ano"><button type="button" class="btn-seta-mes" data-ano-geral="-1" title="Ano anterior">‹</button><strong>${anoGeral}</strong><button type="button" class="btn-seta-mes" data-ano-geral="1" title="Próximo ano">›</button></div>
+        <div class="chips-plataformas">${chips}</div>
+      </div>
+      <div class="grade-plataformas">
+        <div class="cartao-plat"><h3>Situação · ${esc(rotuloSel)}</h3><div class="rosca-wrap">${rosca}<div class="legenda-plat">${legenda}</div></div></div>
+        <div class="cartao-plat"><h3>Campanhas por mês <small>clique num mês para ver as campanhas</small></h3>${grafico}</div>
+      </div>
+      <div class="cartao-plat">
+        <h3>Campanhas · ${esc(rotuloSel)}${filtroStatusGeral ? " · " + esc(ROTULO_STATUS_CAMPANHA[filtroStatusGeral]) : ""} <small>${relacionadas.length} ${relacionadas.length === 1 ? "campanha" : "campanhas"}${verAno}</small></h3>
+        <div class="lista-rel">${listaRel}</div>
+      </div>
+      <div class="cartao-plat"><h3>Mês a mês · ${anoGeral}</h3>${linhasMes || textoVazio("Nenhuma campanha em " + anoGeral + ".")}</div>`;
+  }
+  document.getElementById("painelGeral").addEventListener("click", (evento) => {
+    const ano = evento.target.closest("[data-ano-geral]");
+    const st = evento.target.closest("[data-status-geral]");
+    const mes = evento.target.closest("[data-mes-geral]");
+    const camp = evento.target.closest("[data-campanha-geral]");
+    if (camp) return executarDestino({ tipo: "campanha", id: camp.dataset.campanhaGeral });
+    if (ano) anoGeral += Number(ano.dataset.anoGeral);
+    else if (st) filtroStatusGeral = filtroStatusGeral === st.dataset.statusGeral ? "" : st.dataset.statusGeral;
+    else if (mes) {
+      evento.preventDefault();
+      const m = Number(mes.dataset.mesGeral);
+      mesGeral = m === mesGeral ? -1 : m;
+    } else return;
+    renderizarGeral();
   });
 
   let filtroTrafegoAtual = "todos";
@@ -17981,6 +18145,7 @@
   function renderizarCartoesCampanhas() {
     const el = document.getElementById("cartoesCampanhas");
     if (!el) return;
+    if (visualizacaoCampanhas === "geral") return renderizarGeral();
     if (visualizacaoCampanhas === "plataformas") return renderizarPlataformas(); // nessa visualização os cartões são os de renderizarPlataformas
     if (!producaoAvancadaDisponivel || !contratosCache.length) {
       el.innerHTML = "";
