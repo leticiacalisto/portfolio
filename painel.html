@@ -4993,6 +4993,20 @@
     </div>
     <p class="texto-pequeno" id="notaDespesaEmpresaValor" style="margin:-8px 0 4px;" hidden></p>
 
+    <div class="prop-limpa">
+      <span class="rotulo-limpo" id="rotuloDespesaEmpresaDataCusto">Data do custo (entra em Resultados)</span>
+      <input type="date" id="campoDespesaEmpresaDataCusto" class="input-limpo">
+    </div>
+    <div class="prop-limpa" id="linhaDespesaEmpresaDataPag">
+      <span class="rotulo-limpo" id="rotuloDespesaEmpresaDataPag">Data do pagamento (entra no Fluxo de Caixa)</span>
+      <input type="date" id="campoDespesaEmpresaDataPag" class="input-limpo">
+    </div>
+    <div class="prop-limpa" id="linhaDespesaEmpresaParcelasPag" hidden>
+      <span class="rotulo-limpo">Pagamento em quantas parcelas</span>
+      <input type="number" min="1" step="1" id="campoDespesaEmpresaParcelasPag" class="input-limpo" value="1">
+    </div>
+    <p class="texto-pequeno" id="notaDespesaEmpresaVinculo" style="margin:-8px 0 4px;" hidden></p>
+
     <div id="blocoDespesaEmpresaInfra" hidden>
       <div class="prop-limpa">
         <span class="rotulo-limpo">Tempo estimado de uso (meses)</span>
@@ -10667,6 +10681,7 @@
       financasDisponivel = true;
       migracaoFluxoOk = (receitasCache[0] ? "valor_pago" in receitasCache[0] : true) && (despesasFinCache[0] ? "eh_fatura" in despesasFinCache[0] : true);
       migracaoResultadosOk = despesasFinCache[0] ? "fixa_ate" in despesasFinCache[0] : true;
+      migracaoCompetenciaOk = despesasFinCache[0] ? "so_resultado" in despesasFinCache[0] : true;
     } catch (erro) {
       financasDisponivel = false;
       console.error(erro);
@@ -10808,8 +10823,9 @@
 
   function linhasDespesas() {
     const porPai = agruparPor(despesasFinCache, (d) => d.parent_id);
+    // so_resultado = custo que só existe em Resultados (ex.: depreciação): não é saída de caixa
     return despesasFinCache
-      .filter((d) => !d.parent_id)
+      .filter((d) => !d.parent_id && !d.so_resultado)
       .map((d) => {
         const valor = Number(d.valor) || 0;
         const filhos = porPai.get(d.id) || [];
@@ -12046,6 +12062,9 @@
   let visaoResultados = "mes";
   let filtroStatusDespesaEmpresaAtual = "todas";
   let migracaoResultadosOk = true; // atualizado em recarregarFinancas()
+  let migracaoCompetenciaOk = true; // js/financas-competencia-setup.sql (data do custo x data do pagamento)
+  // Data em que o custo conta em Resultados (a data do pagamento é só do Fluxo de Caixa)
+  const competenciaDespesa = (d) => d.data_competencia || d.data || "";
 
   function impostoNf(cache, ativo, taxa) {
     return ativo ? -((cache * (Number(taxa) || 0)) / 100) : 0;
@@ -12094,17 +12113,17 @@
   // campanha já entram como "Descontos" na tabela acima).
   function linhasDespesasEmpresa() {
     return despesasFinCache
-      .filter((d) => !d.contrato_id && d.data && noPeriodoResultados(d.data))
-      .sort((a, b) => a.data.localeCompare(b.data));
+      .filter((d) => !d.contrato_id && !d.so_fluxo && competenciaDespesa(d) && noPeriodoResultados(competenciaDespesa(d)))
+      .sort((a, b) => competenciaDespesa(a).localeCompare(competenciaDespesa(b)));
   }
   // Custos das campanhas, pelo mês da campanha (não pela data em que foram
   // pagos): é o "Custos de campanhas" negativo do DRE.
   function linhasCustosCampanhas() {
     return despesasFinCache
-      .filter((d) => d.contrato_id)
+      .filter((d) => d.contrato_id && !d.so_fluxo)
       .map((d) => {
         const k = contratosCache.find((c) => c.id === d.contrato_id);
-        return { d, k, competencia: k && k.data_assinatura ? k.data_assinatura : null };
+        return { d, k, competencia: d.data_competencia || (k && k.data_assinatura) || null };
       })
       .filter((x) => x.k && x.competencia && noPeriodoResultados(x.competencia))
       .sort((a, b) => a.competencia.localeCompare(b.competencia));
@@ -12126,7 +12145,7 @@
   function rotuloRecorrenciaDespesa(d) {
     if (d.infra_meses) {
       const hoje = hojeIso();
-      const usados = despesasFinCache.filter((x) => x.grupo_repeticao && x.grupo_repeticao === d.grupo_repeticao && x.data && x.data <= hoje).length;
+      const usados = despesasFinCache.filter((x) => !x.so_fluxo && x.grupo_repeticao && x.grupo_repeticao === d.grupo_repeticao && x.data && x.data <= hoje).length;
       return `Infraestrutura ${Math.min(usados, d.infra_meses)}/${d.infra_meses} meses`;
     }
     if (d.fixa) return "Fixa" + (d.fixa_ate ? " até " + formatarDataBr(d.fixa_ate) : "");
@@ -12227,7 +12246,7 @@
         <tr data-id="${d.id}">
           <td>${esc(d.nome)}</td>
           <td>${esc(d.categoria || "—")}</td>
-          <td>${formatarDataBr(d.data)}</td>
+          <td>${formatarDataBr(competenciaDespesa(d))}${d.so_resultado ? `<br><span class="texto-pequeno">só custo · pago em outra data</span>` : d.data && d.data !== competenciaDespesa(d) ? `<br><span class="texto-pequeno">pago em ${formatarDataBr(d.data)}</span>` : ""}</td>
           <td>Empresa · ${rotuloRecorrenciaDespesa(d)}</td>
           <td>${pilula(d)}</td>
           <td>${formatarMoeda(Number(d.valor) || 0)}</td>
@@ -12302,7 +12321,7 @@
     };
     contratosCache.forEach((k) => anotar(k.data_assinatura));
     receitasCache.forEach((r) => anotar(r.contratacao));
-    despesasFinCache.forEach((d) => anotar(d.data));
+    despesasFinCache.forEach((d) => anotar(competenciaDespesa(d)));
     const htmlAnos = [...anos].filter(Boolean).sort((a, b) => b - a).map((a) => `<option value="${a}">${a}</option>`).join("");
     const htmlMeses = `<option value="0">Todos os meses</option>` + MESES_PT.map((m, i) => `<option value="${i + 1}">${m}</option>`).join("");
     if (selAno.innerHTML !== htmlAnos) selAno.innerHTML = htmlAnos;
@@ -12467,7 +12486,7 @@
       const faturamento = contratosDoMes.reduce((s, l) => s + l.cache, 0);
       const lucroBruto = contratosDoMes.reduce((s, l) => s + l.cache + l.impostos + l.descontos, 0);
       const despesasEmpresa = despesasFinCache
-        .filter((x) => !x.contrato_id && x.data && x.data.slice(0, 7) === chave)
+        .filter((x) => !x.contrato_id && !x.so_fluxo && competenciaDespesa(x).slice(0, 7) === chave)
         .reduce((s, x) => s + (Number(x.valor) || 0), 0);
       const custosCampanhas = -contratosDoMes.reduce((s, l) => s + l.descontos, 0);
       const despesas = despesasEmpresa + custosCampanhas;
@@ -12537,7 +12556,35 @@
   const linhaDespesaEmpresaUso = document.getElementById("linhaDespesaEmpresaUso");
   const campoDespesaEmpresaUso = document.getElementById("campoDespesaEmpresaUso");
   const btnExcluirDespesaEmpresa = document.getElementById("btnExcluirDespesaEmpresa");
+  const campoDespesaEmpresaDataCusto = document.getElementById("campoDespesaEmpresaDataCusto");
+  const campoDespesaEmpresaDataPag = document.getElementById("campoDespesaEmpresaDataPag");
+  const linhaDespesaEmpresaDataPag = document.getElementById("linhaDespesaEmpresaDataPag");
+  const linhaDespesaEmpresaParcelasPag = document.getElementById("linhaDespesaEmpresaParcelasPag");
+  const campoDespesaEmpresaParcelasPag = document.getElementById("campoDespesaEmpresaParcelasPag");
+  const notaDespesaEmpresaVinculo = document.getElementById("notaDespesaEmpresaVinculo");
   let despesaEmpresaEmEdicao = null; // registro clicado: editar/excluir só afeta essa linha, nunca a série inteira
+  let dataPagDespesaTocada = false; // enquanto não mexer, o pagamento acompanha a data do custo
+  campoDespesaEmpresaDataCusto.addEventListener("input", () => {
+    if (!dataPagDespesaTocada) campoDespesaEmpresaDataPag.value = campoDespesaEmpresaDataCusto.value;
+  });
+  campoDespesaEmpresaDataPag.addEventListener("input", () => {
+    dataPagDespesaTocada = true;
+  });
+  campoDespesaEmpresaParcelasPag.addEventListener("input", atualizarVinculoDespesaEmpresa);
+  function atualizarVinculoDespesaEmpresa() {
+    const infra = categoriaEhInfra(campoDespesaEmpresaCategoria.value);
+    const reg = despesaEmpresaEmEdicao;
+    notaDespesaEmpresaVinculo.hidden = false;
+    if (reg && reg.so_resultado) {
+      notaDespesaEmpresaVinculo.textContent = "Esta linha é só o custo (depreciação). O pagamento dela fica no Fluxo de Caixa, ligado ao mesmo item.";
+    } else if (infra && !reg) {
+      const n = Math.max(1, Math.floor(Number(campoDespesaEmpresaParcelasPag.value)) || 1);
+      const meses = Math.max(1, Math.floor(Number(campoDespesaEmpresaInfraMeses.value)) || 1);
+      notaDespesaEmpresaVinculo.textContent = `Em Resultados entram ${meses} custos mensais de depreciação a partir da data do custo. No Fluxo de Caixa entram ${n} pagamento${n === 1 ? "" : "s"} (${formatarMoeda((Number(campoDespesaEmpresaValor.value) || 0) / n)} cada), a partir da data do pagamento. Os dois ficam ligados.`;
+    } else {
+      notaDespesaEmpresaVinculo.textContent = "O custo conta em Resultados na data do custo; o dinheiro sai no Fluxo de Caixa na data do pagamento.";
+    }
+  }
 
   function categoriaEhInfra(nome) {
     return (nome || "").toLowerCase() === "infraestrutura";
@@ -12554,7 +12601,12 @@
     linhaDespesaEmpresaFixaAte.hidden = infra || !campoDespesaEmpresaFixa.checked;
     notaDespesaEmpresaValor.hidden = !infra;
     notaDespesaEmpresaValor.textContent = infra ? "Valor total do item — a depreciação mensal é calculada abaixo." : "";
+    const soCusto = !!(despesaEmpresaEmEdicao && despesaEmpresaEmEdicao.so_resultado);
+    document.getElementById("rotuloDespesaEmpresaDataCusto").textContent = infra ? "Início da depreciação (entra em Resultados)" : "Data do custo (entra em Resultados)";
+    linhaDespesaEmpresaDataPag.hidden = soCusto;
+    linhaDespesaEmpresaParcelasPag.hidden = !infra || !!despesaEmpresaEmEdicao;
     atualizarDepreciacaoDespesaEmpresa();
+    atualizarVinculoDespesaEmpresa();
   }
   campoDespesaEmpresaCategoria.addEventListener("change", atualizarBlocoInfraDespesaEmpresa);
   campoDespesaEmpresaValor.addEventListener("input", atualizarDepreciacaoDespesaEmpresa);
@@ -12579,10 +12631,14 @@
     campoDespesaEmpresaValor.value = reg ? (reg.infra_valor_total != null ? reg.infra_valor_total : reg.valor) || "" : "";
     campoDespesaEmpresaInfraMeses.value = reg && reg.infra_meses ? reg.infra_meses : "";
     btnExcluirDespesaEmpresa.hidden = !reg;
+    campoDespesaEmpresaDataCusto.value = reg ? competenciaDespesa(reg) : hojeIso();
+    campoDespesaEmpresaDataPag.value = reg && !reg.so_resultado ? reg.data || "" : campoDespesaEmpresaDataCusto.value;
+    dataPagDespesaTocada = !!reg;
+    campoDespesaEmpresaParcelasPag.value = 1;
     atualizarBlocoInfraDespesaEmpresa();
     if (reg && reg.infra_meses) {
       const hoje = hojeIso();
-      const usados = despesasFinCache.filter((x) => x.grupo_repeticao && x.grupo_repeticao === reg.grupo_repeticao && x.data && x.data <= hoje).length;
+      const usados = despesasFinCache.filter((x) => !x.so_fluxo && x.grupo_repeticao && x.grupo_repeticao === reg.grupo_repeticao && x.data && x.data <= hoje).length;
       linhaDespesaEmpresaUso.hidden = false;
       campoDespesaEmpresaUso.textContent = `${Math.min(usados, reg.infra_meses)}/${reg.infra_meses} meses`;
     } else {
@@ -12620,9 +12676,17 @@
       return;
     }
 
+    const dataCusto = campoDespesaEmpresaDataCusto.value || hojeIso();
+    const dataPag = campoDespesaEmpresaDataPag.value || dataCusto;
+    if (!migracaoCompetenciaOk) {
+      alert("Rode js/financas-competencia-setup.sql no Supabase (SQL Editor) pra separar a data do custo da data do pagamento.");
+      return;
+    }
+
     // Editando uma linha existente: só essa linha muda, a série não é regerada.
     if (despesaEmpresaEmEdicao) {
-      const dados = { nome, categoria, updated_at: new Date().toISOString() };
+      const dados = { nome, categoria, data_competencia: dataCusto, updated_at: new Date().toISOString() };
+      dados.data = despesaEmpresaEmEdicao.so_resultado ? dataCusto : dataPag;
       if (infra) {
         const meses = Math.max(1, Math.floor(Number(campoDespesaEmpresaInfraMeses.value)) || 1);
         dados.infra_valor_total = valorCampo;
@@ -12655,27 +12719,36 @@
       return;
     }
 
-    const hoje = hojeIso();
-    const base = { nome, categoria, status: "Pendente", valor_pago: 0, pago_em: null, contrato_id: null, parent_id: null };
+    const base = { nome, categoria, status: "Pendente", valor_pago: 0, pago_em: null, contrato_id: null, parent_id: null, so_resultado: false, so_fluxo: false };
     const linhas = [];
 
     if (infra) {
+      // Compra de equipamento: o CUSTO (Resultados) é a depreciação mensal; o PAGAMENTO
+      // (Fluxo de Caixa) é o valor das parcelas. Linhas separadas, ligadas pelo mesmo grupo.
       const meses = Math.max(1, Math.floor(Number(campoDespesaEmpresaInfraMeses.value)) || 1);
       const depreciacao = valorCampo / meses;
+      const parcelas = Math.max(1, Math.floor(Number(campoDespesaEmpresaParcelasPag.value)) || 1);
       const grupo = crypto.randomUUID();
       for (let i = 0; i < meses; i++) {
-        linhas.push({ ...base, data: deslocarData(hoje, i, "meses"), valor: depreciacao, infra_meses: meses, infra_valor_total: valorCampo, grupo_repeticao: grupo, fixa: false, fixa_ate: null });
+        const mesCusto = deslocarData(dataCusto, i, "meses");
+        linhas.push({ ...base, data: mesCusto, data_competencia: mesCusto, so_resultado: true, valor: depreciacao, infra_meses: meses, infra_valor_total: valorCampo, grupo_repeticao: grupo, fixa: false, fixa_ate: null });
+      }
+      for (let i = 0; i < parcelas; i++) {
+        linhas.push({
+          ...base, nome: parcelas > 1 ? `${nome} (parcela ${i + 1}/${parcelas})` : nome, data: deslocarData(dataPag, i, "meses"), data_competencia: null, so_fluxo: true,
+          valor: valorCampo / parcelas, infra_meses: null, infra_valor_total: valorCampo, grupo_repeticao: grupo, fixa: false, fixa_ate: null,
+        });
       }
     } else if (campoDespesaEmpresaFixa.checked) {
-      const inicio = new Date(hoje + "T00:00:00");
+      const inicio = new Date(dataCusto + "T00:00:00");
       const fim = new Date(campoDespesaEmpresaFixaAte.value + "T00:00:00");
       const meses = Math.max(1, (fim.getFullYear() - inicio.getFullYear()) * 12 + (fim.getMonth() - inicio.getMonth()) + 1);
       const grupo = crypto.randomUUID();
       for (let i = 0; i < meses; i++) {
-        linhas.push({ ...base, data: deslocarData(hoje, i, "meses"), valor: valorCampo, fixa: true, fixa_ate: campoDespesaEmpresaFixaAte.value, grupo_repeticao: grupo, infra_meses: null, infra_valor_total: null });
+        linhas.push({ ...base, data: deslocarData(dataPag, i, "meses"), data_competencia: deslocarData(dataCusto, i, "meses"), valor: valorCampo, fixa: true, fixa_ate: campoDespesaEmpresaFixaAte.value, grupo_repeticao: grupo, infra_meses: null, infra_valor_total: null });
       }
     } else {
-      linhas.push({ ...base, data: hoje, valor: valorCampo, fixa: false, fixa_ate: null, grupo_repeticao: null, infra_meses: null, infra_valor_total: null });
+      linhas.push({ ...base, data: dataPag, data_competencia: dataCusto, valor: valorCampo, fixa: false, fixa_ate: null, grupo_repeticao: null, infra_meses: null, infra_valor_total: null });
     }
 
     try {
@@ -18493,8 +18566,8 @@
         });
         if (id === "lucro") {
           despesasFinCache.forEach((d) => {
-            if (d.parent_id || !d.data) return;
-            const m = d.data.slice(0, 7);
+            if (d.parent_id || d.so_fluxo || !competenciaDespesa(d)) return;
+            const m = competenciaDespesa(d).slice(0, 7);
             o[m] = (o[m] || 0) - (Number(d.valor) || 0);
           });
         }
