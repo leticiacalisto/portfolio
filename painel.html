@@ -145,6 +145,11 @@
     overflow: hidden;
   }
   .logo-sidebar .ponto{ color: var(--coral); }
+  .logo-sidebar .logo-icone{ display:none; width:30px; height:30px; border-radius:8px; margin:0 auto; }
+  @media (min-width: 861px){
+    .sidebar:not(.pairando):not(.fixada) .logo-sidebar .logo-icone{ display:block; }
+    .sidebar:not(.pairando):not(.fixada) .logo-sidebar .ponto{ display:none; }
+  }
 
   .nav-sidebar{
     display:flex;
@@ -2208,6 +2213,7 @@
   .btn-novo-card.btn-pequeno{ padding:5px 12px; font-size:.74rem; border-radius:8px; }
   .bloco-titulo-topo{ min-width:0; }
   .topo-conteudo h1.titulo-saudacao{ text-transform:none; font-size:1.7rem; }
+  .icone-saudacao{ vertical-align:-6px; margin-left:4px; }
   .subtitulo-topo{ margin:4px 0 0; font-size:.95rem; color: var(--texto-suave); }
   .barra-salvos{ margin-left:auto; }
   .barra-salvos .grupo-ferramentas-tabela{ margin-right:2px; }
@@ -2513,9 +2519,8 @@
   .anel-bol{ position:relative; width:54px; height:54px; }
   .anel-bol b{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:.72rem; font-weight:700; }
   /* ---- Início: últimos 7 dias, hoje em destaque ---- */
-  .numeros-recentes{ display:grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap:14px; margin-bottom:24px; }
-  .numero-recente{ display:flex; flex-direction:column; gap:4px; text-align:left; font:inherit; color:inherit; cursor:pointer; background:#fff; border:none; border-radius:18px; padding:14px 16px 12px; box-shadow:0 6px 28px rgba(90,70,140,.07); transition: transform .25s var(--ease-mov), box-shadow .25s; }
-  .numero-recente:hover{ transform: translateY(-2px); box-shadow:0 10px 32px rgba(90,70,140,.12); }
+  .numeros-recentes{ display:grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap:14px; margin-bottom:24px; }
+  .numero-recente{ display:flex; flex-direction:column; gap:4px; text-align:left; font:inherit; color:inherit; background:#fff; border:none; border-radius:18px; padding:14px 16px 12px; box-shadow:0 6px 28px rgba(90,70,140,.07); transition: transform .25s var(--ease-mov), box-shadow .25s; }
   .rotulo-recente{ font-size:.68rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--texto-suave); }
   .valor-recente{ font-family: var(--fonte-impacto); font-size:1.55rem; font-weight:600; line-height:1.1; display:flex; align-items:baseline; gap:6px; flex-wrap:wrap; }
   .valor-recente small{ font-family: var(--fonte-sans); font-size:.7rem; font-weight:500; color:var(--texto-suave); }
@@ -2557,39 +2562,57 @@
   .btn-coracao svg{ width:16px; height:16px; fill:none; stroke:#C9C1D6; transition: transform .2s var(--ease-mov), fill .2s, stroke .2s; }
   .btn-coracao:hover svg{ stroke:#E0689A; transform: scale(1.15); }
   .btn-coracao.ligado svg{ fill:#E0689A; stroke:#E0689A; }
-  /* ---- Campanhas > Plataformas ---- */
-  .painel-plataformas{ display:flex; flex-direction:column; gap:16px; }
+  /* ---- Campanhas > Plataformas (mesma linguagem do Início: cartões sem borda, sombra suave) ---- */
+  .painel-plataformas{ display:flex; flex-direction:column; gap:18px; }
   .topo-plataformas{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
   .seletor-ano{ display:flex; align-items:center; gap:8px; }
-  .seletor-ano strong{ font-family: var(--fonte-impacto); font-size:1.2rem; font-weight:600; min-width:48px; text-align:center; }
+  .seletor-ano strong{ font-family: var(--fonte-impacto); font-size:1.1rem; font-weight:600; min-width:46px; text-align:center; }
   .chips-plataformas{ display:flex; flex-wrap:wrap; gap:6px; }
-  .chip-plataforma{ display:inline-flex; align-items:center; gap:6px; font:inherit; font-size:.8rem; padding:5px 12px; border-radius:999px; border:1px solid var(--borda); background:#fff; color:var(--grafite); cursor:pointer; }
-  .chip-plataforma i{ width:9px; height:9px; border-radius:50%; display:inline-block; }
-  .chip-plataforma:hover{ background:#F5F1FB; }
-  .chip-plataforma.ativo{ background:#EFE8FB; border-color:#CDBDF0; color:#5B4A8C; font-weight:600; }
-  .cartoes-plataformas{ grid-template-columns: repeat(3, 1fr); margin-bottom:0; }
-  .grade-plataformas{ display:grid; grid-template-columns: 260px 1fr; gap:16px; }
-  @media (max-width: 900px){ .grade-plataformas, .cartoes-plataformas{ grid-template-columns: 1fr; } }
-  .cartao-plat{ background:#fff; border:1px solid var(--borda); border-radius:18px; padding:16px 18px; }
-  .cartao-plat h3{ margin:0 0 10px; font-size:.82rem; letter-spacing:.06em; text-transform:uppercase; color:var(--texto-suave); font-weight:700; }
-  .cartao-plat h3 small{ text-transform:none; letter-spacing:0; font-weight:500; margin-left:6px; }
-  .rosca-plataformas{ width:180px; height:180px; display:block; margin:0 auto; }
-  .rosca-num{ font-family: var(--fonte-impacto); font-size:26px; font-weight:600; fill:var(--grafite); }
-  .rosca-leg{ font-size:9px; fill:var(--texto-suave); }
+  .chip-plataforma{ display:inline-flex; align-items:center; gap:6px; font:inherit; font-size:.78rem; padding:5px 12px; border-radius:999px; border:none; background:#F5F2FA; color:var(--grafite); cursor:pointer; transition: background .15s; }
+  .chip-plataforma i{ width:8px; height:8px; border-radius:50%; display:inline-block; }
+  .chip-plataforma:hover{ background:#EBE4F7; }
+  .chip-plataforma.ativo{ background:#E3D9F8; color:#4B3A86; font-weight:600; }
+  .grade-plataformas{ display:grid; grid-template-columns: minmax(300px, 4fr) minmax(0, 6fr); gap:18px; }
+  @media (max-width: 900px){ .grade-plataformas{ grid-template-columns: 1fr; } }
+  .cartao-plat{ background:#fff; border:none; border-radius:20px; padding:20px 22px; box-shadow:0 6px 28px rgba(90,70,140,.07); }
+  .cartao-plat h3{ margin:0 0 14px; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--texto-suave); font-weight:700; }
+  .cartao-plat h3 small{ text-transform:none; letter-spacing:0; font-weight:500; margin-left:6px; font-size:.75rem; }
+  .cartao-plat h3 small a{ color:#7A5CC8; text-decoration:none; }
+  .rosca-wrap{ display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+  .rosca-plataformas{ width:210px; height:210px; flex:none; display:block; }
+  .fatia-plat{ cursor:pointer; transition: stroke-width .15s; }
+  .fatia-plat:hover{ stroke-width:28; }
+  .rosca-num{ font-family: var(--fonte-impacto); font-size:34px; font-weight:600; fill:var(--grafite); }
+  .rosca-leg{ font-size:10.5px; fill:var(--texto-suave); }
+  .legenda-plat{ display:flex; flex-direction:column; gap:6px; flex:1; min-width:130px; }
+  .leg-plat{ display:flex; align-items:center; gap:8px; font:inherit; font-size:.82rem; border:none; background:none; padding:5px 8px; border-radius:10px; cursor:pointer; text-align:left; }
+  .leg-plat i{ width:10px; height:10px; border-radius:50%; flex:none; }
+  .leg-plat b{ margin-left:auto; font-weight:600; }
+  .leg-plat:hover, .leg-plat.ativo{ background:#F3EEFB; }
   .barras-plataformas{ width:100%; height:auto; display:block; }
-  .barra-num{ font-size:11px; font-weight:700; fill:var(--grafite); }
-  .barra-mes{ font-size:11px; fill:var(--texto-suave); cursor:pointer; }
+  .coluna-mes{ cursor:pointer; }
+  .barra-num{ font-size:15px; font-weight:700; fill:var(--grafite); }
+  .barra-mes{ font-size:15px; fill:var(--texto-suave); }
   .barra-mes.atual{ fill:#5B4A8C; font-weight:700; }
-  .linha-plat{ display:grid; grid-template-columns: minmax(180px,1.1fr) 2fr minmax(160px,1fr); gap:14px; align-items:center; padding:10px 0; border-top:1px solid var(--borda); }
-  .linha-plat:first-of-type{ border-top:0; }
+  .lista-rel{ display:flex; flex-direction:column; }
+  .linha-rel{ display:grid; grid-template-columns: 10px minmax(150px,2fr) minmax(100px,1fr) 90px 120px 110px; gap:12px; align-items:center; font:inherit; font-size:.85rem; text-align:left; border:none; border-top:1px solid #F0ECF6; background:none; padding:11px 6px; cursor:pointer; border-radius:8px; }
+  .linha-rel:first-child{ border-top:none; }
+  .linha-rel:hover{ background:#FAF8FD; }
+  .linha-rel i{ width:9px; height:9px; border-radius:50%; }
+  .linha-rel span{ color:var(--texto-suave); }
+  .linha-rel b{ text-align:right; font-weight:600; }
+  .status-rel{ font-style:normal; font-size:.72rem; background:#F5F2FA; color:#5B4A8C; border-radius:999px; padding:2px 10px; justify-self:start; }
+  .linha-plat{ display:grid; grid-template-columns: minmax(190px,1.1fr) 2fr minmax(160px,1fr); gap:14px; align-items:center; width:100%; font:inherit; text-align:left; border:none; border-top:1px solid #F0ECF6; background:none; padding:11px 6px; cursor:pointer; border-radius:8px; }
+  .linha-plat:first-of-type{ border-top:none; }
+  .linha-plat:hover{ background:#FAF8FD; }
   .plat-nome{ display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 8px; }
   .plat-nome i{ width:10px; height:10px; border-radius:50%; align-self:center; }
   .plat-nome span{ font-size:.75rem; color:var(--texto-suave); }
-  .plat-barra{ height:10px; background:#F2EEF8; border-radius:999px; overflow:hidden; }
+  .plat-barra{ height:8px; background:#F2EEF8; border-radius:999px; overflow:hidden; display:block; }
   .plat-barra span{ display:block; height:100%; border-radius:999px; }
   .plat-valores{ display:flex; flex-direction:column; text-align:right; font-weight:600; font-size:.9rem; }
   .plat-valores small{ font-weight:400; color:var(--texto-suave); font-size:.72rem; }
-  @media (max-width: 700px){ .linha-plat{ grid-template-columns: 1fr; } .plat-valores{ text-align:left; } }
+  @media (max-width: 700px){ .linha-plat{ grid-template-columns: 1fr; } .plat-valores{ text-align:left; } .linha-rel{ grid-template-columns: 10px 1fr auto; } .linha-rel span, .linha-rel .status-rel{ display:none; } }
 
   .bolinha-prox{ background:none; border:0; padding:2px 4px; border-radius:12px; cursor:pointer; font-family:inherit; color:inherit; transition: background .2s, transform .2s var(--ease-mov); }
   .bolinha-prox:hover{ background:#F5F1FB; transform: translateY(-1px); }
@@ -3109,11 +3132,11 @@
   .balanco-linha .nome{ width:70px; color: var(--grafite); }
   .balanco-linha .trilho{ flex:1; height:12px; border-radius:999px; background: var(--creme); overflow:hidden; }
   .balanco-linha .barra{ height:100%; border-radius:999px; min-width:4px; }
-  .balanco-linha .barra.entrada{ background: var(--verde-sucesso); }
-  .balanco-linha .barra.saida{ background: var(--vermelho-erro); }
+  .balanco-linha .barra.entrada{ background: #8FD3A8; }
+  .balanco-linha .barra.saida{ background: #F29BC4; }
   .balanco-linha .valor{ width:120px; text-align:right; font-weight:600; }
-  .balanco-linha .valor.entrada{ color: var(--verde-sucesso); }
-  .balanco-linha .valor.saida{ color: var(--vermelho-erro); }
+  .balanco-linha .valor.entrada{ color: #3F9A68; }
+  .balanco-linha .valor.saida{ color: #D0507F; }
   .legenda-grafico-barras{ display:flex; gap:18px; justify-content:center; font-size:.8rem; color: var(--texto-suave); margin-bottom:6px; }
   .legenda-grafico-barras span{ display:flex; align-items:center; gap:6px; }
   .legenda-grafico-barras i{ width:12px; height:12px; border-radius:3px; display:inline-block; }
@@ -3213,7 +3236,7 @@
       </svg>
     </button>
 
-    <div class="logo-sidebar"><span class="logo-texto">meu</span><span class="ponto">.</span><span class="logo-texto">painel</span></div>
+    <div class="logo-sidebar"><img class="logo-icone" src="imagens/icone-painel-192.png" alt="" width="30" height="30"><span class="logo-texto">meu</span><span class="ponto">.</span><span class="logo-texto">painel</span></div>
 
     <nav class="nav-sidebar" aria-label="Navegação do painel">
       <button class="item-nav ativo" data-tab="principal">
@@ -3399,7 +3422,6 @@
 
     <!-- ===================== ABA: MENU PRINCIPAL ===================== -->
     <section id="painel-principal" class="painel-aba">
-      <div class="numeros-recentes" id="numerosRecentes" aria-label="Últimos 7 dias"></div>
       <div class="principal-grade">
         <div class="principal-esquerda">
           <div class="cartao cartao-jornada">
@@ -3476,8 +3498,8 @@
           </div>
           <div class="acoes-topo-quadro">
             <div class="alternador-visualizacao alternador-mini" id="filtrosPeriodo">
-              <button type="button" class="btn-alternador ativo" data-periodo="tudo">Tudo</button>
-              <button type="button" class="btn-alternador" data-periodo="7d">7d</button>
+              <button type="button" class="btn-alternador" data-periodo="tudo">Tudo</button>
+              <button type="button" class="btn-alternador ativo" data-periodo="7d">7d</button>
               <button type="button" class="btn-alternador" data-periodo="30d">30d</button>
               <button type="button" class="btn-alternador" data-periodo="90d">90d</button>
             </div>
@@ -3496,39 +3518,7 @@
       </div>
 
       <div id="portfolioVisaoGeral">
-        <div class="cartoes-fluxo" id="cartoesPortfolio" style="grid-template-columns: repeat(5, 1fr);">
-          <div class="cartao-fluxo entradas">
-            <span class="rotulo-cartao-fluxo">Visitas</span>
-            <span class="valor-cartao-fluxo" id="numVisitas">0</span>
-          </div>
-          <div class="cartao-fluxo">
-            <span class="rotulo-cartao-fluxo">Visitantes únicos</span>
-            <span class="valor-cartao-fluxo" id="numVisitantes">0</span>
-          </div>
-          <div class="cartao-fluxo">
-            <span class="rotulo-cartao-fluxo">Cliques em botões</span>
-            <span class="valor-cartao-fluxo" id="numCliques">0</span>
-          </div>
-          <div class="cartao-fluxo">
-            <span class="rotulo-cartao-fluxo">Vídeos vistos</span>
-            <span class="valor-cartao-fluxo" id="numVideos">0</span>
-          </div>
-          <div class="cartao-fluxo">
-            <span class="rotulo-cartao-fluxo">Mensagens</span>
-            <span class="valor-cartao-fluxo" id="numMensagens">0</span>
-          </div>
-        </div>
-
-        <div class="cartao-destaque-contato">
-          <span class="rotulo-numero">Clicaram para entrar em contato</span>
-          <span class="valor-numero" id="numContato">0</span>
-          <p class="texto-pequeno">Conta quem clicou em WhatsApp, e-mail, Instagram ou no botão de enviar o formulário.</p>
-        </div>
-
-        <div class="painel-quadro-secao">
-          <div class="topo-quadro"><div><h2 style="margin-bottom:2px;">Visitas nos últimos 14 dias</h2></div></div>
-          <div class="grafico-barras" id="graficoVisitas"></div>
-        </div>
+        <div class="numeros-recentes" id="cartoesPortfolio" aria-label="Hoje e últimos 7 dias"></div>
 
         <div class="painel-quadro-secao">
           <div class="topo-quadro"><div><h2 style="margin-bottom:2px;">De onde vêm os acessos</h2></div></div>
@@ -5424,15 +5414,35 @@
     return texto.charAt(0).toUpperCase() + texto.slice(1);
   }
   const NOME_USUARIA = "Letícia";
-  function emojiDoDia() {
+  // Ícones planos de clima/hora do dia (nascer do sol, sol, sol com nuvem, lua com estrelas)
+  function iconeDoDia() {
     const hora = new Date().getHours();
-    return hora < 5 ? "🌙" : hora < 12 ? "☀️" : hora < 18 ? "🌤️" : "🌙";
+    const raios = (cx, cy, r1, r2, n, ini = 0, fim = 360) =>
+      Array.from({ length: n }, (_, i) => {
+        const a = ((ini + ((fim - ini) * i) / Math.max(1, n - 1)) * Math.PI) / 180;
+        return `<line x1="${(cx + r1 * Math.cos(a)).toFixed(1)}" y1="${(cy + r1 * Math.sin(a)).toFixed(1)}" x2="${(cx + r2 * Math.cos(a)).toFixed(1)}" y2="${(cy + r2 * Math.sin(a)).toFixed(1)}"/>`;
+      }).join("");
+    const brilho = `<path d="M-6 -7a8 8 0 0 1 6 -3" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity=".85"/>`;
+    const sol = (cx, cy, r) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#FDB52F"/><g transform="translate(${cx} ${cy}) scale(${r / 13})">${brilho}</g>`;
+    const estrela = (x, y, s) => `<path d="M${x} ${y - s}l${s * 0.32} ${s * 0.68} ${s * 0.68} ${s * 0.32} -${s * 0.68} ${s * 0.32} -${s * 0.32} ${s * 0.68} -${s * 0.32} -${s * 0.68} -${s * 0.68} -${s * 0.32} ${s * 0.68} -${s * 0.32}z" fill="#FDB52F"/>`;
+    let corpo;
+    if (hora >= 5 && hora < 9) {
+      corpo = `<g stroke="#FDB52F" stroke-width="3" stroke-linecap="round">${raios(24, 32, 15, 20, 5, 200, 340)}</g><path d="M10 32a14 14 0 0 1 28 0z" fill="#FDB52F"/><path d="M17 27a8 8 0 0 1 5-4" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity=".85"/><rect x="4" y="33" width="40" height="3" rx="1.5" fill="#8FA4B5"/>`;
+    } else if (hora >= 9 && hora < 12) {
+      corpo = `<g stroke="#FDB52F" stroke-width="3.2" stroke-linecap="round">${raios(24, 24, 15, 20, 8)}</g>${sol(24, 24, 11)}`;
+    } else if (hora >= 12 && hora < 18) {
+      corpo = `<g stroke="#FDB52F" stroke-width="3" stroke-linecap="round">${raios(31, 17, 10, 14, 6, -150, 40)}</g>${sol(31, 17, 8)}<path d="M14 40a8 8 0 0 1-1-15.9 10 10 0 0 1 19 2.4A6.8 6.8 0 0 1 31 40z" fill="#A9D6F0"/><path d="M17 29a6 6 0 0 1 4-3" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".9"/>`;
+    } else {
+      corpo = `<path d="M30 7a17 17 0 1 0 12 28A14 14 0 0 1 30 7z" fill="#FDB52F"/><path d="M19 20a8 8 0 0 0-3 8" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity=".85" transform="translate(2 -1)"/>${estrela(10, 12, 4.5)}${estrela(40, 14, 3.5)}${estrela(37, 38, 3)}`;
+    }
+    return `<svg class="icone-saudacao" viewBox="0 0 48 48" width="34" height="34" aria-hidden="true">${corpo}</svg>`;
   }
   function atualizarTopo(aba) {
     const titulo = document.getElementById("tituloTopo");
     const subtitulo = document.getElementById("subtituloTopo");
     const ehPrincipal = aba === "principal";
-    titulo.textContent = ehPrincipal ? `${cumprimentoDoDia()}, ${NOME_USUARIA} ${emojiDoDia()}` : titulosAba[aba];
+    if (ehPrincipal) titulo.innerHTML = `${cumprimentoDoDia()}, ${NOME_USUARIA} ${iconeDoDia()}`;
+    else titulo.textContent = titulosAba[aba];
     titulo.classList.toggle("titulo-saudacao", ehPrincipal);
     subtitulo.textContent = ehPrincipal ? dataPorExtenso() : "";
     subtitulo.hidden = !ehPrincipal;
@@ -5701,7 +5711,7 @@
   // ---------------------------------------------------------------
   // FILTRO DE PERÍODO (refiltra em memória, sem nova busca no banco)
   // ---------------------------------------------------------------
-  let periodoAtual = "tudo";
+  let periodoAtual = "7d";
 
   function filtrarPorPeriodo(lista) {
     if (periodoAtual === "tudo") return lista;
@@ -5753,20 +5763,42 @@
     const eventos = filtrarPorPeriodo(eventosCache);
     const leads = filtrarPorPeriodo(leadsCache);
 
-    const visitas = eventos.filter((e) => e.event_type === "page_view");
-    const cliques = eventos.filter((e) => e.event_type === "button_click");
-    const videos = eventos.filter((e) => e.event_type === "video_view");
-    const cliquesContato = cliques.filter((e) => (e.event_name || "").startsWith("contact_"));
-    const visitantesUnicos = new Set(visitas.map((e) => e.session_id)).size;
-
-    document.getElementById("numVisitas").textContent = formatarNumero(visitas.length);
-    document.getElementById("numVisitantes").textContent = formatarNumero(visitantesUnicos);
-    document.getElementById("numCliques").textContent = formatarNumero(cliques.length);
-    document.getElementById("numVideos").textContent = formatarNumero(videos.length);
-    document.getElementById("numMensagens").textContent = formatarNumero(leads.length);
-    document.getElementById("numContato").textContent = formatarNumero(cliquesContato.length);
-
-    renderizarGrafico14Dias();
+    const cartoes = document.getElementById("cartoesPortfolio");
+    if (!cartoes) return;
+    const deTipo = (lista, tipo) => lista.filter((e) => e.event_type === tipo);
+    const ehContato = (e) => e.event_type === "button_click" && (e.event_name || "").startsWith("contact_");
+    // cada cartão: total do período escolhido, "Hoje" em destaque e barrinhas dos últimos 7 dias (hoje em roxo)
+    const metricas = [
+      { rotulo: "Visitas", todos: eventosCache.filter((e) => e.event_type === "page_view"), filtrados: deTipo(eventos, "page_view") },
+      { rotulo: "Visitantes únicos", todos: eventosCache.filter((e) => e.event_type === "page_view"), filtrados: deTipo(eventos, "page_view"), unicos: true },
+      { rotulo: "Cliques em botões", todos: eventosCache.filter((e) => e.event_type === "button_click"), filtrados: deTipo(eventos, "button_click") },
+      { rotulo: "Contatos", dica: "Cliques em WhatsApp, e-mail, Instagram ou no envio do formulário", todos: eventosCache.filter(ehContato), filtrados: eventos.filter(ehContato) },
+      { rotulo: "Vídeos vistos", todos: eventosCache.filter((e) => e.event_type === "video_view"), filtrados: deTipo(eventos, "video_view") },
+      { rotulo: "Mensagens", todos: leadsCache, filtrados: leads },
+    ];
+    const hoje = hojeIso();
+    const dias = Array.from({ length: 7 }, (_, i) => somarDiasIso(hoje, i - 6));
+    const contar = (lista, unicos) => (unicos ? new Set(lista.map((e) => e.session_id)).size : lista.length);
+    const rotuloPeriodo = { tudo: "no total", "7d": "7 dias", "30d": "30 dias", "90d": "90 dias" }[periodoAtual];
+    cartoes.innerHTML = metricas
+      .map((m) => {
+        const porDia = dias.map((d) => contar(m.todos.filter((e) => String(e.created_at).slice(0, 10) === d), m.unicos));
+        const maximo = Math.max(...porDia, 1);
+        const deHoje = porDia[6];
+        const barras = porDia
+          .map((n, i) => {
+            const letra = "DSTQQSS"[new Date(dias[i] + "T00:00:00").getDay()];
+            return `<span class="dia-recente${i === 6 ? " hoje" : ""}" title="${esc(formatarDataBr(dias[i]) + ": " + n)}"><i style="height:${n ? Math.max(12, Math.round((n / maximo) * 100)) : 6}%"></i><em>${letra}</em></span>`;
+          })
+          .join("");
+        return `<div class="numero-recente" ${m.dica ? `title="${esc(m.dica)}"` : ""}>
+          <span class="rotulo-recente">${esc(m.rotulo)}</span>
+          <span class="valor-recente">${formatarNumero(contar(m.filtrados, m.unicos))}<small>${rotuloPeriodo}</small></span>
+          <span class="hoje-recente${deHoje ? " tem" : ""}">Hoje <b>${formatarNumero(deHoje)}</b></span>
+          <span class="barras-recentes">${barras}</span>
+        </div>`;
+      })
+      .join("");
   }
 
   // O gráfico é sempre fixo nos últimos 14 dias, independente do filtro
@@ -8747,7 +8779,7 @@
       document.getElementById("acoesTopoCampanhas").hidden = ehTrafego || ehPlataformas;
       document.getElementById("painelTrafegoPago").hidden = !ehTrafego;
       document.getElementById("painelPlataformas").hidden = !ehPlataformas;
-      document.getElementById("cartoesCampanhas").hidden = ehTrafego || ehPlataformas;
+      document.getElementById("cartoesCampanhas").hidden = ehTrafego;
       document.getElementById("cartoesTrafegoPago").hidden = !ehTrafego;
       if (ehTrafego) renderizarTrafegoPago();
       else if (ehPlataformas) renderizarPlataformas();
@@ -8765,69 +8797,96 @@
   // passou a data; Ativo = o resto.
   // ---------------------------------------------------------------
   // ---------------------------------------------------------------
-  // PLATAFORMAS — campanhas por plataforma/agência (gráficos, sem tabela).
-  // Conta pela data de assinatura da campanha. Sem plataforma = "Direto".
+  // PLATAFORMAS — campanhas por plataforma/agência (gráficos).
+  // Conta pela data de assinatura da campanha; campanha sem plataforma
+  // (trabalho direto com a marca) não entra. Os cartões ficam no mesmo lugar
+  // dos de Campanhas e abrem a lista; clicar num mês, numa plataforma ou numa
+  // fatia da rosca filtra a lista "Campanhas relacionadas" logo abaixo.
   // ---------------------------------------------------------------
   let anoPlataformas = new Date().getFullYear();
-  let mesPlataformas = new Date().getMonth(); // 0-11
+  let mesPlataformas = new Date().getMonth(); // 0-11; -1 = ano inteiro
   let filtroPlataforma = ""; // "" = todas
   const MESES_ABREV_PLAT = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
-  const CORES_PLATAFORMAS = ["#A58BE6", "#F29BC4", "#7FB6EE", "#EFCB5A", "#8FD3A8", "#F7B27A", "#6FCBC6", "#D58BDB", "#B9B3C4"];
+  const CORES_PLATAFORMAS = ["#A58BE6", "#F29BC4", "#7FB6EE", "#F2CF6B", "#8FD3A8", "#F7B27A", "#6FCBC6", "#D58BDB", "#B9B3C4"];
 
   function renderizarPlataformas() {
     const el = document.getElementById("painelPlataformas");
     if (!el) return;
-    const nomeDe = (k) => String(k.plataforma_agencia || "").trim() || "Direto";
     const todas = contratosCache
-      .map((k) => ({ k, plataforma: nomeDe(k), data: k.data_assinatura || diaIso(k.created_at) || "", valor: Number(k.valor) || 0 }))
+      .filter((k) => String(k.plataforma_agencia || "").trim())
+      .map((k) => ({ k, plataforma: String(k.plataforma_agencia).trim(), data: k.data_assinatura || diaIso(k.created_at) || "", valor: Number(k.valor) || 0 }))
       .filter((c) => c.data);
     const doAno = todas.filter((c) => c.data.startsWith(String(anoPlataformas)));
-    // plataformas do ano, da mais usada para a menos usada (cor fixa pela posição)
     const contagemAno = new Map();
     doAno.forEach((c) => contagemAno.set(c.plataforma, (contagemAno.get(c.plataforma) || 0) + 1));
     const nomes = [...contagemAno.keys()].sort((a, b) => contagemAno.get(b) - contagemAno.get(a) || a.localeCompare(b, "pt-BR"));
     const corDe = (n) => CORES_PLATAFORMAS[Math.min(nomes.indexOf(n), CORES_PLATAFORMAS.length - 1)] || "#B9B3C4";
     if (filtroPlataforma && !nomes.includes(filtroPlataforma)) filtroPlataforma = "";
-    const visiveis = doAno.filter((c) => !filtroPlataforma || c.plataforma === filtroPlataforma);
+    const filtradasAno = doAno.filter((c) => !filtroPlataforma || c.plataforma === filtroPlataforma);
     const prefixoMes = anoPlataformas + "-" + String(mesPlataformas + 1).padStart(2, "0");
-    const doMes = visiveis.filter((c) => c.data.startsWith(prefixoMes));
+    const doMes = filtradasAno.filter((c) => c.data.startsWith(prefixoMes));
+    const periodoSel = mesPlataformas >= 0 ? doMes : filtradasAno; // o que as listas/rosca mostram
+    const rotuloPeriodoSel = mesPlataformas >= 0 ? `${MESES_ABREV_PLAT[mesPlataformas]}/${anoPlataformas}` : String(anoPlataformas);
+    const nomeCamp = (c) => (c.k.marca || "—") + (c.k.nome ? " · " + c.k.nome : "");
+    const porDataDesc = (a, b) => b.data.localeCompare(a.data);
+    const itemLista = (c) => ({ nome: nomeCamp(c), info: `${c.plataforma} · ${formatarDataBr(c.data)} · ${ROTULO_STATUS_CAMPANHA[statusCampanha(c.k)]}`, valor: c.valor, destino: { tipo: "campanha", id: c.k.id } });
+    const mesCartao = MESES_ABREV_PLAT[Math.max(mesPlataformas, 0)];
 
-    // por plataforma (ano)
-    const resumo = nomes
+    // cartões no lugar de sempre (clicáveis: abrem a lista exata)
+    const resumoPlat = nomes
       .map((n) => {
-        const l = doAno.filter((c) => c.plataforma === n);
-        const receita = l.reduce((s, c) => s + c.valor, 0);
-        return { n, qtd: l.length, receita, ticket: l.length ? receita / l.length : 0, mes: l.filter((c) => c.data.startsWith(prefixoMes)).length };
+        const l = filtradasAno.filter((c) => c.plataforma === n);
+        return { n, qtd: l.length, receita: l.reduce((s, c) => s + c.valor, 0) };
       })
-      .filter((r) => !filtroPlataforma || r.n === filtroPlataforma);
-    const totalAno = resumo.reduce((s, r) => s + r.qtd, 0);
-    const maxQtd = Math.max(1, ...resumo.map((r) => r.qtd));
+      .filter((r) => r.qtd);
+    definirListaCartao("plat-mes", { titulo: `Fechadas em ${mesCartao}/${anoPlataformas}`, sub: filtroPlataforma || "Todas as plataformas", itens: doMes.slice().sort(porDataDesc).map(itemLista) });
+    definirListaCartao("plat-ano", { titulo: `Fechadas em ${anoPlataformas}`, sub: filtroPlataforma || "Todas as plataformas", itens: filtradasAno.slice().sort(porDataDesc).map(itemLista) });
+    definirListaCartao("plat-lista", { titulo: "Plataformas", sub: String(anoPlataformas), itens: resumoPlat.map((r) => ({ nome: r.n, info: `${r.qtd} campanha${r.qtd === 1 ? "" : "s"}`, valor: r.receita })) });
+    definirListaCartao("plat-valor", { titulo: `Valor contratado em ${anoPlataformas}`, sub: filtroPlataforma || "Todas as plataformas", itens: filtradasAno.slice().sort(porDataDesc).map(itemLista) });
+    const cartoes = document.getElementById("cartoesCampanhas");
+    if (cartoes) {
+      cartoes.innerHTML =
+        htmlCartaoLista("plat-mes", "entradas", `Fechadas em ${mesCartao}`, formatarNumero(doMes.length), filtroPlataforma || "Todas as plataformas") +
+        htmlCartaoLista("plat-ano", "acumulado", "Fechadas no ano", formatarNumero(filtradasAno.length), String(anoPlataformas)) +
+        htmlCartaoLista("plat-lista", "previsto", "Plataformas", formatarNumero(nomes.length), nomes.length ? "Mais usada: " + nomes[0] : "—") +
+        htmlCartaoLista("plat-valor", "pendente", "Valor contratado", formatarMoeda(filtradasAno.reduce((s, c) => s + c.valor, 0)), `no ano de ${anoPlataformas}`);
+    }
 
-    // rosca: participação de cada plataforma no ano
-    const R = 52, C = 2 * Math.PI * R;
-    let acumulado = 0;
-    const fatias = resumo
+    // rosca (clique numa fatia filtra a plataforma); acompanha o mês escolhido
+    const porPlatSel = nomes.map((n) => ({ n, qtd: periodoSel.filter((c) => c.plataforma === n).length })).filter((r) => r.qtd);
+    const totalSel = porPlatSel.reduce((s, r) => s + r.qtd, 0);
+    const R = 62;
+    const C = 2 * Math.PI * R;
+    let acum = 0;
+    const fatias = porPlatSel
       .map((r) => {
-        const parte = totalAno ? r.qtd / totalAno : 0;
-        const tracado = `<circle cx="70" cy="70" r="${R}" fill="none" stroke="${corDe(r.n)}" stroke-width="22" stroke-dasharray="${(parte * C).toFixed(2)} ${(C - parte * C).toFixed(2)}" stroke-dashoffset="${(-acumulado * C).toFixed(2)}" transform="rotate(-90 70 70)"><title>${esc(r.n)}: ${r.qtd} (${Math.round(parte * 100)}%)</title></circle>`;
-        acumulado += parte;
-        return tracado;
+        const parte = r.qtd / totalSel;
+        const traco = Math.max(0, parte * C - 2);
+        const arco = `<circle class="fatia-plat" data-plataforma="${esc(r.n)}" cx="90" cy="90" r="${R}" fill="none" stroke="${corDe(r.n)}" stroke-width="24" stroke-dasharray="${traco.toFixed(2)} ${(C - traco).toFixed(2)}" stroke-dashoffset="${(-acum * C).toFixed(2)}" transform="rotate(-90 90 90)"><title>${esc(r.n)}: ${r.qtd} (${Math.round(parte * 100)}%)</title></circle>`;
+        acum += parte;
+        return arco;
       })
       .join("");
-    const rosca = `<svg viewBox="0 0 140 140" class="rosca-plataformas" role="img" aria-label="Campanhas por plataforma no ano">
-      <circle cx="70" cy="70" r="${R}" fill="none" stroke="#EFEAF6" stroke-width="22"/>${fatias}
-      <text x="70" y="68" text-anchor="middle" class="rosca-num">${totalAno}</text>
-      <text x="70" y="84" text-anchor="middle" class="rosca-leg">em ${anoPlataformas}</text>
-    </svg>`;
+    const rosca = `<svg viewBox="0 0 180 180" class="rosca-plataformas" role="img" aria-label="Campanhas por plataforma">
+      <circle cx="90" cy="90" r="${R}" fill="none" stroke="#F1ECF8" stroke-width="24"/>${fatias}
+      <text x="90" y="92" text-anchor="middle" class="rosca-num">${totalSel}</text>
+      <text x="90" y="110" text-anchor="middle" class="rosca-leg">${esc(rotuloPeriodoSel)}</text></svg>`;
+    const legenda = porPlatSel.length
+      ? porPlatSel.map((r) => `<button type="button" class="leg-plat${filtroPlataforma === r.n ? " ativo" : ""}" data-plataforma="${esc(r.n)}"><i style="background:${corDe(r.n)}"></i>${esc(r.n)}<b>${r.qtd}</b></button>`).join("")
+      : `<p class="texto-pequeno">Nenhuma campanha em ${esc(rotuloPeriodoSel)}.</p>`;
 
-    // barras empilhadas por mês (ano)
+    // barras por mês (empilhadas por plataforma); clicar na coluna escolhe o mês
     const porMes = Array.from({ length: 12 }, (_, m) => {
       const pref = anoPlataformas + "-" + String(m + 1).padStart(2, "0");
-      const l = visiveis.filter((c) => c.data.startsWith(pref));
+      const l = filtradasAno.filter((c) => c.data.startsWith(pref));
       return { m, total: l.length, por: nomes.map((n) => ({ n, q: l.filter((c) => c.plataforma === n).length })).filter((x) => x.q) };
     });
-    const maxMes = Math.max(1, ...porMes.map((x) => x.total));
-    const LARG = 600, ALT = 190, BASE = 160, ALTURA_MAX = 130, passo = LARG / 12, larguraBarra = passo * 0.56;
+    const maxMes = Math.max(2, ...porMes.map((x) => x.total));
+    const LARG = 900;
+    const BASE = 190;
+    const ALTURA_MAX = 140;
+    const passo = LARG / 12;
+    const lb = 34;
     const barras = porMes
       .map((x) => {
         const cx = x.m * passo + passo / 2;
@@ -8836,58 +8895,71 @@
           .map((p) => {
             const h = (p.q / maxMes) * ALTURA_MAX;
             y -= h;
-            return `<rect x="${(cx - larguraBarra / 2).toFixed(1)}" y="${y.toFixed(1)}" width="${larguraBarra.toFixed(1)}" height="${h.toFixed(1)}" rx="3" fill="${corDe(p.n)}" stroke="#fff" stroke-width="1"><title>${esc(MESES_ABREV_PLAT[x.m])}: ${p.q} em ${esc(p.n)}</title></rect>`;
+            return `<rect x="${(cx - lb / 2).toFixed(1)}" y="${y.toFixed(1)}" width="${lb}" height="${h.toFixed(1)}" rx="5" fill="${corDe(p.n)}" stroke="#fff" stroke-width="1.5"><title>${MESES_ABREV_PLAT[x.m]}: ${p.q} em ${esc(p.n)}</title></rect>`;
           })
           .join("");
-        const num = x.total ? `<text x="${cx.toFixed(1)}" y="${(y - 6).toFixed(1)}" text-anchor="middle" class="barra-num">${x.total}</text>` : "";
-        const destaque = x.m === mesPlataformas ? `<rect x="${(cx - passo / 2 + 2).toFixed(1)}" y="8" width="${(passo - 4).toFixed(1)}" height="${BASE + 26}" rx="8" fill="#F5F1FB" opacity=".7"/>` : "";
-        return `${destaque}${segmentos}${num}<text x="${cx.toFixed(1)}" y="${BASE + 18}" text-anchor="middle" class="barra-mes${x.m === mesPlataformas ? " atual" : ""}">${MESES_ABREV_PLAT[x.m]}</text>`;
+        const sel = x.m === mesPlataformas;
+        return `<g class="coluna-mes" data-mes-plat="${x.m}"><rect x="${(cx - passo / 2 + 3).toFixed(1)}" y="6" width="${(passo - 6).toFixed(1)}" height="${BASE + 30}" rx="10" fill="${sel ? "#F3EEFB" : "transparent"}"/>${segmentos}${x.total ? `<text x="${cx.toFixed(1)}" y="${(y - 5).toFixed(1)}" text-anchor="middle" class="barra-num">${x.total}</text>` : ""}<text x="${cx.toFixed(1)}" y="${BASE + 20}" text-anchor="middle" class="barra-mes${sel ? " atual" : ""}">${MESES_ABREV_PLAT[x.m]}</text></g>`;
       })
       .join("");
-    const grafico = `<svg viewBox="0 0 ${LARG} ${ALT}" class="barras-plataformas" role="img" aria-label="Campanhas fechadas por mês">
-      <line x1="0" y1="${BASE}" x2="${LARG}" y2="${BASE}" stroke="#E7E2EE"/>${barras}</svg>`;
+    const grafico = `<svg viewBox="0 0 ${LARG} ${BASE + 30}" class="barras-plataformas" role="img" aria-label="Campanhas fechadas por mês"><line x1="0" y1="${BASE}" x2="${LARG}" y2="${BASE}" stroke="#ECE7F3"/>${barras}</svg>`;
 
     const chips =
       `<button type="button" class="chip-plataforma${filtroPlataforma ? "" : " ativo"}" data-plataforma="">Todas</button>` +
       nomes.map((n) => `<button type="button" class="chip-plataforma${filtroPlataforma === n ? " ativo" : ""}" data-plataforma="${esc(n)}"><i style="background:${corDe(n)}"></i>${esc(n)}</button>`).join("");
 
-    const linhas = resumo.length
-      ? resumo
+    // relação por plataforma (ano) e lista das campanhas do período escolhido
+    const maxQtd = Math.max(1, ...resumoPlat.map((r) => r.qtd));
+    const totalAno = filtradasAno.length;
+    const linhas = resumoPlat.length
+      ? resumoPlat
           .map(
-            (r) => `<div class="linha-plat">
-              <div class="plat-nome"><i style="background:${corDe(r.n)}"></i><strong>${esc(r.n)}</strong><span>${r.qtd} campanha${r.qtd === 1 ? "" : "s"} · ${totalAno ? Math.round((r.qtd / totalAno) * 100) : 0}%</span></div>
-              <div class="plat-barra"><span style="width:${((r.qtd / maxQtd) * 100).toFixed(1)}%; background:${corDe(r.n)}"></span></div>
-              <div class="plat-valores"><span class="dado-sensivel">${formatarMoeda(r.receita)}</span><small>ticket médio <span class="dado-sensivel">${formatarMoeda(r.ticket)}</span> · ${r.mes} em ${MESES_ABREV_PLAT[mesPlataformas]}</small></div>
-            </div>`
+            (r) => `<button type="button" class="linha-plat" data-plataforma="${esc(r.n)}">
+          <span class="plat-nome"><i style="background:${corDe(r.n)}"></i><strong>${esc(r.n)}</strong><span>${r.qtd} campanha${r.qtd === 1 ? "" : "s"} · ${totalAno ? Math.round((r.qtd / totalAno) * 100) : 0}%</span></span>
+          <span class="plat-barra"><span style="width:${((r.qtd / maxQtd) * 100).toFixed(1)}%; background:${corDe(r.n)}"></span></span>
+          <span class="plat-valores dado-sensivel">${formatarMoeda(r.receita)}<small>ticket médio ${formatarMoeda(r.qtd ? r.receita / r.qtd : 0)}</small></span></button>`
           )
           .join("")
-      : textoVazio("Nenhuma campanha em " + anoPlataformas + ".");
+      : textoVazio("Nenhuma campanha com plataforma em " + anoPlataformas + ".");
+    const relacionadas = periodoSel.slice().sort(porDataDesc);
+    const listaRel = relacionadas.length
+      ? relacionadas
+          .map(
+            (c) => `<button type="button" class="linha-rel" data-campanha-plat="${esc(c.k.id)}">
+          <i style="background:${corDe(c.plataforma)}"></i><strong>${esc(nomeCamp(c))}</strong><span>${esc(c.plataforma)}</span><span>${formatarDataBr(c.data)}</span><em class="status-rel">${esc(ROTULO_STATUS_CAMPANHA[statusCampanha(c.k)])}</em><b class="dado-sensivel">${formatarMoeda(c.valor)}</b></button>`
+          )
+          .join("")
+      : textoVazio("Nenhuma campanha neste período.");
+    const verAno = mesPlataformas >= 0 ? ` · <a href="#" data-mes-plat="-1">ver o ano todo</a>` : "";
 
-    const receitaMes = doMes.reduce((s, c) => s + c.valor, 0);
     el.innerHTML = `
       <div class="topo-plataformas">
         <div class="seletor-ano"><button type="button" class="btn-seta-mes" data-ano-plat="-1" title="Ano anterior">‹</button><strong>${anoPlataformas}</strong><button type="button" class="btn-seta-mes" data-ano-plat="1" title="Próximo ano">›</button></div>
         <div class="chips-plataformas">${chips}</div>
       </div>
-      <div class="cartoes-fluxo cartoes-plataformas">
-        <div class="cartao-fluxo entradas"><span class="rotulo-cartao-fluxo">Fechadas em ${MESES_ABREV_PLAT[mesPlataformas]}/${anoPlataformas}</span><span class="valor-cartao-fluxo">${doMes.length}</span><span class="nota-cartao-fluxo dado-sensivel">${formatarMoeda(receitaMes)} em contratos</span></div>
-        <div class="cartao-fluxo acumulado"><span class="rotulo-cartao-fluxo">Fechadas no ano</span><span class="valor-cartao-fluxo">${totalAno}</span><span class="nota-cartao-fluxo">${filtroPlataforma ? esc(filtroPlataforma) : "Todas as plataformas"}</span></div>
-        <div class="cartao-fluxo previsto"><span class="rotulo-cartao-fluxo">Plataformas no ano</span><span class="valor-cartao-fluxo">${nomes.length}</span><span class="nota-cartao-fluxo">${nomes.length ? "Mais usada: " + esc(nomes[0]) : "—"}</span></div>
-      </div>
       <div class="grade-plataformas">
-        <div class="cartao-plat cartao-plat-rosca"><h3>Participação no ano</h3>${rosca}</div>
-        <div class="cartao-plat cartao-plat-barras"><h3>Campanhas por mês <small>clique num mês para destacar</small></h3>${grafico}</div>
+        <div class="cartao-plat"><h3>Participação · ${esc(rotuloPeriodoSel)}</h3><div class="rosca-wrap">${rosca}<div class="legenda-plat">${legenda}</div></div></div>
+        <div class="cartao-plat"><h3>Campanhas por mês <small>clique num mês para ver as campanhas</small></h3>${grafico}</div>
       </div>
-      <div class="cartao-plat"><h3>Relação por plataforma</h3>${linhas}</div>`;
+      <div class="cartao-plat">
+        <h3>Campanhas relacionadas · ${esc(rotuloPeriodoSel)}${filtroPlataforma ? " · " + esc(filtroPlataforma) : ""} <small>${relacionadas.length} ${relacionadas.length === 1 ? "campanha" : "campanhas"}${verAno}</small></h3>
+        <div class="lista-rel">${listaRel}</div>
+      </div>
+      <div class="cartao-plat"><h3>Relação por plataforma · ${anoPlataformas}</h3>${linhas}</div>`;
   }
   document.getElementById("painelPlataformas").addEventListener("click", (evento) => {
     const ano = evento.target.closest("[data-ano-plat]");
-    const chip = evento.target.closest("[data-plataforma]");
-    const mes = evento.target.closest(".barras-plataformas .barra-mes");
+    const plat = evento.target.closest("[data-plataforma]");
+    const mes = evento.target.closest("[data-mes-plat]");
+    const camp = evento.target.closest("[data-campanha-plat]");
+    if (camp) return executarDestino({ tipo: "campanha", id: camp.dataset.campanhaPlat });
     if (ano) anoPlataformas += Number(ano.dataset.anoPlat);
-    else if (chip) filtroPlataforma = chip.dataset.plataforma;
-    else if (mes) mesPlataformas = MESES_ABREV_PLAT.indexOf(mes.textContent.trim());
-    else return;
+    else if (plat) filtroPlataforma = filtroPlataforma === plat.dataset.plataforma ? "" : plat.dataset.plataforma;
+    else if (mes) {
+      evento.preventDefault();
+      const m = Number(mes.dataset.mesPlat);
+      mesPlataformas = m === mesPlataformas ? -1 : m;
+    } else return;
     renderizarPlataformas();
   });
 
@@ -10947,9 +11019,9 @@
   // Categorias usam a paleta categórica em ordem fixa (a cor segue a
   // categoria, não o ranking); acima de 8 dobra em "Outras" (cinza).
   // ---------------------------------------------------------------
-  const PALETA_VIZ = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#4a3aa7", "#e34948"];
-  const COR_OUTRAS = "#B7B2AA";
-  const COR_SEM_CATEGORIA = "#8D8880";
+  const PALETA_VIZ = ["#A58BE6", "#F29BC4", "#7FB6EE", "#F2CF6B", "#8FD3A8", "#F7B27A", "#6FCBC6", "#D58BDB"];
+  const COR_OUTRAS = "#CFC9D8";
+  const COR_SEM_CATEGORIA = "#B3ACBF";
   let visaoFluxo = "mes";
   let periodoAnalise = 6;
 
@@ -11089,16 +11161,16 @@
     let barras = "", rotulos = "", pontos = [], marcas = "";
     dados.forEach((d, idx) => {
       const cx = ml + gw * idx + gw / 2;
-      barras += barra(cx - bw - 1, d.ent, "#2D7A4F", `${d.rotulo} · Entradas: ${formatarMoeda(d.ent)}`);
-      barras += barra(cx + 1, d.sai, "#C4453C", `${d.rotulo} · Saídas: ${formatarMoeda(d.sai)}`);
+      barras += barra(cx - bw - 1, d.ent, "#8FD3A8", `${d.rotulo} · Entradas: ${formatarMoeda(d.ent)}`);
+      barras += barra(cx + 1, d.sai, "#F29BC4", `${d.rotulo} · Saídas: ${formatarMoeda(d.sai)}`);
       rotulos += `<text x="${cx}" y="${H - 10}" text-anchor="middle">${d.rotulo}</text>`;
       pontos.push(`${cx},${y(d.saldo)}`);
-      marcas += `<circle cx="${cx}" cy="${y(d.saldo)}" r="4.5" fill="#2a78d6" stroke="#fff" stroke-width="2"><title>${d.rotulo} · Saldo: ${formatarMoeda(d.saldo)}</title></circle>`;
+      marcas += `<circle cx="${cx}" cy="${y(d.saldo)}" r="4.5" fill="#7FB6EE" stroke="#fff" stroke-width="2"><title>${d.rotulo} · Saldo: ${formatarMoeda(d.saldo)}</title></circle>`;
     });
     return `<div class="legenda-grafico-barras">
-        <span><i style="background:#2D7A4F"></i>Entradas</span><span><i style="background:#C4453C"></i>Saídas</span><span><i class="linha" style="background:#2a78d6"></i>Saldo</span>
+        <span><i style="background:#8FD3A8"></i>Entradas</span><span><i style="background:#F29BC4"></i>Saídas</span><span><i class="linha" style="background:#7FB6EE"></i>Saldo</span>
       </div>
-      <svg class="svg-barras-fluxo" viewBox="0 0 ${W} ${H}" role="img" aria-label="Entradas, saídas e saldo por mês">${grade}${barras}<polyline points="${pontos.join(" ")}" fill="none" stroke="#2a78d6" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>${marcas}${rotulos}</svg>`;
+      <svg class="svg-barras-fluxo" viewBox="0 0 ${W} ${H}" role="img" aria-label="Entradas, saídas e saldo por mês">${grade}${barras}<polyline points="${pontos.join(" ")}" fill="none" stroke="#7FB6EE" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>${marcas}${rotulos}</svg>`;
   }
 
   function renderizarAnaliseFluxo() {
@@ -16665,10 +16737,6 @@
 
   // Seta no título de cada cartão: aí sim vai pra página (ex.: Fluxo de Caixa)
   document.querySelectorAll("[data-ir-aba]").forEach((botao) => botao.addEventListener("click", () => irParaAba(botao.dataset.irAba)));
-  document.getElementById("numerosRecentes").addEventListener("click", (evento) => {
-    const botao = evento.target.closest("[data-ir-aba]");
-    if (botao) irParaAba(botao.dataset.irAba);
-  });
   // Leva pra página/janela de um alerta ou notificação.
   //  { tipo: "aba", tab }                      -> abre a aba do menu
   //  { tipo: "jornada", aba }                  -> Menu Principal > Metas/Conquistas
@@ -17900,6 +17968,7 @@
   function renderizarCartoesCampanhas() {
     const el = document.getElementById("cartoesCampanhas");
     if (!el) return;
+    if (visualizacaoCampanhas === "plataformas") return renderizarPlataformas(); // nessa visualização os cartões são os de renderizarPlataformas
     if (!producaoAvancadaDisponivel || !contratosCache.length) {
       el.innerHTML = "";
       return;
@@ -19010,47 +19079,6 @@
     await atualizarSubtarefa(sub.id, campos);
   });
 
-  // Faixa do topo do Início: últimos 7 dias (barrinhas, hoje em destaque) + o que aconteceu hoje
-  function renderizarNumerosRecentes() {
-    const el = document.getElementById("numerosRecentes");
-    if (!el) return;
-    const hoje = hojeIso();
-    const dias = Array.from({ length: 7 }, (_, i) => somarDiasIso(hoje, i - 6));
-    const series = seriesDaJornada();
-    const recebidos = financasDisponivel
-      ? linhasReceitas().flatMap((l) => l.itens.filter((i) => i.pago && i.valor > 0).map((i) => ({ data: i.data, valor: i.valor })))
-      : [];
-    const novasOportunidades = oportunidadesCache.filter((o) => o.data_entrada).map((o) => ({ data: o.data_entrada }));
-    const metricas = [
-      { rotulo: "Vídeos concluídos", lista: series.videos, destino: "gp-quadro" },
-      { rotulo: "Campanhas fechadas", lista: series.contratos, destino: "crm-contratos" },
-      { rotulo: "Novas oportunidades", lista: novasOportunidades, destino: "comercial-oportunidades" },
-      { rotulo: "Faturado", lista: series.faturamento, dinheiro: true, destino: "fin-resultados" },
-      { rotulo: "Recebido", lista: recebidos, dinheiro: true, destino: "fin-fluxo-caixa" },
-    ];
-    el.innerHTML = metricas
-      .map((m) => {
-        const porDia = dias.map((d) => m.lista.filter((x) => x.data === d).reduce((s, x) => s + (m.dinheiro ? x.valor || 0 : 1), 0));
-        const total = porDia.reduce((s, n) => s + n, 0);
-        const deHoje = porDia[6];
-        const maximo = Math.max(...porDia, 1);
-        const fmt = (n) => (m.dinheiro ? formatarMoeda(n) : nf(n));
-        const barras = porDia
-          .map((n, i) => {
-            const letra = "DSTQQSS"[new Date(dias[i] + "T00:00:00").getDay()];
-            return `<span class="dia-recente${i === 6 ? " hoje" : ""}" title="${esc(formatarDataBr(dias[i]) + ": " + fmt(n))}"><i style="height:${n ? Math.max(12, Math.round((n / maximo) * 100)) : 6}%"></i><em>${letra}</em></span>`;
-          })
-          .join("");
-        return `<button type="button" class="numero-recente" data-ir-aba="${m.destino}" title="Ir para ${esc(m.rotulo)}">
-          <span class="rotulo-recente">${esc(m.rotulo)}</span>
-          <span class="valor-recente${m.dinheiro ? " dado-sensivel" : ""}">${esc(fmt(total))}<small>7 dias</small></span>
-          <span class="hoje-recente${deHoje ? " tem" : ""}">Hoje <b class="${m.dinheiro ? "dado-sensivel" : ""}">${esc(fmt(deHoje))}</b></span>
-          <span class="barras-recentes">${barras}</span>
-        </button>`;
-      })
-      .join("");
-  }
-
   function atualizarMenuPrincipal() {
     try {
       renderizarDashboard();
@@ -19059,7 +19087,6 @@
     }
     if (!cfgPronta) return;
     [
-      renderizarNumerosRecentes,
       renderizarCampanhasAndamento,
       renderizarJornadaMetas,
       () => {
