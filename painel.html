@@ -2977,6 +2977,8 @@
   .nd-previa .nd-aviso{ color:#6B4A00; display:block; margin-top:6px; }
   .nd-previa .nd-erro{ color: var(--vermelho-erro); display:block; margin-top:6px; }
   .nd-parcelas td input, .nd-parcelas td select{ width:100%; min-width: 96px; }
+  /* a tabela de parcelas tem a altura do que tem dentro (a regra geral de tabela é de tela cheia e deixava um vazio enorme) */
+  .modal-despesa-nova .tabela-cheia-wrap{ height:auto; min-height:0; max-height:none; overflow-x:auto; overflow-y:visible; }
   .barra-pf{ height:10px; border-radius:99px; background: var(--creme); overflow:hidden; margin:8px 0 6px; }
   .barra-pf > div{ height:100%; background:#8FD3A8; border-radius:99px; }
   .barra-pf.alerta > div{ background:#E7B04C; }
@@ -3070,7 +3072,19 @@
     font-family:inherit; font-size:.72rem; font-weight:700; color: var(--grafite); cursor:pointer;
   }
   .grupo-acoes-secao-financa{ display:flex; align-items:center; gap:14px; }
-  .linha-nf-topo{ display:flex; justify-content:flex-end; margin-bottom:18px; }
+  .chip-conta-outra{ background:#FCEFD1; color:#6B4A00; }
+  .btn-reajustar-saldo{
+    align-self:flex-start; margin-top:6px; background:none; border:1.5px solid var(--borda); border-radius:999px;
+    padding:3px 12px; font-family:inherit; font-size:.72rem; font-weight:700; color: var(--texto-suave); cursor:pointer;
+  }
+  .btn-reajustar-saldo:hover{ border-color: var(--grafite); color: var(--grafite); }
+  body.somente-leitura .btn-reajustar-saldo{ display:none !important; }
+  .linha-nf-topo{ display:block; margin-bottom:18px; }
+  /* Faturamento da receita: um cartão só, rótulo + escolha + alíquota na mesma linha e a explicação logo abaixo */
+  .controle-faturamento{ border:1.5px solid var(--borda); border-radius:12px; padding:12px 16px; }
+  .controle-faturamento .controle-nf{ flex-wrap:wrap; gap:8px 12px; }
+  .controle-faturamento .controle-nf select{ flex:1 1 220px; max-width:320px; }
+  .controle-faturamento .texto-pequeno{ margin:8px 0 0; padding-top:8px; border-top:1px solid var(--borda); }
 
   /* Modal de lançamento (receita/despesa): duas colunas, a da direita expande */
   .modal-lanc{
@@ -4032,6 +4046,7 @@
             <span class="rotulo-cartao-fluxo">Caixa acumulado</span>
             <span class="valor-cartao-fluxo" id="fluxoAcumulado">R$ 0,00</span>
             <span class="nota-cartao-fluxo" id="fluxoNotaAcumulado">—</span>
+            <button type="button" class="btn-reajustar-saldo" id="btnReajustarSaldo" data-reajustar="1" title="Conferir com o saldo do app do Nubank PJ e acertar a diferença">Reajustar saldo</button>
           </div>
         </div>
 
@@ -4048,7 +4063,7 @@
           <div class="tabela-cheia-wrap">
             <table class="tabela-contratos" id="tabelaReceitas">
               <thead>
-                <tr><th>Descrição</th><th>Data do recebimento</th><th>Valor</th><th>Categoria</th></tr>
+                <tr><th>Descrição</th><th>Data do recebimento</th><th>Valor</th><th>Categoria</th><th>Conta</th></tr>
               </thead>
               <tbody id="corpoTabelaReceitas"></tbody>
             </table>
@@ -4072,7 +4087,7 @@
           <div class="tabela-cheia-wrap">
             <table class="tabela-contratos" id="tabelaDespesasFin">
               <thead>
-                <tr><th>Descrição</th><th>Data do pagamento</th><th>Valor</th><th>Categoria</th></tr>
+                <tr><th>Descrição</th><th>Data do pagamento</th><th>Valor</th><th>Categoria</th><th>Conta</th></tr>
               </thead>
               <tbody id="corpoTabelaDespesasFin"></tbody>
             </table>
@@ -4938,6 +4953,15 @@
           <svg viewBox="0 0 24 24"><path d="M7 4h10v17l-5-3.5L7 21z"/></svg>
           <select id="lancCategoria" class="lanc-input"></select>
         </div>
+        <div class="lanc-linha" id="lancLinhaConta" title="Em que conta o dinheiro entrou ou saiu. Só a conta Nubank PJ entra no caixa acumulado.">
+          <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/></svg>
+          <span class="lanc-rotulo">Conta</span>
+          <select id="lancConta" class="lanc-input" style="max-width:170px;">
+            <option value="Nubank PJ">Nubank PJ</option>
+            <option value="Mercado Pago">Mercado Pago</option>
+            <option value="Outra">Outra</option>
+          </select>
+        </div>
 
         <div class="lanc-linha" id="lancLinhaObs" hidden>
           <svg viewBox="0 0 24 24"><path d="M4 20l4-1 11-11-3-3L5 16l-1 4z"/></svg>
@@ -5251,6 +5275,29 @@
       <span style="flex-grow:1"></span>
       <button type="button" class="btn-cancelar-quadro" id="btnNdCancelar">Cancelar</button>
       <button type="button" class="btn-salvar-quadro" id="btnNdSalvar">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL: REAJUSTAR SALDO DO NUBANK PJ ===================== -->
+<div class="overlay-modal" id="overlayReajusteSaldo" hidden>
+  <div class="modal-quadro">
+    <h3>Reajustar saldo do Nubank PJ</h3>
+    <p class="texto-pequeno" style="margin:-8px 0 12px;">Digite o saldo que aparece no app do banco. A partir dessa data, o caixa acumulado passa a partir desse valor. Nada que você já lançou é apagado ou alterado.</p>
+    <div class="prop-limpa">
+      <span class="rotulo-limpo">Data do saldo</span>
+      <input type="date" id="rsData" class="input-limpo">
+    </div>
+    <div class="prop-limpa">
+      <span class="rotulo-limpo">Saldo no app do Nubank PJ (R$)</span>
+      <input type="number" step="0.01" id="rsSaldo" class="input-limpo" placeholder="0,00">
+    </div>
+    <div class="nd-previa" id="rsPrevia"></div>
+    <div class="acoes-modal-quadro">
+      <button type="button" class="btn-excluir-quadro" id="btnRsRemover" hidden>Remover reajuste</button>
+      <span style="flex-grow:1"></span>
+      <button type="button" class="btn-cancelar-quadro" id="btnRsCancelar">Cancelar</button>
+      <button type="button" class="btn-salvar-quadro" id="btnRsSalvar">Salvar</button>
     </div>
   </div>
 </div>
@@ -10061,7 +10108,29 @@
   const faturamentoDe = (x) => (x && (x.faturamento || (x.emissao_nf ? "pj_nf" : ""))) || "";
   const ehPF = (x) => faturamentoDe(x) === "pf";
   const mesDe = (dataIso) => (dataIso ? String(dataIso).slice(0, 7) : "");
-  const contaDaDespesa = (d) => d.conta || "Nubank PJ";
+  const CONTA_PADRAO = "Nubank PJ";
+  const contaDaDespesa = (d) => d.conta || CONTA_PADRAO;
+  const contaDoItem = (i) => (i && i.conta) || CONTA_PADRAO;
+  const ehNubank = (i) => contaDoItem(i) === CONTA_PADRAO;
+  const pilulaConta = (c) => `<span class="chip-card-quadro${c === CONTA_PADRAO ? "" : " chip-conta-outra"}">${esc(c || CONTA_PADRAO)}</span>`;
+
+  // Caixa acumulado = saldo do Nubank PJ. Só entra o que foi pago/recebido nessa conta.
+  // Se existe um "reajuste" (saldo conferido no app do banco numa data), o saldo daquela data é a
+  // verdade e o painel soma só o que veio depois dela; antes dela vale a conta simples.
+  const ancoraSaldo = () => {
+    const a = cfgLer("fin_saldo_ancora", null);
+    return a && a.data && Number.isFinite(Number(a.saldo)) ? { data: a.data, saldo: Number(a.saldo) } : null;
+  };
+  function saldoNubankAte(fim, receitas, despesas, ignorarAncora) {
+    const a = ignorarAncora ? null : ancoraSaldo();
+    const vale = (i) => i.pago && i.valor > 0 && i.data && i.data <= fim && ehNubank(i);
+    const ancorado = !!a && fim >= a.data;
+    const conta = (i) => !ancorado || i.data > a.data;
+    const entradas = receitas.filter((i) => vale(i) && conta(i));
+    const saidas = despesas.filter((i) => vale(i) && conta(i));
+    const soma = (l) => l.reduce((s, i) => s + i.valor, 0);
+    return { saldo: (ancorado ? a.saldo : 0) + soma(entradas) - soma(saidas), entradas, saidas, ancora: ancorado ? a : null };
+  }
 
   // Mês sem alíquota cadastrada usa a última informada antes dele (padrão 6%).
   function aliquotaDoMes(mes) {
@@ -11195,13 +11264,13 @@
     if (p.parcelas.length) {
       itens = p.parcelas.map((x) => {
         const pg = x.status === "Pago";
-        return { data: (pg && x.pago_em) || vencParcela(x) || referencia, valor: valorParcela(x), pago: pg, rotulo: x.descricao || x.nome || "" };
+        return { data: (pg && x.pago_em) || vencParcela(x) || referencia, valor: valorParcela(x), pago: pg, rotulo: x.descricao || x.nome || "", conta: p.conta && p.conta !== CONTA_PADRAO ? p.conta : x.conta || CONTA_PADRAO };
       });
       pago = itens.filter((i) => i.pago).reduce((s, i) => s + i.valor, 0);
       pagamento = p.parcelas.filter((x) => x.status === "Pago" && x.pago_em).map((x) => x.pago_em).sort().pop() || "";
       atrasado = p.parcelas.some((x) => x.status !== "Pago" && vencParcela(x) && vencParcela(x) < hoje);
       const resto = arredondar(p.valor - p.parcelas.reduce((s, x) => s + valorParcela(x), 0));
-      if (resto > 0.005) itens.push({ data: referencia, valor: resto, pago: false });
+      if (resto > 0.005) itens.push({ data: referencia, valor: resto, pago: false, conta: p.conta || CONTA_PADRAO });
       const abertas = p.parcelas.filter((x) => x.status !== "Pago" && vencParcela(x)).map(vencParcela).sort();
       vencimentoColuna = abertas[0] || p.parcelas.map(vencParcela).filter(Boolean).sort().pop() || "";
     } else {
@@ -11211,7 +11280,7 @@
       // Lançamento ainda sem pagamento: uma data em "pagamento" (legado) é o prazo previsto.
       const prazo = p.vencimento || (pago > 0 ? "" : p.pagamentoDireto || "");
       const data = (pago > 0 && p.pagamentoDireto) || prazo || p.pagamentoDireto || referencia;
-      itens = p.valor > 0 ? [{ data, valor: p.valor, pago: quitado }] : [];
+      itens = p.valor > 0 ? [{ data, valor: p.valor, pago: quitado, conta: p.conta || CONTA_PADRAO }] : [];
       atrasado = !!prazo && prazo < hoje;
       vencimentoColuna = prazo;
     }
@@ -11256,7 +11325,7 @@
           contratacao: r.contratacao || "", vencimento: r.vencimento || "", valor, produto: Number(r.produto) || 0,
           categoria: r.categoria || (r.contrato_id ? "Campanhas" : ""),
           pagoDireto: r.status === "Pago" ? valor : Number(r.valor_pago) || 0, pagamentoDireto: r.pagamento || "",
-          pf: ehPF(r),
+          pf: ehPF(r), conta: r.conta || CONTA_PADRAO,
         })
       );
     });
@@ -11277,6 +11346,7 @@
           contratacao: "", vencimento: d.data || "", valor, produto: 0,
           categoria: d.eh_fatura ? "Fatura" : d.frente === "Empresa" ? CAT_EMPRESA : d.categoria || (d.contrato_id ? "Campanhas" : ""),
           pagoDireto: d.status === "Pago" ? valor : Number(d.valor_pago) || 0, pagamentoDireto: d.pago_em || "",
+          conta: contaDaDespesa(d),
         });
         linha.fatura = !!d.eh_fatura;
         linha.fora = contaDaDespesa(d) === "Mercado Pago"; // a outra frente (loja) registra essa saída
@@ -11339,7 +11409,7 @@
     renderizarBlocosFluxoExtras();
 
     if (!itens.length) {
-      corpo.innerHTML = `<tr><td colspan="4" class="texto-vazio">Nenhuma entrada neste período.</td></tr>`;
+      corpo.innerHTML = `<tr><td colspan="5" class="texto-vazio">Nenhuma entrada neste período.</td></tr>`;
       return;
     }
     const total = itens.reduce((s, x) => s + x.i.valor, 0);
@@ -11352,9 +11422,10 @@
           <td>${celulaDataFluxo(i.data)}</td>
           <td>${formatarMoeda(i.valor)}</td>
           <td>${pilulaCategoria(l.categoria)}</td>
+          <td>${pilulaConta(i.conta)}</td>
         </tr>`
         )
-        .join("") + `<tr class="linha-total-resultado"><td colspan="2">Total ${rotuloPeriodoFluxo()}</td><td>${formatarMoeda(total)}</td><td></td></tr>`;
+        .join("") + `<tr class="linha-total-resultado"><td colspan="2">Total ${rotuloPeriodoFluxo()}</td><td>${formatarMoeda(total)}</td><td></td><td></td></tr>`;
   }
   function rotuloPeriodoFluxo() {
     return periodoMes ? MESES_PT[periodoMes - 1] + "/" + periodoAno : String(periodoAno);
@@ -11378,7 +11449,7 @@
       .sort((a, b) => (b.i.data || "").localeCompare(a.i.data || ""));
 
     if (!itens.length) {
-      corpo.innerHTML = `<tr><td colspan="4" class="texto-vazio">Nenhuma saída neste período.</td></tr>`;
+      corpo.innerHTML = `<tr><td colspan="5" class="texto-vazio">Nenhuma saída neste período.</td></tr>`;
       return;
     }
     const total = itens.reduce((s, x) => s + x.i.valor, 0);
@@ -11396,9 +11467,10 @@
           <td>${celulaDataFluxo(i.data)}</td>
           <td>${formatarMoeda(i.valor)}</td>
           <td>${pilulaCategoria(l.categoria)}</td>
+          <td>${pilulaConta(i.conta)}</td>
         </tr>${filhas}`;
         })
-        .join("") + `<tr class="linha-total-resultado"><td colspan="2">Total ${rotuloPeriodoFluxo()}</td><td>${formatarMoeda(total)}</td><td></td></tr>`;
+        .join("") + `<tr class="linha-total-resultado"><td colspan="2">Total ${rotuloPeriodoFluxo()}</td><td>${formatarMoeda(total)}</td><td></td><td></td></tr>`;
   }
 
   // Compras de uma fatura de cartão (linhas filhas, abertas ao clicar na fatura).
@@ -11413,6 +11485,7 @@
           <td>${celulaDataFluxo(c.data)}</td>
           <td>${formatarMoeda(c.valor)}</td>
           <td><select data-compra-categoria="${c.id}">${opcoes}</select></td>
+          <td>${pilulaConta(contaDaDespesa(c))}</td>
         </tr>`;
   }
 
@@ -11471,11 +11544,70 @@
     document.getElementById("overlayModalListaFluxo").hidden = false;
   }
   document.getElementById("cartoesFluxo").addEventListener("click", (evento) => {
+    if (evento.target.closest("[data-reajustar]")) return abrirReajusteSaldo();
     const cartao = evento.target.closest("[data-lista-fluxo]");
     if (cartao) abrirListaCartaoFluxo(cartao.dataset.listaFluxo);
   });
+
+  // ---- Reajuste do saldo: o caixa acumulado passa a partir do saldo conferido no app do Nubank PJ ----
+  const overlayReajusteSaldo = document.getElementById("overlayReajusteSaldo");
+  function rsAtualizarPrevia() {
+    const data = document.getElementById("rsData").value;
+    const saldo = document.getElementById("rsSaldo").value;
+    const previa = document.getElementById("rsPrevia");
+    if (!data || saldo === "") {
+      previa.textContent = "Informe a data e o saldo que o app mostra.";
+      return;
+    }
+    const { rec, des } = dadosFluxoPeriodo();
+    const calculado = saldoNubankAte(data, rec, des, true).saldo; // o que o painel somava sem nenhum reajuste
+    const dif = arredondar(Number(saldo) - calculado);
+    previa.innerHTML =
+      `O painel somava <strong>${formatarMoeda(calculado)}</strong> até ${formatarDataBr(data)}. ` +
+      (Math.abs(dif) < 0.005
+        ? "Bate com o banco."
+        : `Diferença de <strong>${formatarMoeda(dif)}</strong> ${dif > 0 ? "a mais no banco (alguma entrada não foi lançada?)" : "a menos no banco (alguma saída, tarifa ou imposto não foi lançado?)"}.`);
+  }
+  function abrirReajusteSaldo() {
+    const a = ancoraSaldo();
+    document.getElementById("rsData").value = (a && a.data) || hojeIso();
+    document.getElementById("rsSaldo").value = a ? a.saldo : "";
+    document.getElementById("btnRsRemover").hidden = !a;
+    rsAtualizarPrevia();
+    overlayReajusteSaldo.hidden = false;
+    document.getElementById("rsSaldo").focus();
+  }
+  async function reajusteAplicado() {
+    renderizarReceitas();
+    renderizarDespesasFin();
+    if (typeof renderizarAnaliseFluxo === "function") renderizarAnaliseFluxo();
+    if (typeof agendarResumoMensal === "function") agendarResumoMensal(); // a página da empresa recebe o saldo novo
+  }
+  ["rsData", "rsSaldo"].forEach((id) => document.getElementById(id).addEventListener("input", rsAtualizarPrevia));
+  document.getElementById("btnRsCancelar").addEventListener("click", () => (overlayReajusteSaldo.hidden = true));
+  overlayReajusteSaldo.addEventListener("click", (evento) => {
+    if (evento.target === overlayReajusteSaldo) overlayReajusteSaldo.hidden = true;
+  });
+  document.getElementById("btnRsSalvar").addEventListener("click", async () => {
+    const data = document.getElementById("rsData").value;
+    const saldo = document.getElementById("rsSaldo").value;
+    if (!data || saldo === "" || !Number.isFinite(Number(saldo))) {
+      alert("Informe a data e o saldo que aparece no app do Nubank PJ.");
+      return;
+    }
+    await cfgGravar("fin_saldo_ancora", { data, saldo: Number(saldo) });
+    overlayReajusteSaldo.hidden = true;
+    await reajusteAplicado();
+  });
+  document.getElementById("btnRsRemover").addEventListener("click", async () => {
+    if (!confirm("Remover o reajuste? O caixa acumulado volta a ser só a soma dos lançamentos do Nubank PJ.")) return;
+    await cfgGravar("fin_saldo_ancora", {});
+    overlayReajusteSaldo.hidden = true;
+    await reajusteAplicado();
+  });
   document.getElementById("cartoesFluxo").addEventListener("keydown", (evento) => {
     if (evento.key !== "Enter" && evento.key !== " ") return;
+    if (evento.target.closest("[data-reajustar]")) return;
     const cartao = evento.target.closest("[data-lista-fluxo]");
     if (!cartao) return;
     evento.preventDefault();
@@ -11507,8 +11639,9 @@
     const pendente = somar(pendentes);
     const totalPagos = somar(pagos);
     // regime de caixa: só entra no acumulado o que de fato entrou/saiu (parcela paga) até o fim do período
-    const realizadosAteFim = (itens) => itens.filter((i) => i.pago && i.data && i.data <= fim);
-    const acumulado = somar(realizadosAteFim(itensReceita)) - somar(realizadosAteFim(itensDespesa));
+    // e só o da conta Nubank PJ: o caixa acumulado tem que bater com o saldo do banco
+    const caixaNubank = saldoNubankAte(fim, itensReceita, itensDespesa);
+    const acumulado = caixaNubank.saldo;
 
     const texto = (id, valor) => (document.getElementById(id).textContent = valor);
     texto("fluxoPrevisto", formatarMoeda(previsto));
@@ -11521,7 +11654,7 @@
     texto("fluxoNotaPagos", devendo.length ? `${pagos.length} pagos · ${devendo.length} devendo (${formatarMoeda(somar(devendo))})` : `${pagos.length} pagos · nada devendo`);
     document.getElementById("fluxoNotaPagos").classList.toggle("nota-devendo", devendo.length > 0);
     texto("fluxoAcumulado", formatarMoeda(acumulado));
-    texto("fluxoNotaAcumulado", acumulado < 0 ? "⚠ Caixa no negativo" : "Caixa positivo");
+    texto("fluxoNotaAcumulado", (acumulado < 0 ? "⚠ Caixa no negativo" : "Saldo do Nubank PJ") + (caixaNubank.ancora ? ` · reajustado em ${formatarDataBr(caixaNubank.ancora.data)}` : ""));
     document.getElementById("cartaoFluxoAcumulado").classList.toggle("negativo", acumulado < 0);
     // O que cada cartão está somando (abre ao clicar no cartão).
     listasCartoesFluxo = {
@@ -11535,8 +11668,10 @@
       },
       acumulado: {
         titulo: "Caixa acumulado",
-        sub: "Entradas recebidas e saídas pagas até o fim do período (saídas em negativo)",
-        itens: [...realizadosAteFim(itensReceita), ...realizadosAteFim(itensDespesa)],
+        sub: caixaNubank.ancora
+          ? `Saldo conferido de ${formatarMoeda(caixaNubank.ancora.saldo)} em ${formatarDataBr(caixaNubank.ancora.data)} + o que entrou e saiu do Nubank PJ depois (saídas em negativo)`
+          : "Entradas recebidas e saídas pagas na conta Nubank PJ até o fim do período (saídas em negativo)",
+        itens: [...caixaNubank.entradas, ...caixaNubank.saidas],
         assinado: true,
       },
     };
@@ -11826,8 +11961,8 @@
 
   function renderizarAnaliseFluxo() {
     // análise por mês: só o que de fato entrou/saiu (mesma regra dos cartões e listas)
-    const rec = linhasReceitasFluxo().flatMap((l) => l.itens.filter((i) => i.pago));
-    const des = linhasDespesasFluxo().flatMap((l) => l.itens.filter((i) => i.pago));
+    const rec = linhasReceitasFluxo().flatMap((l) => l.itens.filter((i) => i.pago && ehNubank(i)));
+    const des = linhasDespesasFluxo().flatMap((l) => l.itens.filter((i) => i.pago && ehNubank(i)));
     const agora = new Date();
     const dados = [];
     for (let i = periodoAnalise - 1; i >= 0; i--) {
@@ -11836,7 +11971,7 @@
       const ent = somaValores(rec.filter((x) => x.data && x.data.slice(0, 7) === chave));
       const sai = somaValores(des.filter((x) => x.data && x.data.slice(0, 7) === chave));
       const fim = chave + "-31";
-      const acum = somaValores(rec.filter((x) => x.data && x.data <= fim)) - somaValores(des.filter((x) => x.data && x.data <= fim));
+      const acum = saldoNubankAte(fim, rec, des).saldo;
       dados.push({ chave, rotulo: abrevMes(chave), ent, sai, saldo: ent - sai, acum });
     }
     const totalEnt = dados.reduce((s, d) => s + d.ent, 0);
@@ -12085,6 +12220,11 @@
   Promise.all([Auth.sb.from("financas_receitas").select("observacao").limit(1), Auth.sb.from("financas_despesas").select("observacao").limit(1)])
     .then((rs) => (lancObsDisponivel = rs.every((r) => !r.error)))
     .catch(() => {});
+  // A conta da entrada precisa da coluna "conta" em financas_receitas (js/financas-conta-saldo-setup.sql).
+  let receitaContaOk = false;
+  Auth.sb.from("financas_receitas").select("conta").limit(1)
+    .then((r) => (receitaContaOk = !r.error))
+    .catch(() => {});
 
   const editoresLanc = {
     receita: criarEditorFinanceiro(document.getElementById("lancPainelReceita"), {
@@ -12250,6 +12390,10 @@
     document.getElementById("lancPainelDespesa").hidden = !parcelado || ed !== editoresLanc.despesa;
     document.getElementById("lancLinhaObs").hidden = !lancObsDisponivel || fatura;
     campoLancObs.value = reg && reg.observacao ? reg.observacao : "";
+    // conta em que entrou/saiu (entrada nova: Nubank PJ). Campanha usa a conta de cada parcela (padrão Nubank PJ).
+    const campoLancConta = document.getElementById("lancConta");
+    document.getElementById("lancLinhaConta").hidden = !!contrato || fatura || (!ehDespesa && !receitaContaOk);
+    campoLancConta.value = (reg && reg.conta) || CONTA_PADRAO;
     // mesma despesa, duas datas: vencimento/pagamento (Fluxo) e custo (Resultados)
     const campoLancDataCusto = document.getElementById("lancDataCusto");
     document.getElementById("lancLinhaCusto").hidden = !ehDespesa || fatura || !migracaoCompetenciaOk || !!(reg && reg.so_fluxo);
@@ -12369,6 +12513,7 @@
         nome: desc, valor, categoria, valor_pago: pagoDireto, pago_em: dataPag, status: quitado ? "Pago" : "Pendente",
         data: parcelado ? (lanc.reg && lanc.reg.data) || null : dataVenc || dataPag, updated_at: agora,
         ...(lancObsDisponivel ? { observacao: campoLancObs.value.trim() || null } : {}),
+        ...(migracaoReestruturacaoOk && !(lanc.reg && lanc.reg.eh_fatura) ? { conta: document.getElementById("lancConta").value || CONTA_PADRAO } : {}),
       };
       if (migracaoCompetenciaOk && !(lanc.reg && (lanc.reg.so_fluxo || lanc.reg.eh_fatura))) {
         dados.data_competencia = document.getElementById("lancDataCusto").value || dados.data || null;
@@ -12415,6 +12560,7 @@
       status: valor === 0 && produto > 0 ? "Permuta" : quitado ? "Pago" : totalPago > 0 ? "Pgto Parcial" : "Pendente",
       emissao_nf: ed.estado.fat === "pj_nf", nf_taxa: ed.estado.aliq != null ? ed.estado.aliq : ed.estado.nf.taxa, updated_at: agora,
       ...(lancObsDisponivel ? { observacao: campoLancObs.value.trim() || null } : {}),
+      ...(receitaContaOk ? { conta: document.getElementById("lancConta").value || CONTA_PADRAO } : {}),
     };
     if (migracaoComplementoOk) Object.assign(dados, { faturamento: ed.estado.fat || null, aliquota_manual: ed.estado.fat === "pj_nf" ? ed.estado.aliq : null });
     else if (receitasCache[0] && "faturamento" in receitasCache[0]) dados.faturamento = ed.estado.fat || null;
@@ -13781,7 +13927,7 @@
       // visão do resumo mensal: transferência entre contas não é entrada nem saída da empresa (vai numa coluna própria)
       entradasOp: soma(recP.filter((i) => !ehTransf(i))), saidasOp: soma(desP.filter((i) => !ehTransf(i))),
       transf: soma(recP.filter(ehTransf)) - soma(desP.filter(ehTransf)),
-      saldoAcumulado: soma(rec.filter((i) => i.data && i.data <= fim)) - soma(des.filter((i) => i.data && i.data <= fim)),
+      saldoAcumulado: saldoNubankAte(fim, rec, des).saldo,
     };
   }
 
@@ -13800,12 +13946,12 @@
         .join("") + (itensPF.length ? `<tr class="linha-total-resultado"><td colspan="2">Recebido na PF em ${rotuloPeriodoFluxo()}</td><td>${formatarMoeda(totalPF)}</td><td></td></tr>` : "");
 
     // contas a pagar / a receber: do mês atual até 6 meses à frente (+ atrasados e sem data numa linha à parte)
-    const rec = linhasReceitasFluxo().flatMap((l) => l.itens.filter((i) => i.valor > 0));
-    const des = linhasDespesasFluxo().flatMap((l) => l.itens.filter((i) => i.valor > 0));
+    const rec = linhasReceitasFluxo().flatMap((l) => l.itens.filter((i) => i.valor > 0 && ehNubank(i)));
+    const des = linhasDespesasFluxo().flatMap((l) => l.itens.filter((i) => i.valor > 0 && ehNubank(i)));
     const soma = (lista) => lista.reduce((s, i) => s + i.valor, 0);
     const hoje = hojeIso();
     const mesAtual = hoje.slice(0, 7);
-    const realizado = soma(rec.filter((i) => i.pago)) - soma(des.filter((i) => i.pago));
+    const realizado = saldoNubankAte("9999-12-31", rec, des).saldo;
     let projetado = realizado;
     const linhas = [];
     const atrasadosRec = rec.filter((i) => !i.pago && (!i.data || mesDe(i.data) < mesAtual));
@@ -13821,7 +13967,7 @@
       linhas.push(linha(`${MESES_PT[Number(mes.slice(5, 7)) - 1]}/${mes.slice(0, 4)}`, soma(rec.filter((i) => !i.pago && mesDe(i.data) === mes)), soma(des.filter((i) => !i.pago && mesDe(i.data) === mes))));
     }
     document.getElementById("corpoFluxoAPagar").innerHTML =
-      `<tr class="linha-subtotal-custos"><td colspan="4">Caixa hoje (recebido − pago)</td><td>${formatarMoeda(realizado)}</td></tr>` + linhas.join("");
+      `<tr class="linha-subtotal-custos"><td colspan="4">Caixa hoje (saldo do Nubank PJ)</td><td>${formatarMoeda(realizado)}</td></tr>` + linhas.join("");
   }
   document.getElementById("corpoFluxoPF").addEventListener("click", (evento) => {
     const tr = evento.target.closest("tr[data-linha-chave]");
