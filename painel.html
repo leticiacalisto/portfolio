@@ -2946,20 +2946,39 @@
   /* ---- Cartões de números em tom pastel (Finanças, Marcas, Dashboard, Portfólio) ----
      Os que têm significado (entradas/saídas/pendente...) mantêm a cor do
      significado; os neutros alternam lavanda / pêssego / azul / menta. */
-  .cartao-fluxo, .cartao-numero{ --pastel:#EEF1F5; background: var(--pastel); border-color: transparent; }
-  .cartao-fluxo{ border-left-width:1px; }
-  .cartoes-fluxo > .cartao-fluxo:nth-child(4n+1), .grade-marcadores > .bloco-marcador:nth-child(4n+1) .cartao-fluxo, .grade-cartoes > .cartao-numero:nth-child(4n+1){ --pastel:#ECE8FB; }
-  .cartoes-fluxo > .cartao-fluxo:nth-child(4n+2), .grade-marcadores > .bloco-marcador:nth-child(4n+2) .cartao-fluxo, .grade-cartoes > .cartao-numero:nth-child(4n+2){ --pastel:#FCEEDC; }
-  .cartoes-fluxo > .cartao-fluxo:nth-child(4n+3), .grade-marcadores > .bloco-marcador:nth-child(4n+3) .cartao-fluxo, .grade-cartoes > .cartao-numero:nth-child(4n+3){ --pastel:#E1F1FA; }
-  .cartoes-fluxo > .cartao-fluxo:nth-child(4n+4), .grade-marcadores > .bloco-marcador:nth-child(4n+4) .cartao-fluxo, .grade-cartoes > .cartao-numero:nth-child(4n+4){ --pastel:#E3F4EA; }
-  .cartao-fluxo.cartao-fluxo.entradas{ --pastel:#E3F4EA; }
-  .cartao-fluxo.cartao-fluxo.saidas{ --pastel:#FBE7E4; }
-  .cartao-fluxo.cartao-fluxo.pendente{ --pastel:#FCF1D9; }
-  .cartao-fluxo.cartao-fluxo.acumulado{ --pastel:#ECE8FB; }
-  .cartao-fluxo.cartao-fluxo.saldo{ --pastel:#FBE7E4; }
-  .cartao-fluxo.cartao-fluxo.saldo.positivo{ --pastel:#E3F4EA; }
-  .cartao-fluxo.cartao-fluxo.previsto{ --pastel:#E1F1FA; }
-  .cartao-numero.cartao-numero.destaque{ background: var(--coral); }
+  /* ---- Cartões de números: mesma estética dos cartões da página Início (degradê suave, fita colorida no topo,
+     rótulo na cor forte). Os que têm significado (entradas/saídas/pendente...) mantêm a cor do significado;
+     os neutros alternam lilás / coral / azul / verde. ---- */
+  .cartao-fluxo, .cartao-numero{
+    --a-fundo-1:#FFFFFF; --a-fundo-2:#F1F3F6; --a-borda:#E0E4EA; --a-forte:#6B7280;
+    background: linear-gradient(145deg, var(--a-fundo-1), var(--a-fundo-2));
+    border:1px solid var(--a-borda); border-radius:16px; padding:16px 18px; position:relative; overflow:hidden;
+  }
+  .cartao-fluxo::before, .cartao-numero::before{ content:""; position:absolute; left:0; right:0; top:0; height:4px; background: var(--a-forte); opacity:.6; }
+  .cartao-numero.cartao-numero.destaque{ background: var(--coral); border-color: var(--coral); }
+  .cartao-numero.destaque::before{ display:none; }
+  .cartoes-fluxo > .cartao-fluxo:nth-child(4n+1), .grade-marcadores > .bloco-marcador:nth-child(4n+1) .cartao-fluxo, .grade-cartoes > .cartao-numero:nth-child(4n+1){ --a-fundo-1:#FAF7FF; --a-fundo-2:#EFE8FC; --a-borda:#DACCF5; --a-forte:#6B46C1; }
+  .cartoes-fluxo > .cartao-fluxo:nth-child(4n+2), .grade-marcadores > .bloco-marcador:nth-child(4n+2) .cartao-fluxo, .grade-cartoes > .cartao-numero:nth-child(4n+2){ --a-fundo-1:#FFF8F4; --a-fundo-2:#FFEADF; --a-borda:#F8D2C0; --a-forte:#C2491D; }
+  .cartoes-fluxo > .cartao-fluxo:nth-child(4n+3), .grade-marcadores > .bloco-marcador:nth-child(4n+3) .cartao-fluxo, .grade-cartoes > .cartao-numero:nth-child(4n+3){ --a-fundo-1:#F5FAFF; --a-fundo-2:#E3F0FD; --a-borda:#C3DCF6; --a-forte:#1F6CB0; }
+  .cartoes-fluxo > .cartao-fluxo:nth-child(4n+4), .grade-marcadores > .bloco-marcador:nth-child(4n+4) .cartao-fluxo, .grade-cartoes > .cartao-numero:nth-child(4n+4){ --a-fundo-1:#F5FDF8; --a-fundo-2:#E4F7EC; --a-borda:#C4EBD3; --a-forte:#1B7A45; }
+  .cartao-fluxo.cartao-fluxo.entradas{ --a-fundo-1:#F5FDF8; --a-fundo-2:#E4F7EC; --a-borda:#C4EBD3; --a-forte:#1B7A45; }
+  .cartao-fluxo.cartao-fluxo.saidas{ --a-fundo-1:#FFF8F4; --a-fundo-2:#FFEADF; --a-borda:#F8D2C0; --a-forte:#C2491D; }
+  .cartao-fluxo.cartao-fluxo.pendente{ --a-fundo-1:#FFFBEF; --a-fundo-2:#FFF4D2; --a-borda:#F5E1A6; --a-forte:#9A6B00; }
+  .cartao-fluxo.cartao-fluxo.acumulado{ --a-fundo-1:#FAF7FF; --a-fundo-2:#EFE8FC; --a-borda:#DACCF5; --a-forte:#6B46C1; }
+  .cartao-fluxo.cartao-fluxo.saldo{ --a-fundo-1:#FFF8F4; --a-fundo-2:#FFEADF; --a-borda:#F8D2C0; --a-forte:#C2491D; }
+  .cartao-fluxo.cartao-fluxo.saldo.positivo{ --a-fundo-1:#F5FDF8; --a-fundo-2:#E4F7EC; --a-borda:#C4EBD3; --a-forte:#1B7A45; }
+  .cartao-fluxo.cartao-fluxo.previsto{ --a-fundo-1:#F5FAFF; --a-fundo-2:#E3F0FD; --a-borda:#C3DCF6; --a-forte:#1F6CB0; }
+  .rotulo-cartao-fluxo{ color: var(--a-forte); letter-spacing:.08em; }
+  .rotulo-numero{ color: var(--a-forte); font-weight:700; }
+  .cartao-numero.destaque .rotulo-numero{ color: var(--branco); }
+  /* Resultados: o alternador fica na mesma posição do Fluxo de Caixa; Alíquotas é só um ícone ao lado dele */
+  .grupo-direita-seletores{ display:flex; align-items:center; gap:10px; margin-left:auto; }
+  .grupo-direita-seletores .alternador-visualizacao{ margin-left:0; }
+  .btn-icone-aliquotas{
+    width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; padding:0;
+    background: var(--branco); border:1.5px solid var(--borda); border-radius:50%; color: var(--texto-suave); cursor:pointer;
+  }
+  .btn-icone-aliquotas:hover{ border-color: var(--grafite); color: var(--grafite); }
   .rotulo-cartao-fluxo{ font-size:.72rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color: var(--grafite); }
   .valor-cartao-fluxo{ font-size:1.25rem; font-weight:700; color: var(--grafite); }
   .cartao-fluxo.entradas .valor-cartao-fluxo, .cartao-fluxo.positivo .valor-cartao-fluxo{ color: var(--verde-sucesso); }
@@ -3895,12 +3914,13 @@
             <option value="3">Últimos 3 meses</option>
           </select>
         </div>
-        <div class="alternador-visualizacao alternador-mini" id="alternadorVisaoResultados">
-          <button type="button" class="btn-alternador ativo" data-visao-resultados="mes">Mês atual</button>
-          <button type="button" class="btn-alternador" data-visao-resultados="analise">Análises</button>
+        <div class="grupo-direita-seletores">
+          <button type="button" class="btn-icone-aliquotas" id="btnAbrirAliquotas" title="Alíquota do Simples por mês" aria-label="Alíquotas do Simples por mês"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 5L5 19"/><circle cx="7.2" cy="7.2" r="2.4"/><circle cx="16.8" cy="16.8" r="2.4"/></svg></button>
+          <div class="alternador-visualizacao alternador-mini" id="alternadorVisaoResultados">
+            <button type="button" class="btn-alternador ativo" data-visao-resultados="mes">Mês atual</button>
+            <button type="button" class="btn-alternador" data-visao-resultados="analise">Análises</button>
+          </div>
         </div>
-        <button type="button" class="btn-cancelar-quadro" id="btnAbrirAliquotas" title="Alíquota do Simples por mês">Alíquotas</button>
-        <button type="button" class="btn-cancelar-quadro" id="btnAbrirConferencia" title="Listar dados antigos que precisam de classificação">Conferir dados antigos</button>
       </div>
 
       <div id="resultadosVisaoMes">
@@ -4082,7 +4102,7 @@
           <div class="cartao-fluxo acumulado clicavel" id="cartaoFluxoAcumulado" data-lista-fluxo="acumulado" role="button" tabindex="0" title="Ver a lista">
             <span class="rotulo-cartao-fluxo">Caixa acumulado</span>
             <span class="valor-cartao-fluxo" id="fluxoAcumulado">R$ 0,00</span>
-            <span class="nota-cartao-fluxo" id="fluxoNotaAcumulado">—</span>
+            <span id="fluxoNotaAcumulado" hidden></span>
             <button type="button" class="btn-reajustar-saldo" id="btnReajustarSaldo" data-reajustar="1" title="Conferir com o saldo do app do Nubank PJ e acertar a diferença">Reajustar saldo</button>
           </div>
         </div>
@@ -5363,19 +5383,6 @@
       <span style="flex-grow:1"></span>
       <button type="button" class="btn-cancelar-quadro" id="btnPfCancelar">Cancelar</button>
       <button type="button" class="btn-salvar-quadro" id="btnPfConfirmar">Pagar fatura</button>
-    </div>
-  </div>
-</div>
-
-<!-- ===================== MODAL: CONFERÊNCIA DOS DADOS ANTIGOS ===================== -->
-<div class="overlay-modal" id="overlayConferencia" hidden>
-  <div class="modal-quadro modal-quadro-grande modal-despesa-nova">
-    <h3>Conferência dos dados antigos</h3>
-    <p class="texto-pequeno" style="margin:-8px 0 8px;">Só listo: nada é agrupado, apagado ou alterado sozinho. Onde há um botão, a mudança só acontece quando você clica nele.</p>
-    <div id="corpoConferencia"></div>
-    <div class="acoes-modal-quadro">
-      <span style="flex-grow:1"></span>
-      <button type="button" class="btn-cancelar-quadro" id="btnFecharConferencia">Fechar</button>
     </div>
   </div>
 </div>
@@ -14453,104 +14460,6 @@
       renderizarAliquotas();
     } catch (erro) {
       alert("Não foi possível salvar a alíquota. Confira se js/financeiro-reestruturacao-setup.sql já rodou no Supabase.");
-      console.error(erro);
-    }
-  });
-
-  // ---- Conferência dos dados antigos (só lista; cada botão age numa linha e só quando clicado) ----
-  const overlayConferencia = document.getElementById("overlayConferencia");
-  const normalizarNome = (s) => String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\(?\s*parcela\s*\d+\s*\/\s*\d+\s*\)?/g, "").replace(/\s+/g, " ").trim();
-
-  function montarConferencia() {
-    const maes = despesasFinCache.filter((d) => !d.parent_id && !d.so_resultado);
-    const R = formatarMoeda;
-    const secao = (titulo, nota, itens, vazio) =>
-      `<h4 style="margin:18px 0 4px;">${titulo} <span class="texto-pequeno">(${itens.length})</span></h4><p class="texto-pequeno" style="margin:0 0 6px;">${nota}</p>` +
-      (itens.length ? `<ul class="lista-conferencia">${itens.join("")}</ul>` : `<p class="texto-pequeno">${vazio}</p>`);
-
-    // (a) "Parcela X/Y" e mesmo gasto, mesmo valor, em meses seguidos
-    const porNome = agruparPor(maes.filter((d) => !d.eh_fatura && !d.fixa), (d) => normalizarNome(d.nome) + "|" + (Number(d.valor) || 0));
-    const gruposA = [...porNome.values()].filter((g) => g.length >= 2 && new Set(g.map((d) => mesDe(d.data))).size === g.length);
-    const parcelasSoltas = agruparPor(maes.filter((d) => /parcela\s*\d+\s*\/\s*\d+/i.test(d.nome || "")), (d) => normalizarNome(d.nome));
-    const itensA = [
-      ...[...parcelasSoltas.values()].filter((g) => g.length >= 2).map((g) => `<li><span>“${esc(normalizarNome(g[0].nome))}” — ${g.length} parcelas soltas (${R(g.reduce((s, d) => s + (Number(d.valor) || 0), 0))})</span><span class="texto-pequeno">${g.map((d) => formatarDataBr(d.data)).join(", ")}</span></li>`),
-      ...gruposA.map((g) => `<li><span>“${esc(g[0].nome)}” ${R(Number(g[0].valor) || 0)} em ${g.length} meses seguidos</span><span class="texto-pequeno">${g.map((d) => formatarDataBr(d.data)).join(", ")}</span></li>`),
-    ];
-
-    // (b) mesmo gasto lançado nos dois lados (custo + saída)
-    const paresB = [];
-    for (let i = 0; i < maes.length; i++) {
-      for (let j = i + 1; j < maes.length; j++) {
-        const a = maes[i], b = maes[j];
-        if ((a.grupo_repeticao && a.grupo_repeticao === b.grupo_repeticao) || Number(a.valor) !== Number(b.valor) || !a.data || !b.data) continue;
-        const na = normalizarNome(a.nome), nb = normalizarNome(b.nome);
-        const dias = Math.abs((new Date(a.data) - new Date(b.data)) / 86400000);
-        if (dias <= 62 && na && nb && (na === nb || na.includes(nb) || nb.includes(na))) paresB.push([a, b]);
-      }
-    }
-    const itensB = paresB.slice(0, 60).map(([a, b]) => `<li><span>“${esc(a.nome)}” e “${esc(b.nome)}” — ${R(Number(a.valor) || 0)}</span><span class="texto-pequeno">${formatarDataBr(a.data)} / ${formatarDataBr(b.data)}</span></li>`);
-
-    // (c) saídas de edição que podem ser custos de campanha
-    const candidatasC = maes.filter((d) => !d.contrato_id && /edi[cç][aã]o|editor|edit\b/i.test(d.nome || "") && d.categoria !== CAT_TRANSFERENCIA);
-    const opcoesCampanha = `<option value="">Vincular à campanha…</option>` + contratosCache.slice().sort((a, b) => String(b.data_assinatura || "").localeCompare(String(a.data_assinatura || ""))).map((k) => `<option value="${k.id}">${esc(k.marca || "—")}${k.data_assinatura ? " · " + formatarDataBr(k.data_assinatura) : ""}</option>`).join("");
-    const itensC = candidatasC.map((d) => `<li><span>${esc(d.nome)} — ${R(Number(d.valor) || 0)} <span class="texto-pequeno">${formatarDataBr(d.data)}</span></span><select class="input-limpo" data-conf-camp="${d.id}" style="width:auto; max-width:230px; margin:0;">${opcoesCampanha}</select><button type="button" class="btn-cancelar-quadro" data-conf-vincular="${d.id}">Vincular</button></li>`);
-
-    // (d) despesas com data de pagamento 27/10/2026 (hoje no dia em que a data real foi perdida)
-    const pagas27 = despesasFinCache.filter((d) => d.pago_em === "2026-10-27");
-    const itensD = pagas27.map((d) => `<li><span>${esc(d.nome)} — ${R(Number(d.valor) || 0)} <span class="texto-pequeno">vence ${formatarDataBr(d.data)} · pago em 27/10/2026</span></span><input type="date" class="input-limpo" data-conf-pagoem="${d.id}" value="${d.data || ""}" style="width:auto; margin:0;"><button type="button" class="btn-cancelar-quadro" data-conf-corrigir="${d.id}">Corrigir</button></li>`);
-
-    // (e) receitas sem classificação de faturamento (PF / PJ sem nota)
-    const semClasse = [
-      ...contratosCache.filter((k) => Number(k.valor) > 0 && !faturamentoDe(k)).map((k) => ({ tabela: "contratos", id: k.id, nome: k.marca || "—", valor: Number(k.valor) || 0, data: k.data_assinatura })),
-      ...receitasCache.filter((r) => !r.parent_id && !r.contrato_id && Number(r.cache) > 0 && !faturamentoDe(r)).map((r) => ({ tabela: "financas_receitas", id: r.id, nome: r.marca || "—", valor: Number(r.cache) || 0, data: r.contratacao })),
-    ];
-    const opcoesFat = `<option value="">Classificar…</option>` + FATURAMENTOS.map((f) => `<option value="${f.valor}">${f.rotulo}</option>`).join("");
-    const itensE = semClasse.map((x) => `<li><span>${esc(x.nome)} — ${R(x.valor)} <span class="texto-pequeno">${formatarDataBr(x.data)}</span></span><select class="input-limpo" data-conf-fat="${x.tabela}:${x.id}" style="width:auto; margin:0;">${opcoesFat}</select><button type="button" class="btn-cancelar-quadro" data-conf-classificar="${x.tabela}:${x.id}">Salvar</button></li>`);
-
-    // (f) despesas que talvez sejam da empresa
-    const candidatasF = maes.filter((d) => d.frente !== "Empresa" && /contador|cont[aá]bil|contabilidade|contrato social|junta comercial|abertura|alvar[aá]|certificado digital|\bdas\b|simples nacional|\bdarf\b|\bcnpj\b/i.test((d.nome || "") + " " + (d.fornecedor || "")));
-    const itensF = candidatasF.map((d) => `<li><span>${esc(d.nome)} — ${R(Number(d.valor) || 0)} <span class="texto-pequeno">${formatarDataBr(d.data)}</span></span><button type="button" class="btn-cancelar-quadro" data-conf-empresa="${d.id}">Marcar como Empresa</button></li>`);
-
-    document.getElementById("corpoConferencia").innerHTML =
-      secao("a) Possíveis parcelas para agrupar", "“Parcela X/Y” soltas e o mesmo gasto, com o mesmo valor, em meses seguidos. Nada foi agrupado.", itensA, "Nada encontrado.") +
-      secao("b) Possível mesmo gasto lançado nos dois lados", "Mesmo valor, nomes parecidos e datas a menos de ~2 meses. Edite/exclua pelo painel se for duplicado.", itensB, "Nada encontrado.") +
-      secao("c) Saídas de edição para vincular a campanhas", "Vincular faz o custo entrar em Resultados no mês de fechamento da campanha.", itensC, "Nada encontrado.") +
-      secao("d) Pagas em 27/10/2026", "Escolha a data real do pagamento e clique em Corrigir.", itensD, "Nenhuma despesa com essa data.") +
-      secao("e) Receitas sem classificação de faturamento", "Hoje contam como PJ sem imposto. Classifique entre PF e PJ com ou sem nota.", itensE, "Tudo classificado.") +
-      secao("f) Despesas que talvez sejam da empresa", "Contador, contrato social, DAS… Marcar como Empresa tira do DRE do UGC (e vai pra página da empresa).", itensF, "Nada encontrado.");
-  }
-  document.getElementById("btnAbrirConferencia").addEventListener("click", () => {
-    montarConferencia();
-    overlayConferencia.hidden = false;
-  });
-  document.getElementById("btnFecharConferencia").addEventListener("click", () => (overlayConferencia.hidden = true));
-  document.getElementById("corpoConferencia").addEventListener("click", async (evento) => {
-    const q = (sel) => evento.target.closest(sel);
-    const agora = new Date().toISOString();
-    try {
-      let b;
-      if ((b = q("[data-conf-vincular]"))) {
-        const id = b.dataset.confVincular;
-        const contratoId = document.querySelector(`[data-conf-camp="${id}"]`).value;
-        if (!contratoId) return alert("Escolhe a campanha.");
-        verificarErro(await Auth.sb.from("financas_despesas").update({ contrato_id: contratoId, tipo_despesa: "campanha", updated_at: agora }).eq("id", id));
-      } else if ((b = q("[data-conf-corrigir]"))) {
-        const id = b.dataset.confCorrigir;
-        const data = document.querySelector(`[data-conf-pagoem="${id}"]`).value;
-        if (!data) return alert("Escolhe a data real do pagamento.");
-        verificarErro(await Auth.sb.from("financas_despesas").update({ pago_em: data, updated_at: agora }).eq("id", id));
-      } else if ((b = q("[data-conf-classificar]"))) {
-        const [tabela, id] = b.dataset.confClassificar.split(":");
-        const fat = document.querySelector(`[data-conf-fat="${b.dataset.confClassificar}"]`).value;
-        if (!fat) return alert("Escolhe o faturamento.");
-        verificarErro(await Auth.sb.from(tabela).update({ faturamento: fat, emissao_nf: fat === "pj_nf", updated_at: agora }).eq("id", id));
-      } else if ((b = q("[data-conf-empresa]"))) {
-        verificarErro(await Auth.sb.from("financas_despesas").update({ frente: "Empresa", updated_at: agora }).eq("id", b.dataset.confEmpresa));
-      } else return;
-      await recarregarFinancas();
-      montarConferencia();
-    } catch (erro) {
-      alert("Não foi possível salvar. Confira se js/financeiro-reestruturacao-setup.sql já rodou no Supabase.");
       console.error(erro);
     }
   });
