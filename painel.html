@@ -2951,12 +2951,13 @@
      os neutros alternam lilás / coral / azul / verde. ---- */
   .cartao-fluxo, .cartao-numero{
     --a-fundo-1:#FFFFFF; --a-fundo-2:#F1F3F6; --a-borda:#E0E4EA; --a-forte:#6B7280;
-    background: linear-gradient(145deg, var(--a-fundo-1), var(--a-fundo-2));
-    border:1px solid var(--a-borda); border-radius:16px; padding:16px 18px; position:relative; overflow:hidden;
+    background: color-mix(in srgb, var(--a-fundo-1) 45%, var(--a-fundo-2));
+    border:none; border-radius:18px; padding:18px 20px;
   }
-  .cartao-fluxo::before, .cartao-numero::before{ content:""; position:absolute; left:0; right:0; top:0; height:4px; background: var(--a-forte); opacity:.6; }
-  .cartao-numero.cartao-numero.destaque{ background: var(--coral); border-color: var(--coral); }
-  .cartao-numero.destaque::before{ display:none; }
+  .cartao-numero.cartao-numero.destaque{ background: var(--coral); }
+  /* pontinho colorido antes do título, como nos cartões do Início */
+  .rotulo-cartao-fluxo::before, .rotulo-numero::before{ content:""; display:inline-block; width:7px; height:7px; border-radius:50%; background: var(--a-forte); margin-right:8px; vertical-align:middle; position:relative; top:-1px; }
+  .cartao-numero.destaque .rotulo-numero::before{ background: var(--branco); }
   .cartoes-fluxo > .cartao-fluxo:nth-child(4n+1), .grade-marcadores > .bloco-marcador:nth-child(4n+1) .cartao-fluxo, .grade-cartoes > .cartao-numero:nth-child(4n+1){ --a-fundo-1:#FAF7FF; --a-fundo-2:#EFE8FC; --a-borda:#DACCF5; --a-forte:#6B46C1; }
   .cartoes-fluxo > .cartao-fluxo:nth-child(4n+2), .grade-marcadores > .bloco-marcador:nth-child(4n+2) .cartao-fluxo, .grade-cartoes > .cartao-numero:nth-child(4n+2){ --a-fundo-1:#FFF8F4; --a-fundo-2:#FFEADF; --a-borda:#F8D2C0; --a-forte:#C2491D; }
   .cartoes-fluxo > .cartao-fluxo:nth-child(4n+3), .grade-marcadores > .bloco-marcador:nth-child(4n+3) .cartao-fluxo, .grade-cartoes > .cartao-numero:nth-child(4n+3){ --a-fundo-1:#F5FAFF; --a-fundo-2:#E3F0FD; --a-borda:#C3DCF6; --a-forte:#1F6CB0; }
@@ -3109,9 +3110,9 @@
   .btn-pagar-fatura:hover{ background:#000; }
   body.somente-leitura .btn-pagar-fatura, body.somente-leitura #btnImportarOfxFatura{ display:none !important; }
   /* Cores para não confundir: ENTRADAS/receitas em verde, SAÍDAS/despesas em rosa, cartão em âmbar (o resto continua roxo) */
-  #painel-fin-resultados .painel-quadro-secao.quadro-entradas, #painel-fin-fluxo-caixa .painel-quadro-secao.quadro-entradas{ background:#EFF9F2; box-shadow: inset 4px 0 0 #7CC79A; }
-  #painel-fin-resultados .painel-quadro-secao.quadro-saidas, #painel-fin-fluxo-caixa .painel-quadro-secao.quadro-saidas{ background:#FDF0F0; box-shadow: inset 4px 0 0 #E79A9A; }
-  #painel-fin-fluxo-caixa .painel-quadro-secao.quadro-cartao{ background:#FFF6E5; box-shadow: inset 4px 0 0 #E8B45A; }
+  #painel-fin-resultados .painel-quadro-secao.quadro-entradas, #painel-fin-fluxo-caixa .painel-quadro-secao.quadro-entradas{ background:#EFF9F2; }
+  #painel-fin-resultados .painel-quadro-secao.quadro-saidas, #painel-fin-fluxo-caixa .painel-quadro-secao.quadro-saidas{ background:#FDF0F0; }
+  #painel-fin-fluxo-caixa .painel-quadro-secao.quadro-cartao{ background:#FFF6E5; }
   .quadro-entradas h2{ color:#2A6E47; } .quadro-saidas h2{ color:#A8372F; } .quadro-cartao h2{ color:#8A5A00; }
   #painel-fin-resultados .quadro-entradas .tabela-contratos th, #painel-fin-fluxo-caixa .quadro-entradas .tabela-contratos th{ color:#5F9F7A; }
   #painel-fin-resultados .quadro-saidas .tabela-contratos th, #painel-fin-fluxo-caixa .quadro-saidas .tabela-contratos th{ color:#C07A7A; }
@@ -3136,11 +3137,20 @@
   .btn-reajustar-saldo:hover{ border-color: var(--grafite); color: var(--grafite); }
   body.somente-leitura .btn-reajustar-saldo{ display:none !important; }
   .linha-nf-topo{ display:block; margin-bottom:18px; }
-  /* Faturamento da receita: um cartão só, rótulo + escolha + alíquota na mesma linha e a explicação logo abaixo */
-  .controle-faturamento{ border:1.5px solid var(--borda); border-radius:12px; padding:12px 16px; }
-  .controle-faturamento .controle-nf{ flex-wrap:wrap; gap:8px 12px; }
-  .controle-faturamento .controle-nf select{ flex:1 1 220px; max-width:320px; }
-  .controle-faturamento .texto-pequeno{ margin:8px 0 0; padding-top:8px; border-top:1px solid var(--borda); }
+  /* Faturamento: PF | PJ em botões, e uma chave para a nota fiscal (ligada mostra a alíquota) */
+  .controle-nf{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .seg-fat{ display:inline-flex; background: var(--creme); border-radius:999px; padding:3px; }
+  .seg-fat button{ border:none; background:none; border-radius:999px; padding:6px 18px; font-family:inherit; font-size:.8rem; font-weight:700; color: var(--texto-suave); cursor:pointer; transition: background .15s, color .15s; }
+  .seg-fat button.ativo{ background: var(--grafite); color: var(--branco); }
+  .chave-nf{ display:inline-flex; align-items:center; gap:8px; background:none; border:none; padding:4px 0; font-family:inherit; font-size:.8rem; font-weight:600; color: var(--texto-suave); cursor:pointer; }
+  .chave-nf[hidden]{ display:none; }
+  .chave-nf .trilho-nf{ width:34px; height:20px; border-radius:999px; background:#D9D4CC; position:relative; transition: background .15s; flex-shrink:0; }
+  .chave-nf .trilho-nf::after{ content:""; position:absolute; top:2px; left:2px; width:16px; height:16px; border-radius:50%; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,.25); transition: transform .15s; }
+  .chave-nf.ligada{ color: var(--verde-sucesso); }
+  .chave-nf.ligada .trilho-nf{ background: var(--verde-sucesso); }
+  .chave-nf.ligada .trilho-nf::after{ transform: translateX(14px); }
+  .nota-fat{ font-size:.78rem; color: var(--texto-suave); }
+  .prop-limpa .controle-nf{ margin-top:6px; }
 
   /* Modal de lançamento (receita/despesa): duas colunas, a da direita expande */
   .modal-lanc{
@@ -5422,7 +5432,14 @@
     </div>
     <div class="prop-limpa">
       <span class="rotulo-limpo">Faturamento</span>
-      <select id="campoFechamentoFaturamento" class="input-limpo">
+      <div class="controle-nf">
+        <div class="seg-fat" role="group" aria-label="Faturamento">
+          <button type="button" data-fech-pessoa="pf">PF</button>
+          <button type="button" data-fech-pessoa="pj">PJ</button>
+        </div>
+        <button type="button" class="chave-nf" id="chaveFechamentoNf" role="switch" aria-checked="false" hidden><span class="trilho-nf"></span>Nota fiscal</button>
+      </div>
+      <select id="campoFechamentoFaturamento" class="input-limpo" hidden style="display:none;">
         <option value="">A classificar</option>
         <option value="pj_nf">Empresa (PJ) com nota</option>
         <option value="pf">Pessoa física (PF)</option>
@@ -10278,14 +10295,18 @@
     // Faturamento (substitui a caixinha "Emissão de NF"): define onde o dinheiro entra e se calcula imposto.
     const nf = `<div class="controle-faturamento">
         <div class="controle-nf">
-          <span class="rotulo-secao-financa">Faturamento</span>
-          <select class="input-limpo" data-el="fatTipo" style="width:auto; min-width:210px; margin:0;">
+          <div class="seg-fat" role="group" aria-label="Faturamento">
+            <button type="button" data-fat-pessoa="pf">PF</button>
+            <button type="button" data-fat-pessoa="pj">PJ</button>
+          </div>
+          <button type="button" class="chave-nf" data-fat-nf role="switch" aria-checked="false" hidden><span class="trilho-nf"></span>Nota fiscal</button>
+          <button type="button" class="pilula-taxa-nf" data-el="nfTaxa" title="Alíquota do mês — clique pra sobrescrever nesta receita" hidden></button>
+          <span class="texto-pequeno nota-fat" data-el="fatNota"></span>
+          <select data-el="fatTipo" hidden style="display:none;">
             <option value="">A classificar</option>
             ${FATURAMENTOS.map((f) => `<option value="${f.valor}">${f.rotulo}</option>`).join("")}
           </select>
-          <button type="button" class="pilula-taxa-nf" data-el="nfTaxa" title="Alíquota do mês — clique pra sobrescrever nesta receita" hidden></button>
         </div>
-        <p class="texto-pequeno" data-el="fatNota" style="margin:6px 0 0;" hidden></p>
       </div>`;
     const cabecalho = `<thead><tr><th>Pago</th><th>Descrição</th><th>Valor</th><th>Vencimento</th>${op.ehDespesa ? "" : `<th class="col-conta">Conta</th>`}<th>Status</th><th></th></tr></thead>`;
     return `
@@ -10495,22 +10516,37 @@
       const seletor = el("fatTipo");
       if (!seletor) return;
       seletor.value = estado.fat;
+      const ehPf = estado.fat === "pf", ehPj = estado.fat === "pj_nf" || estado.fat === "pj_sem_nf", comNota = estado.fat === "pj_nf";
+      raiz.querySelector('[data-fat-pessoa="pf"]').classList.toggle("ativo", ehPf);
+      raiz.querySelector('[data-fat-pessoa="pj"]').classList.toggle("ativo", ehPj);
+      const chave = raiz.querySelector("[data-fat-nf]");
+      chave.hidden = !ehPj;
+      chave.classList.toggle("ligada", comNota);
+      chave.setAttribute("aria-checked", comNota ? "true" : "false");
       const pilula = el("nfTaxa");
-      pilula.hidden = estado.fat !== "pj_nf";
+      pilula.hidden = !comNota;
       const taxa = aliquotaAtual();
       pilula.textContent = String(taxa).replace(".", ",") + "%" + (estado.aliq != null ? " ✎" : "");
       const nota = el("fatNota");
       let texto = "";
-      if (estado.fat === "pj_nf") texto = `Imposto de ${String(taxa).replace(".", ",")}% (alíquota ${estado.aliq != null ? "desta receita" : "do mês do fechamento"}) = ${formatarMoeda((estado.total * taxa) / 100)}.`;
-      else if (estado.fat === "pj_sem_nf") texto = "⚠ Empresa sem nota: imposto zero (fica sinalizado em Resultados).";
-      else if (estado.fat === "pf") {
+      if (comNota) texto = `imposto ${formatarMoeda((estado.total * taxa) / 100)}`;
+      else if (estado.fat === "pj_sem_nf") texto = "sem imposto";
+      else if (ehPf) {
         const mes = mesDe(estado.dataRef) || hojeIso().slice(0, 7);
         const outras = pfDoMes(mes, estado.chave).total;
         const com = outras + estado.total;
-        texto = `Em ${mes.slice(5, 7)}/${mes.slice(0, 4)}: ${formatarMoeda(com)} de ${formatarMoeda(LIMITE_PF_MES)} no limite da PF (${Math.round((com / LIMITE_PF_MES) * 100)}%) — ${com > LIMITE_PF_MES ? "⚠ passa do limite em " + formatarMoeda(com - LIMITE_PF_MES) : "ainda cabem " + formatarMoeda(LIMITE_PF_MES - com)}.`;
-      } else texto = "Sem classificação: tratada como empresa sem imposto até você escolher.";
-      nota.hidden = false;
+        texto = `${formatarMoeda(com)} de ${formatarMoeda(LIMITE_PF_MES)} no limite da PF (${Math.round((com / LIMITE_PF_MES) * 100)}%)${com > LIMITE_PF_MES ? " · ⚠ passa em " + formatarMoeda(com - LIMITE_PF_MES) : ""}`;
+      } else texto = "escolha PF ou PJ";
+      nota.hidden = !texto;
       nota.textContent = texto;
+    }
+    function definirFat(valor) {
+      estado.fat = valor;
+      if (estado.fat !== "pj_nf") estado.aliq = null;
+      sincronizarNf();
+      renderNf();
+      renderCustos();
+      notificar();
     }
 
     // Custos de produção da campanha: as despesas de verdade ligadas a ela (clicar abre a janela Nova despesa).
@@ -10601,6 +10637,15 @@
         abrirDespesaPeloRegistro(despesasFinCache.find((d) => d.id === custoVinculado.dataset.abrirDespesa));
         return;
       }
+      const btnPessoa = evento.target.closest("[data-fat-pessoa]");
+      if (btnPessoa) {
+        definirFat(btnPessoa.dataset.fatPessoa === "pf" ? "pf" : estado.fat === "pj_sem_nf" ? "pj_sem_nf" : "pj_nf");
+        return;
+      }
+      if (evento.target.closest("[data-fat-nf]")) {
+        definirFat(estado.fat === "pj_nf" ? "pj_sem_nf" : "pj_nf");
+        return;
+      }
       const pilulaNf = evento.target.closest('[data-el="nfTaxa"]');
       if (pilulaNf) {
         abrirPopoverNF(pilulaNf, estado.aliq != null ? estado.aliq : aliquotaAtual(), (taxa) => {
@@ -10650,12 +10695,7 @@
 
     raiz.addEventListener("change", (evento) => {
       if (evento.target.matches('[data-el="fatTipo"]')) {
-        estado.fat = evento.target.value;
-        if (estado.fat !== "pj_nf") estado.aliq = null;
-        sincronizarNf();
-        renderNf();
-        renderCustos();
-        notificar();
+        definirFat(evento.target.value);
         return;
       }
       const linha = evento.target.closest("tr[data-uid]");
@@ -14720,6 +14760,13 @@
   // mostra a alíquota (só PJ com nota) e, na PF, quanto ainda cabe no limite do mês
   function atualizarFaturamentoFechamento() {
     const fat = campoFechamentoFaturamento.value;
+    const ehPj = fat === "pj_nf" || fat === "pj_sem_nf";
+    document.querySelector('[data-fech-pessoa="pf"]').classList.toggle("ativo", fat === "pf");
+    document.querySelector('[data-fech-pessoa="pj"]').classList.toggle("ativo", ehPj);
+    const chaveF = document.getElementById("chaveFechamentoNf");
+    chaveF.hidden = !ehPj;
+    chaveF.classList.toggle("ligada", fat === "pj_nf");
+    chaveF.setAttribute("aria-checked", fat === "pj_nf" ? "true" : "false");
     linhaFechamentoNfTaxa.hidden = fat !== "pj_nf";
     const valor = Number(campoFechamentoValor.value) || 0;
     const mes = mesDe(campoFechamentoData.value) || hojeIso().slice(0, 7);
@@ -14727,8 +14774,8 @@
     if (fat === "pj_nf") {
       const manual = campoFechamentoNfTaxa.value !== "" ? Number(campoFechamentoNfTaxa.value) : null;
       const taxa = manual != null ? manual : aliquotaDoMes(mes);
-      texto = `Recebe no Nubank PJ · imposto de ${String(taxa).replace(".", ",")}% = ${formatarMoeda((valor * taxa) / 100)}.`;
-    } else if (fat === "pj_sem_nf") texto = "⚠ Empresa sem nota: imposto zero (fica sinalizado em Resultados).";
+      texto = `Imposto de ${String(taxa).replace(".", ",")}% = ${formatarMoeda((valor * taxa) / 100)}`;
+    } else if (fat === "pj_sem_nf") texto = "Sem nota: sem imposto (fica sinalizado em Resultados)";
     else if (fat === "pf") {
       const outras = pfDoMes(mes, fechamentoEmEdicao ? "r" + fechamentoEmEdicao.id : "").total;
       const com = outras + valor;
@@ -14738,6 +14785,12 @@
     notaFechamentoFaturamento.textContent = texto;
   }
   [campoFechamentoFaturamento, campoFechamentoNfTaxa, campoFechamentoValor, campoFechamentoData].forEach((c) => c.addEventListener("input", atualizarFaturamentoFechamento));
+  const definirFatFechamento = (v) => {
+    campoFechamentoFaturamento.value = v;
+    campoFechamentoFaturamento.dispatchEvent(new Event("input", { bubbles: true }));
+  };
+  document.querySelectorAll("[data-fech-pessoa]").forEach((b) => b.addEventListener("click", () => definirFatFechamento(b.dataset.fechPessoa === "pf" ? "pf" : campoFechamentoFaturamento.value === "pj_sem_nf" ? "pj_sem_nf" : "pj_nf")));
+  document.getElementById("chaveFechamentoNf").addEventListener("click", () => definirFatFechamento(campoFechamentoFaturamento.value === "pj_nf" ? "pj_sem_nf" : "pj_nf"));
   document.getElementById("corpoResultadoContratos").addEventListener("click", (evento) => {
     const campanha = evento.target.closest("tr[data-campanha-id]");
     if (campanha) {
