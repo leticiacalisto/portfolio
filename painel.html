@@ -2193,10 +2193,11 @@
   #painel-gp-dashboard .mes-corrente-dash{ font-size:1.4rem; min-width:170px; text-align:center; }
   /* um seletor só: o mês aparece uma vez, grande, com as setas dos lados */
   #painel-gp-dashboard .seletor-mes-dash{
-    font-family: var(--fonte-impacto); font-size:1.4rem; font-weight:600; letter-spacing:-.01em;
-    width:auto; min-width:230px; margin:0; padding:2px 8px; border:none; background:transparent; color: var(--grafite);
+    font-family: var(--fonte-impacto); font-size:1.15rem; font-weight:600; letter-spacing:-.01em;
+    width:auto; min-width:0; margin:0; padding:4px 10px; border:none; background:transparent; color: var(--grafite);
     text-align:center; text-align-last:center; cursor:pointer;
   }
+  #painel-gp-dashboard .seletor-mes-dash option{ font-family: var(--fonte-sans); font-size:.9rem; font-weight:500; letter-spacing:0; color: var(--grafite); background: var(--branco); }
   #painel-gp-dashboard .seletor-mes-dash:hover{ background:#F3F0F9; border-radius:10px; }
   #painel-gp-dashboard .cartao-fluxo{ border:none; border-radius:16px; padding:18px 20px; }
   #painel-gp-dashboard .cartao-fluxo.marcador.selecionavel:hover{ box-shadow:0 6px 18px rgba(90,70,140,.12); }
@@ -3041,6 +3042,51 @@
   .titulo-video-pf{ flex:1; cursor:pointer; font-size:.92rem; }
   .titulo-video-pf:hover{ text-decoration: underline; }
   #filtroNichoVideosPf .btn-alternador{ cursor:grab; }
+  /* Mais vistos: resumo + ranking */
+  .nota-truncada{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .ranking-videos-pf{ display:flex; flex-direction:column; gap:10px; }
+  .rank-video{ display:flex; align-items:center; gap:16px; padding:10px 18px 10px 12px; background:#FAF8FD; border-radius:16px; text-decoration:none; color:inherit; transition: transform .2s ease, background .2s ease; }
+  .rank-video:hover{ transform: translateY(-2px); background:#F3EFFA; }
+  .rank-pos{ width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; background:#fff; color: var(--texto-suave); font-weight:800; font-size:.85rem; }
+  .rank-pos.pos-1{ background:#F6D77A; color:#6B4A00; }
+  .rank-pos.pos-2{ background:#DDE0E6; color:#484C55; }
+  .rank-pos.pos-3{ background:#F1C3A0; color:#7A3E12; }
+  .rank-thumb{ width:112px; height:63px; border-radius:12px; overflow:hidden; flex-shrink:0; background: var(--creme); }
+  .rank-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .rank-info{ flex:1; min-width:0; display:flex; flex-direction:column; gap:9px; }
+  .rank-titulo{ font-weight:600; font-size:.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .rank-barra{ height:8px; border-radius:999px; background:#fff; overflow:hidden; }
+  .rank-barra i{ display:block; height:100%; border-radius:999px; background: linear-gradient(90deg,#9B83E2,#E79AC6); }
+  .rank-num{ text-align:right; min-width:84px; display:flex; flex-direction:column; flex-shrink:0; }
+  .rank-num b{ font-family: var(--fonte-impacto); font-size:1.3rem; line-height:1.1; }
+  .rank-num span{ font-size:.72rem; color: var(--texto-suave); }
+  /* Todos: busca, chips de nicho e linhas em cartão */
+  .barra-videos-pf{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin:2px 0 14px; }
+  .busca-videos-pf{
+    flex:0 1 340px; padding:10px 16px 10px 40px; border:none; border-radius:999px; font-family:inherit; font-size:.88rem; color: var(--grafite);
+    background:#F3F0F9 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B6B6B' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-3.5-3.5'/%3E%3C/svg%3E") no-repeat 15px center;
+  }
+  .busca-videos-pf:focus{ outline:none; background-color:#ECE6F8; }
+  .chips-nicho-pf{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px; }
+  .chip-nicho-pf{ display:inline-flex; align-items:center; gap:8px; border:none; border-radius:999px; padding:7px 8px 7px 14px; font-family:inherit; font-size:.8rem; font-weight:600; background:#F3F0F9; color: var(--texto-suave); cursor:grab; transition: background .15s ease, color .15s ease; }
+  .chip-nicho-pf b{ font-size:.7rem; font-weight:700; background:#fff; color: var(--texto-suave); border-radius:999px; padding:2px 8px; }
+  .chip-nicho-pf:hover{ background:#E9E3F6; }
+  .chip-nicho-pf.ativo{ background: var(--grafite); color: var(--branco); }
+  .chip-nicho-pf.ativo b{ background: rgba(255,255,255,.2); color: var(--branco); }
+  .chips-nicho-pf.em-busca .chip-nicho-pf{ opacity:.45; }
+  .linha-video-pf{ background:#FAF8FD; border:none; border-radius:16px; padding:10px 16px 10px 12px; margin-bottom:8px; gap:14px; transition: background .15s ease; }
+  .linha-video-pf:hover{ background:#F3EFFA; }
+  .linha-video-pf .miniatura-video-pf{ position:relative; width:96px; height:54px; border-radius:10px; }
+  .play-video-pf{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#fff; background: rgba(20,17,13,.32); opacity:0; transition: opacity .15s ease; }
+  .miniatura-video-pf:hover .play-video-pf{ opacity:1; }
+  .texto-video-pf{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; cursor:pointer; }
+  .linha-video-pf .titulo-video-pf{ flex:none; font-weight:600; font-size:.95rem; }
+  .sub-video-pf{ font-size:.8rem; color: var(--texto-suave); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .selo-oculto-pf{ display:none; font-size:.7rem; font-weight:700; background:#EDE9E3; color: var(--texto-suave); border-radius:999px; padding:3px 10px; white-space:nowrap; }
+  .linha-video-pf.oculto{ opacity:.7; }
+  .linha-video-pf.oculto .selo-oculto-pf{ display:inline-flex; }
+  .linha-video-pf.oculto .titulo-video-pf{ text-decoration:none; }
+  @media (max-width: 640px){ .rank-thumb{ width:72px; height:41px; } .rank-num{ min-width:60px; } .selo-oculto-pf{ display:none !important; } }
 
   /* Prévia do vídeo, expandida na própria página */
   .caixa-video-preview-pf{
@@ -3680,9 +3726,10 @@
 
       <div id="portfolioVisaoVideos" hidden>
         <div id="videosPfMaisVistos">
+          <div class="cartoes-fluxo cartoes-marcas" id="resumoVideosPf"></div>
           <div class="painel-quadro-secao">
             <div class="topo-quadro"><div><h2 style="margin-bottom:2px;">Vídeos mais vistos</h2></div></div>
-            <div id="listaVideos"></div>
+            <div id="listaVideos" class="ranking-videos-pf"></div>
           </div>
         </div>
 
@@ -3696,7 +3743,11 @@
                 <button type="button" class="btn-novo-card" id="btnNovoVideoPortfolio">+ Adicionar vídeo</button>
               </div>
             </div>
-            <div class="alternador-visualizacao alternador-mini" id="filtroNichoVideosPf" style="flex-wrap:wrap; margin-bottom:16px;"></div>
+            <div class="barra-videos-pf">
+              <input type="search" id="buscaVideosPf" class="busca-videos-pf" placeholder="Buscar vídeo em todos os nichos…" autocomplete="off">
+              <span class="texto-pequeno" id="resumoNichoPf"></span>
+            </div>
+            <div class="chips-nicho-pf" id="filtroNichoVideosPf"></div>
             <div id="listaVideosPorNicho"></div>
           </div>
         </div>
@@ -6361,7 +6412,9 @@
 
   function renderizarVideos(eventosVideo) {
     const container = document.getElementById("listaVideos");
+    const resumo = document.getElementById("resumoVideosPf");
     if (eventosVideo.length === 0) {
+      if (resumo) resumo.innerHTML = "";
       container.innerHTML = textoVazio("Nenhum vídeo assistido ainda.");
       return;
     }
@@ -6376,17 +6429,27 @@
 
     const lista = [...mapa.values()].sort((a, b) => b.contagem - a.contagem);
     const maximo = lista[0].contagem;
+    const total = lista.reduce((s, v) => s + v.contagem, 0);
+
+    // resumo no topo: total de visualizações, quantos vídeos foram vistos e o campeão do período
+    if (resumo) {
+      resumo.innerHTML = `
+      <div class="cartao-fluxo acumulado"><span class="rotulo-cartao-fluxo">Visualizações</span><span class="valor-cartao-fluxo">${formatarNumero(total)}</span><span class="nota-cartao-fluxo">no período escolhido</span></div>
+      <div class="cartao-fluxo previsto"><span class="rotulo-cartao-fluxo">Vídeos assistidos</span><span class="valor-cartao-fluxo">${formatarNumero(lista.length)}</span><span class="nota-cartao-fluxo">média de ${formatarNumero(Math.round((total / lista.length) * 10) / 10)} por vídeo</span></div>
+      <div class="cartao-fluxo entradas"><span class="rotulo-cartao-fluxo">Mais visto</span><span class="valor-cartao-fluxo">${formatarNumero(lista[0].contagem)}</span><span class="nota-cartao-fluxo nota-truncada">${esc(lista[0].titulo)}</span></div>`;
+    }
 
     container.innerHTML = lista
       .map(
-        (v) => `
-      <a class="linha-video" href="https://www.youtube.com/watch?v=${encodeURIComponent(v.id)}" target="_blank" rel="noopener">
-        <img src="https://i.ytimg.com/vi/${encodeURIComponent(v.id)}/mqdefault.jpg" alt="Miniatura do vídeo ${v.titulo}" loading="lazy">
-        <div class="info-video">
-          <span class="titulo-video">${v.titulo}</span>
-          <div class="barra-fundo"><div class="barra-preenchida" style="width:${(v.contagem / maximo) * 100}%"></div></div>
+        (v, i) => `
+      <a class="rank-video" href="https://www.youtube.com/watch?v=${encodeURIComponent(v.id)}" target="_blank" rel="noopener">
+        <span class="rank-pos pos-${i + 1}">${i + 1}</span>
+        <span class="rank-thumb"><img src="https://i.ytimg.com/vi/${encodeURIComponent(v.id)}/mqdefault.jpg" alt="" loading="lazy"></span>
+        <div class="rank-info">
+          <span class="rank-titulo">${esc(v.titulo)}</span>
+          <div class="rank-barra"><i style="width:${(v.contagem / maximo) * 100}%"></i></div>
         </div>
-        <span class="contagem-video">${formatarNumero(v.contagem)}</span>
+        <div class="rank-num"><b>${formatarNumero(v.contagem)}</b><span>${Math.round((v.contagem / total) * 100)}% do total</span></div>
       </a>
     `
       )
@@ -6574,10 +6637,12 @@
       container.innerHTML = `<p class="texto-vazio">As tabelas existem mas estão vazias — confirma se o bloco de dados (os "insert into..." no fim) do js/portfolio-videos-setup.sql rodou junto, e não só a criação das tabelas.</p>`;
       return;
     }
+    const emBusca = !!normalizarTexto((document.getElementById("buscaVideosPf") || {}).value || "");
+    container.classList.toggle("em-busca", emBusca);
     container.innerHTML = portfolioNichosCache
       .map((n) => {
         const qtd = portfolioVideosCache.filter((v) => v.nicho_id === n.id).length;
-        return `<button type="button" class="btn-alternador ${n.id === nichoSelecionadoPf ? "ativo" : ""}" draggable="true" title="Arrastar para reordenar" data-nicho-pf="${n.id}">${esc(n.nome)} (${qtd})</button>`;
+        return `<button type="button" class="chip-nicho-pf ${n.id === nichoSelecionadoPf && !emBusca ? "ativo" : ""}" draggable="true" title="Arrastar para reordenar" data-nicho-pf="${n.id}"><span>${esc(n.nome)}</span><b>${qtd}</b></button>`;
       })
       .join("");
     ligarDragNichosPf();
@@ -6588,6 +6653,15 @@
       const botao = evento.target.closest("[data-nicho-pf]");
       if (!botao) return;
       nichoSelecionadoPf = botao.dataset.nichoPf;
+      const busca = document.getElementById("buscaVideosPf");
+      if (busca) busca.value = ""; // escolher um nicho sai da busca
+      renderizarFiltroNichoPf();
+      renderizarVideosPorNicho();
+    });
+  }
+  const campoBuscaVideosPf = document.getElementById("buscaVideosPf");
+  if (campoBuscaVideosPf) {
+    campoBuscaVideosPf.addEventListener("input", () => {
       renderizarFiltroNichoPf();
       renderizarVideosPorNicho();
     });
@@ -6647,6 +6721,7 @@
     return m ? m[1] : null;
   }
 
+  // Lista dos vídeos do nicho escolhido; com texto na busca, procura em TODOS os nichos (e o arrastar fica desligado).
   function renderizarVideosPorNicho() {
     const container = document.getElementById("listaVideosPorNicho");
     if (!container) return;
@@ -6654,9 +6729,20 @@
       container.innerHTML = "";
       return;
     }
-    const videos = portfolioVideosCache.filter((v) => v.nicho_id === nichoSelecionadoPf).sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0));
+    const busca = normalizarTexto((document.getElementById("buscaVideosPf") || {}).value || "");
+    const ordemNicho = (id) => portfolioNichosCache.findIndex((n) => n.id === id);
+    const videos = busca
+      ? portfolioVideosCache.filter((v) => normalizarTexto(tituloVideoPf(v)).includes(busca)).sort((a, b) => ordemNicho(a.nicho_id) - ordemNicho(b.nicho_id) || (a.ordem ?? 0) - (b.ordem ?? 0))
+      : portfolioVideosCache.filter((v) => v.nicho_id === nichoSelecionadoPf).sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0));
+    const visiveis = videos.filter((v) => v.visivel).length;
+    const resumo = document.getElementById("resumoNichoPf");
+    if (resumo) {
+      resumo.textContent = busca
+        ? `${videos.length} resultado${videos.length === 1 ? "" : "s"} em todos os nichos`
+        : `${videos.length} vídeo${videos.length === 1 ? "" : "s"} · ${visiveis} visível${visiveis === 1 ? "" : "is"}${videos.length - visiveis ? ` · ${videos.length - visiveis} oculto${videos.length - visiveis === 1 ? "" : "s"}` : ""}`;
+    }
     if (!videos.length) {
-      container.innerHTML = `<p class="texto-vazio">Nenhum vídeo nesse nicho ainda.</p>`;
+      container.innerHTML = `<p class="texto-vazio">${busca ? "Nenhum vídeo encontrado." : "Nenhum vídeo nesse nicho ainda."}</p>`;
       return;
     }
     container.innerHTML =
@@ -6667,20 +6753,25 @@
           const miniatura = idYt
             ? `<img src="https://i.ytimg.com/vi/${idYt}/mqdefault.jpg" alt="" loading="lazy">`
             : `<span class="miniatura-video-pf-vazia"></span>`;
+          const nicho = busca ? portfolioNichosCache.find((n) => n.id === v.nicho_id) : null;
           return `
-        <li class="linha-video-pf ${v.visivel ? "" : "oculto"}" draggable="true" data-id="${v.id}">
-          <span class="alca-arrastar-pf" title="Arrastar para reordenar">
+        <li class="linha-video-pf ${v.visivel ? "" : "oculto"}" ${busca ? "" : 'draggable="true"'} data-id="${v.id}">
+          <span class="alca-arrastar-pf" title="Arrastar para reordenar" ${busca ? "hidden" : ""}>
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="18" r="1"/></svg>
           </span>
-          <a class="miniatura-video-pf" href="${esc(v.link)}" target="_blank" rel="noopener" draggable="false" data-ver-video-pf="${v.id}" title="Ver vídeo">${miniatura}</a>
-          <span class="titulo-video-pf" data-editar-video-pf="${v.id}" title="Editar">${esc(tituloVideoPf(v))}</span>
+          <a class="miniatura-video-pf" href="${esc(v.link)}" target="_blank" rel="noopener" draggable="false" data-ver-video-pf="${v.id}" title="Ver vídeo">${miniatura}<span class="play-video-pf"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></a>
+          <div class="texto-video-pf" data-editar-video-pf="${v.id}" title="Editar">
+            <span class="titulo-video-pf">${esc(v.marca)}</span>
+            <span class="sub-video-pf">${esc(v.conteudo || "—")}${nicho ? " · " + esc(nicho.nome) : ""}</span>
+          </div>
+          <span class="selo-oculto-pf">Oculto no site</span>
           <label class="chave-liga" title="Visível no site"><input type="checkbox" data-toggle-visivel-pf="${v.id}" ${v.visivel ? "checked" : ""}><span class="trilho-chave"></span></label>
           <button type="button" class="btn-remover-parcela" title="Excluir" data-excluir-video-pf="${v.id}">✕</button>
         </li>`;
         })
         .join("") +
       `</ul>`;
-    ligarDragVideosPf();
+    if (!busca) ligarDragVideosPf();
   }
 
   const listaVideosPorNicho = document.getElementById("listaVideosPorNicho");
@@ -20242,7 +20333,7 @@
         el.textContent = ultimo;
         const passo = (agora) => {
           if (el.textContent !== ultimo) return; // os dados foram redesenhados no meio: não sobrescreve
-          const p = Math.min(1, (agora - inicio) / duracao);
+          const p = Math.max(0, Math.min(1, (agora - inicio) / duracao)); // nunca negativo (no 1º quadro o relógio do rAF pode estar um pouco atrás)
           const v = alvo * (1 - Math.pow(1 - p, 4));
           ultimo = p >= 1 ? texto : formatar(decimais ? v : Math.round(v));
           el.textContent = ultimo;
