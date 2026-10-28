@@ -2968,6 +2968,26 @@
   .nota-cartao-fluxo{ font-size:.76rem; color: var(--texto-suave); }
   .cartao-fluxo.negativo .nota-cartao-fluxo{ color: var(--vermelho-erro); }
   .aviso-migracao-fluxo{ background:#FCEFD1; color:#6B4A00; border-radius:10px; padding:10px 14px; font-size:.85rem; margin-bottom:16px; }
+  /* Nova despesa (janela única) e blocos novos de Finanças */
+  .modal-despesa-nova{ max-width: 760px; }
+  .grade-nd{ display:grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+  .grade-nd .larga{ grid-column: 1 / -1; }
+  .nd-secao{ margin: 18px 0 4px; font-weight:700; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color: var(--texto-suave); }
+  .nd-previa{ background: var(--creme); border-radius:12px; padding:12px 14px; font-size:.85rem; line-height:1.5; margin:12px 0; }
+  .nd-previa .nd-aviso{ color:#6B4A00; display:block; margin-top:6px; }
+  .nd-previa .nd-erro{ color: var(--vermelho-erro); display:block; margin-top:6px; }
+  .nd-parcelas td input, .nd-parcelas td select{ width:100%; min-width: 96px; }
+  .barra-pf{ height:10px; border-radius:99px; background: var(--creme); overflow:hidden; margin:8px 0 6px; }
+  .barra-pf > div{ height:100%; background:#8FD3A8; border-radius:99px; }
+  .barra-pf.alerta > div{ background:#E7B04C; }
+  .barra-pf.estourou > div{ background: var(--vermelho-erro); }
+  .linha-custo-clicavel{ cursor:pointer; }
+  .linha-custo-clicavel:hover td{ background: var(--creme); }
+  .bloco-extra-fin{ margin-top:18px; }
+  .lista-conferencia{ margin:0 0 6px; padding:0; list-style:none; font-size:.85rem; }
+  .lista-conferencia li{ display:flex; flex-wrap:wrap; gap:6px 12px; align-items:center; padding:8px 0; border-bottom:1px solid var(--borda); }
+  .lista-conferencia li > span:first-child{ flex:1 1 220px; }
+  @media (max-width: 640px){ .grade-nd{ grid-template-columns: 1fr; } .modal-despesa-nova{ padding:20px; } }
   .valor-fluxo-num{ white-space:nowrap; }
   .celula-vazia-fluxo{ color: var(--cinza-claro); }
 
@@ -3799,27 +3819,29 @@
           <button type="button" class="btn-alternador ativo" data-visao-resultados="mes">Mês atual</button>
           <button type="button" class="btn-alternador" data-visao-resultados="analise">Análises</button>
         </div>
+        <button type="button" class="btn-cancelar-quadro" id="btnAbrirAliquotas" title="Alíquota do Simples por mês">Alíquotas</button>
+        <button type="button" class="btn-cancelar-quadro" id="btnAbrirConferencia" title="Listar dados antigos que precisam de classificação">Conferir dados antigos</button>
       </div>
 
       <div id="resultadosVisaoMes">
         <div class="cartoes-fluxo" id="cartoesResultados">
           <div class="cartao-fluxo entradas clicavel" data-lista-cartao="res-faturado" role="button" tabindex="0" title="Ver a lista">
-            <span class="rotulo-cartao-fluxo">Total faturado</span>
+            <span class="rotulo-cartao-fluxo">Faturado</span>
             <span class="valor-cartao-fluxo" id="resultadosTotalFaturado">R$ 0,00</span>
             <span class="nota-cartao-fluxo" id="resultadosNotaFaturado">—</span>
           </div>
           <div class="cartao-fluxo clicavel" id="cartaoResultadosLucroBruto" data-lista-cartao="res-lucro-bruto" role="button" tabindex="0" title="Ver a lista">
-            <span class="rotulo-cartao-fluxo">Lucro bruto</span>
+            <span class="rotulo-cartao-fluxo">Margem de contribuição</span>
             <span class="valor-cartao-fluxo" id="resultadosLucroBruto">R$ 0,00</span>
-            <span class="nota-cartao-fluxo">Faturado − impostos − descontos</span>
+            <span class="nota-cartao-fluxo" id="resultadosNotaMargemContrib">Faturado − impostos − custos de campanha</span>
           </div>
           <div class="cartao-fluxo saidas clicavel" data-lista-cartao="res-despesas" role="button" tabindex="0" title="Ver a lista">
-            <span class="rotulo-cartao-fluxo">Despesas</span>
+            <span class="rotulo-cartao-fluxo">Despesas + depreciação</span>
             <span class="valor-cartao-fluxo" id="resultadosDespesas">R$ 0,00</span>
-            <span class="nota-cartao-fluxo">Despesas da empresa</span>
+            <span class="nota-cartao-fluxo" id="resultadosNotaDespesas">Frente UGC</span>
           </div>
           <div class="cartao-fluxo acumulado clicavel" id="cartaoResultadosLucroLiquido" data-lista-cartao="res-lucro-liquido" role="button" tabindex="0" title="Ver a lista">
-            <span class="rotulo-cartao-fluxo">Lucro líquido</span>
+            <span class="rotulo-cartao-fluxo">Resultado da frente</span>
             <span class="valor-cartao-fluxo" id="resultadosLucroLiquido">R$ 0,00</span>
             <span class="nota-cartao-fluxo" id="resultadosNotaMargem">—</span>
           </div>
@@ -3832,6 +3854,12 @@
           </div>
           <div class="trilho-meta"><div class="preenchido-meta" id="preenchidoMetaResultados" style="width:0%"></div></div>
           <div class="rodape-meta-receita"><span id="resultadosMetaConvertido">R$ 0,00 convertidos no mês atual</span><span id="resultadosMetaPct">0%</span></div>
+        </div>
+
+        <div class="cartao-meta-receita" id="cartaoLimitePF" hidden>
+          <div class="topo-meta-receita"><span class="rotulo" id="rotuloLimitePF">Recebido na pessoa física</span></div>
+          <div class="barra-pf" id="barraLimitePF"><div style="width:0%"></div></div>
+          <div class="rodape-meta-receita"><span id="textoLimitePF">—</span><span id="pctLimitePF">0%</span></div>
         </div>
 
         <div class="painel-quadro-secao">
@@ -3869,7 +3897,7 @@
               <button type="button" class="btn-ferramenta-tabela" id="btnCategoriasDespesaEmpresa" title="Categorias">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h7"/><circle cx="14" cy="6" r="2"/><path d="M18 6h2"/><path d="M4 12h2"/><circle cx="9" cy="12" r="2"/><path d="M13 12h7"/><path d="M4 18h10"/><circle cx="17" cy="18" r="2"/></svg>
               </button>
-              <button type="button" class="btn-novo-card" id="btnNovaDespesaEmpresa">+ Novo custo</button>
+              <button type="button" class="btn-novo-card" id="btnNovaDespesaEmpresa">+ Nova despesa</button>
             </div>
           </div>
           <div class="tabela-cheia-wrap">
@@ -3885,13 +3913,40 @@
         <div class="painel-quadro-secao">
           <div class="topo-quadro">
             <div>
-              <h2 style="margin-bottom:2px;">DRE</h2>
-              <p class="texto-pequeno">Soma das receitas e dos custos acima, no período selecionado.</p>
+              <h2 style="margin-bottom:2px;">DRE — frente UGC</h2>
+              <p class="texto-pequeno">Regime de competência: a receita conta no mês de fechamento do contrato e o custo no mês da competência (não do pagamento). Pró-labore, distribuição de lucros e despesas compartilhadas ficam fora.</p>
             </div>
           </div>
           <div class="tabela-cheia-wrap">
             <table class="tabela-contratos tabela-dre-resumo" id="tabelaDre">
               <tbody id="corpoTabelaDre"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="painel-quadro-secao" id="blocoDifereCaixa">
+          <div class="topo-quadro">
+            <div>
+              <h2 style="margin-bottom:2px;">Por que o resultado do mês é diferente do caixa?</h2>
+              <p class="texto-pequeno">Resultado da frente → caixa do período (só Nubank PJ, sem a PF).</p>
+            </div>
+          </div>
+          <div class="tabela-cheia-wrap">
+            <table class="tabela-contratos tabela-dre-resumo"><tbody id="corpoDifereCaixa"></tbody></table>
+          </div>
+        </div>
+
+        <div class="painel-quadro-secao" id="blocoEquipamentos">
+          <div class="topo-quadro">
+            <div>
+              <h2 style="margin-bottom:2px;">Equipamentos</h2>
+              <p class="texto-pequeno">Cada ativo com valor de compra, depreciação mensal, acumulada, valor residual e meses restantes (até hoje).</p>
+            </div>
+          </div>
+          <div class="tabela-cheia-wrap">
+            <table class="tabela-contratos">
+              <thead><tr><th>Equipamento</th><th>Compra</th><th>Valor</th><th>Por mês</th><th>Acumulada</th><th>Residual</th><th>Meses restantes</th></tr></thead>
+              <tbody id="corpoEquipamentos"></tbody>
             </table>
           </div>
         </div>
@@ -4000,7 +4055,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/><path d="M7 15h4"/></svg>
               </button>
               <input type="file" id="campoArquivoOfx" accept=".ofx,.OFX,text/plain" hidden>
-              <button type="button" class="btn-novo-card" id="btnNovaDespesaFin">+ Nova saída</button>
+              <button type="button" class="btn-novo-card" id="btnNovaDespesaFin">+ Nova despesa</button>
             </div>
           </div>
           <div class="tabela-cheia-wrap">
@@ -4009,6 +4064,36 @@
                 <tr><th>Descrição</th><th>Data do pagamento</th><th>Valor</th><th>Categoria</th></tr>
               </thead>
               <tbody id="corpoTabelaDespesasFin"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="painel-quadro-secao bloco-extra-fin" id="blocoFluxoPF" hidden>
+          <div class="topo-quadro">
+            <div>
+              <h2 style="margin-bottom:2px;">Recebido direto na conta pessoal</h2>
+              <p class="texto-pequeno">Receitas em pessoa física: fora dos cartões, das listas, do balanço e do caixa acumulado acima. Elas não são pró-labore nem distribuição de lucros.</p>
+            </div>
+          </div>
+          <div class="tabela-cheia-wrap">
+            <table class="tabela-contratos">
+              <thead><tr><th>Descrição</th><th>Data</th><th>Valor</th><th>Situação</th></tr></thead>
+              <tbody id="corpoFluxoPF"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="painel-quadro-secao bloco-extra-fin" id="blocoFluxoAPagar">
+          <div class="topo-quadro">
+            <div>
+              <h2 style="margin-bottom:2px;">Contas a pagar e a receber</h2>
+              <p class="texto-pequeno">Parcelas previstas dos próximos meses (despesas e recebimentos de campanhas) para enxergar o caixa futuro. Nubank PJ.</p>
+            </div>
+          </div>
+          <div class="tabela-cheia-wrap">
+            <table class="tabela-contratos">
+              <thead><tr><th>Mês</th><th>A receber</th><th>A pagar</th><th>Saldo previsto</th><th>Caixa projetado</th></tr></thead>
+              <tbody id="corpoFluxoAPagar"></tbody>
             </table>
           </div>
         </div>
@@ -5036,6 +5121,155 @@
   </div>
 </div>
 
+<!-- ===================== MODAL ÚNICO: NOVA DESPESA ===================== -->
+<!-- Substitui "Novo custo" (Resultados) e "Nova saída" (Fluxo de Caixa). A despesa-mãe
+     guarda o valor total e a competência (Resultados); as parcelas (filhas) guardam
+     vencimento e pagamento (Fluxo de Caixa). Equipamento, assinatura anual e
+     capacitação amortizada geram também linhas só de Resultados (so_resultado). -->
+<div class="overlay-modal" id="overlayDespesaNova" hidden>
+  <div class="modal-quadro modal-quadro-grande modal-despesa-nova">
+    <h3 id="tituloDespesaNova">Nova despesa</h3>
+    <div id="avisoMigracaoDespesaNova" class="aviso-migracao-fluxo" hidden>Falta rodar <strong>js/financeiro-reestruturacao-setup.sql</strong> no Supabase (SQL Editor) pra salvar por esta janela.</div>
+
+    <div class="grade-nd">
+      <div class="prop-limpa larga">
+        <span class="rotulo-limpo">Descrição</span>
+        <input type="text" id="ndNome" class="input-limpo" autocomplete="off" placeholder="Ex: Câmera, Edição Bianco, Canva anual">
+      </div>
+      <div class="prop-limpa">
+        <span class="rotulo-limpo">Fornecedor (opcional)</span>
+        <input type="text" id="ndFornecedor" class="input-limpo" autocomplete="off">
+      </div>
+      <div class="prop-limpa">
+        <span class="rotulo-limpo">Categoria</span>
+        <select id="ndCategoria" class="input-limpo"></select>
+      </div>
+      <div class="prop-limpa">
+        <span class="rotulo-limpo">Tipo</span>
+        <select id="ndTipo" class="input-limpo">
+          <option value="avulsa">Despesa avulsa</option>
+          <option value="campanha">Custo de campanha</option>
+          <option value="recorrente">Recorrente (mensal ou anual)</option>
+          <option value="equipamento">Equipamento / ativo (depreciável)</option>
+        </select>
+      </div>
+      <div class="prop-limpa">
+        <span class="rotulo-limpo">Frente</span>
+        <select id="ndFrente" class="input-limpo">
+          <option value="UGC">UGC</option>
+          <option value="Empresa">Empresa (compartilhada)</option>
+        </select>
+      </div>
+      <div class="prop-limpa larga" id="ndLinhaCampanha" hidden>
+        <span class="rotulo-limpo">Campanha</span>
+        <select id="ndCampanha" class="input-limpo"></select>
+      </div>
+      <div class="prop-limpa">
+        <span class="rotulo-limpo">Valor total (R$)</span>
+        <input type="number" min="0" step="0.01" id="ndValor" class="input-limpo" placeholder="0,00">
+      </div>
+      <div class="prop-limpa">
+        <span class="rotulo-limpo" id="ndRotuloCompetencia">Mês de competência (Resultados)</span>
+        <input type="date" id="ndCompetencia" class="input-limpo">
+      </div>
+      <div class="prop-limpa" id="ndLinhaRecorrencia" hidden>
+        <span class="rotulo-limpo">Repete</span>
+        <select id="ndRecorrencia" class="input-limpo">
+          <option value="mensal">Todo mês</option>
+          <option value="anual">Uma vez por ano (rateio em 12 meses)</option>
+        </select>
+      </div>
+      <div class="prop-limpa" id="ndLinhaFixaAte" hidden>
+        <span class="rotulo-limpo">Lançar todo mês até</span>
+        <input type="date" id="ndFixaAte" class="input-limpo">
+      </div>
+      <div class="prop-limpa" id="ndLinhaVida" hidden>
+        <span class="rotulo-limpo">Vida útil (meses)</span>
+        <input type="number" min="1" step="1" id="ndVida" class="input-limpo">
+      </div>
+      <div class="prop-limpa" id="ndLinhaMinimo" hidden>
+        <span class="rotulo-limpo">Valor mínimo para depreciar (R$)</span>
+        <input type="number" min="0" step="1" id="ndMinimo" class="input-limpo">
+      </div>
+      <div class="prop-limpa" id="ndLinhaAmortizar" hidden>
+        <span class="rotulo-limpo">Amortizar em quantos meses? (vazio = mês de competência)</span>
+        <input type="number" min="1" step="1" id="ndAmortizar" class="input-limpo">
+      </div>
+    </div>
+
+    <p class="nd-secao">Pagamento (Fluxo de Caixa)</p>
+    <div class="grade-nd">
+      <div class="prop-limpa">
+        <span class="rotulo-limpo">Conta de pagamento</span>
+        <select id="ndConta" class="input-limpo">
+          <option value="Nubank PJ">Nubank PJ</option>
+          <option value="Mercado Pago">Mercado Pago</option>
+          <option value="Outra">Outra</option>
+        </select>
+      </div>
+      <div class="prop-limpa">
+        <span class="rotulo-limpo">Forma</span>
+        <select id="ndForma" class="input-limpo">
+          <option value="Pix">Pix</option>
+          <option value="À vista">À vista</option>
+          <option value="Cartão">Cartão</option>
+          <option value="Boleto">Boleto</option>
+        </select>
+      </div>
+      <div class="prop-limpa" id="ndLinhaQtd">
+        <span class="rotulo-limpo">Parcelas (1 = à vista)</span>
+        <input type="number" min="1" step="1" id="ndQtd" class="input-limpo" value="1">
+      </div>
+      <div class="prop-limpa">
+        <span class="rotulo-limpo">Data da 1ª parcela</span>
+        <input type="date" id="ndPrimeira" class="input-limpo">
+      </div>
+    </div>
+    <div style="margin:4px 0 8px;"><button type="button" class="btn-cancelar-quadro" id="btnNdGerar" title="Recria as parcelas ainda não pagas">Gerar parcelas</button></div>
+    <div class="tabela-cheia-wrap">
+      <table class="tabela-parcelas-campanha nd-parcelas">
+        <thead><tr><th>Nº</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Pago em</th></tr></thead>
+        <tbody id="ndCorpoParcelas"></tbody>
+      </table>
+    </div>
+
+    <div class="nd-previa" id="ndPrevia"></div>
+
+    <div class="acoes-modal-quadro">
+      <button type="button" class="btn-excluir-quadro" id="btnNdExcluir" hidden>Excluir</button>
+      <span style="flex-grow:1"></span>
+      <button type="button" class="btn-cancelar-quadro" id="btnNdCancelar">Cancelar</button>
+      <button type="button" class="btn-salvar-quadro" id="btnNdSalvar">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL: CONFERÊNCIA DOS DADOS ANTIGOS ===================== -->
+<div class="overlay-modal" id="overlayConferencia" hidden>
+  <div class="modal-quadro modal-quadro-grande modal-despesa-nova">
+    <h3>Conferência dos dados antigos</h3>
+    <p class="texto-pequeno" style="margin:-8px 0 8px;">Só listo: nada é agrupado, apagado ou alterado sozinho. Onde há um botão, a mudança só acontece quando você clica nele.</p>
+    <div id="corpoConferencia"></div>
+    <div class="acoes-modal-quadro">
+      <span style="flex-grow:1"></span>
+      <button type="button" class="btn-cancelar-quadro" id="btnFecharConferencia">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL: ALÍQUOTA DO SIMPLES (frente UGC) ===================== -->
+<div class="overlay-modal" id="overlayAliquotas" hidden>
+  <div class="modal-quadro">
+    <h3>Alíquota do Simples — frente UGC</h3>
+    <p class="texto-pequeno" style="margin:-8px 0 8px;">Vale para o mês de fechamento de cada receita com nota. Mês em branco usa o último valor informado antes dele (padrão 6%). Até ago/2026 era MEI: o DAS fica como despesa.</p>
+    <div id="corpoAliquotas"></div>
+    <div class="acoes-modal-quadro">
+      <span style="flex-grow:1"></span>
+      <button type="button" class="btn-cancelar-quadro" id="btnFecharAliquotas">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===================== MODAL: NOVO/EDITAR FECHAMENTO (Resultados) ===================== -->
 <!-- Serviço avulso lançado manualmente (sem campanha) — vira uma linha "Manual"
      no Resultado dos Contratos. Só edita/exclui aquela linha, não mexe no
@@ -5057,13 +5291,19 @@
       <input type="number" min="0" step="0.01" id="campoFechamentoValor" class="input-limpo" placeholder="0,00">
     </div>
     <div class="prop-limpa">
-      <span class="rotulo-limpo">Emissão de NF</span>
-      <label class="chave-liga"><input type="checkbox" id="campoFechamentoNf"><span class="trilho-chave"></span></label>
+      <span class="rotulo-limpo">Faturamento</span>
+      <select id="campoFechamentoFaturamento" class="input-limpo">
+        <option value="">A classificar</option>
+        <option value="pj_nf">Empresa (PJ) com nota</option>
+        <option value="pf">Pessoa física (PF)</option>
+        <option value="pj_sem_nf">Empresa (PJ) sem nota</option>
+      </select>
     </div>
     <div class="prop-limpa" id="linhaFechamentoNfTaxa" hidden>
-      <span class="rotulo-limpo">Taxa da NF (%)</span>
-      <input type="number" min="0" step="0.1" id="campoFechamentoNfTaxa" class="input-limpo" value="6">
+      <span class="rotulo-limpo">Alíquota nesta receita (%) — vazio usa a do mês</span>
+      <input type="number" min="0" step="0.01" id="campoFechamentoNfTaxa" class="input-limpo" placeholder="do mês">
     </div>
+    <p class="texto-pequeno" id="notaFechamentoFaturamento" style="margin:-4px 0 8px;" hidden></p>
     <div class="prop-limpa" id="linhaFechamentoCategoria">
       <span class="rotulo-limpo">Categoria</span>
       <select id="campoFechamentoCategoria" class="input-limpo"></select>
@@ -9770,7 +10010,80 @@
   }
 
   // ---------------------------------------------------------------
-  // EDITOR FINANCEIRO EM RASCUNHO (parcelas, custos de produção, NF).
+  // REGRAS FINANCEIRAS (reestruturação out/2026)
+  //  - Fluxo de Caixa lê SÓ as parcelas (datas de pagamento). Nunca a depreciação.
+  //  - Resultados lê SÓ a competência. Nunca o pagamento de um equipamento.
+  //  - Parcela filha (parent_id) nunca entra em Resultados: a mãe já tem o valor.
+  //  - Receita PF não entra no Fluxo de Caixa (bloco próprio), mas entra em Resultados.
+  //  - Despesa paga pelo Mercado Pago não entra no Fluxo; frente "Empresa" não entra no DRE.
+  // ---------------------------------------------------------------
+  const LIMITE_PF_MES = 5000;
+  const SIMPLES_DESDE = "2026-09"; // antes: MEI (DAS fixo lançado como despesa, histórico preservado)
+  const CAT_TRANSFERENCIA = "Transferência entre contas";
+  const CAT_EMPRESA = "Despesa da empresa (compartilhada)";
+  const FATURAMENTOS = [
+    { valor: "pj_nf", rotulo: "Empresa (PJ) com nota" },
+    { valor: "pf", rotulo: "Pessoa física (PF)" },
+    { valor: "pj_sem_nf", rotulo: "Empresa (PJ) sem nota" },
+  ];
+  let aliquotasCache = []; // financas_aliquotas: { mes: "AAAA-MM-01", aliquota }
+
+  const faturamentoDe = (x) => (x && (x.faturamento || (x.emissao_nf ? "pj_nf" : ""))) || "";
+  const ehPF = (x) => faturamentoDe(x) === "pf";
+  const mesDe = (dataIso) => (dataIso ? String(dataIso).slice(0, 7) : "");
+  const contaDaDespesa = (d) => d.conta || "Nubank PJ";
+
+  // Mês sem alíquota cadastrada usa a última informada antes dele (padrão 6%).
+  function aliquotaDoMes(mes) {
+    const ate = aliquotasCache.filter((a) => String(a.mes).slice(0, 7) <= mes).sort((a, b) => String(a.mes).localeCompare(String(b.mes)));
+    return ate.length ? Number(ate[ate.length - 1].aliquota) : 6;
+  }
+  const aliquotaManualDe = (x) => (x && x.aliquota_manual != null && x.aliquota_manual !== "" ? Number(x.aliquota_manual) : null);
+  function aliquotaEfetiva(x, dataFechamento) {
+    const manual = aliquotaManualDe(x);
+    return manual != null ? manual : aliquotaDoMes(mesDe(dataFechamento) || hojeIso().slice(0, 7));
+  }
+  // Imposto (negativo) de uma receita fechada em dataFechamento.
+  function impostoReceita(x, valor, dataFechamento) {
+    const fat = faturamentoDe(x);
+    if (fat === "pf" || fat === "pj_sem_nf") return 0;
+    const mes = mesDe(dataFechamento);
+    if (mes && mes >= SIMPLES_DESDE) return fat === "pj_nf" ? -((valor * aliquotaEfetiva(x, dataFechamento)) / 100) : 0;
+    // Até ago/2026 (MEI): mantém o cálculo antigo da NF, só pra não mudar o histórico.
+    return x.emissao_nf ? -((valor * (Number(x.nf_taxa) || 0)) / 100) : 0;
+  }
+
+  // Fontes únicas do Fluxo de Caixa: cartões, listas, gráficos e balanço leem daqui.
+  const linhasReceitasFluxo = () => linhasReceitas().filter((l) => !l.pf);
+  const linhasReceitasPF = () => linhasReceitas().filter((l) => l.pf);
+  const linhasDespesasFluxo = () => linhasDespesas().filter((l) => !l.fora);
+
+  function dadosFluxoPeriodo() {
+    const rec = linhasReceitasFluxo().flatMap((l) => l.itens.filter((i) => i.valor > 0).map((i) => ({ ...i, nome: l.descricao, ehSaida: false, chave: l.chave, categoria: l.categoria, linha: l })));
+    const des = linhasDespesasFluxo().flatMap((l) => l.itens.filter((i) => i.valor > 0).map((i) => ({ ...i, nome: l.descricao, ehSaida: true, chave: l.chave, categoria: l.categoria, linha: l })));
+    const { fim } = limitesPeriodo();
+    const entradas = rec.filter((i) => noPeriodo(i.data));
+    const saidas = des.filter((i) => noPeriodo(i.data));
+    return {
+      rec, des, fim, entradas, saidas,
+      recebidos: entradas.filter((i) => i.pago),
+      pendentes: entradas.filter((i) => !i.pago),
+      pagos: saidas.filter((i) => i.pago),
+      // contas em aberto: do período, atrasadas de meses anteriores e sem data
+      devendo: des.filter((i) => !i.pago && (!i.data || i.data <= fim)),
+    };
+  }
+
+  // Receitas PF do mês (recebidas e previstas), pra barra do limite e pro formulário.
+  function pfDoMes(mes, excetoChave) {
+    const itens = linhasReceitasPF().filter((l) => l.chave !== excetoChave).flatMap((l) => l.itens.filter((i) => i.valor > 0 && mesDe(i.data) === mes));
+    const recebido = itens.filter((i) => i.pago).reduce((s, i) => s + i.valor, 0);
+    const previsto = itens.filter((i) => !i.pago).reduce((s, i) => s + i.valor, 0);
+    return { recebido, previsto, total: recebido + previsto, restante: Math.max(0, LIMITE_PF_MES - recebido - previsto) };
+  }
+
+  // ---------------------------------------------------------------
+  // EDITOR FINANCEIRO EM RASCUNHO (parcelas, custos de produção, faturamento).
   // Usado pela aba "Mais detalhes" da campanha e pelo "Mais detalhes"
   // da janela de lançamento do Fluxo de Caixa. Nada vai pro banco
   // enquanto a janela está aberta: Enter/blur só atualizam o rascunho
@@ -9781,14 +10094,21 @@
   let migracaoFluxoOk = true; // atualizado em recarregarFinancas()
 
   function htmlPainelFinanceiro(op) {
-    const nf = `<div class="controle-nf">
-        <span class="rotulo-secao-financa">Emissão de NF</span>
-        <label class="chave-liga" title="Emissão de NF"><input type="checkbox" data-el="nfChave"><span class="trilho-chave"></span></label>
-        <button type="button" class="pilula-taxa-nf" data-el="nfTaxa" title="Editar taxa" hidden></button>
+    // Faturamento (substitui a caixinha "Emissão de NF"): define onde o dinheiro entra e se calcula imposto.
+    const nf = `<div class="controle-faturamento">
+        <div class="controle-nf">
+          <span class="rotulo-secao-financa">Faturamento</span>
+          <select class="input-limpo" data-el="fatTipo" style="width:auto; min-width:210px; margin:0;">
+            <option value="">A classificar</option>
+            ${FATURAMENTOS.map((f) => `<option value="${f.valor}">${f.rotulo}</option>`).join("")}
+          </select>
+          <button type="button" class="pilula-taxa-nf" data-el="nfTaxa" title="Alíquota do mês — clique pra sobrescrever nesta receita" hidden></button>
+        </div>
+        <p class="texto-pequeno" data-el="fatNota" style="margin:6px 0 0;" hidden></p>
       </div>`;
     const cabecalho = `<thead><tr><th>Pago</th><th>Descrição</th><th>Valor</th><th>Vencimento</th><th>Status</th><th></th></tr></thead>`;
     return `
-      ${op.nf && op.nfPos === "topo" ? `<div class="linha-nf-topo">${nf}</div>` : ""}
+      ${op.nf ? `<div class="linha-nf-topo">${nf}</div>` : ""}
       <div class="bloco-parcelas">
         <div class="grade-stats-financa-campanha">
           <div class="stat-financa-campanha">
@@ -9821,11 +10141,11 @@
           ? `<div class="topo-secao-financa-campanha" style="margin-top:28px;">
               <span class="rotulo-secao-financa">Custos de produção</span>
               <div class="grupo-acoes-secao-financa">
-                ${op.nf && op.nfPos === "custos" ? nf : ""}
-                <button type="button" class="btn-add-parcela-campanha" data-el="addCusto" title="Adicionar custo de produção">+</button>
+                <button type="button" class="btn-add-parcela-campanha" data-el="addCusto" title="Novo custo desta campanha (abre a janela Nova despesa)">+</button>
               </div>
             </div>
-            <table class="tabela-parcelas-campanha">${cabecalho}<tbody data-el="corpoCustos"></tbody></table>`
+            <div data-el="listaCustos" class="lista-custos-vinculados"></div>
+            <p class="texto-pequeno" data-el="resultadoCampanha" style="margin:10px 0 0; font-weight:600;"></p>`
           : ""
       }`;
   }
@@ -9838,9 +10158,9 @@
     pop.id = "popoverNF";
     pop.className = "popover-etapa";
     pop.innerHTML = `
-      <span class="rotulo-limpo">Taxa da NF sobre o valor do contrato (%)</span>
+      <span class="rotulo-limpo">Alíquota nesta receita (%)</span>
       <input type="number" min="0" max="100" step="0.01" class="input-limpo" id="campoTaxaNF" value="${taxaAtual != null ? taxaAtual : 6}">
-      <p class="texto-pequeno" style="margin:8px 0 0;">Enter confirma · Esc cancela</p>`;
+      <p class="texto-pequeno" style="margin:8px 0 0;">Deixe vazio pra usar a alíquota do mês · Enter confirma · Esc cancela</p>`;
     document.body.appendChild(pop);
     posicionarPopover(pop, ancoraEl);
     const campo = pop.querySelector("#campoTaxaNF");
@@ -9855,7 +10175,7 @@
       document.removeEventListener("mousedown", aoClicarFora, true);
       if (confirmou) {
         const taxa = Number(campo.value);
-        aoConfirmar(Number.isFinite(taxa) && campo.value !== "" && taxa >= 0 ? taxa : 6);
+        aoConfirmar(Number.isFinite(taxa) && campo.value !== "" && taxa >= 0 ? taxa : null); // vazio = alíquota do mês
       } else if (aoCancelar) {
         aoCancelar();
       }
@@ -9879,7 +10199,8 @@
 
   // Balão do botão "pago": Hoje / Ontem / uma data escolhida — registra a
   // data REAL do pagamento (pago_em), sem apagar a data de vencimento.
-  function abrirPopoverConfirmarPagamento(ancoraEl, aoConfirmar) {
+  // `vencimento` (despesas): primeira opção "No vencimento", pra a data real não virar "hoje" sem querer.
+  function abrirPopoverConfirmarPagamento(ancoraEl, aoConfirmar, vencimento) {
     const existente = document.getElementById("popoverConfirmarPagamento");
     if (existente) existente.remove();
     const pop = document.createElement("div");
@@ -9888,6 +10209,7 @@
     pop.innerHTML = `
       <span class="rotulo-limpo">Confirmar pagamento</span>
       <div class="opcoes-confirmar-pagamento">
+        ${vencimento ? `<button type="button" data-atalho="vencimento">No vencimento (${formatarDataBr(vencimento)})</button>` : ""}
         <button type="button" data-atalho="hoje">Hoje</button>
         <button type="button" data-atalho="ontem">Ontem</button>
       </div>
@@ -9900,6 +10222,8 @@
       document.removeEventListener("click", aoClicarFora);
       aoConfirmar(dataIso);
     }
+    const btnVenc = pop.querySelector('[data-atalho="vencimento"]');
+    if (btnVenc) btnVenc.addEventListener("click", () => confirmar(vencimento));
     pop.querySelector('[data-atalho="hoje"]').addEventListener("click", () => confirmar(hojeIso()));
     pop.querySelector('[data-atalho="ontem"]').addEventListener("click", () => confirmar(somarDiasIso(hojeIso(), -1)));
     pop.querySelector("#campoDataConfirmarPagamento").addEventListener("change", (evento) => {
@@ -9919,7 +10243,9 @@
   function criarEditorFinanceiro(raiz, op) {
     raiz.innerHTML = htmlPainelFinanceiro(op);
     const el = (nome) => raiz.querySelector(`[data-el="${nome}"]`);
-    const estado = { parcelas: [], custos: [], removidos: [], total: 0, nf: { ativo: false, taxa: 6 }, aoMudar: null };
+    // fat = faturamento ("pj_nf" | "pf" | "pj_sem_nf" | ""); aliq = alíquota digitada nesta receita (null = usa a do mês).
+    // nf.ativo/nf.taxa seguem espelhando fat/aliquota pra o resto do painel (emissao_nf, nf_taxa).
+    const estado = { parcelas: [], custos: [], removidos: [], total: 0, nf: { ativo: false, taxa: 6 }, fat: "", aliq: null, contratoId: null, dataRef: "", chave: "", aoMudar: null };
     const novoUid = () => "r" + ++seqUidRascunho;
     const notificar = () => estado.aoMudar && estado.aoMudar();
     const assinatura = (i) => JSON.stringify([i.descricao, i.valor, i.vencimento, i.pago, i.pagoEm]);
@@ -9942,7 +10268,22 @@
       estado.removeuAuto = false;
       estado.total = Number(dados.total) || 0;
       estado.nf = { ativo: !!(dados.nf && dados.nf.ativo), taxa: dados.nf && dados.nf.taxa != null ? Number(dados.nf.taxa) : 6 };
+      estado.fat = dados.fat || (estado.nf.ativo ? "pj_nf" : "");
+      estado.aliq = dados.aliq != null && dados.aliq !== "" ? Number(dados.aliq) : null;
+      estado.contratoId = dados.contratoId || null;
+      estado.dataRef = dados.dataRef || "";
+      estado.chave = dados.chave || "";
+      sincronizarNf();
       render();
+    }
+
+    // mantém nf.ativo / nf.taxa coerentes com o faturamento e a alíquota
+    function aliquotaAtual() {
+      return estado.aliq != null ? estado.aliq : aliquotaDoMes(mesDe(estado.dataRef) || hojeIso().slice(0, 7));
+    }
+    function sincronizarNf() {
+      estado.nf.ativo = estado.fat === "pj_nf";
+      estado.nf.taxa = estado.aliq != null ? estado.aliq : estado.nf.taxa;
     }
 
     function statusItem(i) {
@@ -9969,12 +10310,50 @@
     }
 
     function renderNf() {
-      const chave = el("nfChave");
-      if (!chave) return;
-      chave.checked = estado.nf.ativo;
+      const seletor = el("fatTipo");
+      if (!seletor) return;
+      seletor.value = estado.fat;
       const pilula = el("nfTaxa");
-      pilula.hidden = !estado.nf.ativo;
-      pilula.textContent = String(estado.nf.taxa).replace(".", ",") + "%";
+      pilula.hidden = estado.fat !== "pj_nf";
+      const taxa = aliquotaAtual();
+      pilula.textContent = String(taxa).replace(".", ",") + "%" + (estado.aliq != null ? " ✎" : "");
+      const nota = el("fatNota");
+      let texto = "";
+      if (estado.fat === "pj_nf") texto = `Recebe no Nubank PJ · imposto de ${String(taxa).replace(".", ",")}% (alíquota ${estado.aliq != null ? "desta receita" : "do mês do fechamento"}) = ${formatarMoeda((estado.total * taxa) / 100)}.`;
+      else if (estado.fat === "pj_sem_nf") texto = "⚠ Empresa sem nota: imposto zero (fica sinalizado em Resultados).";
+      else if (estado.fat === "pf") {
+        const mes = mesDe(estado.dataRef) || hojeIso().slice(0, 7);
+        const outras = pfDoMes(mes, estado.chave).total;
+        const com = outras + estado.total;
+        texto = `Pessoa física: não entra no Fluxo de Caixa. Em ${mes.slice(5, 7)}/${mes.slice(0, 4)}: ${formatarMoeda(com)} de ${formatarMoeda(LIMITE_PF_MES)} (${Math.round((com / LIMITE_PF_MES) * 100)}%) — ${com > LIMITE_PF_MES ? "⚠ passa do limite em " + formatarMoeda(com - LIMITE_PF_MES) : "ainda cabem " + formatarMoeda(LIMITE_PF_MES - com)}.`;
+      } else texto = "Sem classificação: tratada como empresa sem imposto até você escolher.";
+      nota.hidden = false;
+      nota.textContent = texto;
+    }
+
+    // Custos de produção da campanha: as despesas de verdade ligadas a ela (clicar abre a janela Nova despesa).
+    function renderCustos() {
+      const caixa = el("listaCustos");
+      if (!caixa) return;
+      const custos = estado.contratoId ? despesasFinCache.filter((d) => d.contrato_id === estado.contratoId && !d.parent_id) : [];
+      const total = custos.reduce((s, d) => s + (Number(d.valor) || 0), 0);
+      caixa.innerHTML = custos.length
+        ? custos
+            .map((d) => {
+              const filhas = despesasFinCache.filter((x) => x.parent_id === d.id);
+              const pagas = filhas.length ? filhas.filter((x) => x.status === "Pago").length : d.status === "Pago" ? 1 : 0;
+              const qtd = filhas.length || 1;
+              return `<div class="item-custo-vinculado" data-abrir-despesa="${d.id}" style="display:flex; gap:10px; justify-content:space-between; padding:8px 10px; border:1px solid var(--borda); border-radius:10px; margin-bottom:6px; cursor:pointer;">
+                <span>${esc(d.nome)} <span class="texto-pequeno">· ${esc(d.categoria && d.categoria !== "Campanhas" ? d.categoria : "Custo")} · ${pagas}/${qtd} ${qtd === 1 ? "paga" : "parcelas pagas"}</span></span>
+                <strong>${formatarMoeda(Number(d.valor) || 0)}</strong></div>`;
+            })
+            .join("")
+        : `<p class="texto-pequeno" style="margin:6px 0;">Nenhum custo ligado a esta campanha ainda.</p>`;
+      // resultado da campanha = cachê − impostos − custos vinculados (não há "descontos" avulsos no modelo de dados)
+      const taxa = estado.fat === "pj_nf" ? aliquotaAtual() : 0;
+      const imposto = (estado.total * taxa) / 100;
+      const resultado = estado.total - imposto - total;
+      el("resultadoCampanha").textContent = `Resultado da campanha: ${formatarMoeda(estado.total)} − impostos ${formatarMoeda(imposto)} − custos ${formatarMoeda(total)} = ${formatarMoeda(resultado)}`;
     }
 
     function resumo() {
@@ -9997,7 +10376,7 @@
     function render() {
       renderResumo();
       el("corpoParcelas").innerHTML = estado.parcelas.map((i) => linhaHtml(i, "parcelas")).join("");
-      if (el("corpoCustos")) el("corpoCustos").innerHTML = estado.custos.map((i) => linhaHtml(i, "custos")).join("");
+      renderCustos();
       renderNf();
     }
 
@@ -10031,16 +10410,22 @@
         return;
       }
       if (evento.target.closest('[data-el="addCusto"]')) {
-        estado.custos.push(novoItem("Custo de produção"));
-        render();
-        notificar();
+        if (!estado.contratoId) return alert("Salve a campanha antes de lançar custos nela.");
+        abrirDespesaNova(null, { tipo: "campanha", contratoId: estado.contratoId });
+        return;
+      }
+      const custoVinculado = evento.target.closest("[data-abrir-despesa]");
+      if (custoVinculado) {
+        abrirDespesaPeloRegistro(despesasFinCache.find((d) => d.id === custoVinculado.dataset.abrirDespesa));
         return;
       }
       const pilulaNf = evento.target.closest('[data-el="nfTaxa"]');
       if (pilulaNf) {
-        abrirPopoverNF(pilulaNf, estado.nf.taxa, (taxa) => {
-          estado.nf.taxa = taxa;
+        abrirPopoverNF(pilulaNf, estado.aliq != null ? estado.aliq : aliquotaAtual(), (taxa) => {
+          estado.aliq = taxa; // null = volta pra alíquota do mês
+          sincronizarNf();
           renderNf();
+          renderCustos();
           notificar();
         });
         return;
@@ -10076,30 +10461,19 @@
             item.pagoEm = dataIso;
             render();
             notificar();
-          });
+          }, op.ehDespesa ? item.vencimento : "");
         }
       }
     });
 
     raiz.addEventListener("change", (evento) => {
-      if (evento.target.matches('[data-el="nfChave"]')) {
-        if (!evento.target.checked) {
-          estado.nf.ativo = false;
-          renderNf();
-          notificar();
-          return;
-        }
-        evento.target.checked = false; // só liga depois de confirmar a taxa
-        abrirPopoverNF(
-          evento.target.closest(".chave-liga"),
-          estado.nf.taxa,
-          (taxa) => {
-            estado.nf = { ativo: true, taxa };
-            renderNf();
-            notificar();
-          },
-          () => renderNf()
-        );
+      if (evento.target.matches('[data-el="fatTipo"]')) {
+        estado.fat = evento.target.value;
+        if (estado.fat !== "pj_nf") estado.aliq = null;
+        sincronizarNf();
+        renderNf();
+        renderCustos();
+        notificar();
         return;
       }
       const linha = evento.target.closest("tr[data-uid]");
@@ -10137,7 +10511,8 @@
       async function gravar(tabela, item, ehCusto) {
         const ehReceita = tabela === "financas_receitas";
         const status = item.pago ? "Pago" : "Pendente";
-        const pagoEm = item.pago ? item.pagoEm || hojeIso() : null;
+        // despesa: sem data real informada, vale o vencimento (nunca "hoje": era o que apagava a data de pagamento)
+        const pagoEm = item.pago ? item.pagoEm || (ehReceita ? "" : item.vencimento) || hojeIso() : null;
         const campos = ehReceita
           ? { descricao: item.descricao || null, cache: item.valor, pagamento: item.vencimento || null, status, pago_em: pagoEm }
           : {
@@ -10175,6 +10550,7 @@
     return {
       estado,
       render,
+      renderCustos,
       carregar,
       persistir,
       resumo,
@@ -10205,7 +10581,21 @@
       custos: custosDoContrato(contrato.id),
       total: Number(campoValorContrato.value) || 0,
       nf: { ativo: !!contrato.emissao_nf, taxa: contrato.nf_taxa != null ? contrato.nf_taxa : 6 },
+      fat: faturamentoDe(contrato), aliq: aliquotaManualDe(contrato),
+      contratoId: contrato.id, dataRef: contrato.data_assinatura || "", chave: "c" + contrato.id,
     });
+  }
+
+  // Grava o faturamento nos campos do banco (só os que já existem na tabela).
+  function camposFaturamento(registro, estadoEditor) {
+    const campos = {};
+    if ("emissao_nf" in registro) {
+      campos.emissao_nf = estadoEditor.fat === "pj_nf";
+      campos.nf_taxa = estadoEditor.aliq != null ? estadoEditor.aliq : estadoEditor.nf.taxa;
+    }
+    if ("faturamento" in registro) campos.faturamento = estadoEditor.fat || null;
+    if ("aliquota_manual" in registro) campos.aliquota_manual = estadoEditor.fat === "pj_nf" ? estadoEditor.aliq : null;
+    return campos;
   }
 
   function prepararPainelFinanceiroCampanha(contrato) {
@@ -10473,10 +10863,7 @@
       if (contratoId) {
         // Emissão de NF vive na campanha (a taxa só é guardada; entra no DRE, não no fluxo de caixa).
         const contratoAtual = contratosCache.find((k) => k.id === contratoId);
-        if (contratoAtual && "emissao_nf" in contratoAtual) {
-          dados.emissao_nf = editorCampanha.estado.nf.ativo;
-          dados.nf_taxa = editorCampanha.estado.nf.taxa;
-        }
+        if (contratoAtual) Object.assign(dados, camposFaturamento(contratoAtual, editorCampanha.estado));
         if (editorCampanha.estado.removeuAuto) {
           dados.pagamento_condicao = "Outro";
           campoPagamentoCondicaoContrato.value = "Outro";
@@ -10676,6 +11063,8 @@
   let despesasFinCache = [];
   let categoriasCache = [];
   let financasDisponivel = true;
+  let migracaoReestruturacaoOk = true; // js/financeiro-reestruturacao-setup.sql (tipo, frente, conta…)
+  let migracaoComplementoOk = true; // js/financeiro-reestruturacao-2-setup.sql (fornecedor, alíquota manual, resumo mensal)
 
   async function recarregarFinancas() {
     try {
@@ -10687,6 +11076,9 @@
       migracaoFluxoOk = (receitasCache[0] ? "valor_pago" in receitasCache[0] : true) && (despesasFinCache[0] ? "eh_fatura" in despesasFinCache[0] : true);
       migracaoResultadosOk = despesasFinCache[0] ? "fixa_ate" in despesasFinCache[0] : true;
       migracaoCompetenciaOk = despesasFinCache[0] ? "so_resultado" in despesasFinCache[0] : true;
+      // parte 1 (tipo/frente/conta) e parte 2 (fornecedor, alíquota manual, resumo mensal) da reestruturação
+      migracaoReestruturacaoOk = despesasFinCache[0] ? "tipo_despesa" in despesasFinCache[0] && "frente" in despesasFinCache[0] : true;
+      migracaoComplementoOk = despesasFinCache[0] ? "fornecedor" in despesasFinCache[0] : true;
     } catch (erro) {
       financasDisponivel = false;
       console.error(erro);
@@ -10696,6 +11088,11 @@
     } catch (erro) {
       categoriasCache = [];
     }
+    try {
+      aliquotasCache = await buscarTudo("financas_aliquotas");
+    } catch (erro) {
+      aliquotasCache = []; // parte 1 do SQL ainda não rodou: usa 6%
+    }
     const aviso = document.getElementById("avisoMigracaoFluxo");
     if (aviso) aviso.hidden = migracaoFluxoOk;
     const avisoResultados = document.getElementById("avisoMigracaoResultados");
@@ -10703,6 +11100,14 @@
     renderizarReceitas();
     renderizarDespesasFin();
     renderizarResultados();
+    try {
+      // custos vinculados na janela da campanha / do lançamento (se estiver aberta) refletem a despesa recém-salva
+      editorCampanha.renderCustos();
+      Object.values(editoresLanc).forEach((e) => e.renderCustos());
+    } catch (erro) {} // editores ainda não criados na primeira carga
+    try {
+      agendarResumoMensal();
+    } catch (erro) {}
     if (typeof renderizarContratos === "function") renderizarContratos(); // as visualizações de Campanhas dependem de receitasCache
     if (typeof atualizarMenuPrincipal === "function") atualizarMenuPrincipal();
   }
@@ -10808,6 +11213,7 @@
         montarLinhaFluxo({
           ehDespesa: false, chave: "c" + k.id, contrato: k, reg: null, parcelas, descricao: k.marca,
           contratacao: k.data_assinatura || "", vencimento: "", valor, produto, categoria: "Campanhas", pagoDireto: 0, pagamentoDireto: "",
+          pf: ehPF(k),
         })
       );
     });
@@ -10820,6 +11226,7 @@
           contratacao: r.contratacao || "", vencimento: r.vencimento || "", valor, produto: Number(r.produto) || 0,
           categoria: r.categoria || (r.contrato_id ? "Campanhas" : ""),
           pagoDireto: r.status === "Pago" ? valor : Number(r.valor_pago) || 0, pagamentoDireto: r.pagamento || "",
+          pf: ehPF(r),
         })
       );
     });
@@ -10837,10 +11244,12 @@
         // Fatura de cartão: os filhos são as compras (só detalhe), não parcelas de pagamento.
         const linha = montarLinhaFluxo({
           ehDespesa: true, chave: "d" + d.id, contrato: null, reg: d, parcelas: d.eh_fatura ? [] : filhos, descricao: d.nome,
-          contratacao: "", vencimento: d.data || "", valor, produto: 0, categoria: d.eh_fatura ? "Fatura" : d.categoria || (d.contrato_id ? "Campanhas" : ""),
+          contratacao: "", vencimento: d.data || "", valor, produto: 0,
+          categoria: d.eh_fatura ? "Fatura" : d.frente === "Empresa" ? CAT_EMPRESA : d.categoria || (d.contrato_id ? "Campanhas" : ""),
           pagoDireto: d.status === "Pago" ? valor : Number(d.valor_pago) || 0, pagamentoDireto: d.pago_em || "",
         });
         linha.fatura = !!d.eh_fatura;
+        linha.fora = contaDaDespesa(d) === "Mercado Pago"; // a outra frente (loja) registra essa saída
         linha.comprasFatura = d.eh_fatura ? filhos.slice().sort((a, b) => (a.data || "").localeCompare(b.data || "")) : [];
         return linha;
       });
@@ -10893,10 +11302,11 @@
 
     const todas = linhasReceitas();
     linhasReceitasPorChave = new Map(todas.map((l) => [l.chave, l]));
-    // Entradas = o que de fato foi recebido no período (mesma lista do cartão "Recebido")
-    const itens = todas
-      .flatMap((l) => l.itens.filter((i) => i.pago && i.valor > 0 && noPeriodo(i.data)).map((i) => ({ l, i })))
+    // Entradas = o que de fato foi recebido no período (mesma fonte do cartão "Recebido", dos gráficos e do balanço)
+    const itens = dadosFluxoPeriodo()
+      .recebidos.map((i) => ({ l: i.linha, i }))
       .sort((a, b) => (b.i.data || "").localeCompare(a.i.data || ""));
+    renderizarBlocosFluxoExtras();
 
     if (!itens.length) {
       corpo.innerHTML = `<tr><td colspan="4" class="texto-vazio">Nenhuma entrada neste período.</td></tr>`;
@@ -10932,9 +11342,9 @@
 
     const todas = linhasDespesas();
     linhasDespesasPorChave = new Map(todas.map((l) => [l.chave, l]));
-    // Saídas = o que de fato saiu do caixa no período (mesma lista do cartão "Pagos")
-    const itens = todas
-      .flatMap((l) => l.itens.filter((i) => i.pago && i.valor > 0 && noPeriodo(i.data)).map((i) => ({ l, i })))
+    // Saídas = o que de fato saiu do caixa no período (mesma fonte do cartão "Pagos", dos gráficos e do balanço)
+    const itens = dadosFluxoPeriodo()
+      .pagos.map((i) => ({ l: i.linha, i }))
       .sort((a, b) => (b.i.data || "").localeCompare(a.i.data || ""));
 
     if (!itens.length) {
@@ -11054,27 +11464,21 @@
     const linha = (saida ? linhasDespesasPorChave : linhasReceitasPorChave).get(tr.dataset.abrirChave);
     if (!linha) return;
     overlayModalListaFluxo.hidden = true;
-    abrirLancamento(saida, linha);
+    if (saida) abrirDespesaPeloRegistro(linha.reg);
+    else abrirLancamento(false, linha);
   });
 
   function renderizarCardsFluxo() {
     if (!document.getElementById("fluxoPrevisto")) return;
-    const itensReceita = linhasReceitas().flatMap((l) => l.itens.filter((i) => i.valor > 0).map((i) => ({ ...i, nome: l.descricao, ehSaida: false, chave: l.chave })));
-    const itensDespesa = linhasDespesas().flatMap((l) => l.itens.filter((i) => i.valor > 0).map((i) => ({ ...i, nome: l.descricao, ehSaida: true, chave: l.chave })));
-    const { fim } = limitesPeriodo();
+    const { rec: itensReceita, des: itensDespesa, fim, entradas, recebidos, pendentes, pagos, devendo } = dadosFluxoPeriodo();
     const somar = (itens) => itens.reduce((s, i) => s + i.valor, 0);
-    const entradas = itensReceita.filter((i) => noPeriodo(i.data));
-    const saidas = itensDespesa.filter((i) => noPeriodo(i.data));
-    const recebidos = entradas.filter((i) => i.pago);
-    const pendentes = entradas.filter((i) => !i.pago);
-    const pagos = saidas.filter((i) => i.pago);
-    // contas em aberto: do período, atrasadas de meses anteriores e sem data
-    const devendo = itensDespesa.filter((i) => !i.pago && (!i.data || i.data <= fim));
     const previsto = somar(entradas);
     const recebido = somar(recebidos);
     const pendente = somar(pendentes);
     const totalPagos = somar(pagos);
-    const acumulado = somar(itensReceita.filter((i) => i.data && i.data <= fim)) - somar(itensDespesa.filter((i) => i.data && i.data <= fim));
+    // regime de caixa: só entra no acumulado o que de fato entrou/saiu (parcela paga) até o fim do período
+    const realizadosAteFim = (itens) => itens.filter((i) => i.pago && i.data && i.data <= fim);
+    const acumulado = somar(realizadosAteFim(itensReceita)) - somar(realizadosAteFim(itensDespesa));
 
     const texto = (id, valor) => (document.getElementById(id).textContent = valor);
     texto("fluxoPrevisto", formatarMoeda(previsto));
@@ -11101,8 +11505,8 @@
       },
       acumulado: {
         titulo: "Caixa acumulado",
-        sub: "Todas as entradas e saídas até o fim do período (saídas em negativo)",
-        itens: [...itensReceita, ...itensDespesa].filter((i) => i.data && i.data <= fim),
+        sub: "Entradas recebidas e saídas pagas até o fim do período (saídas em negativo)",
+        itens: [...realizadosAteFim(itensReceita), ...realizadosAteFim(itensDespesa)],
         assinado: true,
       },
     };
@@ -11126,7 +11530,7 @@
       renderizarDespesasFin();
       return;
     }
-    abrirLancamento(true, linha);
+    abrirDespesaPeloRegistro(linha.reg);
   });
   // Categoria de cada compra da fatura, editável direto na linha.
   document.getElementById("corpoTabelaDespesasFin").addEventListener("change", async (evento) => {
@@ -11256,14 +11660,18 @@
   const abrevMes = (chave) => MESES_PT[Number(chave.slice(5, 7)) - 1].slice(0, 3) + "/" + chave.slice(2, 4);
 
   // Fatias por categoria dentro do período. Fatura de cartão entra pelas categorias das compras.
-  function fatiasPorCategoria(linhas, tipo) {
+  // `itens` já vêm filtrados pelo período (dadosFluxoPeriodo): a rosca soma o mesmo que a lista e os cartões.
+  function fatiasPorCategoria(itens, tipo) {
     const soma = new Map();
     const somar = (nome, v) => soma.set(nome, (soma.get(nome) || 0) + v);
-    linhas.forEach((l) => {
-      l.itens.filter((i) => noPeriodo(i.data)).forEach((i) => {
-        if (l.fatura && l.comprasFatura && l.comprasFatura.length) l.comprasFatura.forEach((c) => somar(c.categoria || "Sem categoria", Number(c.valor) || 0));
-        else somar(l.categoria || "Sem categoria", i.valor);
-      });
+    itens.forEach((i) => {
+      const l = i.linha;
+      if (l.fatura && l.comprasFatura && l.comprasFatura.length) {
+        // reparte o valor pago da fatura entre as categorias das compras (o total fecha com a lista)
+        const totalCompras = l.comprasFatura.reduce((s, c) => s + (Number(c.valor) || 0), 0);
+        const fator = totalCompras ? i.valor / totalCompras : 0;
+        l.comprasFatura.forEach((c) => somar(c.categoria || "Sem categoria", (Number(c.valor) || 0) * fator));
+      } else somar(l.categoria || "Sem categoria", i.valor);
     });
     const ordem = [...new Set([...categoriasDoTipo(tipo), ...soma.keys()])]
       .filter((n) => n !== "Sem categoria")
@@ -11319,17 +11727,19 @@
       renderizarAnaliseFluxo();
       return;
     }
-    const rec = linhasReceitas();
-    const des = linhasDespesas();
-    document.getElementById("donutDespesas").innerHTML = htmlDonut(fatiasPorCategoria(des, "despesa"), "Sem despesas neste período.");
-    document.getElementById("donutReceitas").innerHTML = htmlDonut(fatiasPorCategoria(rec, "receita"), "Sem receitas neste período.");
+    const f = dadosFluxoPeriodo();
+    document.getElementById("donutDespesas").innerHTML = htmlDonut(fatiasPorCategoria(f.pagos, "despesa"), "Sem despesas pagas neste período.");
+    document.getElementById("donutReceitas").innerHTML = htmlDonut(fatiasPorCategoria(f.recebidos, "receita"), "Sem receitas recebidas neste período.");
 
-    const entradas = somaValores(rec.flatMap((l) => l.itens).filter((i) => noPeriodo(i.data)));
-    const saidas = somaValores(des.flatMap((l) => l.itens).filter((i) => noPeriodo(i.data)));
+    // mesmos totais das listas Entradas/Saídas e dos cartões Recebido/Pagos
+    const entradas = somaValores(f.recebidos);
+    const saidas = somaValores(f.pagos);
     const maximo = Math.max(entradas, saidas, 1);
     const linha = (nome, classe, valor) =>
       `<div class="balanco-linha"><span class="nome">${nome}</span><div class="trilho"><div class="barra ${classe}" style="width:${Math.max((Math.max(valor, 0) / maximo) * 100, 0.5)}%"></div></div><span class="valor ${classe}">${formatarMoeda(valor)}</span></div>`;
-    document.getElementById("balancoMes").innerHTML = linha("Entradas", "entrada", entradas) + linha("Saídas", "saida", saidas);
+    document.getElementById("balancoMes").innerHTML =
+      linha("Entradas recebidas", "entrada", entradas) + linha("Saídas pagas", "saida", saidas) +
+      `<p class="texto-pequeno" style="margin:10px 0 0;">Saldo do período: <strong>${formatarMoeda(entradas - saidas)}</strong> · ainda previsto: ${formatarMoeda(somaValores(f.pendentes))} a receber e ${formatarMoeda(somaValores(f.saidas.filter((i) => !i.pago)))} a pagar</p>`;
     document.getElementById("balancoMes").previousElementSibling.textContent = periodoMes ? "Balanço do mês" : "Balanço do ano";
   }
 
@@ -11385,8 +11795,9 @@
   }
 
   function renderizarAnaliseFluxo() {
-    const rec = linhasReceitas().flatMap((l) => l.itens);
-    const des = linhasDespesas().flatMap((l) => l.itens);
+    // análise por mês: só o que de fato entrou/saiu (mesma regra dos cartões e listas)
+    const rec = linhasReceitasFluxo().flatMap((l) => l.itens.filter((i) => i.pago));
+    const des = linhasDespesasFluxo().flatMap((l) => l.itens.filter((i) => i.pago));
     const agora = new Date();
     const dados = [];
     for (let i = periodoAnalise - 1; i >= 0; i--) {
@@ -11766,7 +12177,14 @@
       ? { ativo: !!contrato.emissao_nf, taxa: contrato.nf_taxa != null ? contrato.nf_taxa : 6 }
       : { ativo: !!(reg && reg.emissao_nf), taxa: reg && reg.nf_taxa != null ? reg.nf_taxa : 6 };
     ed.aoMudar(atualizarModoLanc);
-    ed.carregar({ parcelas: filhos, custos: contrato ? custosDoContrato(contrato.id) : [], total: linha ? linha.valor : 0, nf });
+    const origemFat = contrato || reg;
+    ed.carregar({
+      parcelas: filhos, custos: [], total: linha ? linha.valor : 0, nf,
+      fat: faturamentoDe(origemFat), aliq: aliquotaManualDe(origemFat),
+      contratoId: contrato ? contrato.id : null,
+      dataRef: contrato ? contrato.data_assinatura || "" : (reg && reg.contratacao) || "",
+      chave: linha ? linha.chave : "",
+    });
 
     // pagamento direto (lançamento sem parcelas)
     if (linha) {
@@ -11828,7 +12246,7 @@
   campoLancPaga.addEventListener("change", () => {
     if (campoLancPaga.checked) {
       campoLancPago.value = campoLancValor.value || "";
-      if (!lanc.dataPagamento) lanc.dataPagamento = hojeIso();
+      if (!lanc.dataPagamento) lanc.dataPagamento = (lanc.ehDespesa && lanc.reg && lanc.dataVencimento) || hojeIso(); // despesa: vencimento, não "hoje"
     } else {
       campoLancPago.value = "";
     }
@@ -11838,7 +12256,7 @@
     const valor = Number(campoLancValor.value) || 0;
     const pago = Number(campoLancPago.value) || 0;
     campoLancPaga.checked = valor > 0 && pago >= valor - 0.005;
-    if (pago > 0 && !lanc.dataPagamento) lanc.dataPagamento = hojeIso();
+    if (pago > 0 && !lanc.dataPagamento) lanc.dataPagamento = (lanc.ehDespesa && lanc.reg && lanc.dataVencimento) || hojeIso();
     renderizarDataLanc();
   });
   document.getElementById("lancChipsData").addEventListener("click", (evento) => {
@@ -11867,7 +12285,7 @@
   document.getElementById("btnLancDetalhes").addEventListener("click", () => modalLanc.classList.toggle("expandido"));
 
   document.getElementById("btnNovaReceita").addEventListener("click", () => abrirLancamento(false, null));
-  document.getElementById("btnNovaDespesaFin").addEventListener("click", () => abrirLancamento(true, null));
+  document.getElementById("btnNovaDespesaFin").addEventListener("click", () => abrirDespesaNova(null));
   document.getElementById("btnCancelarLanc").addEventListener("click", fecharLancamento);
   document.getElementById("btnFecharLanc").addEventListener("click", fecharLancamento);
   document.getElementById("btnFecharLancDet").addEventListener("click", fecharLancamento);
@@ -11912,7 +12330,7 @@
     const quitado = valor > 0 && totalPago >= valor - 0.005;
     const categoria = campoLancCategoria.value || null;
     const produto = Number(campoLancProduto.value) || null;
-    const dataPag = pagoDireto > 0 ? lanc.dataPagamento || (lanc.novo ? hojeIso() : null) : null;
+    const dataPag = pagoDireto > 0 ? lanc.dataPagamento || (lanc.ehDespesa && lanc.dataVencimento) || (lanc.novo ? hojeIso() : null) : null;
     const dataVenc = parcelado ? null : lanc.dataVencimento || null;
 
     // ---- despesa ----
@@ -11939,16 +12357,13 @@
       const novaData = campoLancContratacao.value || null;
       const campos = { marca: desc, valor, data_assinatura: novaData };
       if ("valor_produto" in k) campos.valor_produto = produto;
-      if ("emissao_nf" in k) {
-        campos.emissao_nf = ed.estado.nf.ativo;
-        campos.nf_taxa = ed.estado.nf.taxa;
-      }
+      Object.assign(campos, camposFaturamento(k, ed.estado));
       const mudou =
         desc !== k.marca ||
         valor !== (Number(k.valor) || 0) ||
         novaData !== (k.data_assinatura || null) ||
         ("valor_produto" in k && produto !== (Number(k.valor_produto) || null)) ||
-        ("emissao_nf" in k && (ed.estado.nf.ativo !== !!k.emissao_nf || (ed.estado.nf.ativo && ed.estado.nf.taxa !== Number(k.nf_taxa))));
+        ("emissao_nf" in k && (ed.estado.fat !== faturamentoDe(k) || (ed.estado.fat === "pj_nf" && ed.estado.aliq !== aliquotaManualDe(k))));
       if (mudou && k.autentique_status === "assinado") {
         const ok = confirm(
           "Esta campanha já tem contrato ASSINADO. Alterar marca, valor, data de assinatura ou NF muda também a campanha e não altera o PDF já assinado.\n\nConfirmar a alteração?"
@@ -11968,9 +12383,11 @@
       marca: desc, contratacao: campoLancContratacao.value || null, cache: valor, produto, categoria, valor_pago: pagoDireto,
       pagamento: dataPag, vencimento: dataVenc,
       status: valor === 0 && produto > 0 ? "Permuta" : quitado ? "Pago" : totalPago > 0 ? "Pgto Parcial" : "Pendente",
-      emissao_nf: ed.estado.nf.ativo, nf_taxa: ed.estado.nf.taxa, updated_at: agora,
+      emissao_nf: ed.estado.fat === "pj_nf", nf_taxa: ed.estado.aliq != null ? ed.estado.aliq : ed.estado.nf.taxa, updated_at: agora,
       ...(lancObsDisponivel ? { observacao: campoLancObs.value.trim() || null } : {}),
     };
+    if (migracaoComplementoOk) Object.assign(dados, { faturamento: ed.estado.fat || null, aliquota_manual: ed.estado.fat === "pj_nf" ? ed.estado.aliq : null });
+    else if (receitasCache[0] && "faturamento" in receitasCache[0]) dados.faturamento = ed.estado.fat || null;
     if (lanc.reg) {
       verificarErro(await Auth.sb.from("financas_receitas").update(dados).eq("id", lanc.reg.id));
       await ed.persistir({ paiId: lanc.reg.id, marca: desc, categoria });
@@ -12080,112 +12497,164 @@
   // Data em que o custo conta em Resultados (a data do pagamento é só do Fluxo de Caixa)
   const competenciaDespesa = (d) => d.data_competencia || d.data || "";
 
-  function impostoNf(cache, ativo, taxa) {
-    return ativo ? -((cache * (Number(taxa) || 0)) / 100) : 0;
-  }
-  function limitesPeriodoResultados() {
-    const ano = String(resultadosAno);
-    if (!resultadosMes) return { ini: ano + "-01-01", fim: ano + "-12-31" };
-    const mes = String(resultadosMes).padStart(2, "0");
-    return { ini: `${ano}-${mes}-01`, fim: `${ano}-${mes}-31` };
-  }
-  function noPeriodoResultados(dataIso) {
-    const { ini, fim } = limitesPeriodoResultados();
-    return !!dataIso && dataIso >= ini && dataIso <= fim;
+  // prefixo do período de Resultados: "AAAA-MM" (um mês) ou "AAAA" (ano inteiro)
+  const prefixoResultados = () => (resultadosMes ? `${resultadosAno}-${String(resultadosMes).padStart(2, "0")}` : String(resultadosAno));
+  function noPeriodoResultados(dataIso, prefixo) {
+    return !!dataIso && String(dataIso).startsWith(prefixo || prefixoResultados());
   }
   function rotuloPeriodoResultados() {
     return resultadosMes ? MESES_PT[resultadosMes - 1] + "/" + resultadosAno : String(resultadosAno);
   }
 
-  // Campanhas (contratos) fechadas + receitas avulsas (sem contrato_id),
-  // ambas com sua própria emissão de NF. Descontos só existem pro lado das
-  // campanhas: são as despesas de produção lançadas com esse contrato_id.
-  function linhasResultadoContratos() {
+  // Custo que conta em Resultados = mãe (nunca a parcela filha), fora o que é só caixa,
+  // fora a frente Empresa e fora transferência entre contas.
+  const entraNoResultado = (d) => !d.parent_id && !d.so_fluxo && d.frente !== "Empresa" && d.categoria !== CAT_TRANSFERENCIA;
+  // Custo de campanha acompanha a data de fechamento da campanha; o resto, a competência.
+  function competenciaResultado(d) {
+    if (d.contrato_id) {
+      const k = contratosCache.find((c) => c.id === d.contrato_id);
+      return (k && k.data_assinatura) || null;
+    }
+    return competenciaDespesa(d) || null;
+  }
+  // depreciação/amortização de verdade (equipamento ou capacitação amortizada), não a mensalidade anual
+  const ehDepreciacao = (d) => !!d.infra_meses || (!!d.amortizar_meses && d.recorrencia !== "anual");
+
+  // Campanhas (contratos) fechadas + receitas avulsas (sem contrato_id). Descontos
+  // = custos de produção ligados à campanha (despesas com esse contrato_id).
+  function linhasResultadoContratos(prefixo) {
+    const alvo = prefixo || prefixoResultados();
     const automaticas = contratosCache
-      .filter((k) => k.data_assinatura && noPeriodoResultados(k.data_assinatura))
+      .filter((k) => k.data_assinatura && noPeriodoResultados(k.data_assinatura, alvo))
       .map((k) => {
         const cache = Number(k.valor) || 0;
-        const impostos = impostoNf(cache, !!k.emissao_nf, k.nf_taxa);
-        const descontos = -despesasFinCache
-          .filter((d) => d.contrato_id === k.id)
-          .reduce((soma, d) => soma + (Number(d.valor) || 0), 0);
-        return { automatico: true, id: k.id, nome: k.marca || "—", data: k.data_assinatura, cache, impostos, descontos };
+        const impostos = impostoReceita(k, cache, k.data_assinatura);
+        const custos = despesasFinCache.filter((d) => d.contrato_id === k.id && entraNoResultado(d));
+        const descontos = -custos.reduce((soma, d) => soma + (Number(d.valor) || 0), 0);
+        return { automatico: true, id: k.id, nome: k.marca || "—", data: k.data_assinatura, cache, impostos, descontos, custos, pf: ehPF(k), semClasse: !faturamentoDe(k), aliquota: aliquotaEfetiva(k, k.data_assinatura), reg: k };
       });
     const manuais = receitasCache
-      .filter((r) => !r.contrato_id && !r.parent_id && r.contratacao && noPeriodoResultados(r.contratacao))
+      .filter((r) => !r.contrato_id && !r.parent_id && r.contratacao && r.categoria !== CAT_TRANSFERENCIA && noPeriodoResultados(r.contratacao, alvo))
       .map((r) => {
         const cache = Number(r.cache) || 0;
-        const impostos = impostoNf(cache, !!r.emissao_nf, r.nf_taxa);
-        return { automatico: false, id: r.id, nome: r.marca || r.descricao || "—", data: r.contratacao, cache, impostos, descontos: 0 };
+        const impostos = impostoReceita(r, cache, r.contratacao);
+        return { automatico: false, id: r.id, nome: r.marca || r.descricao || "—", data: r.contratacao, cache, impostos, descontos: 0, custos: [], pf: ehPF(r), semClasse: !faturamentoDe(r), aliquota: aliquotaEfetiva(r, r.contratacao), reg: r };
       });
     return [...automaticas, ...manuais]
       .map((l) => ({ ...l, liquido: l.cache + l.impostos + l.descontos }))
       .sort((a, b) => a.data.localeCompare(b.data));
   }
 
-  // Despesas da empresa = financas_despesas sem contrato_id (as ligadas a uma
-  // campanha já entram como "Descontos" na tabela acima).
-  function linhasDespesasEmpresa() {
+  // Despesas da frente UGC no período (sem custo de campanha e sem depreciação).
+  function linhasDespesasEmpresa(prefixo) {
+    const alvo = prefixo || prefixoResultados();
     return despesasFinCache
-      .filter((d) => !d.contrato_id && !d.so_fluxo && competenciaDespesa(d) && noPeriodoResultados(competenciaDespesa(d)))
+      .filter((d) => !d.contrato_id && entraNoResultado(d) && !ehDepreciacao(d) && competenciaDespesa(d) && noPeriodoResultados(competenciaDespesa(d), alvo))
       .sort((a, b) => competenciaDespesa(a).localeCompare(competenciaDespesa(b)));
   }
-  // Custos das campanhas, pelo mês da campanha (não pela data em que foram
-  // pagos): é o "Custos de campanhas" negativo do DRE.
-  function linhasCustosCampanhas() {
+  // Depreciação e amortização do período (linhas so_resultado de equipamento / capacitação).
+  function linhasDepreciacao(prefixo) {
+    const alvo = prefixo || prefixoResultados();
     return despesasFinCache
-      .filter((d) => d.contrato_id && !d.so_fluxo)
+      .filter((d) => !d.contrato_id && entraNoResultado(d) && ehDepreciacao(d) && competenciaDespesa(d) && noPeriodoResultados(competenciaDespesa(d), alvo))
+      .sort((a, b) => competenciaDespesa(a).localeCompare(competenciaDespesa(b)));
+  }
+  // Custos das campanhas fechadas no período (no mês da campanha, não do pagamento).
+  function linhasCustosCampanhas(prefixo) {
+    const alvo = prefixo || prefixoResultados();
+    return despesasFinCache
+      .filter((d) => d.contrato_id && entraNoResultado(d))
       .map((d) => {
         const k = contratosCache.find((c) => c.id === d.contrato_id);
-        return { d, k, competencia: d.data_competencia || (k && k.data_assinatura) || null };
+        return { d, k, competencia: (k && k.data_assinatura) || null };
       })
-      .filter((x) => x.k && x.competencia && noPeriodoResultados(x.competencia))
+      .filter((x) => x.k && x.competencia && noPeriodoResultados(x.competencia, alvo))
       .sort((a, b) => a.competencia.localeCompare(b.competencia));
+  }
+
+  // A conta do DRE (uma só, usada por cartões, DRE, análises e resumo mensal):
+  //  faturamento bruto − impostos − descontos = receita líquida
+  //  − custos de campanhas = margem de contribuição
+  //  − despesas da frente UGC − depreciação e amortização = resultado da frente
+  function calcularResultado(prefixo) {
+    const fechamentos = linhasResultadoContratos(prefixo);
+    const soma = (lista, f) => lista.reduce((s, x) => s + f(x), 0);
+    const bruto = soma(fechamentos, (l) => l.cache);
+    const brutoPF = soma(fechamentos.filter((l) => l.pf), (l) => l.cache);
+    const impostos = soma(fechamentos, (l) => l.impostos); // negativo
+    const receitaLiquida = bruto + impostos;
+    const custosCamp = linhasCustosCampanhas(prefixo);
+    const custosCampanhas = soma(custosCamp, (x) => Number(x.d.valor) || 0);
+    const custosPorCategoria = new Map();
+    custosCamp.forEach((x) => custosPorCategoria.set(x.d.categoria && x.d.categoria !== "Campanhas" ? x.d.categoria : "Sem subcategoria", (custosPorCategoria.get(x.d.categoria && x.d.categoria !== "Campanhas" ? x.d.categoria : "Sem subcategoria") || 0) + (Number(x.d.valor) || 0)));
+    const margem = receitaLiquida - custosCampanhas;
+    const despesas = linhasDespesasEmpresa(prefixo);
+    const despesasPorCategoria = new Map();
+    despesas.forEach((d) => despesasPorCategoria.set(d.categoria || "Outros", (despesasPorCategoria.get(d.categoria || "Outros") || 0) + (Number(d.valor) || 0)));
+    const totalDespesas = soma(despesas, (d) => Number(d.valor) || 0);
+    const deprec = linhasDepreciacao(prefixo);
+    const depreciacao = soma(deprec, (d) => Number(d.valor) || 0);
+    const resultado = margem - totalDespesas - depreciacao;
+    return {
+      prefixo, fechamentos, bruto, brutoPF, impostos, receitaLiquida, custosCamp, custosCampanhas, custosPorCategoria, margem,
+      margemPct: bruto ? (margem / bruto) * 100 : 0, despesas, despesasPorCategoria, totalDespesas, deprec, depreciacao, resultado,
+      resultadoPct: bruto ? (resultado / bruto) * 100 : 0,
+    };
   }
   function linhasCustosFiltradas() {
     const filtro = (d) => (filtroStatusDespesaEmpresaAtual === "abertas" ? d.status !== "Pago" : filtroStatusDespesaEmpresaAtual === "pagas" ? d.status === "Pago" : true);
     return {
       campanhas: linhasCustosCampanhas().filter((x) => filtro(x.d)),
       empresa: linhasDespesasEmpresa().filter(filtro),
+      deprec: linhasDepreciacao(),
     };
   }
-  function linhasDespesasEmpresaFiltradas() {
-    const linhas = linhasDespesasEmpresa();
-    if (filtroStatusDespesaEmpresaAtual === "abertas") return linhas.filter((d) => d.status !== "Pago");
-    if (filtroStatusDespesaEmpresaAtual === "pagas") return linhas.filter((d) => d.status === "Pago");
-    return linhas;
+
+  // Origem de um custo em Resultados (clicar abre a despesa-mãe).
+  function rotuloOrigemCusto(d) {
+    const irmas = d.grupo_repeticao ? despesasFinCache.filter((x) => x.so_resultado && x.grupo_repeticao === d.grupo_repeticao).sort((a, b) => competenciaDespesa(a).localeCompare(competenciaDespesa(b))) : [];
+    const posicao = irmas.findIndex((x) => x.id === d.id) + 1;
+    if (ehDepreciacao(d)) return `${d.infra_meses ? "Depreciação" : "Amortização"} ${posicao}/${irmas.length || d.infra_meses || d.amortizar_meses} · ${d.nome}`;
+    if (d.recorrencia === "anual" && irmas.length) return `Assinatura anual ${posicao}/${irmas.length} · ${d.nome}`;
+    if (d.contrato_id) {
+      const k = contratosCache.find((c) => c.id === d.contrato_id);
+      return `${d.categoria && d.categoria !== "Campanhas" ? d.categoria : "Custo"} — Campanha ${k && k.marca ? k.marca : "—"}`;
+    }
+    if (d.fixa) return "Recorrente mensal" + (d.fixa_ate ? " até " + formatarDataBr(d.fixa_ate) : "");
+    return "Despesa avulsa";
   }
 
-  function rotuloRecorrenciaDespesa(d) {
-    if (d.infra_meses) {
-      const hoje = hojeIso();
-      const usados = despesasFinCache.filter((x) => !x.so_fluxo && x.grupo_repeticao && x.grupo_repeticao === d.grupo_repeticao && x.data && x.data <= hoje).length;
-      return `Infraestrutura ${Math.min(usados, d.infra_meses)}/${d.infra_meses} meses`;
+  // Abre a despesa-mãe de qualquer linha (custo, depreciação, parcela, saída do caixa).
+  function abrirDespesaPeloRegistro(reg) {
+    if (!reg) return;
+    if (reg.parent_id) reg = despesasFinCache.find((x) => x.id === reg.parent_id) || reg;
+    if (reg.so_resultado && reg.grupo_repeticao) {
+      const maes = despesasFinCache.filter((x) => x.so_fluxo && !x.parent_id && x.grupo_repeticao === reg.grupo_repeticao);
+      if (maes.length === 1) reg = maes[0];
+      else if (maes.length > 1) return abrirDespesaEmpresa(reg); // equipamento antigo (uma linha por parcela): janela antiga
     }
-    if (d.fixa) return "Fixa" + (d.fixa_ate ? " até " + formatarDataBr(d.fixa_ate) : "");
-    return "Única";
+    if (reg.eh_fatura) {
+      const linha = linhasDespesas().find((l) => l.chave === "d" + reg.id);
+      return linha ? abrirLancamento(true, linha) : undefined;
+    }
+    abrirDespesaNova(reg);
   }
 
   function renderizarCardsResultados() {
     if (!document.getElementById("resultadosTotalFaturado")) return;
-    const contratos = linhasResultadoContratos();
-    const despesas = linhasDespesasEmpresa();
-    const faturamento = contratos.reduce((s, l) => s + l.cache, 0);
-    const lucroBruto = contratos.reduce((s, l) => s + l.liquido, 0);
-    const totalDespesas = despesas.reduce((s, d) => s + (Number(d.valor) || 0), 0);
-    const lucroLiquido = lucroBruto - totalDespesas;
-    const margem = faturamento ? (lucroLiquido / faturamento) * 100 : 0;
-
+    const r = calcularResultado();
     const texto = (id, v) => (document.getElementById(id).textContent = v);
-    texto("resultadosTotalFaturado", formatarMoeda(faturamento));
-    texto("resultadosNotaFaturado", `${contratos.length} fechamento${contratos.length === 1 ? "" : "s"}`);
-    texto("resultadosLucroBruto", formatarMoeda(lucroBruto));
-    texto("resultadosDespesas", formatarMoeda(totalDespesas));
-    texto("resultadosLucroLiquido", formatarMoeda(lucroLiquido));
-    texto("resultadosNotaMargem", faturamento ? `Margem de ${margem.toFixed(1)}%` : "Sem faturamento");
-    document.getElementById("cartaoResultadosLucroBruto").classList.toggle("negativo", lucroBruto < 0);
-    document.getElementById("cartaoResultadosLucroLiquido").classList.toggle("negativo", lucroLiquido < 0);
-    definirListasResultados(contratos, despesas);
+    texto("resultadosTotalFaturado", formatarMoeda(r.bruto));
+    texto("resultadosNotaFaturado", `${r.fechamentos.length} fechamento${r.fechamentos.length === 1 ? "" : "s"}` + (r.brutoPF ? ` · ${formatarMoeda(r.brutoPF)} na PF` : ""));
+    texto("resultadosLucroBruto", formatarMoeda(r.margem));
+    texto("resultadosNotaMargemContrib", r.bruto ? `Margem de contribuição de ${r.margemPct.toFixed(1)}%` : "Sem faturamento");
+    texto("resultadosDespesas", formatarMoeda(r.totalDespesas + r.depreciacao));
+    texto("resultadosNotaDespesas", `${formatarMoeda(r.totalDespesas)} despesas + ${formatarMoeda(r.depreciacao)} depreciação`);
+    texto("resultadosLucroLiquido", formatarMoeda(r.resultado));
+    texto("resultadosNotaMargem", r.bruto ? `Margem de ${r.resultadoPct.toFixed(1)}%` : "Sem faturamento");
+    document.getElementById("cartaoResultadosLucroBruto").classList.toggle("negativo", r.margem < 0);
+    document.getElementById("cartaoResultadosLucroLiquido").classList.toggle("negativo", r.resultado < 0);
+    definirListasResultados(r.fechamentos, [...r.despesas, ...r.deprec]);
   }
 
   function renderizarResultadoContratos() {
@@ -12204,9 +12673,15 @@
         totais.descontos += l.descontos;
         totais.liquido += l.liquido;
         const margem = l.cache ? (l.liquido / l.cache) * 100 : 0;
+        const fat = faturamentoDe(l.reg);
+        const selo = l.pf
+          ? ` <span class="pilula-status status-permuta" title="Recebido na pessoa física: entra no faturamento e na meta, mas não no Fluxo de Caixa">PF</span>`
+          : fat === "pj_sem_nf"
+          ? ` <span class="pilula-status status-atrasado" title="Empresa sem nota fiscal: imposto zero">⚠ sem nota</span>`
+          : "";
         return `
         <tr${l.automatico ? "" : ` data-manual-id="${l.id}"`}>
-          <td><span class="pilula-status ${l.automatico ? "fechado-automatico" : "fechado-manual"}">${l.automatico ? "Campanha" : "Manual"}</span> ${esc(l.nome)}</td>
+          <td><span class="pilula-status ${l.automatico ? "fechado-automatico" : "fechado-manual"}">${l.automatico ? "Campanha" : "Manual"}</span> ${esc(l.nome)}${selo}</td>
           <td>${formatarDataBr(l.data)}</td>
           <td>${formatarMoeda(l.cache)}</td>
           <td class="${l.impostos < 0 ? "valor-negativo-resultado" : ""}">${formatarMoeda(l.impostos)}</td>
@@ -12229,91 +12704,72 @@
       </tr>`;
   }
 
+  // Custos do período: custos de campanhas, despesas da frente UGC e depreciação,
+  // cada um com a origem. Clicar abre a despesa-mãe (mesma janela "Nova despesa").
   function renderizarDespesasEmpresa() {
     const corpo = document.getElementById("corpoDespesasEmpresa");
     if (!corpo) return;
-    const { campanhas, empresa } = linhasCustosFiltradas();
-    if (!campanhas.length && !empresa.length) {
+    const { campanhas, empresa, deprec } = linhasCustosFiltradas();
+    if (!campanhas.length && !empresa.length && !deprec.length) {
       corpo.innerHTML = `<tr><td colspan="6" class="texto-vazio">Nenhum custo nesse período.</td></tr>`;
       return;
     }
-    const pilula = (d) => `<span class="pilula-status ${d.status === "Pago" ? "status-pago" : "status-pendente"}">${d.status === "Pago" ? "Pago" : "Pendente"}</span>`;
+    const pilula = (d) =>
+      d.so_resultado
+        ? `<span class="pilula-status status-permuta" title="Lançamento só de Resultados: o pagamento fica no Fluxo de Caixa">Só custo</span>`
+        : `<span class="pilula-status ${d.status === "Pago" ? "status-pago" : "status-pendente"}">${d.status === "Pago" ? "Pago" : "Pendente"}</span>`;
     const somar = (lista) => lista.reduce((s, d) => s + (Number(d.valor) || 0), 0);
     const totalCampanhas = somar(campanhas.map((x) => x.d));
     const totalEmpresa = somar(empresa);
-    const htmlCampanhas = campanhas
-      .map(
-        ({ d, k, competencia }) => `
-        <tr class="linha-custo-campanha" title="Custo de campanha: edite pela campanha">
+    const totalDeprec = somar(deprec);
+    const linha = (d, competencia) => `
+        <tr data-id="${d.id}" class="linha-custo-clicavel" title="Abrir a despesa">
           <td>${esc(d.nome)}</td>
-          <td>${esc(d.categoria || "Campanhas")}</td>
-          <td>${formatarDataBr(competencia)}</td>
-          <td>Campanha · ${esc(k.marca || "—")}</td>
+          <td>${esc(d.categoria && d.categoria !== "Campanhas" ? d.categoria : d.contrato_id ? "Custo de campanha" : "—")}</td>
+          <td>${formatarDataBr(competencia)}${!d.so_resultado && d.data && d.data !== competencia ? `<br><span class="texto-pequeno">pago/vence em ${formatarDataBr(d.data)}</span>` : ""}</td>
+          <td>${esc(rotuloOrigemCusto(d))}</td>
           <td>${pilula(d)}</td>
           <td>${formatarMoeda(Number(d.valor) || 0)}</td>
-        </tr>`
-      )
-      .join("");
-    const htmlEmpresa = empresa
-      .map(
-        (d) => `
-        <tr data-id="${d.id}">
-          <td>${esc(d.nome)}</td>
-          <td>${esc(d.categoria || "—")}</td>
-          <td>${formatarDataBr(competenciaDespesa(d))}${d.so_resultado ? `<br><span class="texto-pequeno">só custo · pago em outra data</span>` : d.data && d.data !== competenciaDespesa(d) ? `<br><span class="texto-pequeno">pago em ${formatarDataBr(d.data)}</span>` : ""}</td>
-          <td>Empresa · ${rotuloRecorrenciaDespesa(d)}</td>
-          <td>${pilula(d)}</td>
-          <td>${formatarMoeda(Number(d.valor) || 0)}</td>
-        </tr>`
-      )
-      .join("");
+        </tr>`;
     const sub = (rotulo, total) => `<tr class="linha-subtotal-custos"><td colspan="5">${rotulo}</td><td>${formatarMoeda(total)}</td></tr>`;
     corpo.innerHTML =
-      htmlCampanhas +
+      campanhas.map(({ d, competencia }) => linha(d, competencia)).join("") +
       (campanhas.length ? sub("Subtotal · custos de campanhas", totalCampanhas) : "") +
-      htmlEmpresa +
-      (empresa.length ? sub("Subtotal · despesas da empresa", totalEmpresa) : "") +
-      `<tr class="linha-total-resultado"><td colspan="5">Total ${rotuloPeriodoResultados()}</td><td>${formatarMoeda(totalCampanhas + totalEmpresa)}</td></tr>`;
+      empresa.map((d) => linha(d, competenciaDespesa(d))).join("") +
+      (empresa.length ? sub("Subtotal · despesas da frente UGC", totalEmpresa) : "") +
+      deprec.map((d) => linha(d, competenciaDespesa(d))).join("") +
+      (deprec.length ? sub("Subtotal · depreciação e amortização", totalDeprec) : "") +
+      `<tr class="linha-total-resultado"><td colspan="5">Total ${rotuloPeriodoResultados()}</td><td>${formatarMoeda(totalCampanhas + totalEmpresa + totalDeprec)}</td></tr>`;
   }
 
+  // DRE da frente UGC, na ordem pedida (uma única linha de impostos: sobre as receitas).
   function renderizarDreResumo() {
     const corpo = document.getElementById("corpoTabelaDre");
     if (!corpo) return;
-    const contratos = linhasResultadoContratos();
-    const despesas = linhasDespesasEmpresa();
-
-    const faturamentoBruto = contratos.reduce((s, l) => s + l.cache, 0);
-    const impostos = contratos.reduce((s, l) => s + l.impostos, 0);
-    const custosCampanhas = contratos.reduce((s, l) => s + l.descontos, 0);
-    const receitaLiquida = faturamentoBruto + impostos + custosCampanhas;
-
-    const porCategoria = new Map();
-    despesas.forEach((d) => {
-      const cat = d.categoria || "Outros";
-      porCategoria.set(cat, (porCategoria.get(cat) || 0) + (Number(d.valor) || 0));
-    });
-    const ordem = ["Operacional", "Marketing", "Infraestrutura", "Capacitação", "Outros"];
-    const extras = [...porCategoria.keys()].filter((c) => !ordem.includes(c)).sort((a, b) => a.localeCompare(b, "pt-BR"));
-    const categorias = [...ordem.filter((c) => porCategoria.has(c)), ...extras];
-    const totalDespesasEmpresa = [...porCategoria.values()].reduce((s, v) => s + v, 0);
-
-    const lucroLiquido = receitaLiquida - totalDespesasEmpresa;
-    const margemLiquida = faturamentoBruto ? (lucroLiquido / faturamentoBruto) * 100 : 0;
+    const r = calcularResultado();
+    const neg = (v) => (v < 0 ? "valor-negativo-resultado" : "");
+    const menos = (v) => formatarMoeda(-v);
+    const rotuloCategoria = (cat) => (cat === "Impostos" ? "Impostos e taxas" : cat);
+    const ordenar = (mapa) => [...mapa.keys()].sort((a, b) => a.localeCompare(b, "pt-BR"));
+    const linhasCategorias = (mapa) =>
+      ordenar(mapa)
+        .map((cat) => `<tr class="linha-dre-categoria"><td>${esc(rotuloCategoria(cat))}</td><td class="valor-negativo-resultado">${menos(mapa.get(cat))}</td></tr>`)
+        .join("");
+    const pct = (v) => (r.bruto ? ` <span class="texto-pequeno">(${v.toFixed(1)}%)</span>` : "");
 
     corpo.innerHTML = `
-      <tr><td>Faturamento bruto</td><td>${formatarMoeda(faturamentoBruto)}</td></tr>
-      <tr><td>Impostos</td><td class="${impostos < 0 ? "valor-negativo-resultado" : ""}">${formatarMoeda(impostos)}</td></tr>
-      <tr><td>Custos de campanhas</td><td class="${custosCampanhas < 0 ? "valor-negativo-resultado" : ""}">${formatarMoeda(custosCampanhas)}</td></tr>
-      <tr class="linha-dre-subtotal"><td>Receita líquida</td><td>${formatarMoeda(receitaLiquida)}</td></tr>
-      ${categorias
-        .map(
-          (cat) =>
-            `<tr class="linha-dre-categoria"><td>${esc(cat)}</td><td class="valor-negativo-resultado">${formatarMoeda(-(porCategoria.get(cat) || 0))}</td></tr>`
-        )
-        .join("")}
-      <tr class="linha-dre-subtotal"><td>Total de despesas</td><td class="valor-negativo-resultado">${formatarMoeda(-totalDespesasEmpresa)}</td></tr>
-      <tr class="linha-dre-final"><td>Lucro líquido</td><td style="${lucroLiquido < 0 ? "color:var(--vermelho-erro)" : ""}">${formatarMoeda(lucroLiquido)}</td></tr>
-      <tr class="linha-dre-final"><td>Margem líquida</td><td>${margemLiquida.toFixed(1)}%</td></tr>
+      <tr><td>Faturamento bruto <span class="texto-pequeno">(contratos fechados no mês)</span></td><td>${formatarMoeda(r.bruto)}</td></tr>
+      <tr class="linha-dre-categoria"><td><em>dos quais recebidos na PF</em></td><td><em>${formatarMoeda(r.brutoPF)}</em></td></tr>
+      <tr><td>(−) Impostos sobre as receitas</td><td class="${neg(r.impostos)}">${formatarMoeda(r.impostos)}</td></tr>
+      <tr><td>(−) Descontos</td><td>${formatarMoeda(0)}</td></tr>
+      <tr class="linha-dre-subtotal"><td>= Receita líquida</td><td>${formatarMoeda(r.receitaLiquida)}</td></tr>
+      <tr><td>(−) Custos de campanhas</td><td class="${neg(-r.custosCampanhas)}">${menos(r.custosCampanhas)}</td></tr>
+      ${linhasCategorias(r.custosPorCategoria)}
+      <tr class="linha-dre-subtotal"><td>= Margem de contribuição${pct(r.margemPct)}</td><td style="${r.margem < 0 ? "color:var(--vermelho-erro)" : ""}">${formatarMoeda(r.margem)}</td></tr>
+      <tr><td>(−) Despesas da frente UGC</td><td class="${neg(-r.totalDespesas)}">${menos(r.totalDespesas)}</td></tr>
+      ${linhasCategorias(r.despesasPorCategoria)}
+      <tr><td>(−) Depreciação e amortização</td><td class="${neg(-r.depreciacao)}">${menos(r.depreciacao)}</td></tr>
+      <tr class="linha-dre-final"><td>= Resultado da frente UGC${pct(r.resultadoPct)}</td><td style="${r.resultado < 0 ? "color:var(--vermelho-erro)" : ""}">${formatarMoeda(r.resultado)}</td></tr>
     `;
   }
 
@@ -12322,6 +12778,7 @@
     renderizarResultadoContratos();
     renderizarDespesasEmpresa();
     renderizarDreResumo();
+    renderizarBlocosResultadosExtras();
   }
 
   function atualizarSeletoresPeriodoResultados() {
@@ -12482,30 +12939,8 @@
     for (let i = periodoAnaliseResultados - 1; i >= 0; i--) {
       const d = new Date(agora.getFullYear(), agora.getMonth() - i, 1);
       const chave = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
-      const contratosDoMes = [
-        ...contratosCache
-          .filter((k) => k.data_assinatura && k.data_assinatura.slice(0, 7) === chave)
-          .map((k) => {
-            const cache = Number(k.valor) || 0;
-            const descontos = -despesasFinCache.filter((x) => x.contrato_id === k.id).reduce((s, x) => s + (Number(x.valor) || 0), 0);
-            return { cache, impostos: impostoNf(cache, !!k.emissao_nf, k.nf_taxa), descontos };
-          }),
-        ...receitasCache
-          .filter((r) => !r.contrato_id && !r.parent_id && r.contratacao && r.contratacao.slice(0, 7) === chave)
-          .map((r) => {
-            const cache = Number(r.cache) || 0;
-            return { cache, impostos: impostoNf(cache, !!r.emissao_nf, r.nf_taxa), descontos: 0 };
-          }),
-      ];
-      const faturamento = contratosDoMes.reduce((s, l) => s + l.cache, 0);
-      const lucroBruto = contratosDoMes.reduce((s, l) => s + l.cache + l.impostos + l.descontos, 0);
-      const despesasEmpresa = despesasFinCache
-        .filter((x) => !x.contrato_id && !x.so_fluxo && competenciaDespesa(x).slice(0, 7) === chave)
-        .reduce((s, x) => s + (Number(x.valor) || 0), 0);
-      const custosCampanhas = -contratosDoMes.reduce((s, l) => s + l.descontos, 0);
-      const despesas = despesasEmpresa + custosCampanhas;
-      const lucro = lucroBruto - despesasEmpresa;
-      dados.push({ chave, rotulo: abrevMes(chave), ent: faturamento, sai: despesas, saldo: lucro, meta: metaReceitaDoMes(chave) });
+      const r = calcularResultado(chave); // mesma conta do DRE
+      dados.push({ chave, rotulo: abrevMes(chave), ent: r.bruto, sai: r.custosCampanhas + r.totalDespesas + r.depreciacao, saldo: r.resultado, meta: metaReceitaDoMes(chave) });
     }
     const totalFat = dados.reduce((s, d) => s + d.ent, 0);
     const totalDesp = dados.reduce((s, d) => s + d.sai, 0);
@@ -12664,7 +13099,7 @@
     overlayDespesaEmpresa.hidden = true;
     despesaEmpresaEmEdicao = null;
   }
-  document.getElementById("btnNovaDespesaEmpresa").addEventListener("click", () => abrirDespesaEmpresa(null));
+  document.getElementById("btnNovaDespesaEmpresa").addEventListener("click", () => abrirDespesaNova(null));
   document.getElementById("btnCancelarDespesaEmpresa").addEventListener("click", fecharDespesaEmpresa);
   overlayDespesaEmpresa.addEventListener("click", (evento) => {
     if (evento.target === overlayDespesaEmpresa) fecharDespesaEmpresa();
@@ -12672,12 +13107,8 @@
   document.getElementById("corpoDespesasEmpresa").addEventListener("click", (evento) => {
     const linha = evento.target.closest("tr[data-id]");
     if (!linha) return;
-    const reg = despesasFinCache.find((d) => d.id === linha.dataset.id);
-    if (!reg) return;
-    // despesa lançada no Fluxo: abre a MESMA janela do Fluxo (é a mesma despesa); só a depreciação (que não existe no Fluxo) usa a janela de custo
-    const linhaFluxo = reg.so_resultado ? null : linhasDespesas().find((l) => l.chave === "d" + reg.id);
-    if (linhaFluxo) abrirLancamento(true, linhaFluxo);
-    else abrirDespesaEmpresa(reg);
+    // custo, depreciação ou despesa: tudo abre a despesa-mãe na mesma janela "Nova despesa"
+    abrirDespesaPeloRegistro(despesasFinCache.find((d) => d.id === linha.dataset.id));
   });
 
   async function salvarDespesaEmpresa() {
@@ -12793,6 +13224,824 @@
     }
   });
 
+  // ===============================================================
+  // NOVA DESPESA: janela única (substitui "Novo custo" e "Nova saída").
+  //  mãe  = valor total + competência (Resultados) + tipo/frente/conta
+  //  filhas (parent_id) = parcelas: vencimento e pagamento real (Fluxo de Caixa)
+  //  linhas so_resultado = depreciação / rateio mensal (só Resultados, nunca caixa)
+  //  mãe so_fluxo = o pagamento de um equipamento / assinatura anual (só caixa, nunca DRE)
+  // ===============================================================
+  const CATS_CAMPANHA = ["Edição", "Produtos/props", "Frete", "Comissão de plataforma", "Outros"];
+  const CATS_DESPESA = ["Software e assinaturas", "Marketing", "Capacitação", "Equipamentos", "Operacional", "Impostos e taxas", "Outros"];
+  const VIDA_UTIL_SUGERIDA = [
+    [/celular|iphone|smartphone/i, 24],
+    [/c[âa]mera|lente/i, 36],
+    [/notebook|macbook|laptop/i, 36],
+    [/microfone/i, 36],
+    [/ilumina|ring ?light|softbox|tr[ií]p[eé]/i, 36],
+  ];
+  const ndEl = (id) => document.getElementById(id);
+  const arred2 = (n) => Math.round(n * 100) / 100;
+  const mesAnoPt = (iso) => (iso ? `${MESES_PT[Number(iso.slice(5, 7)) - 1].slice(0, 3).toLowerCase()}/${iso.slice(0, 4)}` : "—");
+  let nd = null; // { mae, preset, filhas, linhas, removidos, compTocada, vidaTocada }
+  let ndSeq = 0;
+
+  // As categorias vêm da lista editável do painel (botão de categorias); as listas fixas acima só
+  // valem de ponto de partida enquanto o SQL não rodou. Custo de campanha usa só as de campanha.
+  function ndCategoriasDoTipo(tipo, atual) {
+    const noBanco = categoriasDoTipo("despesa");
+    const soCampanha = CATS_CAMPANHA.filter((n) => !CATS_DESPESA.includes(n));
+    let lista;
+    if (!noBanco.length) lista = tipo === "campanha" ? [...CATS_CAMPANHA] : [...CATS_DESPESA, CAT_TRANSFERENCIA];
+    else if (tipo === "campanha") lista = noBanco.filter((n) => CATS_CAMPANHA.includes(n));
+    else lista = noBanco.filter((n) => !soCampanha.includes(n) && n !== "Campanhas" && n !== CAT_EMPRESA);
+    if (atual && !lista.includes(atual) && atual !== "Campanhas") lista.push(atual);
+    return lista;
+  }
+  function ndPopularCategorias(atual) {
+    const tipo = ndEl("ndTipo").value;
+    const lista = ndCategoriasDoTipo(tipo, atual);
+    ndEl("ndCategoria").innerHTML = `<option value="">Sem categoria</option>` + lista.map((n) => `<option value="${esc(n)}">${esc(n)}</option>`).join("");
+    ndEl("ndCategoria").value = atual && lista.includes(atual) ? atual : "";
+  }
+
+  function ndVidaSugerida(texto) {
+    const achou = VIDA_UTIL_SUGERIDA.find(([re]) => re.test(texto || ""));
+    return achou ? achou[1] : 36;
+  }
+  const ndContrato = () => contratosCache.find((k) => k.id === ndEl("ndCampanha").value) || null;
+  const ndMinimoDepreciar = () => {
+    const v = Number(ndEl("ndMinimo").value);
+    return Number.isFinite(v) && ndEl("ndMinimo").value !== "" ? v : 500;
+  };
+
+  // O que o formulário significa pros dois lados: caixa (parcelas) e Resultados (competência).
+  function ndPlano() {
+    const tipo = ndEl("ndTipo").value;
+    const valor = Number(ndEl("ndValor").value) || 0;
+    const categoria = ndEl("ndCategoria").value;
+    const k = tipo === "campanha" ? ndContrato() : null;
+    const comp = tipo === "campanha" ? (k && k.data_assinatura) || "" : ndEl("ndCompetencia").value;
+    const plano = { tipo, tipoEfetivo: tipo, valor, categoria, comp, spread: null, serie: null, soFluxo: false, avisos: [], erros: [], campanha: k };
+    if (!valor) plano.erros.push("Informa o valor total.");
+    if (tipo === "campanha" && !k) plano.erros.push("Escolhe a campanha desse custo.");
+    if (tipo === "campanha" && k && !k.data_assinatura) plano.erros.push("Essa campanha ainda não tem data de fechamento (assinatura): o custo entra em Resultados nesse mês.");
+    if (tipo !== "campanha" && !comp) plano.erros.push("Informa o mês de competência.");
+
+    if (categoria === CAT_TRANSFERENCIA) {
+      plano.tipoEfetivo = "avulsa";
+      plano.soFluxo = true;
+      plano.avisos.push("Transferência entre contas: só aparece no Fluxo de Caixa, nunca em Resultados.");
+    } else if (tipo === "equipamento") {
+      const minimo = ndMinimoDepreciar();
+      const vida = Math.max(1, Math.floor(Number(ndEl("ndVida").value)) || 0);
+      if (valor > 0 && valor < minimo) {
+        plano.tipoEfetivo = "avulsa";
+        plano.avisos.push(`Valor abaixo do mínimo para depreciar (${formatarMoeda(minimo)}): entra como despesa normal no mês, sem depreciação.`);
+      } else {
+        if (!vida) plano.erros.push("Informa a vida útil em meses.");
+        plano.spread = { n: vida || 1, valorMes: valor / (vida || 1), depreciacao: true };
+        plano.soFluxo = true;
+      }
+    } else if (tipo === "recorrente") {
+      if (ndEl("ndRecorrencia").value === "anual") {
+        plano.spread = { n: 12, valorMes: valor / 12, depreciacao: false };
+        plano.soFluxo = true;
+      } else if (!nd.mae) {
+        if (!ndEl("ndFixaAte").value) plano.erros.push("Informa até quando lançar todo mês.");
+        plano.serie = { ate: ndEl("ndFixaAte").value };
+      }
+    } else if (tipo === "avulsa" && categoria === "Capacitação") {
+      const n = Math.floor(Number(ndEl("ndAmortizar").value)) || 0;
+      if (n > 1) {
+        plano.spread = { n, valorMes: valor / n, depreciacao: true };
+        plano.soFluxo = true;
+      }
+    }
+    return plano;
+  }
+
+  function ndAtualizarTipo() {
+    const tipo = ndEl("ndTipo").value;
+    const mensal = tipo === "recorrente" && ndEl("ndRecorrencia").value === "mensal";
+    ndEl("ndLinhaCampanha").hidden = tipo !== "campanha";
+    ndEl("ndLinhaRecorrencia").hidden = tipo !== "recorrente";
+    ndEl("ndLinhaFixaAte").hidden = !mensal || !!nd.mae;
+    ndEl("ndLinhaVida").hidden = tipo !== "equipamento";
+    ndEl("ndLinhaMinimo").hidden = tipo !== "equipamento";
+    ndEl("ndLinhaAmortizar").hidden = !(tipo === "avulsa" && ndEl("ndCategoria").value === "Capacitação");
+    ndEl("ndLinhaQtd").hidden = mensal;
+    ndEl("ndCompetencia").disabled = tipo === "campanha";
+    ndEl("ndRotuloCompetencia").textContent =
+      tipo === "campanha" ? "Competência: acompanha o fechamento da campanha"
+      : tipo === "equipamento" ? "Mês da compra (começa a depreciar)"
+      : tipo === "recorrente" ? (mensal ? "Mês do 1º lançamento" : "Mês em que começa o rateio")
+      : "Mês de competência (Resultados)";
+    if (tipo === "campanha") {
+      const k = ndContrato();
+      ndEl("ndCompetencia").value = (k && k.data_assinatura) || "";
+    }
+    if (mensal) ndEl("ndQtd").value = 1;
+  }
+
+  // ---- parcelas ----
+  function ndLinhaNova(valor, data) {
+    return { uid: "p" + ++ndSeq, id: null, valor, data: data || "", pago: false, pagoEm: "" };
+  }
+  function ndGerarParcelas() {
+    const total = Number(ndEl("ndValor").value) || 0;
+    const mensal = ndEl("ndTipo").value === "recorrente" && ndEl("ndRecorrencia").value === "mensal";
+    const pagas = nd.linhas.filter((l) => l.pago);
+    const abertas = nd.linhas.filter((l) => !l.pago);
+    const n = Math.max(mensal ? 1 : Math.floor(Number(ndEl("ndQtd").value)) || 1, pagas.length);
+    const faltam = n - pagas.length;
+    const resto = arred2(total - pagas.reduce((s, l) => s + l.valor, 0));
+    const primeira = ndEl("ndPrimeira").value || hojeIso();
+    const novas = [];
+    for (let j = 0; j < faltam; j++) {
+      const base = Math.floor((resto / faltam) * 100) / 100;
+      const valor = j === faltam - 1 ? arred2(resto - base * (faltam - 1)) : base; // centavos na última
+      const linha = ndLinhaNova(valor, deslocarData(primeira, pagas.length + j, "meses"));
+      if (abertas[j] && abertas[j].id) linha.id = abertas[j].id; // mantém o registro, só atualiza
+      novas.push(linha);
+    }
+    abertas.slice(faltam).forEach((l) => l.id && nd.removidos.add(l.id));
+    nd.linhas = [...pagas, ...novas];
+    ndRenderParcelas();
+  }
+  function ndRenderParcelas() {
+    ndEl("ndCorpoParcelas").innerHTML = nd.linhas
+      .map(
+        (l, i) => `
+      <tr data-uid="${l.uid}">
+        <td>${i + 1}/${nd.linhas.length}</td>
+        <td><input type="number" min="0" step="0.01" data-nd="valor" class="input-limpo" value="${l.valor}" ${l.pago ? "readonly" : ""}></td>
+        <td><input type="date" data-nd="data" class="input-limpo" value="${l.data}" ${l.pago ? "readonly" : ""}></td>
+        <td><select data-nd="status" class="input-limpo"><option value="0" ${l.pago ? "" : "selected"}>Prevista</option><option value="1" ${l.pago ? "selected" : ""}>Paga</option></select></td>
+        <td><input type="date" data-nd="pagoEm" class="input-limpo" value="${l.pagoEm}" ${l.pago ? "" : "disabled"}></td>
+      </tr>`
+      )
+      .join("");
+    ndAtualizarPrevia();
+  }
+  ndEl("ndCorpoParcelas").addEventListener("change", (evento) => {
+    const tr = evento.target.closest("tr[data-uid]");
+    const campo = evento.target.dataset.nd;
+    const linha = tr && nd.linhas.find((l) => l.uid === tr.dataset.uid);
+    if (!linha || !campo) return;
+    if (campo === "valor") linha.valor = Number(evento.target.value) || 0;
+    else if (campo === "data") linha.data = evento.target.value;
+    else if (campo === "pagoEm") linha.pagoEm = evento.target.value;
+    else if (campo === "status") {
+      linha.pago = evento.target.value === "1";
+      // data real: o vencimento é o padrão (nunca "hoje"); você ajusta se pagou em outro dia
+      linha.pagoEm = linha.pago ? linha.pagoEm || linha.data || "" : "";
+      ndRenderParcelas();
+      return;
+    }
+    ndAtualizarPrevia();
+  });
+
+  // ---- prévia ----
+  function ndAtualizarPrevia() {
+    if (!nd) return;
+    const p = ndPlano();
+    const linhas = [];
+    const R = formatarMoeda;
+    const comp = p.comp;
+    if (p.spread) {
+      const fim = comp ? deslocarData(comp, p.spread.n - 1, "meses") : "";
+      if (p.tipo === "equipamento") linhas.push(`<strong>Resultados:</strong> ${R(p.spread.valorMes)}/mês por ${p.spread.n} meses (${mesAnoPt(comp)} a ${mesAnoPt(fim)}). Os ${R(p.valor)} <em>não</em> entram inteiros como despesa em nenhum mês.`);
+      else if (p.tipo === "recorrente") linhas.push(`<strong>Resultados:</strong> ${R(p.spread.valorMes)}/mês por 12 meses (${mesAnoPt(comp)} a ${mesAnoPt(fim)}).`);
+      else linhas.push(`<strong>Resultados:</strong> amortizada em ${R(p.spread.valorMes)}/mês por ${p.spread.n} meses (${mesAnoPt(comp)} a ${mesAnoPt(fim)}).`);
+    } else if (!p.soFluxo) {
+      if (p.tipo === "campanha") linhas.push(`<strong>Resultados:</strong> ${R(p.valor)} inteiro no mês de fechamento da campanha${comp ? " (" + mesAnoPt(comp) + ")" : ""}. Se a data da campanha mudar, o custo acompanha.`);
+      else if (p.serie && p.serie.ate && comp) {
+        const meses = (Number(p.serie.ate.slice(0, 4)) - Number(comp.slice(0, 4))) * 12 + Number(p.serie.ate.slice(5, 7)) - Number(comp.slice(5, 7)) + 1;
+        linhas.push(`<strong>Resultados e caixa:</strong> ${R(p.valor)} por mês, ${Math.max(meses, 1)} lançamentos de ${mesAnoPt(comp)} a ${mesAnoPt(p.serie.ate)}.`);
+      } else linhas.push(`<strong>Resultados:</strong> ${R(p.valor)} inteiro em ${mesAnoPt(comp)}.`);
+    } else if (p.categoria === CAT_TRANSFERENCIA) linhas.push(`<strong>Resultados:</strong> não entra.`);
+    const frente = ndEl("ndFrente").value;
+    if (frente === "Empresa") linhas.push(`Frente <strong>Empresa</strong>: não entra no DRE deste painel (irá para a página da empresa). No caixa, se paga pelo Nubank PJ, aparece como “${esc(CAT_EMPRESA)}”.`);
+    if (ndEl("ndConta").value === "Mercado Pago") linhas.push(`Paga pelo <strong>Mercado Pago</strong>: não aparece no Fluxo de Caixa deste painel (a loja registra essa saída).`);
+    const soma = arred2(nd.linhas.reduce((s, l) => s + l.valor, 0));
+    const erros = [...p.erros];
+    if (p.valor && Math.abs(soma - p.valor) > 0.005) erros.push(`As parcelas somam ${R(soma)}, mas o valor total é ${R(p.valor)}.`);
+    if (nd.linhas.some((l) => l.pago && !l.pagoEm)) erros.push("Informa a data real do pagamento das parcelas pagas.");
+    ndEl("ndPrevia").innerHTML =
+      linhas.join("<br>") +
+      p.avisos.map((a) => `<span class="nd-aviso">⚠ ${esc(a)}</span>`).join("") +
+      erros.map((e) => `<span class="nd-erro">✕ ${esc(e)}</span>`).join("");
+  }
+
+  // ---- abrir ----
+  function abrirDespesaNova(reg, preset) {
+    const novo = !reg;
+    nd = { mae: reg || null, preset: preset || null, filhas: [], linhas: [], removidos: new Set(), compTocada: !novo, vidaTocada: !novo };
+    ndEl("avisoMigracaoDespesaNova").hidden = migracaoReestruturacaoOk;
+    ndEl("tituloDespesaNova").textContent = novo ? "Nova despesa" : "Editar despesa";
+    ndEl("btnNdExcluir").hidden = novo;
+
+    ndEl("ndCampanha").innerHTML =
+      `<option value="">Escolha a campanha…</option>` +
+      contratosCache
+        .slice()
+        .sort((a, b) => String(b.data_assinatura || "").localeCompare(String(a.data_assinatura || "")))
+        .map((k) => `<option value="${k.id}">${esc(k.marca || "—")}${k.data_assinatura ? " · " + formatarDataBr(k.data_assinatura) : " · sem data de fechamento"}</option>`)
+        .join("");
+    ndEl("ndMinimo").value = Number(cfgLer("fin_deprec_minimo", 500)) || 500;
+
+    if (novo) {
+      ndEl("ndTipo").value = (preset && preset.tipo) || "avulsa";
+      ndEl("ndNome").value = "";
+      ndEl("ndFornecedor").value = "";
+      ndEl("ndFrente").value = "UGC";
+      ndEl("ndConta").value = "Nubank PJ";
+      ndEl("ndForma").value = "Pix";
+      ndEl("ndValor").value = "";
+      ndEl("ndQtd").value = 1;
+      ndEl("ndPrimeira").value = hojeIso();
+      ndEl("ndCompetencia").value = hojeIso();
+      ndEl("ndRecorrencia").value = "mensal";
+      ndEl("ndFixaAte").value = deslocarData(hojeIso(), 11, "meses");
+      ndEl("ndVida").value = 36;
+      ndEl("ndAmortizar").value = "";
+      ndEl("ndCampanha").value = preset && preset.contratoId ? preset.contratoId : "";
+      ndPopularCategorias(preset && preset.tipo === "campanha" ? "" : "");
+      nd.linhas = [];
+    } else {
+      const filhas = despesasFinCache.filter((x) => x.parent_id === reg.id).sort((a, b) => String(a.data || "").localeCompare(String(b.data || "")));
+      nd.filhas = filhas;
+      const tipo = reg.tipo_despesa || (reg.contrato_id ? "campanha" : reg.recorrencia === "anual" ? "recorrente" : reg.fixa ? "recorrente" : reg.so_fluxo && reg.infra_valor_total ? "equipamento" : "avulsa");
+      ndEl("ndTipo").value = tipo;
+      ndEl("ndNome").value = reg.nome || "";
+      ndEl("ndFornecedor").value = reg.fornecedor || "";
+      ndEl("ndFrente").value = reg.frente || "UGC";
+      ndEl("ndConta").value = contaDaDespesa(reg);
+      ndEl("ndForma").value = reg.forma_pagamento || "Pix";
+      ndEl("ndValor").value = Number(reg.valor) || "";
+      ndEl("ndCompetencia").value = competenciaDespesa(reg);
+      ndEl("ndRecorrencia").value = reg.recorrencia || "mensal";
+      ndEl("ndFixaAte").value = reg.fixa_ate || "";
+      ndEl("ndCampanha").value = reg.contrato_id || "";
+      const spread = reg.grupo_repeticao ? despesasFinCache.filter((x) => x.so_resultado && x.grupo_repeticao === reg.grupo_repeticao) : [];
+      ndEl("ndVida").value = (spread[0] && spread[0].infra_meses) || 36;
+      ndEl("ndAmortizar").value = tipo === "avulsa" && spread.length ? spread.length : "";
+      ndPopularCategorias(reg.categoria || "");
+      if (filhas.length) {
+        nd.linhas = filhas.map((f) => ({ uid: "p" + ++ndSeq, id: f.id, valor: Number(f.valor) || 0, data: f.data || "", pago: f.status === "Pago", pagoEm: f.pago_em || "" }));
+      } else {
+        const valor = Number(reg.valor) || 0;
+        const parcial = reg.status !== "Pago" && Number(reg.valor_pago) > 0 && Number(reg.valor_pago) < valor - 0.005;
+        if (parcial) {
+          // pagamento parcial antigo: vira uma parcela paga + uma prevista, sem perder nada
+          const pago = Number(reg.valor_pago);
+          const a = ndLinhaNova(pago, reg.data || "");
+          a.pago = true;
+          a.pagoEm = reg.pago_em || reg.data || "";
+          nd.linhas = [a, ndLinhaNova(arred2(valor - pago), reg.data || "")];
+        } else {
+          const l = ndLinhaNova(valor, reg.data || "");
+          l.pago = reg.status === "Pago";
+          l.pagoEm = l.pago ? reg.pago_em || reg.data || "" : "";
+          nd.linhas = [l];
+        }
+      }
+      ndEl("ndQtd").value = nd.linhas.length;
+      ndEl("ndPrimeira").value = (nd.linhas[0] && nd.linhas[0].data) || "";
+    }
+    ndAtualizarTipo();
+    if (novo) ndGerarParcelas();
+    else ndRenderParcelas();
+    overlayDespesaNova.hidden = false;
+    ndEl(novo ? "ndNome" : "ndValor").focus();
+  }
+  const overlayDespesaNova = ndEl("overlayDespesaNova");
+  function fecharDespesaNova() {
+    overlayDespesaNova.hidden = true;
+    nd = null;
+  }
+
+  // ---- reações do formulário ----
+  const ndRecalcular = () => {
+    if (!nd) return;
+    ndAtualizarTipo();
+    ndAtualizarPrevia();
+  };
+  ndEl("ndTipo").addEventListener("change", () => {
+    const tipo = ndEl("ndTipo").value;
+    ndPopularCategorias(tipo === "equipamento" ? "Equipamentos" : "");
+    ndAtualizarTipo();
+    ndGerarParcelas();
+  });
+  ndEl("ndCategoria").addEventListener("change", ndRecalcular);
+  ndEl("ndFrente").addEventListener("change", ndRecalcular);
+  ndEl("ndConta").addEventListener("change", ndRecalcular);
+  ndEl("ndRecorrencia").addEventListener("change", () => {
+    ndAtualizarTipo();
+    ndGerarParcelas();
+  });
+  ndEl("ndFixaAte").addEventListener("input", ndRecalcular);
+  ndEl("ndVida").addEventListener("input", () => {
+    nd.vidaTocada = true;
+    ndRecalcular();
+  });
+  ndEl("ndAmortizar").addEventListener("input", ndRecalcular);
+  ndEl("ndMinimo").addEventListener("change", () => {
+    const v = Number(ndEl("ndMinimo").value);
+    if (Number.isFinite(v) && v >= 0) cfgGravar("fin_deprec_minimo", v);
+    ndRecalcular();
+  });
+  ndEl("ndNome").addEventListener("input", () => {
+    if (ndEl("ndTipo").value === "equipamento" && !nd.vidaTocada) ndEl("ndVida").value = ndVidaSugerida(ndEl("ndNome").value);
+    ndAtualizarPrevia();
+  });
+  ndEl("ndCampanha").addEventListener("change", () => {
+    ndAtualizarTipo();
+    ndAtualizarPrevia();
+  });
+  ndEl("ndCompetencia").addEventListener("input", () => {
+    nd.compTocada = true;
+    ndAtualizarPrevia();
+  });
+  ["ndValor", "ndQtd"].forEach((id) =>
+    ndEl(id).addEventListener("input", () => {
+      ndGerarParcelas(); // refaz só as parcelas ainda não pagas
+    })
+  );
+  ndEl("ndPrimeira").addEventListener("input", () => {
+    if (!nd.compTocada && ndEl("ndTipo").value !== "campanha") ndEl("ndCompetencia").value = ndEl("ndPrimeira").value;
+    ndGerarParcelas();
+  });
+  ndEl("btnNdGerar").addEventListener("click", ndGerarParcelas);
+  ndEl("btnNdCancelar").addEventListener("click", fecharDespesaNova);
+  overlayDespesaNova.addEventListener("click", (evento) => {
+    if (evento.target === overlayDespesaNova) fecharDespesaNova();
+  });
+
+  // ---- salvar ----
+  function ndSalvar() {
+    return emFila("salvar-despesa-nova", ndSalvarSemFila);
+  }
+  async function ndSalvarSemFila() {
+    if (!nd) return;
+    const nome = ndEl("ndNome").value.trim();
+    if (!nome) {
+      ndEl("ndNome").focus();
+      return;
+    }
+    if (!migracaoReestruturacaoOk) {
+      alert("Rode js/financeiro-reestruturacao-setup.sql no Supabase (SQL Editor) antes de salvar por esta janela.");
+      return;
+    }
+    const plano = ndPlano();
+    const soma = arred2(nd.linhas.reduce((s, l) => s + l.valor, 0));
+    const erros = [...plano.erros];
+    if (plano.valor && Math.abs(soma - plano.valor) > 0.005) erros.push(`As parcelas somam ${formatarMoeda(soma)}, mas o valor total é ${formatarMoeda(plano.valor)}.`);
+    if (nd.linhas.some((l) => l.pago && !l.pagoEm)) erros.push("Informa a data real do pagamento das parcelas pagas.");
+    if (nd.linhas.some((l) => !l.data)) erros.push("Todas as parcelas precisam de vencimento.");
+    if (erros.length) {
+      alert(erros[0]);
+      return;
+    }
+    const botao = ndEl("btnNdSalvar");
+    botao.disabled = true;
+    const agora = new Date().toISOString();
+    try {
+      const mae = nd.mae;
+      const linhas = nd.linhas;
+      const modoFilhas = linhas.length > 1 || (mae && nd.filhas.length > 0);
+      const categoria = plano.categoria || null;
+      const frente = ndEl("ndFrente").value;
+      const conta = ndEl("ndConta").value;
+      const grupo = (mae && mae.grupo_repeticao) || (plano.spread || plano.serie ? crypto.randomUUID() : null);
+      const pagas = linhas.filter((l) => l.pago);
+      const tudoPago = linhas.length > 0 && pagas.length === linhas.length;
+      const ultimaPaga = pagas.map((l) => l.pagoEm).sort().pop() || null;
+      const primeiraData = linhas.map((l) => l.data).sort()[0] || null;
+      const campos = {
+        nome, categoria, valor: plano.valor, data: primeiraData,
+        data_competencia: plano.comp || primeiraData,
+        tipo_despesa: plano.tipoEfetivo, frente, conta, forma_pagamento: ndEl("ndForma").value,
+        contrato_id: plano.tipo === "campanha" ? plano.campanha.id : null,
+        so_fluxo: plano.soFluxo, so_resultado: false,
+        fixa: plano.tipo === "recorrente" && ndEl("ndRecorrencia").value === "mensal",
+        fixa_ate: plano.tipo === "recorrente" && ndEl("ndRecorrencia").value === "mensal" ? ndEl("ndFixaAte").value || null : null,
+        recorrencia: plano.tipo === "recorrente" ? ndEl("ndRecorrencia").value : null,
+        amortizar_meses: plano.spread && plano.tipo !== "equipamento" ? plano.spread.n : null,
+        infra_meses: null, infra_valor_total: plano.spread ? plano.valor : null,
+        grupo_repeticao: grupo, parent_id: null, updated_at: agora,
+        status: tudoPago ? "Pago" : "Pendente",
+        valor_pago: modoFilhas ? arred2(pagas.reduce((s, l) => s + l.valor, 0)) : tudoPago ? plano.valor : 0,
+        pago_em: ultimaPaga,
+      };
+      if (migracaoComplementoOk) campos.fornecedor = ndEl("ndFornecedor").value.trim() || null;
+
+      let maeId;
+      if (mae) {
+        verificarErro(await Auth.sb.from("financas_despesas").update(campos).eq("id", mae.id));
+        maeId = mae.id;
+      } else {
+        const { data, error } = await Auth.sb.from("financas_despesas").insert(campos).select().single();
+        if (error) throw error;
+        maeId = data.id;
+      }
+
+      // parcelas: só as não pagas são refeitas; as pagas ficam como estão (a data real é preservada)
+      for (const id of nd.removidos) {
+        if (linhas.some((l) => l.id === id)) continue;
+        verificarErro(await Auth.sb.from("financas_despesas").delete().eq("id", id));
+      }
+      if (modoFilhas) {
+        const novas = [];
+        for (let i = 0; i < linhas.length; i++) {
+          const l = linhas[i];
+          const filha = {
+            nome: `Parcela ${i + 1}/${linhas.length}`, valor: l.valor, data: l.data, data_competencia: l.data, categoria,
+            status: l.pago ? "Pago" : "Pendente", valor_pago: l.pago ? l.valor : 0, pago_em: l.pago ? l.pagoEm : null,
+            parent_id: maeId, contrato_id: null, so_fluxo: false, so_resultado: false, frente, conta, updated_at: agora,
+          };
+          if (l.id) verificarErro(await Auth.sb.from("financas_despesas").update(filha).eq("id", l.id));
+          else novas.push(filha);
+        }
+        if (novas.length) verificarErro(await Auth.sb.from("financas_despesas").insert(novas));
+      }
+
+      // Resultados: refaz o rateio / depreciação (linhas só de Resultados) do mesmo grupo
+      if (mae && mae.grupo_repeticao) {
+        verificarErro(await Auth.sb.from("financas_despesas").delete().eq("grupo_repeticao", mae.grupo_repeticao).eq("so_resultado", true).neq("id", maeId));
+      }
+      if (plano.spread) {
+        const linhasDre = [];
+        for (let i = 0; i < plano.spread.n; i++) {
+          const mes = deslocarData(plano.comp, i, "meses");
+          linhasDre.push({
+            nome, categoria: plano.tipo === "equipamento" ? categoria || "Equipamentos" : categoria, data: mes, data_competencia: mes,
+            valor: plano.spread.valorMes, status: "Pendente", valor_pago: 0, so_resultado: true, so_fluxo: false,
+            tipo_despesa: plano.tipoEfetivo, frente, conta, grupo_repeticao: grupo, parent_id: null, contrato_id: null,
+            infra_meses: plano.tipo === "equipamento" ? plano.spread.n : null, infra_valor_total: plano.valor,
+            amortizar_meses: plano.tipo === "equipamento" ? null : plano.spread.n, recorrencia: plano.tipo === "recorrente" ? "anual" : null, updated_at: agora,
+          });
+        }
+        verificarErro(await Auth.sb.from("financas_despesas").insert(linhasDre));
+      }
+
+      // recorrente mensal novo: uma ocorrência por mês até a data de encerramento
+      if (!mae && plano.serie) {
+        const meses = Math.max(1, (Number(plano.serie.ate.slice(0, 4)) - Number(plano.comp.slice(0, 4))) * 12 + Number(plano.serie.ate.slice(5, 7)) - Number(plano.comp.slice(5, 7)) + 1);
+        const copias = [];
+        for (let i = 1; i < meses; i++) {
+          copias.push({ ...campos, data: deslocarData(campos.data, i, "meses"), data_competencia: deslocarData(plano.comp, i, "meses"), status: "Pendente", valor_pago: 0, pago_em: null });
+        }
+        if (copias.length) verificarErro(await Auth.sb.from("financas_despesas").insert(copias));
+      }
+
+      fecharDespesaNova();
+      await recarregarFinancas();
+    } catch (erro) {
+      alert("Não foi possível salvar a despesa. Confira se js/financeiro-reestruturacao-setup.sql já rodou no Supabase.");
+      console.error(erro);
+    } finally {
+      botao.disabled = false;
+    }
+  }
+  ndEl("btnNdSalvar").addEventListener("click", ndSalvar);
+
+  // ---- excluir: pede confirmação e leva as parcelas e o rateio junto ----
+  ndEl("btnNdExcluir").addEventListener("click", async () => {
+    if (!nd || !nd.mae) return;
+    const mae = nd.mae;
+    const qtdFilhas = nd.filhas.length;
+    const irmas = mae.grupo_repeticao ? despesasFinCache.filter((x) => x.so_resultado && x.grupo_repeticao === mae.grupo_repeticao) : [];
+    const partes = [qtdFilhas ? `${qtdFilhas} parcela${qtdFilhas === 1 ? "" : "s"}` : "", irmas.length ? `${irmas.length} lançamento${irmas.length === 1 ? "" : "s"} mensais em Resultados` : ""].filter(Boolean);
+    if (!confirm(`Excluir "${mae.nome}"?${partes.length ? "\n\nIsso também remove " + partes.join(" e ") + "." : ""}`)) return;
+    try {
+      if (irmas.length) verificarErro(await Auth.sb.from("financas_despesas").delete().eq("grupo_repeticao", mae.grupo_repeticao).eq("so_resultado", true));
+      verificarErro(await Auth.sb.from("financas_despesas").delete().eq("id", mae.id));
+      fecharDespesaNova();
+      await recarregarFinancas();
+    } catch (erro) {
+      alert("Não foi possível excluir.");
+      console.error(erro);
+    }
+  });
+  // ===============================================================
+  // BLOCOS NOVOS: caixa por período, PF, contas a pagar, equipamentos,
+  // "por que o resultado é diferente do caixa", conferência e resumo mensal
+  // ===============================================================
+  const fimDoPrefixo = (prefixo) => (prefixo.length === 4 ? prefixo + "-12-31" : prefixo + "-31");
+
+  // Caixa (só o que foi pago/recebido, Nubank PJ, sem PF) de um mês "AAAA-MM" ou ano "AAAA".
+  function caixaDoPrefixo(prefixo) {
+    const rec = linhasReceitasFluxo().flatMap((l) => l.itens.filter((i) => i.pago && i.valor > 0).map((i) => ({ ...i, linha: l })));
+    const des = linhasDespesasFluxo().flatMap((l) => l.itens.filter((i) => i.pago && i.valor > 0).map((i) => ({ ...i, linha: l })));
+    const noP = (i) => String(i.data || "").startsWith(prefixo);
+    const fim = fimDoPrefixo(prefixo);
+    const soma = (lista) => lista.reduce((s, i) => s + i.valor, 0);
+    const recP = rec.filter(noP);
+    const desP = des.filter(noP);
+    return {
+      recP, desP, entradas: soma(recP), saidas: soma(desP),
+      saldoAcumulado: soma(rec.filter((i) => i.data && i.data <= fim)) - soma(des.filter((i) => i.data && i.data <= fim)),
+    };
+  }
+
+  // ---- Fluxo de Caixa: bloco PF (fora dos totais) + contas a pagar e a receber ----
+  function renderizarBlocosFluxoExtras() {
+    const blocoPF = document.getElementById("blocoFluxoPF");
+    if (!blocoPF) return;
+    const itensPF = linhasReceitasPF()
+      .flatMap((l) => l.itens.filter((i) => i.valor > 0 && noPeriodo(i.data)).map((i) => ({ l, i })))
+      .sort((a, b) => (b.i.data || "").localeCompare(a.i.data || ""));
+    blocoPF.hidden = !itensPF.length;
+    const totalPF = itensPF.filter(({ i }) => i.pago).reduce((s, { i }) => s + i.valor, 0);
+    document.getElementById("corpoFluxoPF").innerHTML =
+      itensPF
+        .map(({ l, i }) => `<tr data-linha-chave="${l.chave}"><td>${esc(l.descricao)}${i.rotulo ? ` <span class="texto-pequeno">· ${esc(i.rotulo)}</span>` : ""} <span class="pilula-status status-permuta">PF</span></td><td>${celulaDataFluxo(i.data)}</td><td>${formatarMoeda(i.valor)}</td><td>${i.pago ? "Recebido" : "Previsto"}</td></tr>`)
+        .join("") + (itensPF.length ? `<tr class="linha-total-resultado"><td colspan="2">Recebido na PF em ${rotuloPeriodoFluxo()}</td><td>${formatarMoeda(totalPF)}</td><td></td></tr>` : "");
+
+    // contas a pagar / a receber: do mês atual até 6 meses à frente (+ atrasados e sem data numa linha à parte)
+    const rec = linhasReceitasFluxo().flatMap((l) => l.itens.filter((i) => i.valor > 0));
+    const des = linhasDespesasFluxo().flatMap((l) => l.itens.filter((i) => i.valor > 0));
+    const soma = (lista) => lista.reduce((s, i) => s + i.valor, 0);
+    const hoje = hojeIso();
+    const mesAtual = hoje.slice(0, 7);
+    const realizado = soma(rec.filter((i) => i.pago)) - soma(des.filter((i) => i.pago));
+    let projetado = realizado;
+    const linhas = [];
+    const atrasadosRec = rec.filter((i) => !i.pago && (!i.data || mesDe(i.data) < mesAtual));
+    const atrasadosDes = des.filter((i) => !i.pago && (!i.data || mesDe(i.data) < mesAtual));
+    const linha = (rotulo, aRec, aPag) => {
+      projetado += aRec - aPag;
+      return `<tr><td>${rotulo}</td><td>${formatarMoeda(aRec)}</td><td>${formatarMoeda(aPag)}</td><td class="${aRec - aPag < 0 ? "neg" : "pos"}">${formatarMoeda(aRec - aPag)}</td><td class="${projetado < 0 ? "neg" : ""}">${formatarMoeda(projetado)}</td></tr>`;
+    };
+    if (atrasadosRec.length || atrasadosDes.length) linhas.push(linha("Atrasados e sem data", soma(atrasadosRec), soma(atrasadosDes)));
+    for (let m = 0; m < 7; m++) {
+      const d = deslocarData(mesAtual + "-01", m, "meses");
+      const mes = d.slice(0, 7);
+      linhas.push(linha(`${MESES_PT[Number(mes.slice(5, 7)) - 1]}/${mes.slice(0, 4)}`, soma(rec.filter((i) => !i.pago && mesDe(i.data) === mes)), soma(des.filter((i) => !i.pago && mesDe(i.data) === mes))));
+    }
+    document.getElementById("corpoFluxoAPagar").innerHTML =
+      `<tr class="linha-subtotal-custos"><td colspan="4">Caixa hoje (recebido − pago)</td><td>${formatarMoeda(realizado)}</td></tr>` + linhas.join("");
+  }
+  document.getElementById("corpoFluxoPF").addEventListener("click", (evento) => {
+    const tr = evento.target.closest("tr[data-linha-chave]");
+    const linha = tr && linhasReceitasPorChave.get(tr.dataset.linhaChave);
+    if (linha) abrirLancamento(false, linha);
+  });
+
+  // ---- Resultados: limite da PF, reconciliação com o caixa, equipamentos ----
+  function renderizarBlocosResultadosExtras() {
+    if (!document.getElementById("cartaoLimitePF")) return;
+    // limite de R$ 5.000/mês recebidos na PF (só faz sentido com um mês escolhido)
+    const cartao = document.getElementById("cartaoLimitePF");
+    cartao.hidden = !resultadosMes;
+    if (resultadosMes) {
+      const mes = prefixoResultados();
+      const pf = pfDoMes(mes);
+      const pct = (pf.recebido / LIMITE_PF_MES) * 100;
+      const barra = document.getElementById("barraLimitePF");
+      barra.classList.toggle("alerta", pct >= 80 && pct <= 100);
+      barra.classList.toggle("estourou", pct > 100);
+      barra.firstElementChild.style.width = Math.min(100, pct) + "%";
+      document.getElementById("rotuloLimitePF").textContent = `Recebido na pessoa física em ${MESES_PT[resultadosMes - 1].toLowerCase()}/${resultadosAno} (limite de ${formatarMoeda(LIMITE_PF_MES)} por mês)`;
+      document.getElementById("textoLimitePF").textContent =
+        `${formatarMoeda(pf.recebido)} recebidos` + (pf.previsto ? ` · ${formatarMoeda(pf.previsto)} previstos` : "") +
+        (pct > 100 ? ` · ⚠ passou do limite em ${formatarMoeda(pf.recebido - LIMITE_PF_MES)}` : pct >= 80 ? ` · ⚠ perto do limite: cabem ${formatarMoeda(LIMITE_PF_MES - pf.recebido)}` : ` · cabem ${formatarMoeda(LIMITE_PF_MES - pf.recebido)}`);
+      document.getElementById("pctLimitePF").textContent = Math.round(pct) + "%";
+    }
+
+    // por que o resultado do período é diferente do caixa
+    const prefixo = prefixoResultados();
+    const r = calcularResultado(prefixo);
+    const cx = caixaDoPrefixo(prefixo);
+    const ehTransf = (i) => i.linha.categoria === CAT_TRANSFERENCIA;
+    const recFaturamento = cx.recP.filter((i) => !ehTransf(i)).reduce((s, i) => s + i.valor, 0);
+    const transfEntrou = cx.recP.filter(ehTransf).reduce((s, i) => s + i.valor, 0);
+    const pagoDre = (i) => !!i.linha.reg && entraNoResultado(i.linha.reg);
+    const pagoNaoDre = cx.desP.filter((i) => !pagoDre(i)).reduce((s, i) => s + i.valor, 0); // equipamento, rateio, empresa, transferência
+    const pagoDreSoma = cx.desP.filter(pagoDre).reduce((s, i) => s + i.valor, 0);
+    const semCaixa = r.depreciacao + r.despesas.filter((d) => d.so_resultado).reduce((s, d) => s + (Number(d.valor) || 0), 0); // rateios + depreciação
+    const despesasComCaixa = r.totalDespesas - r.despesas.filter((d) => d.so_resultado).reduce((s, d) => s + (Number(d.valor) || 0), 0);
+    const aReceber = r.bruto - r.brutoPF - recFaturamento;
+    const aPagar = -r.impostos + r.custosCampanhas + despesasComCaixa - pagoDreSoma;
+    const caixa = cx.entradas - cx.saidas;
+    const fechamento = r.resultado - aReceber - r.brutoPF + aPagar - pagoNaoDre + semCaixa + transfEntrou;
+    const ln = (rotulo, valor, dica) => `<tr><td>${rotulo}${dica ? ` <span class="texto-pequeno">${dica}</span>` : ""}</td><td class="${valor < 0 ? "valor-negativo-resultado" : ""}">${formatarMoeda(valor)}</td></tr>`;
+    document.getElementById("corpoDifereCaixa").innerHTML = `
+      <tr class="linha-dre-subtotal"><td>Resultado da frente (competência)</td><td>${formatarMoeda(r.resultado)}</td></tr>
+      ${ln("(−) A receber de campanhas", -aReceber, "faturado no período − recebido no período")}
+      ${ln("(−) Faturado na PF", -r.brutoPF, "fora do caixa")}
+      ${ln("(+) A pagar", aPagar, "custos, despesas e impostos ainda não pagos")}
+      ${ln("(−) Equipamentos, rateios e empresa pagos", -pagoNaoDre, "saem do caixa, não do resultado")}
+      ${ln("(+) Depreciação e rateios", semCaixa, "saem do resultado, não do caixa")}
+      ${transfEntrou ? ln("(+) Transferências recebidas", transfEntrou, "só caixa") : ""}
+      <tr class="linha-dre-final"><td>= Caixa do período (Nubank PJ)</td><td>${formatarMoeda(fechamento)}</td></tr>
+      ${Math.abs(fechamento - caixa) > 0.01 ? `<tr><td colspan="2" class="texto-pequeno">⚠ O caixa do Fluxo de Caixa é ${formatarMoeda(caixa)} — a diferença de ${formatarMoeda(fechamento - caixa)} indica lançamento em data estranha. Use “Conferir dados antigos”.</td></tr>` : ""}
+    `;
+    renderizarEquipamentos();
+  }
+
+  // Equipamentos: ativo a ativo, com depreciação acumulada até o mês de hoje.
+  function renderizarEquipamentos() {
+    const corpo = document.getElementById("corpoEquipamentos");
+    if (!corpo) return;
+    const grupos = agruparPor(despesasFinCache.filter((d) => d.so_resultado && d.infra_meses && d.grupo_repeticao), (d) => d.grupo_repeticao);
+    const mesHoje = hojeIso().slice(0, 7);
+    const itens = [...grupos.values()]
+      .map((linhas) => {
+        const ordenadas = linhas.slice().sort((a, b) => competenciaDespesa(a).localeCompare(competenciaDespesa(b)));
+        const total = Number(ordenadas[0].infra_valor_total) || ordenadas.reduce((s, d) => s + (Number(d.valor) || 0), 0);
+        const usadas = ordenadas.filter((d) => mesDe(competenciaDespesa(d)) <= mesHoje);
+        const acumulada = usadas.reduce((s, d) => s + (Number(d.valor) || 0), 0);
+        return { reg: ordenadas[0], nome: ordenadas[0].nome, compra: competenciaDespesa(ordenadas[0]), total, mensal: Number(ordenadas[0].valor) || 0, acumulada, residual: Math.max(0, total - acumulada), restantes: ordenadas.length - usadas.length };
+      })
+      .sort((a, b) => a.compra.localeCompare(b.compra));
+    corpo.innerHTML = itens.length
+      ? itens
+          .map((e) => `<tr class="linha-custo-clicavel" data-id="${e.reg.id}"><td>${esc(e.nome)}</td><td>${formatarDataBr(e.compra)}</td><td>${formatarMoeda(e.total)}</td><td>${formatarMoeda(e.mensal)}</td><td>${formatarMoeda(e.acumulada)}</td><td>${formatarMoeda(e.residual)}</td><td>${e.restantes}</td></tr>`)
+          .join("")
+      : `<tr><td colspan="7" class="texto-vazio">Nenhum equipamento depreciando. Lance uma despesa do tipo “Equipamento / ativo”.</td></tr>`;
+  }
+  document.getElementById("corpoEquipamentos").addEventListener("click", (evento) => {
+    const tr = evento.target.closest("tr[data-id]");
+    if (tr) abrirDespesaPeloRegistro(despesasFinCache.find((d) => d.id === tr.dataset.id));
+  });
+
+  // ---- Alíquota do Simples por mês ----
+  const overlayAliquotas = document.getElementById("overlayAliquotas");
+  function renderizarAliquotas() {
+    const meses = [];
+    let atual = SIMPLES_DESDE + "-01";
+    const limite = deslocarData(hojeIso().slice(0, 7) + "-01", 3, "meses");
+    while (atual <= limite) {
+      meses.push(atual.slice(0, 7));
+      atual = deslocarData(atual, 1, "meses");
+    }
+    document.getElementById("corpoAliquotas").innerHTML = meses
+      .map((mes) => {
+        const linha = aliquotasCache.find((a) => String(a.mes).slice(0, 7) === mes);
+        return `<div class="prop-limpa"><span class="rotulo-limpo">${MESES_PT[Number(mes.slice(5, 7)) - 1]}/${mes.slice(0, 4)}</span>
+          <input type="number" min="0" max="100" step="0.01" class="input-limpo" data-aliquota-mes="${mes}" value="${linha ? linha.aliquota : ""}" placeholder="usa ${String(aliquotaDoMes(mes)).replace(".", ",")}% (último informado)"></div>`;
+      })
+      .join("");
+  }
+  document.getElementById("btnAbrirAliquotas").addEventListener("click", () => {
+    renderizarAliquotas();
+    overlayAliquotas.hidden = false;
+  });
+  document.getElementById("btnFecharAliquotas").addEventListener("click", () => (overlayAliquotas.hidden = true));
+  document.getElementById("corpoAliquotas").addEventListener("change", async (evento) => {
+    const campo = evento.target.closest("[data-aliquota-mes]");
+    if (!campo) return;
+    const mes = campo.dataset.aliquotaMes + "-01";
+    try {
+      if (campo.value === "") verificarErro(await Auth.sb.from("financas_aliquotas").delete().eq("mes", mes));
+      else verificarErro(await Auth.sb.from("financas_aliquotas").upsert({ mes, aliquota: Number(campo.value), updated_at: new Date().toISOString() }, { onConflict: "mes" }));
+      await recarregarFinancas();
+      renderizarAliquotas();
+    } catch (erro) {
+      alert("Não foi possível salvar a alíquota. Confira se js/financeiro-reestruturacao-setup.sql já rodou no Supabase.");
+      console.error(erro);
+    }
+  });
+
+  // ---- Conferência dos dados antigos (só lista; cada botão age numa linha e só quando clicado) ----
+  const overlayConferencia = document.getElementById("overlayConferencia");
+  const normalizarNome = (s) => String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\(?\s*parcela\s*\d+\s*\/\s*\d+\s*\)?/g, "").replace(/\s+/g, " ").trim();
+
+  function montarConferencia() {
+    const maes = despesasFinCache.filter((d) => !d.parent_id && !d.so_resultado);
+    const R = formatarMoeda;
+    const secao = (titulo, nota, itens, vazio) =>
+      `<h4 style="margin:18px 0 4px;">${titulo} <span class="texto-pequeno">(${itens.length})</span></h4><p class="texto-pequeno" style="margin:0 0 6px;">${nota}</p>` +
+      (itens.length ? `<ul class="lista-conferencia">${itens.join("")}</ul>` : `<p class="texto-pequeno">${vazio}</p>`);
+
+    // (a) "Parcela X/Y" e mesmo gasto, mesmo valor, em meses seguidos
+    const porNome = agruparPor(maes.filter((d) => !d.eh_fatura && !d.fixa), (d) => normalizarNome(d.nome) + "|" + (Number(d.valor) || 0));
+    const gruposA = [...porNome.values()].filter((g) => g.length >= 2 && new Set(g.map((d) => mesDe(d.data))).size === g.length);
+    const parcelasSoltas = agruparPor(maes.filter((d) => /parcela\s*\d+\s*\/\s*\d+/i.test(d.nome || "")), (d) => normalizarNome(d.nome));
+    const itensA = [
+      ...[...parcelasSoltas.values()].filter((g) => g.length >= 2).map((g) => `<li><span>“${esc(normalizarNome(g[0].nome))}” — ${g.length} parcelas soltas (${R(g.reduce((s, d) => s + (Number(d.valor) || 0), 0))})</span><span class="texto-pequeno">${g.map((d) => formatarDataBr(d.data)).join(", ")}</span></li>`),
+      ...gruposA.map((g) => `<li><span>“${esc(g[0].nome)}” ${R(Number(g[0].valor) || 0)} em ${g.length} meses seguidos</span><span class="texto-pequeno">${g.map((d) => formatarDataBr(d.data)).join(", ")}</span></li>`),
+    ];
+
+    // (b) mesmo gasto lançado nos dois lados (custo + saída)
+    const paresB = [];
+    for (let i = 0; i < maes.length; i++) {
+      for (let j = i + 1; j < maes.length; j++) {
+        const a = maes[i], b = maes[j];
+        if ((a.grupo_repeticao && a.grupo_repeticao === b.grupo_repeticao) || Number(a.valor) !== Number(b.valor) || !a.data || !b.data) continue;
+        const na = normalizarNome(a.nome), nb = normalizarNome(b.nome);
+        const dias = Math.abs((new Date(a.data) - new Date(b.data)) / 86400000);
+        if (dias <= 62 && na && nb && (na === nb || na.includes(nb) || nb.includes(na))) paresB.push([a, b]);
+      }
+    }
+    const itensB = paresB.slice(0, 60).map(([a, b]) => `<li><span>“${esc(a.nome)}” e “${esc(b.nome)}” — ${R(Number(a.valor) || 0)}</span><span class="texto-pequeno">${formatarDataBr(a.data)} / ${formatarDataBr(b.data)}</span></li>`);
+
+    // (c) saídas de edição que podem ser custos de campanha
+    const candidatasC = maes.filter((d) => !d.contrato_id && /edi[cç][aã]o|editor|edit\b/i.test(d.nome || "") && d.categoria !== CAT_TRANSFERENCIA);
+    const opcoesCampanha = `<option value="">Vincular à campanha…</option>` + contratosCache.slice().sort((a, b) => String(b.data_assinatura || "").localeCompare(String(a.data_assinatura || ""))).map((k) => `<option value="${k.id}">${esc(k.marca || "—")}${k.data_assinatura ? " · " + formatarDataBr(k.data_assinatura) : ""}</option>`).join("");
+    const itensC = candidatasC.map((d) => `<li><span>${esc(d.nome)} — ${R(Number(d.valor) || 0)} <span class="texto-pequeno">${formatarDataBr(d.data)}</span></span><select class="input-limpo" data-conf-camp="${d.id}" style="width:auto; max-width:230px; margin:0;">${opcoesCampanha}</select><button type="button" class="btn-cancelar-quadro" data-conf-vincular="${d.id}">Vincular</button></li>`);
+
+    // (d) despesas com data de pagamento 27/10/2026 (hoje no dia em que a data real foi perdida)
+    const pagas27 = despesasFinCache.filter((d) => d.pago_em === "2026-10-27");
+    const itensD = pagas27.map((d) => `<li><span>${esc(d.nome)} — ${R(Number(d.valor) || 0)} <span class="texto-pequeno">vence ${formatarDataBr(d.data)} · pago em 27/10/2026</span></span><input type="date" class="input-limpo" data-conf-pagoem="${d.id}" value="${d.data || ""}" style="width:auto; margin:0;"><button type="button" class="btn-cancelar-quadro" data-conf-corrigir="${d.id}">Corrigir</button></li>`);
+
+    // (e) receitas sem classificação de faturamento (PF / PJ sem nota)
+    const semClasse = [
+      ...contratosCache.filter((k) => Number(k.valor) > 0 && !faturamentoDe(k)).map((k) => ({ tabela: "contratos", id: k.id, nome: k.marca || "—", valor: Number(k.valor) || 0, data: k.data_assinatura })),
+      ...receitasCache.filter((r) => !r.parent_id && !r.contrato_id && Number(r.cache) > 0 && !faturamentoDe(r)).map((r) => ({ tabela: "financas_receitas", id: r.id, nome: r.marca || "—", valor: Number(r.cache) || 0, data: r.contratacao })),
+    ];
+    const opcoesFat = `<option value="">Classificar…</option>` + FATURAMENTOS.map((f) => `<option value="${f.valor}">${f.rotulo}</option>`).join("");
+    const itensE = semClasse.map((x) => `<li><span>${esc(x.nome)} — ${R(x.valor)} <span class="texto-pequeno">${formatarDataBr(x.data)}</span></span><select class="input-limpo" data-conf-fat="${x.tabela}:${x.id}" style="width:auto; margin:0;">${opcoesFat}</select><button type="button" class="btn-cancelar-quadro" data-conf-classificar="${x.tabela}:${x.id}">Salvar</button></li>`);
+
+    // (f) despesas que talvez sejam da empresa
+    const candidatasF = maes.filter((d) => d.frente !== "Empresa" && /contador|cont[aá]bil|contabilidade|contrato social|junta comercial|abertura|alvar[aá]|certificado digital|\bdas\b|simples nacional|\bdarf\b|\bcnpj\b/i.test((d.nome || "") + " " + (d.fornecedor || "")));
+    const itensF = candidatasF.map((d) => `<li><span>${esc(d.nome)} — ${R(Number(d.valor) || 0)} <span class="texto-pequeno">${formatarDataBr(d.data)}</span></span><button type="button" class="btn-cancelar-quadro" data-conf-empresa="${d.id}">Marcar como Empresa</button></li>`);
+
+    document.getElementById("corpoConferencia").innerHTML =
+      secao("a) Possíveis parcelas para agrupar", "“Parcela X/Y” soltas e o mesmo gasto, com o mesmo valor, em meses seguidos. Nada foi agrupado.", itensA, "Nada encontrado.") +
+      secao("b) Possível mesmo gasto lançado nos dois lados", "Mesmo valor, nomes parecidos e datas a menos de ~2 meses. Edite/exclua pelo painel se for duplicado.", itensB, "Nada encontrado.") +
+      secao("c) Saídas de edição para vincular a campanhas", "Vincular faz o custo entrar em Resultados no mês de fechamento da campanha.", itensC, "Nada encontrado.") +
+      secao("d) Pagas em 27/10/2026", "Escolha a data real do pagamento e clique em Corrigir.", itensD, "Nenhuma despesa com essa data.") +
+      secao("e) Receitas sem classificação de faturamento", "Hoje contam como PJ sem imposto. Classifique entre PF e PJ com ou sem nota.", itensE, "Tudo classificado.") +
+      secao("f) Despesas que talvez sejam da empresa", "Contador, contrato social, DAS… Marcar como Empresa tira do DRE do UGC (e vai pra página da empresa).", itensF, "Nada encontrado.");
+  }
+  document.getElementById("btnAbrirConferencia").addEventListener("click", () => {
+    montarConferencia();
+    overlayConferencia.hidden = false;
+  });
+  document.getElementById("btnFecharConferencia").addEventListener("click", () => (overlayConferencia.hidden = true));
+  document.getElementById("corpoConferencia").addEventListener("click", async (evento) => {
+    const q = (sel) => evento.target.closest(sel);
+    const agora = new Date().toISOString();
+    try {
+      let b;
+      if ((b = q("[data-conf-vincular]"))) {
+        const id = b.dataset.confVincular;
+        const contratoId = document.querySelector(`[data-conf-camp="${id}"]`).value;
+        if (!contratoId) return alert("Escolhe a campanha.");
+        verificarErro(await Auth.sb.from("financas_despesas").update({ contrato_id: contratoId, tipo_despesa: "campanha", updated_at: agora }).eq("id", id));
+      } else if ((b = q("[data-conf-corrigir]"))) {
+        const id = b.dataset.confCorrigir;
+        const data = document.querySelector(`[data-conf-pagoem="${id}"]`).value;
+        if (!data) return alert("Escolhe a data real do pagamento.");
+        verificarErro(await Auth.sb.from("financas_despesas").update({ pago_em: data, updated_at: agora }).eq("id", id));
+      } else if ((b = q("[data-conf-classificar]"))) {
+        const [tabela, id] = b.dataset.confClassificar.split(":");
+        const fat = document.querySelector(`[data-conf-fat="${b.dataset.confClassificar}"]`).value;
+        if (!fat) return alert("Escolhe o faturamento.");
+        verificarErro(await Auth.sb.from(tabela).update({ faturamento: fat, emissao_nf: fat === "pj_nf", updated_at: agora }).eq("id", id));
+      } else if ((b = q("[data-conf-empresa]"))) {
+        verificarErro(await Auth.sb.from("financas_despesas").update({ frente: "Empresa", updated_at: agora }).eq("id", b.dataset.confEmpresa));
+      } else return;
+      await recarregarFinancas();
+      montarConferencia();
+    } catch (erro) {
+      alert("Não foi possível salvar. Confira se js/financeiro-reestruturacao-setup.sql já rodou no Supabase.");
+      console.error(erro);
+    }
+  });
+
+  // ---- Resumo mensal da frente (resumo_mensal_frente) pra futura página da empresa ----
+  let resumoMensalOk = true;
+  const resumoGravado = new Map();
+  let resumoTimer = null;
+  function agendarResumoMensal() {
+    clearTimeout(resumoTimer);
+    resumoTimer = setTimeout(sincronizarResumoMensal, 1500);
+  }
+  function montarResumosMensais() {
+    const meses = new Set();
+    const anotar = (d) => d && meses.add(mesDe(d));
+    contratosCache.forEach((k) => anotar(k.data_assinatura));
+    receitasCache.forEach((r) => (anotar(r.contratacao), anotar(r.pagamento), anotar(r.vencimento)));
+    despesasFinCache.forEach((d) => (anotar(d.data), anotar(d.data_competencia)));
+    const arred = (n) => Math.round(n * 100) / 100;
+    return [...meses].filter(Boolean).sort().map((mes) => {
+      const r = calcularResultado(mes);
+      const cx = caixaDoPrefixo(mes);
+      return {
+        frente: "ugc", mes, receita_bruta: arred(r.bruto), impostos_estimados: arred(-r.impostos), custos_diretos: arred(r.custosCampanhas),
+        despesas_proprias: arred(r.totalDespesas), depreciacao: arred(r.depreciacao), resultado_frente: arred(r.resultado),
+        recebido_pf: arred(pfDoMes(mes).recebido), caixa_entradas: arred(cx.entradas), caixa_saidas: arred(cx.saidas), saldo_conta: arred(cx.saldoAcumulado),
+      };
+    });
+  }
+  async function sincronizarResumoMensal() {
+    if (!resumoMensalOk || !financasDisponivel || !migracaoComplementoOk || !migracaoReestruturacaoOk) return;
+    const mudaram = montarResumosMensais().filter((linha) => resumoGravado.get(linha.mes) !== JSON.stringify(linha));
+    if (!mudaram.length) return;
+    try {
+      const agora = new Date().toISOString();
+      verificarErro(await Auth.sb.from("resumo_mensal_frente").upsert(mudaram.map((l) => ({ ...l, atualizado_em: agora })), { onConflict: "frente,mes" }));
+      mudaram.forEach((l) => resumoGravado.set(l.mes, JSON.stringify(l)));
+    } catch (erro) {
+      resumoMensalOk = false; // tabela ainda não criada (SQL parte 2) ou sem permissão: não insiste
+      console.warn("resumo_mensal_frente não gravado:", erro);
+    }
+  }
   // ---- Novo fechamento: serviço avulso lançado manualmente (financas_receitas
   // sem contrato_id) — vira uma linha "Manual" no Resultado dos Contratos.
   // Fechamentos automáticos (campanhas) continuam vindo de Campanhas/CRM. ----
@@ -12800,7 +14049,8 @@
   const campoFechamentoNome = document.getElementById("campoFechamentoNome");
   const campoFechamentoData = document.getElementById("campoFechamentoData");
   const campoFechamentoValor = document.getElementById("campoFechamentoValor");
-  const campoFechamentoNf = document.getElementById("campoFechamentoNf");
+  const campoFechamentoFaturamento = document.getElementById("campoFechamentoFaturamento");
+  const notaFechamentoFaturamento = document.getElementById("notaFechamentoFaturamento");
   const linhaFechamentoNfTaxa = document.getElementById("linhaFechamentoNfTaxa");
   const campoFechamentoNfTaxa = document.getElementById("campoFechamentoNfTaxa");
   const btnExcluirFechamento = document.getElementById("btnExcluirFechamento");
@@ -12941,9 +14191,9 @@
     campoFechamentoNome.value = reg ? reg.marca || "" : "";
     campoFechamentoData.value = reg ? reg.contratacao || "" : hojeIso();
     campoFechamentoValor.value = reg ? reg.cache || "" : "";
-    campoFechamentoNf.checked = !!(reg && reg.emissao_nf);
-    campoFechamentoNfTaxa.value = reg && reg.nf_taxa != null ? reg.nf_taxa : 6;
-    linhaFechamentoNfTaxa.hidden = !campoFechamentoNf.checked;
+    campoFechamentoFaturamento.value = reg ? faturamentoDe(reg) : "";
+    campoFechamentoNfTaxa.value = reg && aliquotaManualDe(reg) != null ? aliquotaManualDe(reg) : "";
+    atualizarFaturamentoFechamento();
     // categoria (só existe depois do SQL do Fluxo de Caixa)
     const categorias = categoriasDoTipo("receita").filter((n) => n !== "Campanhas");
     const atual = reg && reg.categoria ? reg.categoria : "";
@@ -12977,9 +14227,27 @@
   overlayNovoFechamento.addEventListener("click", (evento) => {
     if (evento.target === overlayNovoFechamento) fecharNovoFechamento();
   });
-  campoFechamentoNf.addEventListener("change", () => {
-    linhaFechamentoNfTaxa.hidden = !campoFechamentoNf.checked;
-  });
+  // mostra a alíquota (só PJ com nota) e, na PF, quanto ainda cabe no limite do mês
+  function atualizarFaturamentoFechamento() {
+    const fat = campoFechamentoFaturamento.value;
+    linhaFechamentoNfTaxa.hidden = fat !== "pj_nf";
+    const valor = Number(campoFechamentoValor.value) || 0;
+    const mes = mesDe(campoFechamentoData.value) || hojeIso().slice(0, 7);
+    let texto = "";
+    if (fat === "pj_nf") {
+      const manual = campoFechamentoNfTaxa.value !== "" ? Number(campoFechamentoNfTaxa.value) : null;
+      const taxa = manual != null ? manual : aliquotaDoMes(mes);
+      texto = `Recebe no Nubank PJ · imposto de ${String(taxa).replace(".", ",")}% = ${formatarMoeda((valor * taxa) / 100)}.`;
+    } else if (fat === "pj_sem_nf") texto = "⚠ Empresa sem nota: imposto zero (fica sinalizado em Resultados).";
+    else if (fat === "pf") {
+      const outras = pfDoMes(mes, fechamentoEmEdicao ? "r" + fechamentoEmEdicao.id : "").total;
+      const com = outras + valor;
+      texto = `Pessoa física: não entra no Fluxo de Caixa. Em ${mes.slice(5, 7)}/${mes.slice(0, 4)}: ${formatarMoeda(com)} de ${formatarMoeda(LIMITE_PF_MES)} — ${com > LIMITE_PF_MES ? "⚠ passa do limite em " + formatarMoeda(com - LIMITE_PF_MES) : "ainda cabem " + formatarMoeda(LIMITE_PF_MES - com)}.`;
+    }
+    notaFechamentoFaturamento.hidden = !texto;
+    notaFechamentoFaturamento.textContent = texto;
+  }
+  [campoFechamentoFaturamento, campoFechamentoNfTaxa, campoFechamentoValor, campoFechamentoData].forEach((c) => c.addEventListener("input", atualizarFaturamentoFechamento));
   document.getElementById("corpoResultadoContratos").addEventListener("click", (evento) => {
     const linha = evento.target.closest("tr[data-manual-id]");
     if (!linha) return;
@@ -12999,9 +14267,11 @@
       return;
     }
     const valor = Number(campoFechamentoValor.value) || 0;
-    const nf = campoFechamentoNf.checked;
-    const taxa = Number(campoFechamentoNfTaxa.value) || 0;
-    const dados = { marca: nome, contratacao: data, cache: valor, emissao_nf: nf, nf_taxa: taxa, updated_at: new Date().toISOString() };
+    const fat = campoFechamentoFaturamento.value;
+    const manual = fat === "pj_nf" && campoFechamentoNfTaxa.value !== "" ? Number(campoFechamentoNfTaxa.value) : null;
+    const dados = { marca: nome, contratacao: data, cache: valor, emissao_nf: fat === "pj_nf", nf_taxa: manual != null ? manual : aliquotaDoMes(mesDe(data)), updated_at: new Date().toISOString() };
+    if (receitasCache[0] ? "faturamento" in receitasCache[0] : migracaoFluxoOk) dados.faturamento = fat || null;
+    if (migracaoComplementoOk) dados.aliquota_manual = manual;
     if (migracaoFluxoOk) dados.categoria = campoFechamentoCategoria.value || null;
     const parcelado = campoFechamentoParcelado.checked && parcelasFech.length > 0;
     if (parcelado && parcelasFech.some((p) => !p.data)) {
@@ -18369,21 +19639,21 @@
     const periodo = rotuloPeriodoResultados();
     const destinoDe = (l) => (l.automatico ? { tipo: "campanha", id: l.id } : null);
     const tipoDe = (l) => (l.automatico ? "Campanha" : "Manual");
-    const infoDespesa = (d) => `${d.categoria || "—"} · ${formatarDataBr(d.data)} · ${d.status === "Pago" ? "Pago" : "Pendente"}`;
+    const infoDespesa = (d) => `${rotuloOrigemCusto(d)} · ${formatarDataBr(competenciaDespesa(d))}`;
     definirListaCartao("res-faturado", {
-      titulo: "Total faturado", sub: periodo,
-      itens: contratos.map((l) => ({ nome: l.nome, info: `${tipoDe(l)} · ${formatarDataBr(l.data)}`, valor: l.cache, destino: destinoDe(l) })),
+      titulo: "Faturado", sub: `${periodo} — contratos fechados no mês (PF incluída)`,
+      itens: contratos.map((l) => ({ nome: l.nome, info: `${tipoDe(l)}${l.pf ? " · PF" : ""} · ${formatarDataBr(l.data)}`, valor: l.cache, destino: destinoDe(l) })),
     });
     definirListaCartao("res-lucro-bruto", {
-      titulo: "Lucro bruto", sub: `${periodo} — faturado − impostos − descontos, por campanha`,
-      itens: contratos.map((l) => ({ nome: l.nome, info: `Faturado ${formatarMoeda(l.cache)} · impostos ${formatarMoeda(l.impostos)} · descontos ${formatarMoeda(l.descontos)}`, valor: l.liquido, destino: destinoDe(l) })),
+      titulo: "Margem de contribuição", sub: `${periodo} — faturado − impostos − descontos − custos de campanha, por campanha`,
+      itens: contratos.map((l) => ({ nome: l.nome, info: `Faturado ${formatarMoeda(l.cache)} · impostos ${formatarMoeda(l.impostos)} · custos ${formatarMoeda(l.descontos)}`, valor: l.liquido, destino: destinoDe(l) })),
     });
     definirListaCartao("res-despesas", {
-      titulo: "Despesas da empresa", sub: periodo,
+      titulo: "Despesas + depreciação", sub: `${periodo} — frente UGC (sem custos de campanha)`,
       itens: despesas.map((d) => ({ nome: d.nome, info: infoDespesa(d), valor: Number(d.valor) || 0 })),
     });
     definirListaCartao("res-lucro-liquido", {
-      titulo: "Lucro líquido", sub: `${periodo} — lucro bruto das campanhas menos as despesas da empresa`,
+      titulo: "Resultado da frente", sub: `${periodo} — margem de contribuição menos despesas e depreciação`,
       itens: contratos
         .map((l) => ({ nome: l.nome, info: `Entrada · ${tipoDe(l)} · ${formatarDataBr(l.data)}`, valor: l.liquido, destino: destinoDe(l) }))
         .concat(despesas.map((d) => ({ nome: d.nome, info: `Despesa · ${infoDespesa(d)}`, valor: -(Number(d.valor) || 0) }))),
