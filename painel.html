@@ -13740,8 +13740,12 @@
     const soma = (lista) => lista.reduce((s, i) => s + i.valor, 0);
     const recP = rec.filter(noP);
     const desP = des.filter(noP);
+    const ehTransf = (i) => i.linha.categoria === CAT_TRANSFERENCIA;
     return {
       recP, desP, entradas: soma(recP), saidas: soma(desP),
+      // visão do resumo mensal: transferência entre contas não é entrada nem saída da empresa (vai numa coluna própria)
+      entradasOp: soma(recP.filter((i) => !ehTransf(i))), saidasOp: soma(desP.filter((i) => !ehTransf(i))),
+      transf: soma(recP.filter(ehTransf)) - soma(desP.filter(ehTransf)),
       saldoAcumulado: soma(rec.filter((i) => i.data && i.data <= fim)) - soma(des.filter((i) => i.data && i.data <= fim)),
     };
   }
@@ -14006,6 +14010,8 @@
 
   // ---- Resumo mensal da frente (resumo_mensal_frente) pra futura página da empresa ----
   let resumoMensalOk = true;
+  // js/empresa-resumo-setup.sql (colunas da loja e transferencias_liquidas) ainda não rodou: não manda a coluna nova
+  let migracaoEmpresaOk = true;
   const resumoGravado = new Map();
   let resumoTimer = null;
   function agendarResumoMensal() {
@@ -14025,7 +14031,8 @@
       return {
         frente: "ugc", mes, receita_bruta: arred(r.bruto), impostos_estimados: arred(-r.impostos), custos_diretos: arred(r.custosCampanhas),
         despesas_proprias: arred(r.totalDespesas), depreciacao: arred(r.depreciacao), resultado_frente: arred(r.resultado),
-        recebido_pf: arred(pfDoMes(mes).recebido), caixa_entradas: arred(cx.entradas), caixa_saidas: arred(cx.saidas), saldo_conta: arred(cx.saldoAcumulado),
+        recebido_pf: arred(pfDoMes(mes).recebido), caixa_entradas: arred(cx.entradasOp), caixa_saidas: arred(cx.saidasOp), saldo_conta: arred(cx.saldoAcumulado),
+        ...(migracaoEmpresaOk ? { transferencias_liquidas: arred(cx.transf) } : {}),
       };
     });
   }
@@ -14038,6 +14045,12 @@
       verificarErro(await Auth.sb.from("resumo_mensal_frente").upsert(mudaram.map((l) => ({ ...l, atualizado_em: agora })), { onConflict: "frente,mes" }));
       mudaram.forEach((l) => resumoGravado.set(l.mes, JSON.stringify(l)));
     } catch (erro) {
+      if (migracaoEmpresaOk && /transferencias_liquidas/.test(String(erro && erro.message))) {
+        migracaoEmpresaOk = false; // coluna ainda não existe: tenta de novo sem ela
+        resumoGravado.clear();
+        setTimeout(sincronizarResumoMensal, 0);
+        return;
+      }
       resumoMensalOk = false; // tabela ainda não criada (SQL parte 2) ou sem permissão: não insiste
       console.warn("resumo_mensal_frente não gravado:", erro);
     }
