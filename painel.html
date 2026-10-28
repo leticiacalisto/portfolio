@@ -3073,6 +3073,43 @@
   }
   .grupo-acoes-secao-financa{ display:flex; align-items:center; gap:14px; }
   .chip-conta-outra{ background:#FCEFD1; color:#6B4A00; }
+  /* cartão: linha da fatura (cabeça) e suas compras */
+  .linha-grupo-cartao, .linha-fatura-cartao{ cursor:pointer; font-weight:600; }
+  .linha-grupo-cartao td, .linha-fatura-cartao td{ background: rgba(232,180,90,.14); }
+  .linha-cartao td:first-child::before{ content:"💳 "; font-size:.8em; }
+  .linha-filha-fatura td:first-child{ padding-left:34px; font-weight:400; }
+  .btn-agrupar-cartao{
+    background:none; border:1.5px solid var(--borda); border-radius:999px; padding:5px 12px;
+    font-family:inherit; font-size:.74rem; font-weight:700; color: var(--texto-suave); cursor:pointer;
+  }
+  .btn-agrupar-cartao[aria-pressed="true"]{ background:#FFF1D6; border-color:#E8B45A; color:#7A4F00; }
+  .btn-pagar-fatura{
+    background: var(--grafite); color: var(--branco); border:none; border-radius:999px; padding:6px 14px;
+    font-family:inherit; font-size:.76rem; font-weight:700; cursor:pointer;
+  }
+  .btn-pagar-fatura:hover{ background:#000; }
+  body.somente-leitura .btn-pagar-fatura, body.somente-leitura #btnImportarOfxFatura{ display:none !important; }
+  /* Cores para não confundir: ENTRADAS/receitas em verde, SAÍDAS/despesas em rosa, cartão em âmbar (o resto continua roxo) */
+  #painel-fin-resultados .painel-quadro-secao.quadro-entradas, #painel-fin-fluxo-caixa .painel-quadro-secao.quadro-entradas{ background:#EFF9F2; box-shadow: inset 4px 0 0 #7CC79A; }
+  #painel-fin-resultados .painel-quadro-secao.quadro-saidas, #painel-fin-fluxo-caixa .painel-quadro-secao.quadro-saidas{ background:#FDF0F0; box-shadow: inset 4px 0 0 #E79A9A; }
+  #painel-fin-fluxo-caixa .painel-quadro-secao.quadro-cartao{ background:#FFF6E5; box-shadow: inset 4px 0 0 #E8B45A; }
+  .quadro-entradas h2{ color:#2A6E47; } .quadro-saidas h2{ color:#A8372F; } .quadro-cartao h2{ color:#8A5A00; }
+  #painel-fin-resultados .quadro-entradas .tabela-contratos th, #painel-fin-fluxo-caixa .quadro-entradas .tabela-contratos th{ color:#5F9F7A; }
+  #painel-fin-resultados .quadro-saidas .tabela-contratos th, #painel-fin-fluxo-caixa .quadro-saidas .tabela-contratos th{ color:#C07A7A; }
+  #painel-fin-fluxo-caixa .quadro-cartao .tabela-contratos th{ color:#B58A3C; }
+  #painel-fin-resultados .quadro-entradas .tabela-contratos td, #painel-fin-fluxo-caixa .quadro-entradas .tabela-contratos td{ border-top-color: rgba(47,122,79,.14); }
+  #painel-fin-resultados .quadro-saidas .tabela-contratos td, #painel-fin-fluxo-caixa .quadro-saidas .tabela-contratos td{ border-top-color: rgba(196,69,60,.14); }
+  #painel-fin-fluxo-caixa .quadro-cartao .tabela-contratos td{ border-top-color: rgba(200,140,40,.2); }
+  #painel-fin-resultados .quadro-entradas .tabela-contratos tbody tr:hover, #painel-fin-fluxo-caixa .quadro-entradas .tabela-contratos tbody tr:hover{ background: rgba(60,160,100,.09); }
+  #painel-fin-resultados .quadro-saidas .tabela-contratos tbody tr:hover, #painel-fin-fluxo-caixa .quadro-saidas .tabela-contratos tbody tr:hover{ background: rgba(210,80,80,.08); }
+  #painel-fin-fluxo-caixa .quadro-cartao .tabela-contratos tbody tr:hover{ background: rgba(220,160,50,.1); }
+  #painel-fin-resultados .quadro-entradas .linha-total-resultado td, #painel-fin-fluxo-caixa .quadro-entradas .linha-total-resultado td{ background: rgba(60,160,100,.16); }
+  #painel-fin-resultados .quadro-saidas .linha-total-resultado td, #painel-fin-fluxo-caixa .quadro-saidas .linha-total-resultado td{ background: rgba(210,80,80,.13); }
+  /* a coluna Conta das parcelas de entrada só aparece quando o SQL da conta já rodou */
+  .tabela-parcelas-campanha .col-conta{ display:none; }
+  body.receita-conta-ok .tabela-parcelas-campanha .col-conta{ display:table-cell; }
+  .tabela-parcelas-campanha td.col-conta{ width:130px; }
+  .tabela-parcelas-campanha td.col-conta select{ padding:8px 4px; margin:0; background: var(--branco); border:1.5px solid var(--borda); }
   .btn-reajustar-saldo{
     align-self:flex-start; margin-top:6px; background:none; border:1.5px solid var(--borda); border-radius:999px;
     padding:3px 12px; font-family:inherit; font-size:.72rem; font-weight:700; color: var(--texto-suave); cursor:pointer;
@@ -3251,7 +3288,11 @@
   .linha-filha-fatura select{ font-family:inherit; font-size:.78rem; border:1.5px solid var(--borda); border-radius:8px; padding:3px 6px; background: var(--branco); max-width:150px; }
 
   /* Importação de OFX */
-  .modal-ofx{ max-width: 860px; }
+  .modal-ofx{ max-width: 1040px; }
+  .ofx-tabela td.ofx-vinculo select{ max-width:300px; }
+  .ofx-aprovar{ display:flex; align-items:center; gap:6px; font-size:.74rem; margin-top:4px; color:#8A5A00; font-weight:700; cursor:pointer; }
+  .ofx-tabela tr.aguardando td{ background:#FFF6E0; }
+  .ofx-lista-wrap{ max-height:42vh; }
   .linha-ofx-campos{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px; }
   .linha-ofx-campos label{ margin-top:0; }
   .linha-ofx-ferramentas{ display:flex; align-items:center; gap:10px; margin:16px 0 10px; flex-wrap:wrap; }
@@ -3887,7 +3928,7 @@
           <div class="rodape-meta-receita"><span id="textoLimitePF">—</span><span id="pctLimitePF">0%</span></div>
         </div>
 
-        <div class="painel-quadro-secao">
+        <div class="painel-quadro-secao quadro-entradas">
           <div class="topo-quadro">
             <div>
               <h2 style="margin-bottom:2px;">Receitas do período</h2>
@@ -3907,7 +3948,7 @@
           </div>
         </div>
 
-        <div class="painel-quadro-secao">
+        <div class="painel-quadro-secao quadro-saidas">
           <div class="topo-quadro topo-quadro-centro">
             <div>
               <h2 style="margin-bottom:2px;">Custos do período</h2>
@@ -4050,7 +4091,7 @@
           </div>
         </div>
 
-        <div class="painel-quadro-secao">
+        <div class="painel-quadro-secao quadro-entradas">
           <div class="topo-quadro topo-quadro-centro">
             <h2 style="margin-bottom:0;">Entradas</h2>
             <div class="acoes-topo-quadro">
@@ -4070,13 +4111,14 @@
           </div>
         </div>
 
-        <div class="painel-quadro-secao">
+        <div class="painel-quadro-secao quadro-saidas">
           <div class="topo-quadro topo-quadro-centro">
             <h2 style="margin-bottom:0;">Saídas</h2>
             <div class="acoes-topo-quadro">
               <button type="button" class="btn-ferramenta-tabela" id="btnCategoriasDespesa" title="Categorias">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h7"/><circle cx="14" cy="6" r="2"/><path d="M18 6h2"/><path d="M4 12h2"/><circle cx="9" cy="12" r="2"/><path d="M13 12h7"/><path d="M4 18h10"/><circle cx="17" cy="18" r="2"/></svg>
               </button>
+              <button type="button" class="btn-agrupar-cartao" id="btnAgruparCartao" aria-pressed="true" title="Junta as compras do cartão do Nubank PJ numa linha por fatura (clique para ver uma por uma)">Cartão agrupado</button>
               <button type="button" class="btn-ferramenta-tabela" id="btnImportarOfx" title="Importar fatura de cartão (OFX)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/><path d="M7 15h4"/></svg>
               </button>
@@ -4090,6 +4132,24 @@
                 <tr><th>Descrição</th><th>Data do pagamento</th><th>Valor</th><th>Categoria</th><th>Conta</th></tr>
               </thead>
               <tbody id="corpoTabelaDespesasFin"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="painel-quadro-secao bloco-extra-fin quadro-cartao" id="blocoFaturasCartao" hidden>
+          <div class="topo-quadro topo-quadro-centro">
+            <div>
+              <h2 style="margin-bottom:2px;">Faturas do cartão (Nubank PJ)</h2>
+              <p class="texto-pequeno">Compras lançadas com forma “Cartão”, juntas pelo mês do vencimento. “Pagar fatura” marca todas como pagas de uma vez.</p>
+            </div>
+            <div class="acoes-topo-quadro">
+              <button type="button" class="btn-novo-card" id="btnImportarOfxFatura">Importar OFX da fatura</button>
+            </div>
+          </div>
+          <div class="tabela-cheia-wrap">
+            <table class="tabela-contratos">
+              <thead><tr><th>Fatura</th><th>Vencimento</th><th>Total</th><th>Pago</th><th>Pendente</th><th>Situação</th><th></th></tr></thead>
+              <tbody id="corpoFaturasCartao"></tbody>
             </table>
           </div>
         </div>
@@ -5031,7 +5091,8 @@
 <div class="overlay-modal" id="overlayOfx" hidden>
   <div class="modal-quadro modal-quadro-grande modal-ofx">
     <h3>Importar fatura de cartão</h3>
-    <p class="texto-pequeno" id="ofxArquivoInfo" style="margin:-8px 0 12px;"></p>
+    <p class="texto-pequeno" id="ofxArquivoInfo" style="margin:-8px 0 4px;"></p>
+    <p class="texto-pequeno" style="margin:0 0 12px;">Compras que batem com algo que você já lançou no cartão (mesmo valor e nome, parcela ou mês parecidos) vêm <strong>sugeridas como vínculo</strong> e só valem depois que você aprovar. O que ficar sem vínculo vira despesa avulsa no mês desta fatura.</p>
     <div class="linha-ofx-campos">
       <div><label for="ofxCartao">Cartão</label><input type="text" id="ofxCartao" placeholder="Ex.: Nubank"></div>
       <div><label for="ofxReferencia">Mês da fatura</label><input type="month" id="ofxReferencia"></div>
@@ -5040,18 +5101,19 @@
     <div class="linha-ofx-ferramentas">
       <select id="ofxCategoriaTodas"></select>
       <button type="button" class="btn-cancelar-quadro" id="btnOfxAplicarTodas">Aplicar categoria às selecionadas</button>
+      <button type="button" class="btn-cancelar-quadro" id="btnOfxAprovarTodos" hidden>Aprovar todos os vínculos sugeridos</button>
       <label class="ofx-inverter"><input type="checkbox" id="ofxInverter"><span>Compras vêm positivas no arquivo (inverter sinais)</span></label>
     </div>
     <div class="ofx-lista-wrap">
       <table class="tabela-contratos ofx-tabela">
-        <thead><tr><th><input type="checkbox" id="ofxMarcarTodas" checked title="Marcar/desmarcar todas"></th><th>Data</th><th>Descrição</th><th>Valor</th><th>Categoria</th></tr></thead>
+        <thead><tr><th><input type="checkbox" id="ofxMarcarTodas" checked title="Marcar/desmarcar todas"></th><th>Data</th><th>Descrição</th><th>Valor</th><th>Vínculo com o que você já lançou</th><th>Categoria</th></tr></thead>
         <tbody id="ofxCorpo"></tbody>
       </table>
     </div>
     <div class="acoes-modal-quadro">
       <span class="texto-pequeno" id="ofxTotal" style="flex-grow:1;"></span>
       <button type="button" class="btn-cancelar-quadro" id="btnOfxCancelar">Cancelar</button>
-      <button type="button" class="btn-salvar-quadro" id="btnOfxConfirmar">OK, lançar fatura</button>
+      <button type="button" class="btn-salvar-quadro" id="btnOfxConfirmar">OK, confirmar fatura</button>
     </div>
   </div>
 </div>
@@ -5298,6 +5360,24 @@
       <span style="flex-grow:1"></span>
       <button type="button" class="btn-cancelar-quadro" id="btnRsCancelar">Cancelar</button>
       <button type="button" class="btn-salvar-quadro" id="btnRsSalvar">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL: PAGAR FATURA DO CARTÃO ===================== -->
+<div class="overlay-modal" id="overlayPagarFatura" hidden>
+  <div class="modal-quadro">
+    <h3 id="pfTitulo">Pagar fatura</h3>
+    <p class="texto-pequeno" style="margin:-8px 0 12px;">Todas as compras ainda em aberto desta fatura ficam como pagas na data abaixo. Dá para desfazer uma a uma depois.</p>
+    <div class="prop-limpa">
+      <span class="rotulo-limpo">Data do pagamento</span>
+      <input type="date" id="pfData" class="input-limpo">
+    </div>
+    <div class="nd-previa" id="pfResumo"></div>
+    <div class="acoes-modal-quadro">
+      <span style="flex-grow:1"></span>
+      <button type="button" class="btn-cancelar-quadro" id="btnPfCancelar">Cancelar</button>
+      <button type="button" class="btn-salvar-quadro" id="btnPfConfirmar">Pagar fatura</button>
     </div>
   </div>
 </div>
@@ -10109,6 +10189,16 @@
   const ehPF = (x) => faturamentoDe(x) === "pf";
   const mesDe = (dataIso) => (dataIso ? String(dataIso).slice(0, 7) : "");
   const CONTA_PADRAO = "Nubank PJ";
+  // Cartão agrupado por fatura (mês do vencimento) nas Saídas; a escolha fica neste navegador.
+  let agruparCartao = true;
+  try { agruparCartao = localStorage.getItem("fin_agrupar_cartao") !== "0"; } catch (e) {}
+  const gruposCartaoAbertos = new Set();
+  const faturasBlocoAbertas = new Set();
+  const chaveFatura = (i) => mesDe(i.venc || i.data);
+  const rotuloMes = (k) => `${MESES_PT[Number(k.slice(5, 7)) - 1]}/${k.slice(0, 4)}`;
+  let receitaContaOk = false; // coluna "conta" em financas_receitas existe (js/financas-conta-saldo-setup.sql)
+  const CONTAS = ["Nubank PJ", "Mercado Pago", "Outra"];
+  const opcoesConta = (sel) => CONTAS.map((c) => `<option value="${c}" ${c === (sel || CONTA_PADRAO) ? "selected" : ""}>${c}</option>`).join("");
   const contaDaDespesa = (d) => d.conta || CONTA_PADRAO;
   const contaDoItem = (i) => (i && i.conta) || CONTA_PADRAO;
   const ehNubank = (i) => contaDoItem(i) === CONTA_PADRAO;
@@ -10205,7 +10295,7 @@
         </div>
         <p class="texto-pequeno" data-el="fatNota" style="margin:6px 0 0;" hidden></p>
       </div>`;
-    const cabecalho = `<thead><tr><th>Pago</th><th>Descrição</th><th>Valor</th><th>Vencimento</th><th>Status</th><th></th></tr></thead>`;
+    const cabecalho = `<thead><tr><th>Pago</th><th>Descrição</th><th>Valor</th><th>Vencimento</th>${op.ehDespesa ? "" : `<th class="col-conta">Conta</th>`}<th>Status</th><th></th></tr></thead>`;
     return `
       ${op.nf ? `<div class="linha-nf-topo">${nf}</div>` : ""}
       <div class="bloco-parcelas">
@@ -10347,11 +10437,11 @@
     const estado = { parcelas: [], custos: [], removidos: [], total: 0, nf: { ativo: false, taxa: 6 }, fat: "", aliq: null, contratoId: null, dataRef: "", chave: "", aoMudar: null };
     const novoUid = () => "r" + ++seqUidRascunho;
     const notificar = () => estado.aoMudar && estado.aoMudar();
-    const assinatura = (i) => JSON.stringify([i.descricao, i.valor, i.vencimento, i.pago, i.pagoEm]);
+    const assinatura = (i) => JSON.stringify([i.descricao, i.valor, i.vencimento, i.pago, i.pagoEm, i.conta || CONTA_PADRAO]);
 
     const deReceita = (r) => ({
       uid: novoUid(), id: r.id, descricao: r.descricao || "", valor: Number(r.cache || 0), vencimento: r.pagamento || "",
-      pago: r.status === "Pago", pagoEm: r.pago_em || "", auto: !!r.auto_gerada,
+      pago: r.status === "Pago", pagoEm: r.pago_em || "", auto: !!r.auto_gerada, conta: r.conta || CONTA_PADRAO,
     });
     const deDespesa = (d) => ({
       uid: novoUid(), id: d.id, descricao: d.nome || "", valor: Number(d.valor || 0), vencimento: d.data || "",
@@ -10403,6 +10493,7 @@
         <td><input type="text" data-campo="descricao" class="input-limpo" placeholder="Ex: Parcela 1, Sinal..." value="${esc(i.descricao)}" ${ro}></td>
         <td><input type="number" min="0" step="0.01" data-campo="valor" class="input-limpo" value="${i.valor ? i.valor : ""}" ${ro}></td>
         <td><input type="date" data-campo="vencimento" class="input-limpo" value="${i.vencimento || ""}" ${ro}></td>
+        ${op.ehDespesa ? "" : `<td class="col-conta"><select data-campo="conta" class="input-limpo" title="Conta em que esta parcela entrou">${opcoesConta(i.conta)}</select></td>`}
         <td><span class="pilula-status-lancamento status-${status.classe}">${status.texto}</span></td>
         <td><button type="button" class="btn-remover-parcela" title="Excluir">✕</button></td>
       </tr>`;
@@ -10418,7 +10509,7 @@
       pilula.textContent = String(taxa).replace(".", ",") + "%" + (estado.aliq != null ? " ✎" : "");
       const nota = el("fatNota");
       let texto = "";
-      if (estado.fat === "pj_nf") texto = `Recebe no Nubank PJ · imposto de ${String(taxa).replace(".", ",")}% (alíquota ${estado.aliq != null ? "desta receita" : "do mês do fechamento"}) = ${formatarMoeda((estado.total * taxa) / 100)}.`;
+      if (estado.fat === "pj_nf") texto = `Imposto de ${String(taxa).replace(".", ",")}% (alíquota ${estado.aliq != null ? "desta receita" : "do mês do fechamento"}) = ${formatarMoeda((estado.total * taxa) / 100)}. A conta de cada parcela (padrão Nubank PJ) fica na tabela abaixo.`;
       else if (estado.fat === "pj_sem_nf") texto = "⚠ Empresa sem nota: imposto zero (fica sinalizado em Resultados).";
       else if (estado.fat === "pf") {
         const mes = mesDe(estado.dataRef) || hojeIso().slice(0, 7);
@@ -10498,7 +10589,7 @@
       return { lista, item: lista.find((i) => i.uid === linha.dataset.uid) };
     }
     function novoItem(descricao) {
-      return { uid: novoUid(), id: null, descricao, valor: 0, vencimento: "", pago: false, pagoEm: "", auto: false, snap: null };
+      return { uid: novoUid(), id: null, descricao, valor: 0, vencimento: "", pago: false, pagoEm: "", auto: false, snap: null, conta: CONTA_PADRAO };
     }
 
     raiz.addEventListener("click", (evento) => {
@@ -10583,6 +10674,7 @@
       if (campo === "descricao") item.descricao = evento.target.value.trim();
       else if (campo === "valor") item.valor = Number(evento.target.value) || 0;
       else if (campo === "vencimento") item.vencimento = evento.target.value;
+      else if (campo === "conta") item.conta = evento.target.value || CONTA_PADRAO;
       renderDerivados();
       notificar();
     });
@@ -10613,7 +10705,7 @@
         // despesa: sem data real informada, vale o vencimento (nunca "hoje": era o que apagava a data de pagamento)
         const pagoEm = item.pago ? item.pagoEm || (ehReceita ? "" : item.vencimento) || hojeIso() : null;
         const campos = ehReceita
-          ? { descricao: item.descricao || null, cache: item.valor, pagamento: item.vencimento || null, status, pago_em: pagoEm }
+          ? { descricao: item.descricao || null, cache: item.valor, pagamento: item.vencimento || null, status, pago_em: pagoEm, ...(receitaContaOk ? { conta: item.conta || CONTA_PADRAO } : {}) }
           : {
               nome: item.descricao || (ehCusto ? "Custo de produção" : "Parcela"),
               valor: item.valor,
@@ -11264,13 +11356,13 @@
     if (p.parcelas.length) {
       itens = p.parcelas.map((x) => {
         const pg = x.status === "Pago";
-        return { data: (pg && x.pago_em) || vencParcela(x) || referencia, valor: valorParcela(x), pago: pg, rotulo: x.descricao || x.nome || "", conta: p.conta && p.conta !== CONTA_PADRAO ? p.conta : x.conta || CONTA_PADRAO };
+        return { data: (pg && x.pago_em) || vencParcela(x) || referencia, valor: valorParcela(x), pago: pg, rotulo: x.descricao || x.nome || "", conta: p.conta && p.conta !== CONTA_PADRAO ? p.conta : x.conta || CONTA_PADRAO, regId: x.id, venc: vencParcela(x) || referencia, cartao: !!p.cartao };
       });
       pago = itens.filter((i) => i.pago).reduce((s, i) => s + i.valor, 0);
       pagamento = p.parcelas.filter((x) => x.status === "Pago" && x.pago_em).map((x) => x.pago_em).sort().pop() || "";
       atrasado = p.parcelas.some((x) => x.status !== "Pago" && vencParcela(x) && vencParcela(x) < hoje);
       const resto = arredondar(p.valor - p.parcelas.reduce((s, x) => s + valorParcela(x), 0));
-      if (resto > 0.005) itens.push({ data: referencia, valor: resto, pago: false, conta: p.conta || CONTA_PADRAO });
+      if (resto > 0.005) itens.push({ data: referencia, valor: resto, pago: false, conta: p.conta || CONTA_PADRAO, venc: referencia, cartao: !!p.cartao });
       const abertas = p.parcelas.filter((x) => x.status !== "Pago" && vencParcela(x)).map(vencParcela).sort();
       vencimentoColuna = abertas[0] || p.parcelas.map(vencParcela).filter(Boolean).sort().pop() || "";
     } else {
@@ -11280,7 +11372,7 @@
       // Lançamento ainda sem pagamento: uma data em "pagamento" (legado) é o prazo previsto.
       const prazo = p.vencimento || (pago > 0 ? "" : p.pagamentoDireto || "");
       const data = (pago > 0 && p.pagamentoDireto) || prazo || p.pagamentoDireto || referencia;
-      itens = p.valor > 0 ? [{ data, valor: p.valor, pago: quitado, conta: p.conta || CONTA_PADRAO }] : [];
+      itens = p.valor > 0 ? [{ data, valor: p.valor, pago: quitado, conta: p.conta || CONTA_PADRAO, regId: p.reg ? p.reg.id : null, venc: prazo || data, cartao: !!p.cartao }] : [];
       atrasado = !!prazo && prazo < hoje;
       vencimentoColuna = prazo;
     }
@@ -11346,7 +11438,7 @@
           contratacao: "", vencimento: d.data || "", valor, produto: 0,
           categoria: d.eh_fatura ? "Fatura" : d.frente === "Empresa" ? CAT_EMPRESA : d.categoria || (d.contrato_id ? "Campanhas" : ""),
           pagoDireto: d.status === "Pago" ? valor : Number(d.valor_pago) || 0, pagamentoDireto: d.pago_em || "",
-          conta: contaDaDespesa(d),
+          conta: contaDaDespesa(d), cartao: !d.eh_fatura && d.forma_pagamento === "Cartão" && contaDaDespesa(d) === CONTA_PADRAO,
         });
         linha.fatura = !!d.eh_fatura;
         linha.fora = contaDaDespesa(d) === "Mercado Pago"; // a outra frente (loja) registra essa saída
@@ -11453,25 +11545,204 @@
       return;
     }
     const total = itens.reduce((s, x) => s + x.i.valor, 0);
-    corpo.innerHTML =
-      itens
-        .map(({ l, i }) => {
-          const aberta = l.fatura && faturasAbertas.has(l.reg.id);
-          const nome = l.fatura
-            ? `<span class="caret-fatura">▸</span>${esc(l.descricao)}<button type="button" class="btn-editar-fatura" data-editar-fatura="1">editar</button>`
-            : esc(l.descricao) + (i.rotulo ? ` <span class="texto-pequeno">· ${esc(i.rotulo)}</span>` : "");
-          const filhas = aberta ? l.comprasFatura.map((c) => linhaCompraFaturaHtml(c)).join("") : "";
-          return `
-        <tr data-linha-chave="${l.chave}" class="${l.fatura ? "linha-fatura" + (aberta ? " aberta" : "") : ""}">
+    const htmlLinhaSaida = (l, i, extraClasse) => {
+      const aberta = l.fatura && faturasAbertas.has(l.reg.id);
+      const nome = l.fatura
+        ? `<span class="caret-fatura">▸</span>${esc(l.descricao)}<button type="button" class="btn-editar-fatura" data-editar-fatura="1">editar</button>`
+        : esc(l.descricao) + (i.rotulo ? ` <span class="texto-pequeno">· ${esc(i.rotulo)}</span>` : "");
+      const filhas = aberta ? l.comprasFatura.map((c) => linhaCompraFaturaHtml(c)).join("") : "";
+      return `
+        <tr data-linha-chave="${l.chave}" class="${l.fatura ? "linha-fatura" + (aberta ? " aberta" : "") : ""}${extraClasse ? " " + extraClasse : ""}">
           <td>${nome}</td>
           <td>${celulaDataFluxo(i.data)}</td>
           <td>${formatarMoeda(i.valor)}</td>
           <td>${pilulaCategoria(l.categoria)}</td>
           <td>${pilulaConta(i.conta)}</td>
         </tr>${filhas}`;
-        })
-        .join("") + `<tr class="linha-total-resultado"><td colspan="2">Total ${rotuloPeriodoFluxo()}</td><td>${formatarMoeda(total)}</td><td></td><td></td></tr>`;
+    };
+    // Compras no cartão do Nubank PJ: uma linha por fatura (mês do vencimento), que abre e mostra uma por uma.
+    // Com o botão "Cartão agrupado" desligado, todas aparecem soltas, como qualquer saída.
+    const unidades = [];
+    const grupos = new Map();
+    itens.forEach(({ l, i }) => {
+      if (agruparCartao && i.cartao && chaveFatura(i)) {
+        const k = chaveFatura(i);
+        if (!grupos.has(k)) grupos.set(k, []);
+        grupos.get(k).push({ l, i });
+      } else unidades.push({ data: i.data || "", html: htmlLinhaSaida(l, i, i.cartao ? "linha-cartao" : "") });
+    });
+    grupos.forEach((lista, k) => {
+      const aberto = gruposCartaoAbertos.has(k);
+      const soma = lista.reduce((s, x) => s + x.i.valor, 0);
+      const ultima = lista.map((x) => x.i.data || "").sort().pop();
+      const cabeca = `
+        <tr class="linha-grupo-cartao${aberto ? " aberta" : ""}" data-fatura-grupo="${k}" title="Clique para ${aberto ? "fechar" : "ver as compras"}">
+          <td><span class="caret-fatura">${aberto ? "▾" : "▸"}</span>Fatura do cartão Nubank · ${rotuloMes(k)} <span class="texto-pequeno">· ${lista.length} compra${lista.length === 1 ? "" : "s"} paga${lista.length === 1 ? "" : "s"}</span></td>
+          <td>${celulaDataFluxo(ultima)}</td>
+          <td>${formatarMoeda(arredondar(soma))}</td>
+          <td>${pilulaCategoria("Cartão")}</td>
+          <td>${pilulaConta(CONTA_PADRAO)}</td>
+        </tr>`;
+      const filhas = aberto ? lista.sort((a, b) => (a.i.data || "").localeCompare(b.i.data || "")).map(({ l, i }) => htmlLinhaSaida(l, i, "linha-filha-fatura")).join("") : "";
+      unidades.push({ data: ultima || "", html: cabeca + filhas });
+    });
+    unidades.sort((a, b) => b.data.localeCompare(a.data));
+    corpo.innerHTML = unidades.map((u) => u.html).join("") + `<tr class="linha-total-resultado"><td colspan="2">Total ${rotuloPeriodoFluxo()}</td><td>${formatarMoeda(total)}</td><td></td><td></td></tr>`;
+    const botaoAgrupar = document.getElementById("btnAgruparCartao");
+    if (botaoAgrupar) {
+      botaoAgrupar.setAttribute("aria-pressed", agruparCartao ? "true" : "false");
+      botaoAgrupar.textContent = agruparCartao ? "Cartão agrupado" : "Cartão separado";
+    }
   }
+
+  // ---- Cartão (Nubank PJ): compras com forma "Cartão" formam uma fatura por mês de vencimento ----
+
+  // Todas as faturas (com compras pagas e a pagar): { mes, itens, total, pago, pendente, ultimoVenc }
+  function faturasCartao() {
+    const mapa = new Map();
+    linhasDespesasFluxo().forEach((l) => {
+      l.itens.filter((i) => i.cartao && i.valor > 0).forEach((i) => {
+        const k = chaveFatura(i);
+        if (!k) return;
+        if (!mapa.has(k)) mapa.set(k, { mes: k, itens: [], total: 0, pago: 0, pendente: 0 });
+        const f = mapa.get(k);
+        f.itens.push({ ...i, nome: l.descricao, linha: l });
+        f.total += i.valor;
+        if (i.pago) f.pago += i.valor;
+        else f.pendente += i.valor;
+      });
+    });
+    mapa.forEach((f) => {
+      f.total = arredondar(f.total);
+      f.pago = arredondar(f.pago);
+      f.pendente = arredondar(f.pendente);
+      f.itens.sort((a, b) => (a.venc || "").localeCompare(b.venc || "") || a.nome.localeCompare(b.nome, "pt-BR"));
+      f.ultimoVenc = f.itens.map((i) => i.venc || "").sort().pop();
+    });
+    return [...mapa.values()].sort((a, b) => b.mes.localeCompare(a.mes));
+  }
+
+  // Bloco "Faturas do cartão": uma linha por fatura, abre as compras e tem o botão Pagar fatura.
+  function renderizarFaturasCartao() {
+    const bloco = document.getElementById("blocoFaturasCartao");
+    if (!bloco) return;
+    const hoje = hojeIso();
+    const chavePeriodo = periodoAno + "-" + String(periodoMes || 1).padStart(2, "0");
+    const lista = faturasCartao().filter((f) => {
+      const noPeriodoF = f.mes.slice(0, 4) === String(periodoAno) && (!periodoMes || Number(f.mes.slice(5, 7)) === periodoMes);
+      return noPeriodoF || (f.pendente > 0.005 && f.mes < chavePeriodo); // as de meses anteriores ainda em aberto também aparecem
+    });
+    bloco.hidden = !lista.length;
+    const seloSituacao = (f) =>
+      f.pendente <= 0.005 ? `<span class="selo-situacao ok">✓ Paga</span>`
+      : f.pago > 0.005 ? `<span class="selo-situacao devendo">Paga em parte</span>`
+      : f.ultimoVenc && f.ultimoVenc < hoje ? `<span class="selo-situacao devendo">Atrasada</span>`
+      : `<span class="selo-situacao">Em aberto</span>`;
+    document.getElementById("corpoFaturasCartao").innerHTML = lista
+      .map((f) => {
+        const aberto = faturasBlocoAbertas.has(f.mes);
+        const compras = aberto
+          ? f.itens
+              .map((i) => `
+        <tr class="linha-filha-fatura" data-linha-chave="${i.linha.chave}">
+          <td>${esc(i.nome)}${i.rotulo ? ` <span class="texto-pequeno">· ${esc(i.rotulo)}</span>` : ""}</td>
+          <td>${celulaDataFluxo(i.venc)}</td>
+          <td>${formatarMoeda(i.valor)}</td>
+          <td>${i.pago ? formatarMoeda(i.valor) : vazioFluxo}</td>
+          <td>${i.pago ? vazioFluxo : formatarMoeda(i.valor)}</td>
+          <td>${i.pago ? `<span class="selo-situacao ok">✓ Pago</span>` : `<span class="selo-situacao">Em aberto</span>`}</td>
+          <td></td>
+        </tr>`)
+              .join("")
+          : "";
+        return `
+        <tr class="linha-fatura-cartao${aberto ? " aberta" : ""}" data-fatura-bloco="${f.mes}" title="Clique para ${aberto ? "fechar" : "ver as compras"}">
+          <td><span class="caret-fatura">${aberto ? "▾" : "▸"}</span>Fatura ${rotuloMes(f.mes)} <span class="texto-pequeno">· ${f.itens.length} compra${f.itens.length === 1 ? "" : "s"}</span></td>
+          <td>${celulaDataFluxo(f.ultimoVenc)}</td>
+          <td>${formatarMoeda(f.total)}</td>
+          <td>${formatarMoeda(f.pago)}</td>
+          <td>${formatarMoeda(f.pendente)}</td>
+          <td>${seloSituacao(f)}</td>
+          <td>${f.pendente > 0.005 ? `<button type="button" class="btn-pagar-fatura" data-pagar-fatura="${f.mes}">Pagar fatura</button>` : ""}</td>
+        </tr>${compras}`;
+      })
+      .join("");
+  }
+  document.getElementById("corpoFaturasCartao").addEventListener("click", (evento) => {
+    const botao = evento.target.closest("[data-pagar-fatura]");
+    if (botao) return abrirPagarFatura(botao.dataset.pagarFatura);
+    const filha = evento.target.closest("tr[data-linha-chave]");
+    if (filha) {
+      const linha = linhasDespesasPorChave.get(filha.dataset.linhaChave);
+      if (linha) abrirDespesaPeloRegistro(linha.reg);
+      return;
+    }
+    const cabeca = evento.target.closest("tr[data-fatura-bloco]");
+    if (!cabeca) return;
+    const k = cabeca.dataset.faturaBloco;
+    if (faturasBlocoAbertas.has(k)) faturasBlocoAbertas.delete(k);
+    else faturasBlocoAbertas.add(k);
+    renderizarFaturasCartao();
+  });
+  document.getElementById("btnAgruparCartao").addEventListener("click", () => {
+    agruparCartao = !agruparCartao;
+    try { localStorage.setItem("fin_agrupar_cartao", agruparCartao ? "1" : "0"); } catch (e) {}
+    renderizarDespesasFin();
+  });
+  document.getElementById("btnImportarOfxFatura").addEventListener("click", () => document.getElementById("btnImportarOfx").click());
+
+  // ---- Pagar fatura: marca todas as compras em aberto da fatura como pagas na mesma data ----
+  const overlayPagarFatura = document.getElementById("overlayPagarFatura");
+  let pagandoFatura = null;
+  function abrirPagarFatura(mes) {
+    const f = faturasCartao().find((x) => x.mes === mes);
+    if (!f) return;
+    const abertos = f.itens.filter((i) => !i.pago && i.regId);
+    if (!abertos.length) return alert("Não há compras em aberto nesta fatura.");
+    pagandoFatura = { mes, abertos };
+    document.getElementById("pfTitulo").textContent = `Pagar fatura ${rotuloMes(mes)}`;
+    document.getElementById("pfData").value = hojeIso();
+    const soma = abertos.reduce((s, i) => s + i.valor, 0);
+    document.getElementById("pfResumo").innerHTML = `<strong>${abertos.length}</strong> compra${abertos.length === 1 ? "" : "s"} em aberto, total <strong>${formatarMoeda(arredondar(soma))}</strong>.` + (f.pago > 0.005 ? ` Já pagas antes: ${formatarMoeda(f.pago)}.` : "");
+    overlayPagarFatura.hidden = false;
+  }
+  document.getElementById("btnPfCancelar").addEventListener("click", () => {
+    overlayPagarFatura.hidden = true;
+    pagandoFatura = null;
+  });
+  overlayPagarFatura.addEventListener("click", (evento) => {
+    if (evento.target === overlayPagarFatura) overlayPagarFatura.hidden = true;
+  });
+  document.getElementById("btnPfConfirmar").addEventListener("click", async () => {
+    if (!pagandoFatura) return;
+    const data = document.getElementById("pfData").value;
+    if (!data) return alert("Informe a data do pagamento.");
+    const botao = document.getElementById("btnPfConfirmar");
+    botao.disabled = true;
+    try {
+      const agora = new Date().toISOString();
+      const { abertos } = pagandoFatura;
+      const pagosIds = new Set(abertos.map((i) => i.regId));
+      for (const i of abertos) {
+        verificarErro(await Auth.sb.from("financas_despesas").update({ status: "Pago", pago_em: data, ...(migracaoFluxoOk ? { valor_pago: i.valor } : {}), updated_at: agora }).eq("id", i.regId));
+      }
+      // compra parcelada: quando todas as parcelas estão pagas, a compra (mãe) também fica paga
+      const maes = new Map(abertos.filter((i) => i.linha.reg && i.linha.parcelas.length).map((i) => [i.linha.chave, i.linha]));
+      for (const l of maes.values()) {
+        if (l.parcelas.every((p) => p.status === "Pago" || pagosIds.has(p.id))) {
+          verificarErro(await Auth.sb.from("financas_despesas").update({ status: "Pago", pago_em: data, ...(migracaoFluxoOk ? { valor_pago: Number(l.reg.valor) || 0 } : {}), updated_at: agora }).eq("id", l.reg.id));
+        }
+      }
+      overlayPagarFatura.hidden = true;
+      pagandoFatura = null;
+      await recarregarFinancas();
+    } catch (erro) {
+      alert("Não foi possível pagar a fatura. Tente de novo.");
+      console.error(erro);
+    } finally {
+      botao.disabled = false;
+    }
+  });
 
   // Compras de uma fatura de cartão (linhas filhas, abertas ao clicar na fatura).
   const faturasAbertas = new Set();
@@ -11685,6 +11956,14 @@
   });
   document.getElementById("corpoTabelaDespesasFin").addEventListener("click", (evento) => {
     if (evento.target.closest("select")) return;
+    const grupo = evento.target.closest("tr[data-fatura-grupo]");
+    if (grupo) {
+      const k = grupo.dataset.faturaGrupo;
+      if (gruposCartaoAbertos.has(k)) gruposCartaoAbertos.delete(k);
+      else gruposCartaoAbertos.add(k);
+      renderizarDespesasFin();
+      return;
+    }
     const tr = evento.target.closest("tr[data-linha-chave]");
     const linha = tr && linhasDespesasPorChave.get(tr.dataset.linhaChave);
     if (!linha) return;
@@ -12048,16 +12327,77 @@
     return `<option value="">Sem categoria</option>` + nomes.map((n) => `<option value="${esc(n)}" ${n === selecionada ? "selected" : ""}>${esc(n)}</option>`).join("");
   }
 
+  // Compras no cartão já lançadas (parcelas ou compras soltas, forma "Cartão", Nubank PJ) que o OFX pode confirmar.
+  function candidatosCartaoOfx() {
+    const filhasPor = agruparPor(despesasFinCache, (d) => d.parent_id);
+    const out = [];
+    despesasFinCache
+      .filter((d) => !d.parent_id && !d.so_resultado && !d.eh_fatura && d.forma_pagamento === "Cartão" && contaDaDespesa(d) === CONTA_PADRAO)
+      .forEach((m) => {
+        const partes = (filhasPor.get(m.id) || []).slice().sort((a, b) => (a.data || "").localeCompare(b.data || ""));
+        const base = { mae: m, nome: m.nome, comp: m.data_competencia || m.data || "" };
+        if (partes.length) {
+          partes.forEach((f, idx) => out.push({ ...base, id: f.id, rotulo: `Parcela ${idx + 1}/${partes.length}`, parcela: [idx + 1, partes.length], valor: Number(f.valor) || 0, venc: f.data || "", fitid: f.fitid || "", pago: f.status === "Pago" }));
+        } else out.push({ ...base, id: m.id, rotulo: "", parcela: null, valor: Number(m.valor) || 0, venc: m.data || "", fitid: m.fitid || "", pago: m.status === "Pago" });
+      });
+    return out.filter((c) => !c.fitid && !c.pago); // só o que ainda não foi conferido nem pago
+  }
+
+  // Sugere, para cada compra do OFX, qual lançamento seu ela confirma. Só sugere: nada vale sem a sua aprovação.
+  // Regra: mesmo valor E pelo menos um sinal a mais (nome parecido, "2/3" da parcela, mês do vencimento da fatura).
+  const tokensNomeOfx = (s) => normalizarTexto(s).split(/[^a-z0-9]+/).filter((t) => t.length >= 4);
+  function sugerirVinculosOfx(vencimento) {
+    const cands = candidatosCartaoOfx();
+    ofx.candidatos = cands;
+    ofx.linhas.forEach((l) => { if (!l.aprovado) l.vinculo = ""; });
+    const dias = (a, b) => Math.abs((new Date(a + "T00:00:00") - new Date(b + "T00:00:00")) / 86400000);
+    const jaTomados = new Set(ofx.linhas.filter((l) => l.vinculo).map((l) => l.vinculo));
+    const pares = [];
+    ofx.linhas.forEach((l, li) => {
+      if (!l.incluir || l.vinculo) return;
+      const v = arredondar(valorOfx(l));
+      const tk = tokensNomeOfx(l.descricao);
+      const mem = String(l.descricao).match(/(\d{1,2})\s*\/\s*(\d{1,2})/);
+      cands.forEach((c) => {
+        if (jaTomados.has(c.id) || Math.abs(c.valor - v) > 0.02) return;
+        let pontos = 0;
+        const tc = tokensNomeOfx(c.nome);
+        if (tk.some((t) => tc.some((u) => u.includes(t) || t.includes(u)))) pontos += 3;
+        if (mem && c.parcela && Number(mem[1]) === c.parcela[0] && Number(mem[2]) === c.parcela[1]) pontos += 2;
+        if (vencimento && mesDe(c.venc) === mesDe(vencimento)) pontos += 2;
+        if (c.comp && l.data && dias(c.comp, l.data) <= 45) pontos += 1;
+        if (pontos >= 2) pares.push({ li, c, pontos });
+      });
+    });
+    pares.sort((a, b) => b.pontos - a.pontos);
+    const linhaFeita = new Set();
+    pares.forEach(({ li, c }) => {
+      if (linhaFeita.has(li) || jaTomados.has(c.id)) return;
+      linhaFeita.add(li);
+      jaTomados.add(c.id);
+      ofx.linhas[li].vinculo = c.id;
+      ofx.linhas[li].aprovado = false;
+    });
+  }
+
+  function opcoesVinculoOfx(l, i) {
+    const v = arredondar(valorOfx(l));
+    const livres = (ofx.candidatos || []).filter((c) => Math.abs(c.valor - v) <= 0.02 && (c.id === l.vinculo || !ofx.linhas.some((x, j) => j !== i && x.vinculo === c.id)));
+    return `<option value="">Nova despesa da fatura</option>` + livres.map((c) => `<option value="${c.id}" ${c.id === l.vinculo ? "selected" : ""}>${esc(c.nome)}${c.rotulo ? " · " + esc(c.rotulo) : ""} · venc. ${formatarDataBr(c.venc)}</option>`).join("");
+  }
+
   function renderizarOfx() {
     document.getElementById("ofxCorpo").innerHTML = ofx.linhas
       .map((l, i) => {
         const v = valorOfx(l);
-        return `<tr class="${l.incluir ? "" : "desmarcada"}" data-ofx="${i}">
+        const aguardando = l.incluir && l.vinculo && !l.aprovado;
+        return `<tr class="${l.incluir ? "" : "desmarcada"}${aguardando ? " aguardando" : ""}" data-ofx="${i}">
           <td><input type="checkbox" data-ofx-incluir ${l.incluir ? "checked" : ""}></td>
           <td>${formatarDataBr(l.data)}</td>
           <td>${esc(l.descricao)}${l.jaImportada ? ' <span class="texto-pequeno">(já importada)</span>' : ""}</td>
           <td class="${v < 0 ? "valor-neg" : ""}">${formatarMoeda(v)}</td>
-          <td><select data-ofx-categoria>${opcoesCategoriaOfx(l.categoria)}</select></td>
+          <td class="ofx-vinculo"><select data-ofx-vinculo ${l.incluir ? "" : "disabled"}>${opcoesVinculoOfx(l, i)}</select>${l.incluir && l.vinculo ? `<label class="ofx-aprovar"><input type="checkbox" data-ofx-aprovar ${l.aprovado ? "checked" : ""}> ${l.aprovado ? "vínculo aprovado" : "aprovar este vínculo"}</label>` : ""}</td>
+          <td><select data-ofx-categoria ${l.vinculo ? "disabled" : ""}>${opcoesCategoriaOfx(l.categoria)}</select></td>
         </tr>`;
       })
       .join("");
@@ -12066,8 +12406,17 @@
   function atualizarTotalOfx() {
     const marcadas = ofx.linhas.filter((l) => l.incluir);
     const total = marcadas.reduce((s, l) => s + valorOfx(l), 0);
-    document.getElementById("ofxTotal").textContent = `${marcadas.length} de ${ofx.linhas.length} lançamentos · total da fatura ${formatarMoeda(arredondar(total))}`;
+    const vinculadas = marcadas.filter((l) => l.vinculo);
+    const aguardando = vinculadas.filter((l) => !l.aprovado).length;
+    document.getElementById("ofxTotal").innerHTML =
+      `${marcadas.length} de ${ofx.linhas.length} lançamentos · total da fatura ${formatarMoeda(arredondar(total))}<br>` +
+      `${vinculadas.length} vinculado${vinculadas.length === 1 ? "" : "s"} ao que você já lançou · ${marcadas.length - vinculadas.length} novo${marcadas.length - vinculadas.length === 1 ? "" : "s"}` +
+      (aguardando ? ` · <strong style="color:#8A5A00;">${aguardando} aguardando a sua aprovação</strong>` : "");
     document.getElementById("ofxMarcarTodas").checked = marcadas.length === ofx.linhas.length;
+    const confirmar = document.getElementById("btnOfxConfirmar");
+    confirmar.disabled = aguardando > 0;
+    confirmar.title = aguardando ? "Aprove ou desfaça os vínculos sugeridos primeiro" : "";
+    document.getElementById("btnOfxAprovarTodos").hidden = !aguardando;
   }
 
   document.getElementById("btnImportarOfx").addEventListener("click", () => {
@@ -12109,6 +12458,7 @@
       document.getElementById("ofxArquivoInfo").textContent = arquivo.name;
       document.getElementById("ofxInverter").checked = ofx.invertido;
       document.getElementById("ofxCategoriaTodas").innerHTML = opcoesCategoriaOfx("");
+      sugerirVinculosOfx(document.getElementById("ofxVencimento").value);
       renderizarOfx();
       overlayOfx.hidden = false;
     } catch (erro) {
@@ -12127,6 +12477,13 @@
       atualizarTotalOfx();
     } else if (evento.target.matches("[data-ofx-categoria]")) {
       linha.categoria = evento.target.value;
+    } else if (evento.target.matches("[data-ofx-vinculo]")) {
+      linha.vinculo = evento.target.value;
+      linha.aprovado = false;
+      renderizarOfx();
+    } else if (evento.target.matches("[data-ofx-aprovar]")) {
+      linha.aprovado = evento.target.checked;
+      renderizarOfx();
     }
   });
   document.getElementById("ofxMarcarTodas").addEventListener("change", (evento) => {
@@ -12142,48 +12499,62 @@
     ofx.linhas.filter((l) => l.incluir).forEach((l) => (l.categoria = categoria));
     renderizarOfx();
   });
+  document.getElementById("btnOfxAprovarTodos").addEventListener("click", () => {
+    ofx.linhas.filter((l) => l.incluir && l.vinculo).forEach((l) => (l.aprovado = true));
+    renderizarOfx();
+  });
+  document.getElementById("ofxVencimento").addEventListener("change", () => {
+    if (!ofx) return;
+    sugerirVinculosOfx(document.getElementById("ofxVencimento").value);
+    renderizarOfx();
+  });
   document.getElementById("btnOfxCancelar").addEventListener("click", () => {
     overlayOfx.hidden = true;
     ofx = null;
   });
 
   document.getElementById("btnOfxConfirmar").addEventListener("click", async () => {
-    const cartao = document.getElementById("ofxCartao").value.trim() || "Cartão";
-    const referencia = document.getElementById("ofxReferencia").value;
+    const cartao = document.getElementById("ofxCartao").value.trim();
     const vencimento = document.getElementById("ofxVencimento").value;
     const incluidas = ofx.linhas.filter((l) => l.incluir);
     if (!vencimento) return alert("Informe o vencimento da fatura.");
-    if (!referencia) return alert("Informe o mês da fatura.");
     if (!incluidas.length) return alert("Marque pelo menos um lançamento.");
-    if (!migracaoFluxoOk) return alert("Rode js/financas-fluxo-caixa-setup.sql no Supabase antes de importar faturas.");
+    if (incluidas.some((l) => l.vinculo && !l.aprovado)) return alert("Aprove ou desfaça os vínculos sugeridos antes de confirmar.");
+    if (!migracaoReestruturacaoOk) return alert("Rode js/financeiro-reestruturacao-setup.sql no Supabase antes de importar faturas.");
 
     const botao = document.getElementById("btnOfxConfirmar");
     botao.disabled = true;
     try {
       const agora = new Date().toISOString();
-      const total = arredondar(incluidas.reduce((s, l) => s + valorOfx(l), 0));
-      const nome = `Fatura cartão ${cartao} (${abrevMes(referencia + "-01")})`;
-      const { data: fatura, error } = await Auth.sb
-        .from("financas_despesas")
-        .insert({ nome, valor: total, data: vencimento, status: "Pendente", valor_pago: 0, eh_fatura: true, updated_at: agora })
-        .select()
-        .single();
-      if (error) throw error;
-      const filhos = incluidas.map((l) => ({
-        nome: l.descricao, valor: arredondar(valorOfx(l)), data: l.data, status: "Pendente", valor_pago: 0,
-        parent_id: fatura.id, categoria: l.categoria || null, fitid: l.fitid || null, updated_at: agora,
-      }));
-      for (let i = 0; i < filhos.length; i += 200) {
-        const { error: erroFilhos } = await Auth.sb.from("financas_despesas").insert(filhos.slice(i, i + 200));
-        if (erroFilhos) throw erroFilhos;
+      let vinculadas = 0;
+      const novas = [];
+      for (const l of incluidas) {
+        if (l.vinculo) {
+          // confirma o lançamento que já existia: guarda o código do banco e põe o vencimento da fatura como data de pagamento
+          const c = (ofx.candidatos || []).find((x) => x.id === l.vinculo);
+          const campos = { fitid: l.fitid || null, updated_at: agora };
+          if (c && !c.pago) campos.data = vencimento;
+          verificarErro(await Auth.sb.from("financas_despesas").update(campos).eq("id", l.vinculo));
+          vinculadas++;
+        } else {
+          // sem vínculo: despesa avulsa no cartão, no mês dessa fatura (a compra conta em Resultados no dia em que foi feita)
+          novas.push({
+            nome: l.descricao, valor: arredondar(valorOfx(l)), data: vencimento, data_competencia: l.data,
+            status: "Pendente", valor_pago: 0, categoria: l.categoria || null, fitid: l.fitid || null,
+            forma_pagamento: "Cartão", conta: CONTA_PADRAO, frente: "UGC", tipo_despesa: "avulsa", so_fluxo: false, so_resultado: false,
+            ...(migracaoComplementoOk && cartao ? { fornecedor: cartao } : {}), updated_at: agora,
+          });
+        }
       }
+      for (let i = 0; i < novas.length; i += 200) verificarErro(await Auth.sb.from("financas_despesas").insert(novas.slice(i, i + 200)));
       overlayOfx.hidden = true;
       ofx = null;
       // mostra a fatura no mês em que ela vence
       periodoAno = Number(vencimento.slice(0, 4));
       periodoMes = Number(vencimento.slice(5, 7));
-      faturasAbertas.add(fatura.id);
+      faturasBlocoAbertas.add(mesDe(vencimento));
       await recarregarFinancas();
+      alert(`Fatura conferida: ${vinculadas} compra${vinculadas === 1 ? "" : "s"} vinculada${vinculadas === 1 ? "" : "s"} ao que você já tinha lançado e ${novas.length} nova${novas.length === 1 ? "" : "s"} despesa${novas.length === 1 ? "" : "s"} avulsa${novas.length === 1 ? "" : "s"}. Quando pagar, use “Pagar fatura”.`);
     } catch (erro) {
       alert("Não foi possível lançar a fatura. Tente de novo.");
       console.error(erro);
@@ -12221,9 +12592,11 @@
     .then((rs) => (lancObsDisponivel = rs.every((r) => !r.error)))
     .catch(() => {});
   // A conta da entrada precisa da coluna "conta" em financas_receitas (js/financas-conta-saldo-setup.sql).
-  let receitaContaOk = false;
   Auth.sb.from("financas_receitas").select("conta").limit(1)
-    .then((r) => (receitaContaOk = !r.error))
+    .then((r) => {
+      receitaContaOk = !r.error;
+      document.body.classList.toggle("receita-conta-ok", receitaContaOk);
+    })
     .catch(() => {});
 
   const editoresLanc = {
@@ -13968,6 +14341,7 @@
     }
     document.getElementById("corpoFluxoAPagar").innerHTML =
       `<tr class="linha-subtotal-custos"><td colspan="4">Caixa hoje (saldo do Nubank PJ)</td><td>${formatarMoeda(realizado)}</td></tr>` + linhas.join("");
+    renderizarFaturasCartao();
   }
   document.getElementById("corpoFluxoPF").addEventListener("click", (evento) => {
     const tr = evento.target.closest("tr[data-linha-chave]");
