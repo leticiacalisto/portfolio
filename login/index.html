@@ -229,7 +229,8 @@
   // Se já existe sessão ativa, pula direto para o painel
   const { data: sessaoAtual } = await Auth.sb.auth.getSession();
   if (sessaoAtual.session) {
-    window.location.href = "../painel.html";
+    // cada pessoa vai pra página dela: painel UGC (se pode ler) ou página da empresa
+    window.location.href = "../" + (Auth.paginaInicial ? Auth.paginaInicial(await Auth.minhasPermissoes()) : "painel.html");
     return;
   }
 
@@ -281,7 +282,7 @@
 
     try {
       await Auth.login(email, senha, captcha.login.token);
-      window.location.href = "../painel.html";
+      window.location.href = "../" + (Auth.paginaInicial ? Auth.paginaInicial(await Auth.minhasPermissoes()) : "painel.html");
     } catch (erro) {
       captchaReiniciar("login");
       mostrarErro(erro.message || "Não foi possível entrar. Tente novamente.");

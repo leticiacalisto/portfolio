@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Definir senha - Painel</title>
+<link rel="icon" href="/imagens/icone-painel.svg" type="image/svg+xml">
+<link rel="icon" href="/imagens/icone-painel-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/imagens/icone-painel-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@500;600;700;800&family=Mulish:ital,wght@0,400;0,500;0,600;0,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --coral: #991A0E; --coral-escuro: #730F06; --creme: #F3EEE9; --branco: #FFFDFB; --grafite: #14110D;
+    --texto-suave: #4A443C; --borda: rgba(20,17,13,.12); --verde-sucesso: #2D7A4F; --vermelho-erro: #C4453C;
+    --fonte-sans: "Mulish", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+    --fonte-impacto: "League Spartan", system-ui, "Segoe UI", Arial, sans-serif;
+  }
+  *,*::before,*::after{ box-sizing: border-box; }
+  body{ margin:0; min-height:100vh; background: var(--branco); color: var(--grafite); font-family: var(--fonte-sans); display:flex; align-items:center; justify-content:center; padding: 20px; }
+  .cartao{ width:100%; max-width: 420px; background: var(--creme); border-radius: 24px; padding: 40px 32px; }
+  .logo{ font-family: var(--fonte-impacto); font-weight:700; font-size:1.3rem; margin-bottom: 18px; }
+  .logo .ponto{ color: var(--coral); }
+  h1{ font-family: var(--fonte-impacto); font-weight:600; font-size:1.5rem; letter-spacing:-.02em; margin:0 0 6px; }
+  p.sub{ margin:0 0 18px; color: var(--texto-suave); font-size:.95rem; }
+  label{ display:block; font-weight:600; font-size:.85rem; margin: 14px 0 6px; }
+  input{ width:100%; padding: 13px 14px; border-radius: 12px; border: 1px solid var(--borda); background: var(--branco); font: inherit; }
+  button{ width:100%; margin-top: 20px; padding: 14px; border:0; border-radius: 12px; background: var(--grafite); color: var(--branco); font: inherit; font-weight:700; cursor:pointer; }
+  button:disabled{ opacity:.6; cursor:default; }
+  .faixa{ padding: 10px 14px; border-radius: 10px; font-size:.88rem; margin-bottom: 12px; }
+  .erro{ background: rgba(196,69,60,.10); color: var(--vermelho-erro); }
+  .ok{ background: rgba(45,122,79,.10); color: var(--verde-sucesso); }
+  [hidden]{ display:none !important; }
+</style>
+</head>
+<body>
+<main class="cartao">
+  <div class="logo">meu<span class="ponto">.</span>painel</div>
+  <h1 id="titulo">Defina sua senha</h1>
+  <p class="sub" id="sub">Escolha uma senha para entrar. Só você vai saber qual é.</p>
+  <div class="faixa erro" id="faixaErro" hidden></div>
+  <div class="faixa ok" id="faixaOk" hidden></div>
+  <form id="form" novalidate hidden>
+    <label for="senha">Nova senha</label>
+    <input type="password" id="senha" autocomplete="new-password" minlength="10" required>
+    <label for="senha2">Repita a senha</label>
+    <input type="password" id="senha2" autocomplete="new-password" minlength="10" required>
+    <button type="submit" id="btn">Salvar senha e entrar</button>
+  </form>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="../js/auth.js"></script>
+<script>
+(async function () {
+  // O link do e-mail (convite ou recuperação) traz o token no endereço: o supabase-js transforma em sessão sozinho.
+  const form = document.getElementById("form");
+  const faixaErro = document.getElementById("faixaErro");
+  const faixaOk = document.getElementById("faixaOk");
+  const erro = (m) => { faixaOk.hidden = true; faixaErro.textContent = m; faixaErro.hidden = false; };
+
+  let sessao = null;
+  for (let i = 0; i < 20 && !sessao; i++) {          // até ~4 s esperando o supabase-js ler o link
+    const { data } = await Auth.sb.auth.getSession();
+    sessao = data.session;
+    if (!sessao) await new Promise((r) => setTimeout(r, 200));
+  }
+  if (!sessao) {
+    document.getElementById("titulo").textContent = "Link inválido ou vencido";
+    document.getElementById("sub").textContent = "Peça um novo convite a quem te convidou ou use “Esqueci minha senha” na tela de login.";
+    return;
+  }
+  form.hidden = false;
+
+  form.addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    faixaErro.hidden = true;
+    const s1 = document.getElementById("senha").value, s2 = document.getElementById("senha2").value;
+    if (s1.length < 10) return erro("Use pelo menos 10 caracteres.");
+    if (s1 !== s2) return erro("As duas senhas não são iguais.");
+    const btn = document.getElementById("btn");
+    btn.disabled = true; btn.textContent = "Salvando...";
+    const { error } = await Auth.sb.auth.updateUser({ password: s1 });
+    if (error) {
+      btn.disabled = false; btn.textContent = "Salvar senha e entrar";
+      return erro(error.message || "Não foi possível salvar a senha.");
+    }
+    faixaOk.textContent = "Senha criada! Entrando..."; faixaOk.hidden = false; form.hidden = true;
+    window.location.href = "../" + Auth.paginaInicial(await Auth.minhasPermissoes());
+  });
+})();
+</script>
+</body>
+</html>

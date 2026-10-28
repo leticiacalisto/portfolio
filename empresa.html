@@ -1,0 +1,903 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>DRE da empresa</title>
+<link rel="icon" href="/imagens/icone-painel.svg" type="image/svg+xml">
+<link rel="icon" href="/imagens/icone-painel-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/imagens/icone-painel-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@500;600;700;800&family=Mulish:ital,wght@0,400;0,500;0,600;0,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --coral:#991A0E; --creme:#F3EEE9; --branco:#FFFDFB; --grafite:#14110D; --texto-suave:#4A443C;
+    --borda:rgba(20,17,13,.12); --verde:#2D7A4F; --vermelho:#C4453C; --ambar:#C98A1F; --roxo:#7A5CC8;
+    --fonte-sans:"Mulish", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+    --fonte-impacto:"League Spartan", system-ui, "Segoe UI", Arial, sans-serif;
+  }
+  *,*::before,*::after{ box-sizing:border-box; }
+  [hidden]{ display:none !important; }
+  body{ margin:0; background:var(--branco); color:var(--grafite); font-family:var(--fonte-sans); font-size:15px; }
+  body.oculto{ visibility:hidden; }
+  button, input, select{ font:inherit; }
+  h1,h2,h3{ font-family:var(--fonte-impacto); letter-spacing:-.02em; margin:0; }
+
+  .topo{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; padding:14px 24px; border-bottom:1px solid var(--borda); position:sticky; top:0; background:var(--branco); z-index:20; }
+  .marca{ font-family:var(--fonte-impacto); font-weight:700; font-size:1.2rem; }
+  .marca .ponto{ color:var(--coral); }
+  .marca small{ font-family:var(--fonte-sans); font-weight:600; font-size:.8rem; color:var(--texto-suave); margin-left:8px; }
+  .links{ display:flex; gap:8px; flex-wrap:wrap; margin-left:auto; align-items:center; }
+  .link-topo{ padding:8px 14px; border:1px solid var(--borda); border-radius:99px; background:var(--branco); color:var(--grafite); text-decoration:none; font-size:.85rem; font-weight:600; cursor:pointer; }
+  .link-topo:hover{ background:var(--creme); }
+  .usuario{ font-size:.8rem; color:var(--texto-suave); }
+
+  .pagina{ max-width:1240px; margin:0 auto; padding:22px 24px 80px; }
+  .abas{ display:flex; gap:6px; overflow-x:auto; margin-bottom:18px; padding-bottom:4px; }
+  .aba{ padding:9px 16px; border-radius:99px; border:1px solid var(--borda); background:var(--branco); font-weight:600; font-size:.88rem; cursor:pointer; white-space:nowrap; }
+  .aba.ativa{ background:var(--grafite); color:var(--branco); border-color:var(--grafite); }
+
+  .barra-periodo{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:16px; }
+  .barra-periodo select, .barra-periodo input{ padding:9px 12px; border:1px solid var(--borda); border-radius:12px; background:var(--branco); }
+  .grupo-btn{ display:flex; gap:8px; margin-left:auto; flex-wrap:wrap; }
+  .btn{ padding:9px 16px; border-radius:12px; border:1px solid var(--borda); background:var(--branco); cursor:pointer; font-weight:600; font-size:.85rem; }
+  .btn:hover{ background:var(--creme); }
+  .btn-escuro{ background:var(--grafite); color:var(--branco); border-color:var(--grafite); }
+  .btn-escuro:hover{ background:#2b2620; }
+  .btn-perigo{ color:var(--vermelho); border-color:rgba(196,69,60,.4); }
+  .btn-peq{ padding:5px 10px; font-size:.78rem; border-radius:10px; }
+  .btn:disabled{ opacity:.55; cursor:default; }
+
+  .cartoes{ display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:14px; margin-bottom:18px; }
+  .cartao{ border-radius:18px; padding:16px 18px; background:var(--creme); border-left:4px solid var(--borda); }
+  .cartao.verde{ background:#E6F4EA; border-left-color:#8FD3A8; }
+  .cartao.ambar{ background:#FBEFD8; border-left-color:#E7B04C; }
+  .cartao.rosa{ background:#FBE5E5; border-left-color:#F29B9B; }
+  .cartao.roxo{ background:#ECE7F8; border-left-color:#B7A3EC; }
+  .cartao .rot{ font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color:var(--texto-suave); font-weight:700; }
+  .cartao .val{ font-family:var(--fonte-impacto); font-weight:600; font-size:1.5rem; margin:4px 0; }
+  .cartao .nota{ font-size:.78rem; color:var(--texto-suave); }
+  .neg{ color:var(--vermelho); }
+  .pos{ color:var(--verde); }
+
+  .bloco{ border:1px solid var(--borda); border-radius:20px; padding:18px 20px; margin-bottom:18px; background:var(--branco); }
+  .bloco h2{ font-size:1.15rem; margin-bottom:4px; }
+  .bloco .sub{ color:var(--texto-suave); font-size:.85rem; margin:0 0 12px; }
+  .bloco.alerta{ background:#FBEFD8; border-color:#E7B04C; }
+  .bloco.erro{ background:#FBE5E5; border-color:#F29B9B; }
+  .aviso{ padding:10px 14px; border-radius:12px; background:#FBEFD8; color:#6B4A00; font-size:.86rem; margin-bottom:14px; }
+  .aviso.ok{ background:#E6F4EA; color:#1F5A38; }
+  .aviso.erro{ background:#FBE5E5; color:#8B2B25; }
+
+  .tabela-wrap{ overflow-x:auto; }
+  table{ width:100%; border-collapse:collapse; font-size:.86rem; }
+  th{ text-align:left; font-size:.7rem; letter-spacing:.06em; text-transform:uppercase; color:var(--texto-suave); padding:8px 10px; white-space:nowrap; border-bottom:1px solid var(--borda); }
+  td{ padding:9px 10px; border-bottom:1px solid rgba(20,17,13,.06); vertical-align:middle; }
+  td.n, th.n{ text-align:right; white-space:nowrap; }
+  tr.b td{ font-weight:700; background:rgba(20,17,13,.03); }
+  tr.final td{ font-weight:800; background:var(--creme); font-size:.92rem; }
+  tr.filho td:first-child{ padding-left:28px; color:var(--texto-suave); }
+  tr.filho td{ font-size:.82rem; }
+  tr.clic{ cursor:pointer; }
+  tr.clic:hover td{ background:var(--creme); }
+  .caret{ display:inline-block; width:14px; transition:transform .15s; }
+  .aberto .caret{ transform:rotate(90deg); }
+  .chip{ display:inline-block; padding:2px 9px; border-radius:99px; font-size:.74rem; font-weight:700; background:var(--creme); }
+  .chip.verde{ background:#E6F4EA; color:#1F5A38; } .chip.ambar{ background:#FBEFD8; color:#6B4A00; } .chip.rosa{ background:#FBE5E5; color:#8B2B25; }
+  .barra{ height:10px; border-radius:99px; background:var(--creme); overflow:hidden; margin:8px 0 4px; }
+  .barra > div{ height:100%; background:#8FD3A8; border-radius:99px; }
+  .barra.alerta > div{ background:#E7B04C; } .barra.estourou > div{ background:var(--vermelho); }
+  .grade2{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .legenda{ display:flex; gap:14px; flex-wrap:wrap; font-size:.78rem; color:var(--texto-suave); margin-bottom:6px; }
+  .legenda i{ display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:5px; }
+  svg text{ font-family:var(--fonte-sans); font-size:11px; fill:var(--texto-suave); }
+  .vazio{ padding:26px; text-align:center; color:var(--texto-suave); }
+
+  .overlay{ position:fixed; inset:0; background:rgba(20,17,13,.45); display:flex; align-items:center; justify-content:center; padding:18px; z-index:50; }
+  .modal{ width:100%; max-width:720px; max-height:92vh; overflow-y:auto; background:var(--branco); border-radius:22px; padding:24px; }
+  .modal h3{ font-size:1.3rem; margin-bottom:14px; }
+  .campos{ display:grid; grid-template-columns:1fr 1fr; gap:0 14px; }
+  .campo{ margin-bottom:12px; }
+  .campo.larga{ grid-column:1 / -1; }
+  .campo label{ display:block; font-size:.78rem; font-weight:700; color:var(--texto-suave); margin-bottom:5px; }
+  .campo input, .campo select{ width:100%; padding:10px 12px; border:1px solid var(--borda); border-radius:12px; background:var(--branco); }
+  .campo input:disabled{ background:var(--creme); }
+  .secao-modal{ margin:14px 0 6px; font-size:.74rem; letter-spacing:.07em; text-transform:uppercase; font-weight:800; color:var(--texto-suave); }
+  .previa{ background:var(--creme); border-radius:12px; padding:11px 14px; font-size:.84rem; margin:10px 0; line-height:1.5; }
+  .previa .erro{ color:var(--vermelho); display:block; }
+  .acoes-modal{ display:flex; gap:10px; margin-top:16px; justify-content:flex-end; flex-wrap:wrap; }
+  .tabela-parc input, .tabela-parc select{ width:100%; min-width:104px; padding:7px 8px; border:1px solid var(--borda); border-radius:9px; }
+
+  @media (max-width: 860px){
+    .cartoes{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+    .grade2{ grid-template-columns:1fr; }
+    .pagina{ padding:16px 14px 70px; }
+    .topo{ padding:12px 14px; }
+    .links{ margin-left:0; width:100%; }
+  }
+  @media (max-width: 560px){
+    .cartoes{ grid-template-columns:1fr; }
+    .campos{ grid-template-columns:1fr; }
+    .modal{ padding:18px; }
+    .grupo-btn{ margin-left:0; }
+  }
+  @media print{ .topo, .abas, .barra-periodo, .grupo-btn{ display:none; } }
+</style>
+</head>
+<body class="oculto">
+<header class="topo">
+  <div class="marca">meu<span class="ponto">.</span>painel<small>DRE da empresa</small></div>
+  <nav class="links">
+    <a class="link-topo" id="linkUgc" href="painel.html" hidden>Ir para painel UGC</a>
+    <a class="link-topo" href="https://leticiacalisto.github.io/belaordem/" target="_blank" rel="noopener">Ir para Bela Ordem</a>
+    <button class="link-topo" id="btnAtualizar" type="button">Atualizar</button>
+    <button class="link-topo" id="btnSair" type="button">Sair</button>
+  </nav>
+  <div class="usuario" id="usuario"></div>
+</header>
+<main class="pagina">
+  <div id="aviso"></div>
+  <div class="abas" id="abas" role="tablist"></div>
+  <section id="conteudo"></section>
+</main>
+<div id="modalRoot"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="js/auth.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
+<script>
+(async function () {
+  // ===============================================================
+  // DRE DA EMPRESA. Lê SÓ os resumos mensais das frentes (resumo_mensal_frente) e os lançamentos
+  // da própria empresa (financas_despesas com frente = 'Empresa'). Nunca lê campanhas, vídeos,
+  // contratos nem lançamentos detalhados do UGC ou da loja. Quem pode ver/fazer o quê é decidido
+  // pelo BANCO (RLS); os botões que somem aqui são só conforto.
+  // ===============================================================
+  const URL_BELA_ORDEM = "https://leticiacalisto.github.io/belaordem/";
+  const LIMITE_PF_MES = 5000;
+  const FAIXAS_SIMPLES = [180000, 360000, 720000, 1800000, 3600000, 4800000]; // limites de receita bruta em 12 meses
+  const MESES = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+  const TIPOS = { compartilhada: "Despesa compartilhada", das: "DAS", prolabore: "Pró-labore", distribuicao: "Distribuição de lucros" };
+
+  const $ = (s, r = document) => r.querySelector(s);
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const num = (x) => (x == null || x === "" || !isFinite(Number(x)) ? 0 : Number(x));
+  const brl = (n) => num(n).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  const r2 = (n) => Math.round(num(n) * 100) / 100;
+  const hoje = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+  const mesDe = (iso) => (iso ? String(iso).slice(0, 7) : "");
+  const fdata = (iso) => (iso ? String(iso).slice(0, 10).split("-").reverse().join("/") : "—");
+  const nomeMes = (m) => MESES[Number(m.slice(5, 7)) - 1] + "/" + m.slice(0, 4);
+  const abrevMes = (m) => MESES[Number(m.slice(5, 7)) - 1].slice(0, 3) + "/" + m.slice(2, 4);
+  const somarMes = (m, n) => { const d = new Date(Number(m.slice(0, 4)), Number(m.slice(5, 7)) - 1 + n, 1); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0"); };
+  const somarDataMes = (iso, n) => { // mantém o dia (ou o último dia do mês)
+    const [a, m, d] = iso.split("-").map(Number); const alvo = new Date(a, m - 1 + n, 1);
+    const ult = new Date(alvo.getFullYear(), alvo.getMonth() + 1, 0).getDate();
+    return alvo.getFullYear() + "-" + String(alvo.getMonth() + 1).padStart(2, "0") + "-" + String(Math.min(d, ult)).padStart(2, "0");
+  };
+  const soma = (arr, f = (x) => x) => arr.reduce((s, x) => s + num(f(x)), 0);
+
+  // ---------------- acesso ----------------
+  const auth = await Auth.checkAuth();
+  if (!auth) return;
+  const PERM = await Auth.minhasPermissoes();
+  if (PERM.semPerfil || PERM.ativo === false) { await Auth.logout(); return; }
+  const P = PERM.erro ? null : PERM.permissoes;
+  const pode = (rec, acao) => (P ? !!(P[rec] && P[rec][acao]) : false);
+  document.body.classList.remove("oculto");
+  $("#usuario").textContent = (PERM.nome ? PERM.nome + " · " : "") + auth.email;
+  if (PERM.erro) {
+    $("#aviso").innerHTML = '<div class="aviso erro">Não consegui consultar suas permissões. Se isso continuar, confira se o SQL <b>js/empresa-acessos-setup.sql</b> foi rodado no Supabase.</div>';
+    $("#conteudo").innerHTML = "";
+    return;
+  }
+  if (!pode("empresa_dre", "ler")) {
+    $("#conteudo").innerHTML = '<div class="bloco erro"><h2>Sem acesso</h2><p class="sub">Seu usuário não tem permissão para ver o DRE da empresa. Fale com a administradora.</p></div>';
+    return;
+  }
+  const PODE = {
+    ugc: pode("ugc_operacao", "ler"),
+    lancar: pode("empresa_lancamentos", "escrever"),
+    verLanc: pode("empresa_lancamentos", "ler"),
+    retiradas: pode("retiradas", "ler"),
+    acessos: pode("usuarios", "ler"),
+    admin: pode("usuarios", "escrever"),
+  };
+  $("#linkUgc").hidden = !PODE.ugc;
+  Auth.registrarAcesso("empresa");
+
+  // ---------------- dados ----------------
+  let R = { ugc: {}, mercado_livre: {} }, RET = {}, LAN = [], CFG = {}, LOG = [], PESSOAS = [], idx = {};
+  async function buscarTudo(tabela, filtro) {
+    let tudo = [], ini = 0;
+    for (;;) {
+      let q = Auth.sb.from(tabela).select("*");
+      if (filtro) q = filtro(q);
+      const { data, error } = await q.range(ini, ini + 999);
+      if (error) throw error;
+      tudo = tudo.concat(data || []);
+      if (!data || data.length < 1000) break;
+      ini += 1000;
+    }
+    return tudo;
+  }
+  async function carregar() {
+    const [resumos, retiradas, lanc, cfg] = await Promise.all([
+      buscarTudo("resumo_mensal_frente"),
+      PODE.retiradas ? buscarTudo("resumo_mensal_retiradas").catch(() => []) : Promise.resolve([]),
+      PODE.verLanc ? buscarTudo("financas_despesas", (q) => q.eq("frente", "Empresa")).catch(() => []) : Promise.resolve([]),
+      buscarTudo("empresa_config").catch(() => []),
+    ]);
+    R = { ugc: {}, mercado_livre: {} };
+    resumos.forEach((l) => { if (R[l.frente]) R[l.frente][l.mes] = l; });
+    RET = {};
+    retiradas.forEach((l) => { if (l.frente === "ugc") RET[l.mes] = num(l.recebido_pf); });
+    LAN = lanc;
+    CFG = Object.fromEntries(cfg.map((c) => [c.chave, c.valor]));
+    indexar();
+  }
+  const cfgNum = (k, pad) => (CFG[k] != null && isFinite(Number(CFG[k])) ? Number(CFG[k]) : pad);
+  const saldoInicial = (conta) => num((CFG.saldo_inicial || {})[conta]);
+
+  // lançamentos da empresa: mães (valor total e competência) e parcelas (pagamentos)
+  function indexar() {
+    const filhas = new Map();
+    LAN.filter((x) => x.parent_id).forEach((x) => filhas.set(x.parent_id, [...(filhas.get(x.parent_id) || []), x]));
+    const maes = LAN.filter((x) => !x.parent_id).map((m) => {
+      const fs = (filhas.get(m.id) || []).sort((a, b) => String(a.data || "").localeCompare(String(b.data || "")));
+      const itens = (fs.length ? fs : [m]).map((x) => ({ nome: x.nome, valor: num(x.valor), venc: x.data, pago: x.status === "Pago", pagoEm: x.pago_em || x.data, id: x.id }));
+      return { m, itens, comp: mesDe(m.data_competencia || m.data), tipo: m.tipo_despesa, filhas: fs };
+    });
+    const por = {}, lin = (k) => (por[k] = por[k] || { compart: 0, prolabore: 0, prolaboreLiq: 0, distrib: 0, das: 0 });
+    const inssPct = cfgNum("inss_patronal_pct", 0);
+    maes.forEach((x) => {
+      if (!x.comp) return;
+      const a = lin(x.comp), v = num(x.m.valor);
+      if (x.tipo === "compartilhada") a.compart += v;
+      else if (x.tipo === "das") a.das += v;
+      else if (x.tipo === "distribuicao") a.distrib += v;
+      else if (x.tipo === "prolabore") { a.prolabore += v; a.prolaboreLiq += v - num(x.m.inss_retido) - num(x.m.irrf); }
+    });
+    Object.values(por).forEach((a) => { a.inssPatronal = (a.prolabore * inssPct) / 100; });
+    idx = { maes, por };
+  }
+  const ZERO = new Proxy({}, { get: () => 0 });
+  const U = (m) => R.ugc[m] || ZERO, L = (m) => R.mercado_livre[m] || ZERO;
+  const A = (m) => (idx.por && idx.por[m]) || { compart: 0, prolabore: 0, prolaboreLiq: 0, distrib: 0, das: 0, inssPatronal: 0 };
+  function conta(m) { // números do mês, de todas as fontes
+    const u = U(m), l = L(m), a = A(m);
+    const resOp = num(u.resultado_frente) + num(l.resultado_frente);
+    const resLiq = resOp - a.compart - a.prolabore - a.inssPatronal;
+    return {
+      fatUgc: num(u.receita_bruta), fatMl: num(l.receita_bruta), fat: num(u.receita_bruta) + num(l.receita_bruta),
+      resUgc: num(u.resultado_frente), resMl: num(l.resultado_frente), resOp, resLiq, ...a,
+      impEst: num(u.impostos_estimados) + num(l.impostos_estimados), retido: resLiq - a.distrib,
+      rbtMes: num(u.receita_bruta) - num(u.receita_pf) + num(l.receita_bruta), // PF não passa pelo CNPJ: não conta pro limite do Simples
+    };
+  }
+
+  // ---------------- período ----------------
+  const hojeMes = hoje().slice(0, 7);
+  const E = { aba: "dre", modo: "mes", ano: Number(hojeMes.slice(0, 4)), mes: Number(hojeMes.slice(5, 7)), tri: Math.ceil(Number(hojeMes.slice(5, 7)) / 3), abertos: { ugc: false, ml: false }, filtroTipo: "", filtroLanc: "periodo" };
+  function mesesDoPeriodo() {
+    const a = E.ano;
+    if (E.modo === "ano") return Array.from({ length: 12 }, (_, i) => a + "-" + String(i + 1).padStart(2, "0"));
+    if (E.modo === "tri") return [0, 1, 2].map((i) => a + "-" + String((E.tri - 1) * 3 + i + 1).padStart(2, "0"));
+    return [a + "-" + String(E.mes).padStart(2, "0")];
+  }
+  const rotuloPeriodo = () => (E.modo === "ano" ? String(E.ano) : E.modo === "tri" ? `${E.tri}º tri/${E.ano}` : nomeMes(mesesDoPeriodo()[0]));
+
+  // ---------------- DRE ----------------
+  function linhasDRE(meses) {
+    const L_ = [];
+    const add = (rot, fn, o = {}) => { const vals = meses.map(fn); L_.push({ rot, vals, tot: o.semTotal ? null : soma(vals), ...o }); };
+    const c = (m) => conta(m), u = U, l = L;
+    add("Resultado da frente UGC", (m) => c(m).resUgc, { b: 1, grupo: "ugc", exp: 1 });
+    add("Receita bruta", (m) => u(m).receita_bruta, { filho: "ugc" });
+    add("(−) Impostos estimados", (m) => -num(u(m).impostos_estimados), { filho: "ugc" });
+    add("(−) Custos de campanhas", (m) => -num(u(m).custos_diretos), { filho: "ugc" });
+    add("(−) Despesas da frente", (m) => -num(u(m).despesas_proprias), { filho: "ugc" });
+    add("(−) Depreciação", (m) => -num(u(m).depreciacao), { filho: "ugc" });
+    add("(+) Resultado da frente Mercado Livre", (m) => c(m).resMl, { b: 1, grupo: "ml", exp: 1 });
+    add("Receita bruta", (m) => l(m).receita_bruta, { filho: "ml" });
+    add("(−) Impostos estimados", (m) => -num(l(m).impostos_estimados), { filho: "ml" });
+    add("(−) Custos diretos (mercadoria, tarifas, fretes)", (m) => -num(l(m).custos_diretos), { filho: "ml" });
+    add("(−) Despesas da frente", (m) => -num(l(m).despesas_proprias), { filho: "ml" });
+    add("(+) Outras receitas", (m) => l(m).outras_receitas, { filho: "ml" });
+    add("(−) Consumo próprio e perdas", (m) => -num(l(m).consumo_e_perdas), { filho: "ml" });
+    add("= Resultado das operações", (m) => c(m).resOp, { b: 1 });
+    add("(−) Despesas compartilhadas", (m) => -c(m).compart);
+    add("(−) Pró-labore bruto", (m) => -c(m).prolabore);
+    add("(−) INSS patronal sobre pró-labore", (m) => -c(m).inssPatronal);
+    add("= Resultado líquido da empresa", (m) => c(m).resLiq, { final: 1 });
+    add("Margem sobre o faturamento total", (m) => (c(m).fat ? c(m).resLiq / c(m).fat : null), { pct: 1, semTotal: 1 });
+    L_[L_.length - 1].tot = (() => { const f = soma(meses, (m) => c(m).fat), r = soma(meses, (m) => c(m).resLiq); return f ? r / f : null; })();
+    add("Destinação do resultado: (−) Lucros distribuídos", (m) => -c(m).distrib, { b: 1 });
+    add("= Saldo retido na empresa", (m) => c(m).retido, { final: 1 });
+    add("Impostos estimados (soma das duas frentes)", (m) => c(m).impEst, { sep: 1 });
+    add("DAS realmente pago (competência do mês, qualquer conta)", (m) => c(m).das);
+    add("Diferença (pago − estimado)", (m) => c(m).das - c(m).impEst, { dif: 1 });
+    return L_;
+  }
+  const fmtCel = (v, l) => (v == null ? "—" : l.pct ? (v * 100).toFixed(1).replace(".", ",") + "%" : brl(v));
+
+  function htmlCartoes(meses) {
+    const T = (f) => soma(meses, (m) => conta(m)[f]);
+    const fat = T("fat"), fu = T("fatUgc"), fm = T("fatMl"), pu = fat ? Math.round((fu / fat) * 100) : 0;
+    const resLiq = T("resLiq");
+    return `<div class="cartoes">
+      <div class="cartao verde"><div class="rot">Faturamento total</div><div class="val">${brl(fat)}</div><div class="nota">UGC ${pu}% · Mercado Livre ${fat ? 100 - pu : 0}%</div></div>
+      <div class="cartao roxo"><div class="rot">Resultado UGC</div><div class="val ${T("resUgc") < 0 ? "neg" : ""}">${brl(T("resUgc"))}</div><div class="nota">Receita ${brl(fu)}</div></div>
+      <div class="cartao ambar"><div class="rot">Resultado Mercado Livre</div><div class="val ${T("resMl") < 0 ? "neg" : ""}">${brl(T("resMl"))}</div><div class="nota">Receita ${brl(fm)}</div></div>
+      <div class="cartao ${resLiq < 0 ? "rosa" : ""}"><div class="rot">Resultado da empresa</div><div class="val ${resLiq < 0 ? "neg" : ""}">${brl(resLiq)}</div><div class="nota">${fat ? "Margem de " + ((resLiq / fat) * 100).toFixed(1).replace(".", ",") + "%" : "Sem faturamento"}</div></div>
+    </div>`;
+  }
+
+  // faturamento dos últimos 12 meses (empresa toda, sem a PF) e faixas do Simples
+  function htmlLimiteSimples() {
+    const fim = mesesDoPeriodo().slice(-1)[0];
+    const ms = Array.from({ length: 12 }, (_, i) => somarMes(fim, i - 11));
+    const rbt = soma(ms, (m) => conta(m).rbtMes);
+    const proxima = FAIXAS_SIMPLES.find((f) => rbt < f);
+    const passou = FAIXAS_SIMPLES.filter((f) => rbt >= f);
+    const ultima = passou.length ? passou[passou.length - 1] : 0;
+    const pct = proxima ? Math.min(100, (rbt / proxima) * 100) : 100;
+    const perto = proxima && rbt / proxima >= 0.9;
+    let aviso = "";
+    if (ultima) aviso = `⚠ Você já passou de ${brl(ultima)} em 12 meses: a alíquota do Simples muda de faixa nas duas frentes. Confira as alíquotas com o contador.`;
+    if (perto) aviso = (aviso ? aviso + " " : "") + `⚠ Falta ${brl(proxima - rbt)} para os ${brl(proxima)}: ao passar, a alíquota muda nas duas frentes.`;
+    return `<div class="bloco ${aviso ? "alerta" : ""}" id="blocoRbt">
+      <h2>Faturamento dos últimos 12 meses (empresa toda)</h2>
+      <p class="sub">${nomeMes(ms[0])} a ${nomeMes(fim)} · UGC (sem receita na pessoa física) + Mercado Livre. Faixas do Simples: ${FAIXAS_SIMPLES.map((f) => "R$ " + (f / 1000).toLocaleString("pt-BR") + " mil").join(", ")}.</p>
+      <div class="val" style="font-family:var(--fonte-impacto);font-size:1.4rem;font-weight:600">${brl(rbt)}</div>
+      <div class="barra ${perto ? "alerta" : ""} ${!proxima ? "estourou" : ""}"><div style="width:${pct.toFixed(1)}%"></div></div>
+      <div class="sub" style="margin:0">${proxima ? `${pct.toFixed(0)}% da faixa até ${brl(proxima)}` : "Acima do limite de R$ 4,8 milhões do Simples"}</div>
+      ${aviso ? `<p style="margin:10px 0 0;font-weight:600">${esc(aviso)}</p>` : ""}
+    </div>`;
+  }
+
+  // gráfico de barras agrupadas + linha (resultado da empresa)
+  function svgGraficoResultado(fim) {
+    const ms = Array.from({ length: 12 }, (_, i) => somarMes(fim, i - 11));
+    const dados = ms.map((m) => ({ m, u: conta(m).resUgc, l: conta(m).resMl, e: conta(m).resLiq }));
+    const W = 1000, H = 300, ml = 70, mr = 14, mt = 14, mb = 30;
+    const todos = dados.flatMap((d) => [d.u, d.l, d.e, 0]);
+    let mn = Math.min(...todos), mx = Math.max(...todos); if (mx === mn) mx = mn + 1;
+    const y = (v) => mt + (1 - (v - mn) / (mx - mn)) * (H - mt - mb), gw = (W - ml - mr) / ms.length, bw = Math.min(22, gw * 0.3), y0 = y(0);
+    let g = "";
+    for (let i = 0; i <= 4; i++) { const v = mn + ((mx - mn) * i) / 4; g += `<line x1="${ml}" x2="${W - mr}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(20,17,13,.08)"/><text x="${ml - 8}" y="${y(v) + 4}" text-anchor="end">${Math.abs(v) >= 1000 ? "R$ " + (v / 1000).toFixed(1).replace(".", ",") + "k" : "R$ " + Math.round(v)}</text>`; }
+    g += `<line x1="${ml}" x2="${W - mr}" y1="${y0}" y2="${y0}" stroke="rgba(20,17,13,.35)"/>`;
+    const barra = (x, v, cor, t) => (v ? `<rect x="${x}" y="${v > 0 ? y(v) : y0}" width="${bw}" height="${Math.max(1, Math.abs(y0 - y(v)))}" rx="3" fill="${cor}"><title>${t}: ${brl(v)}</title></rect>` : "");
+    let bs = "", ls = "", pts = [], mk = "";
+    dados.forEach((d, i) => {
+      const cx = ml + gw * i + gw / 2;
+      bs += barra(cx - bw - 1, d.u, "#B7A3EC", abrevMes(d.m) + " · UGC") + barra(cx + 1, d.l, "#E7B04C", abrevMes(d.m) + " · Mercado Livre");
+      ls += `<text x="${cx}" y="${H - 8}" text-anchor="middle">${abrevMes(d.m)}</text>`;
+      pts.push(`${cx},${y(d.e)}`);
+      mk += `<circle cx="${cx}" cy="${y(d.e)}" r="4" fill="#14110D" stroke="#fff" stroke-width="2"><title>${abrevMes(d.m)} · Resultado da empresa: ${brl(d.e)}</title></circle>`;
+    });
+    return `<div class="legenda"><span><i style="background:#B7A3EC"></i>Resultado UGC</span><span><i style="background:#E7B04C"></i>Resultado Mercado Livre</span><span><i style="background:#14110D"></i>Resultado da empresa</span></div>
+      <svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Resultado mensal das duas frentes e da empresa">${g}${bs}<polyline points="${pts.join(" ")}" fill="none" stroke="#14110D" stroke-width="2"/>${mk}${ls}</svg>`;
+  }
+
+  function seletorPeriodo(botoes = true) {
+    const anos = [...new Set([E.ano, Number(hojeMes.slice(0, 4)), ...Object.values(R).flatMap((o) => Object.keys(o).map((m) => Number(m.slice(0, 4))))])].sort((a, b) => b - a);
+    return `<div class="barra-periodo">
+      <select id="selModo" aria-label="Período"><option value="mes" ${E.modo === "mes" ? "selected" : ""}>Mês</option><option value="tri" ${E.modo === "tri" ? "selected" : ""}>Trimestre</option><option value="ano" ${E.modo === "ano" ? "selected" : ""}>Ano</option></select>
+      ${E.modo === "mes" ? `<select id="selMes" aria-label="Mês">${MESES.map((n, i) => `<option value="${i + 1}" ${E.mes === i + 1 ? "selected" : ""}>${n}</option>`).join("")}</select>` : ""}
+      ${E.modo === "tri" ? `<select id="selTri" aria-label="Trimestre">${[1, 2, 3, 4].map((t) => `<option value="${t}" ${E.tri === t ? "selected" : ""}>${t}º trimestre</option>`).join("")}</select>` : ""}
+      <select id="selAno" aria-label="Ano">${anos.map((a) => `<option value="${a}" ${E.ano === a ? "selected" : ""}>${a}</option>`).join("")}</select>
+      ${botoes ? `<div class="grupo-btn">
+        <button class="btn" id="btnPdf" type="button">Baixar PDF</button>
+        <button class="btn" id="btnXlsx" type="button">Baixar planilha (.xlsx)</button>
+      </div>` : ""}
+    </div>`;
+  }
+
+  function telaDRE() {
+    const meses = mesesDoPeriodo(), linhas = linhasDRE(meses);
+    const cab = `<tr><th></th>${meses.map((m) => `<th class="n">${abrevMes(m)}</th>`).join("")}${meses.length > 1 ? '<th class="n">Total</th>' : ""}</tr>`;
+    const corpo = linhas.map((l) => {
+      if (l.filho && !E.abertos[l.filho]) return "";
+      const cls = [l.b ? "b" : "", l.final ? "final" : "", l.filho ? "filho" : "", l.exp ? "clic" : "", l.exp && E.abertos[l.grupo] ? "aberto" : "", l.sep ? "b" : ""].join(" ");
+      const val = (v) => `<td class="n ${l.dif && Math.abs(v) > 0.5 ? "neg" : v < 0 && !l.pct && !l.filho ? "neg" : ""}">${fmtCel(v, l)}</td>`;
+      return `<tr class="${cls}" ${l.exp ? `data-exp="${l.grupo}"` : ""}><td>${l.exp ? '<span class="caret">▸</span>' : ""}${esc(l.rot)}</td>${l.vals.map(val).join("")}${meses.length > 1 ? val(l.tot) : ""}</tr>`;
+    }).join("");
+    const dif = linhas.find((l) => l.dif);
+    const difTot = dif ? soma(dif.vals) : 0;
+    return `${seletorPeriodo()}
+      ${htmlCartoes(meses)}
+      <div class="bloco"><h2>DRE consolidado · ${esc(rotuloPeriodo())}</h2><p class="sub">Resultado das frentes (UGC e Mercado Livre) menos o que é da empresa toda. Clique numa frente para ver receita, impostos, custos e despesas dela.</p>
+        <div class="tabela-wrap"><table id="tabDre"><thead>${cab}</thead><tbody>${corpo}</tbody></table></div>
+        ${Math.abs(difTot) > 0.5 ? `<p class="sub" style="margin-top:10px">⚠ O DAS pago difere do imposto estimado em ${brl(difTot)} no período. Ajuste as alíquotas das frentes se a diferença se repetir.</p>` : ""}
+      </div>
+      <div class="bloco"><h2>Resultado mensal</h2><p class="sub">Últimos 12 meses até ${esc(nomeMes(meses.slice(-1)[0]))}.</p>${svgGraficoResultado(meses.slice(-1)[0])}</div>
+      ${htmlLimiteSimples()}`;
+  }
+
+  // ---------------- caixa e retiradas ----------------
+  function ultimoComCaixa(frente, m) { // mês sem dados de caixa vem zerado: usa o último mês que teve
+    const ks = Object.keys(R[frente]).filter((k) => k <= m && ["saldo_conta", "caixa_entradas", "caixa_saidas"].some((c) => num(R[frente][k][c]) !== 0)).sort();
+    return ks.length ? R[frente][ks[ks.length - 1]] : null;
+  }
+  const saldos = (m) => {
+    const u = ultimoComCaixa("ugc", m), l = ultimoComCaixa("mercado_livre", m);
+    const nu = saldoInicial("nubank") + (u ? num(u.saldo_conta) : 0), mp = saldoInicial("mercado_pago") + (l ? num(l.saldo_conta) : 0);
+    return { nu, mp, total: nu + mp };
+  };
+  function svgCaixa(fim) {
+    const ms = Array.from({ length: 12 }, (_, i) => somarMes(fim, i - 11)), d = ms.map((m) => ({ m, ...saldos(m) }));
+    const W = 1000, H = 280, ml = 70, mr = 14, mt = 14, mb = 30;
+    const mn = Math.min(0, ...d.map((x) => Math.min(x.nu, x.mp, 0))), mx = Math.max(1, ...d.map((x) => Math.max(x.nu, x.mp)));
+    const y = (v) => mt + (1 - (v - mn) / (mx - mn)) * (H - mt - mb), gw = (W - ml - mr) / ms.length, bw = Math.min(26, gw * 0.34), y0 = y(0);
+    let g = "";
+    for (let i = 0; i <= 4; i++) { const v = mn + ((mx - mn) * i) / 4; g += `<line x1="${ml}" x2="${W - mr}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(20,17,13,.08)"/><text x="${ml - 8}" y="${y(v) + 4}" text-anchor="end">${Math.abs(v) >= 1000 ? "R$ " + (v / 1000).toFixed(1).replace(".", ",") + "k" : "R$ " + Math.round(v)}</text>`; }
+    const barra = (x, v, cor, t, mes) => `<rect x="${x}" y="${v >= 0 ? y(v) : y0}" width="${bw}" height="${Math.max(1, Math.abs(y0 - y(v)))}" rx="3" fill="${cor}"><title>${abrevMes(mes)} · ${t}: ${brl(v)}</title></rect>`;
+    let bs = "", ls = "";
+    d.forEach((x, i) => { const cx = ml + gw * i + gw / 2; bs += barra(cx - bw - 1, x.nu, "#B7A3EC", "Nubank PJ", x.m) + barra(cx + 1, x.mp, "#8FD3A8", "Mercado Pago", x.m); ls += `<text x="${cx}" y="${H - 8}" text-anchor="middle">${abrevMes(x.m)}</text>`; });
+    return `<div class="legenda"><span><i style="background:#B7A3EC"></i>Nubank PJ</span><span><i style="background:#8FD3A8"></i>Mercado Pago</span></div><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Saldo mensal por conta">${g}${bs}${ls}</svg>`;
+  }
+  function itensPagos(filtro) { // parcelas pagas dos lançamentos da empresa, por mês de pagamento
+    return idx.maes.flatMap((x) => x.itens.filter((i) => i.pago).map((i) => ({ ...i, tipo: x.tipo, conta: x.m.conta || "Nubank PJ", mae: x.m, mes: mesDe(i.pagoEm) }))).filter(filtro || (() => true));
+  }
+  function telaCaixa() {
+    const meses = mesesDoPeriodo(), fim = meses.slice(-1)[0], s = saldos(fim);
+    const pg = itensPagos((i) => meses.includes(i.mes));
+    const porConta = (c) => soma(pg.filter((i) => i.conta === c), (i) => i.valor);
+    const transf = soma(meses, (m) => num(U(m).transferencias_liquidas) + num(L(m).transferencias_liquidas));
+    const linhaMes = (m) => { const x = saldos(m); return `<tr><td>${nomeMes(m)}</td><td class="n">${brl(x.nu)}</td><td class="n">${brl(x.mp)}</td><td class="n"><b>${brl(x.total)}</b></td><td class="n">${brl(num(U(m).transferencias_liquidas))}</td><td class="n">${brl(num(L(m).transferencias_liquidas))}</td></tr>`; };
+    const anos12 = Array.from({ length: 12 }, (_, i) => somarMes(fim, i - 11));
+    // retiradas
+    let ret = "";
+    if (PODE.retiradas) {
+      const t = (f) => soma(meses, (m) => conta(m)[f]);
+      const pl = t("prolaboreLiq"), di = t("distrib"), pf = soma(meses, (m) => RET[m] || 0), tot = pl + di + pf, resOp = t("resOp");
+      const passou = tot > resOp + 0.005;
+      const pfMes = RET[fim] || 0, pctPf = (pfMes / LIMITE_PF_MES) * 100;
+      ret = `<div class="bloco ${passou ? "alerta" : ""}"><h2>Retiradas · ${esc(rotuloPeriodo())}</h2><p class="sub">O que chegou até você: pró-labore líquido + lucros distribuídos + recebido direto na conta pessoal (PF).</p>
+        <div class="tabela-wrap"><table><tbody>
+          <tr><td>Pró-labore líquido</td><td class="n">${brl(pl)}</td></tr>
+          <tr><td>Lucros distribuídos</td><td class="n">${brl(di)}</td></tr>
+          <tr><td>Recebido direto na PF (UGC)</td><td class="n">${brl(pf)}</td></tr>
+          <tr class="final"><td>Total que chegou até você</td><td class="n">${brl(tot)}</td></tr>
+          <tr><td>Resultado das operações no período</td><td class="n">${brl(resOp)}</td></tr>
+        </tbody></table></div>
+        ${passou ? `<p style="margin:10px 0 0;font-weight:600">⚠ As retiradas passaram do resultado das operações em ${brl(tot - resOp)}.</p>` : ""}
+        <h3 style="font-size:1rem;margin:16px 0 4px">Limite da PF em ${esc(nomeMes(fim))}</h3>
+        <div class="barra ${pctPf > 100 ? "estourou" : pctPf >= 80 ? "alerta" : ""}"><div style="width:${Math.min(100, pctPf).toFixed(1)}%"></div></div>
+        <div class="sub" style="margin:0">${brl(pfMes)} de ${brl(LIMITE_PF_MES)} recebidos na PF no mês (${Math.round(pctPf)}%)${pctPf > 100 ? " · ⚠ passou do limite" : pctPf >= 80 ? " · ⚠ perto do limite" : ""}</div>
+      </div>`;
+    }
+    return `${seletorPeriodo(false)}
+      <div class="cartoes">
+        <div class="cartao roxo"><div class="rot">Nubank PJ</div><div class="val">${brl(s.nu)}</div><div class="nota">saldo em ${esc(nomeMes(fim))}</div></div>
+        <div class="cartao verde"><div class="rot">Mercado Pago</div><div class="val">${brl(s.mp)}</div><div class="nota">saldo em ${esc(nomeMes(fim))}</div></div>
+        <div class="cartao"><div class="rot">Caixa total</div><div class="val ${s.total < 0 ? "neg" : ""}">${brl(s.total)}</div><div class="nota">as duas contas somadas</div></div>
+        <div class="cartao ambar"><div class="rot">Transferências entre contas</div><div class="val">${brl(transf)}</div><div class="nota">líquido no período: não é entrada nem saída</div></div>
+      </div>
+      ${ret}
+      <div class="bloco"><h2>Saldo por conta</h2><p class="sub">Últimos 12 meses. Nubank = saldo inicial informado + movimento do painel UGC. Mercado Pago = extrato da loja. Mês sem movimento mantém o último saldo.</p>${svgCaixa(fim)}
+        <div class="tabela-wrap" style="margin-top:10px"><table><thead><tr><th>Mês</th><th class="n">Nubank PJ</th><th class="n">Mercado Pago</th><th class="n">Caixa total</th><th class="n">Transf. (UGC)</th><th class="n">Transf. (loja)</th></tr></thead><tbody>${anos12.slice().reverse().map(linhaMes).join("")}</tbody></table></div>
+        <p class="sub" style="margin-top:8px">Uma transferência entre as contas muda o saldo de cada uma, mas o caixa total e o DRE não mudam.</p>
+      </div>
+      <div class="bloco"><h2>Saídas da empresa pagas, por conta · ${esc(rotuloPeriodo())}</h2><p class="sub">Lançamentos da empresa (contador, pró-labore, DAS, distribuição), pela conta que pagou. Só entram no DRE da empresa, nunca no DRE das frentes.</p>
+        ${pg.length ? `<div class="tabela-wrap"><table><thead><tr><th>Pago em</th><th>Lançamento</th><th>Tipo</th><th>Conta</th><th class="n">Valor</th></tr></thead><tbody>${pg.sort((a, b) => String(a.pagoEm).localeCompare(String(b.pagoEm))).map((i) => `<tr><td>${fdata(i.pagoEm)}</td><td>${esc(i.nome)}</td><td>${esc(TIPOS[i.tipo] || i.tipo || "")}</td><td><span class="chip ${i.conta === "Mercado Pago" ? "verde" : ""}">${esc(i.conta)}</span></td><td class="n">${brl(i.valor)}</td></tr>`).join("")}
+          <tr class="b"><td colspan="4">Nubank PJ</td><td class="n">${brl(porConta("Nubank PJ"))}</td></tr><tr class="b"><td colspan="4">Mercado Pago</td><td class="n">${brl(porConta("Mercado Pago"))}</td></tr></tbody></table></div>` : '<div class="vazio">Nenhum pagamento da empresa neste período.</div>'}
+      </div>`;
+  }
+
+  // ---------------- conciliação ----------------
+  const TIPOS_CONC = [
+    ["compartilhada", "Despesas compartilhadas", "despesas_compartilhadas_pagas", (i) => true],
+    ["prolabore", "Pró-labore (líquido)", "prolabore_pago", (i) => !/guia/i.test(i.nome || "")],
+    ["distribuicao", "Distribuição de lucros", "distribuicao_lucros_paga", (i) => true],
+    ["das", "DAS", "das_pago", (i) => true],
+  ];
+  function telaConciliacao() {
+    const meses = mesesDoPeriodo(), mp = itensPagos((i) => i.conta === "Mercado Pago");
+    const linhas = [];
+    let divergentes = 0;
+    meses.forEach((m) => {
+      TIPOS_CONC.forEach(([tipo, rot, campo, ok]) => {
+        const lanc = soma(mp.filter((i) => i.tipo === tipo && i.mes === m && ok(i)), (i) => i.valor);
+        const loja = num(L(m)[campo]);
+        const dif = r2(lanc - loja);
+        if (!lanc && !loja) return;
+        if (Math.abs(dif) > 0.005) divergentes++;
+        linhas.push(`<tr><td>${esc(nomeMes(m))}</td><td>${esc(rot)}</td><td class="n">${brl(lanc)}</td><td class="n">${brl(loja)}</td><td class="n ${Math.abs(dif) > 0.005 ? "neg" : ""}">${brl(dif)}</td><td>${Math.abs(dif) <= 0.005 ? '<span class="chip verde">Confere</span>' : dif > 0 ? '<span class="chip ambar">Falta no extrato da loja (ou categoria errada lá)</span>' : '<span class="chip rosa">Falta lançar aqui</span>'}</td></tr>`);
+      });
+    });
+    return `${seletorPeriodo(false)}
+      <div class="bloco"><h2>Conciliação · pagamentos pela conta do Mercado Pago</h2>
+        <p class="sub">Compara o que foi lançado aqui como pago pelo Mercado Pago com o que o extrato da loja registrou nas categorias de caixa da empresa. É só uma conferência: o DRE e o caixa usam somente os lançamentos daqui, então nada é somado duas vezes.</p>
+        ${linhas.length ? `<div class="tabela-wrap"><table><thead><tr><th>Mês</th><th>Tipo</th><th class="n">Lançado aqui (MP)</th><th class="n">No extrato da loja</th><th class="n">Diferença</th><th>Situação</th></tr></thead><tbody>${linhas.join("")}</tbody></table></div>
+          <p class="sub" style="margin-top:8px">${divergentes ? `⚠ ${divergentes} linha(s) para conferir.` : "Tudo confere neste período."} A guia de INSS/IRRF do pró-labore não entra nesta comparação.</p>` : '<div class="vazio">Nada pago pelo Mercado Pago neste período, nos dois lados.</div>'}
+      </div>`;
+  }
+
+  // ---------------- lançamentos ----------------
+  function telaLancamentos() {
+    const meses = mesesDoPeriodo();
+    let lista = idx.maes.slice();
+    if (E.filtroLanc === "periodo") lista = lista.filter((x) => meses.includes(x.comp));
+    if (E.filtroTipo) lista = lista.filter((x) => x.tipo === E.filtroTipo);
+    lista.sort((a, b) => String(b.m.data_competencia || b.m.data).localeCompare(String(a.m.data_competencia || a.m.data)));
+    const linha = (x) => {
+      const pagas = x.itens.filter((i) => i.pago).length, tot = x.itens.length;
+      const sit = pagas === tot ? '<span class="chip verde">Pago</span>' : pagas ? `<span class="chip ambar">${pagas}/${tot} pagas</span>` : '<span class="chip">Prevista</span>';
+      return `<tr class="clic" data-lanc="${x.m.id}"><td>${esc(nomeMes(x.comp || hojeMes))}</td><td>${esc(TIPOS[x.tipo] || x.tipo || "—")}</td><td>${esc(x.m.nome)}</td><td>${esc(x.m.conta || "Nubank PJ")}</td><td class="n">${brl(x.m.valor)}</td><td>${sit}</td></tr>`;
+    };
+    return `${seletorPeriodo(false)}
+      <div class="bloco"><div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px"><div><h2>Lançamentos da empresa</h2><p class="sub" style="margin:0">Despesas compartilhadas, DAS, pró-labore e distribuição de lucros. Aparecem também no painel UGC quando pagos pelo Nubank PJ.</p></div>
+        <div class="grupo-btn" style="margin-left:auto">
+          <select id="selFiltroTipo" aria-label="Tipo"><option value="">Todos os tipos</option>${Object.entries(TIPOS).map(([k, v]) => `<option value="${k}" ${E.filtroTipo === k ? "selected" : ""}>${v}</option>`).join("")}</select>
+          <select id="selFiltroLanc" aria-label="Quais"><option value="periodo" ${E.filtroLanc === "periodo" ? "selected" : ""}>Do período</option><option value="todos" ${E.filtroLanc === "todos" ? "selected" : ""}>Todos</option></select>
+          ${PODE.lancar ? '<button class="btn btn-escuro" id="btnNovoLanc" type="button">+ Novo lançamento</button>' : ""}
+        </div></div>
+        ${PODE.verLanc ? (lista.length ? `<div class="tabela-wrap"><table><thead><tr><th>Competência</th><th>Tipo</th><th>Descrição</th><th>Conta</th><th class="n">Valor (bruto)</th><th>Situação</th></tr></thead><tbody>${lista.map(linha).join("")}</tbody></table></div>` : '<div class="vazio">Nenhum lançamento neste filtro.</div>') : '<div class="vazio">Você não tem acesso aos lançamentos.</div>'}
+      </div>`;
+  }
+
+  // ---- janela de lançamento (mesmo modelo do painel: despesa-mãe + parcelas) ----
+  let LT = null; // { mae, linhas:[{id,nome,valor,data,pago,pagoEm}] }
+  function abrirLancamento(id) {
+    const x = id ? idx.maes.find((m) => m.m.id === id) : null;
+    LT = { x, linhas: [] };
+    const m = x ? x.m : null, tipo = m ? m.tipo_despesa : "compartilhada";
+    const inssPct = cfgNum("inss_retido_pct", 11);
+    $("#modalRoot").innerHTML = `<div class="overlay" id="ovLanc"><div class="modal" role="dialog" aria-modal="true" aria-label="Lançamento da empresa">
+      <h3>${m ? "Editar lançamento" : "Novo lançamento da empresa"}</h3>
+      <div class="campos">
+        <div class="campo"><label>Tipo</label><select id="ltTipo" ${m ? "disabled" : ""}>${Object.entries(TIPOS).map(([k, v]) => `<option value="${k}" ${k === tipo ? "selected" : ""}>${v}</option>`).join("")}</select></div>
+        <div class="campo"><label>Conta de pagamento</label><select id="ltConta"><option>Nubank PJ</option><option>Mercado Pago</option></select></div>
+        <div class="campo larga"><label id="ltRotDesc">Descrição</label><input id="ltDesc" type="text" autocomplete="off" placeholder="Ex.: Contador, tarifa, certificado digital"></div>
+        <div class="campo"><label>Mês de competência</label><input id="ltComp" type="month"></div>
+        <div class="campo"><label id="ltRotValor">Valor (R$)</label><input id="ltValor" type="number" min="0" step="0.01"></div>
+        <div class="campo"><label>Forma</label><select id="ltForma"><option>Pix</option><option>Boleto</option><option>Cartão</option><option>À vista</option></select></div>
+      </div>
+      <div id="ltBlocoPro" hidden>
+        <p class="secao-modal">Pró-labore</p>
+        <div class="campos">
+          <div class="campo"><label>INSS retido (R$) — padrão ${inssPct}%</label><input id="ltInss" type="number" min="0" step="0.01"></div>
+          <div class="campo"><label>IRRF (R$)</label><input id="ltIrrf" type="number" min="0" step="0.01" value="${cfgNum("irrf_padrao", 0)}"></div>
+          <div class="campo"><label>Líquido (calculado)</label><input id="ltLiquido" type="text" disabled></div>
+          <div class="campo"><label>Data da transferência</label><input id="ltDataTransf" type="date"></div>
+          <div class="campo"><label>Guia de INSS/IRRF vence em</label><input id="ltDataGuia" type="date"></div>
+        </div>
+      </div>
+      <div id="ltBlocoParc">
+        <p class="secao-modal">Pagamento</p>
+        <div class="campos">
+          <div class="campo"><label>Parcelas (1 = à vista)</label><input id="ltQtd" type="number" min="1" step="1" value="1"></div>
+          <div class="campo"><label>Data da 1ª parcela</label><input id="ltPrimeira" type="date"></div>
+        </div>
+      </div>
+      <div class="tabela-wrap"><table class="tabela-parc"><thead><tr><th>Parcela</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Pago em</th></tr></thead><tbody id="ltCorpo"></tbody></table></div>
+      <div id="ltRepetir" ${m ? "hidden" : ""}><p class="secao-modal">Repetir</p>
+        <div class="campos"><div class="campo"><label>Repetir todo mês até (opcional)</label><input id="ltRepAte" type="month"></div></div></div>
+      <div class="previa" id="ltPrevia"></div>
+      <div class="acoes-modal">
+        ${m && PODE.lancar ? '<button class="btn btn-perigo" id="ltExcluir" type="button">Excluir</button>' : ""}<span style="flex:1"></span>
+        <button class="btn" id="ltCancelar" type="button">Cancelar</button>
+        ${PODE.lancar ? '<button class="btn btn-escuro" id="ltSalvar" type="button">Salvar</button>' : ""}
+      </div></div></div>`;
+    // valores iniciais
+    $("#ltConta").value = m ? m.conta || "Nubank PJ" : "Nubank PJ";
+    $("#ltForma").value = m && m.forma_pagamento ? m.forma_pagamento : "Pix";
+    $("#ltDesc").value = m ? m.nome || "" : "";
+    $("#ltComp").value = x ? x.comp || hojeMes : hojeMes;
+    $("#ltValor").value = m ? num(m.valor) || "" : "";
+    $("#ltPrimeira").value = x && x.itens[0] ? x.itens[0].venc || hoje() : hoje();
+    if (tipo === "prolabore") {
+      $("#ltInss").value = m ? num(m.inss_retido) : "";
+      $("#ltIrrf").value = m ? num(m.irrf) : cfgNum("irrf_padrao", 0);
+      const pr = x && x.itens.find((i) => !/guia/i.test(i.nome || "")), gu = x && x.itens.find((i) => /guia/i.test(i.nome || ""));
+      $("#ltDataTransf").value = (pr && pr.venc) || hoje();
+      $("#ltDataGuia").value = (gu && gu.venc) || guiaPadrao($("#ltComp").value);
+    }
+    if (x) LT.linhas = x.itens.map((i) => ({ id: i.id, nome: i.nome, valor: i.valor, data: i.venc || "", pago: i.pago, pagoEm: i.pago ? i.pagoEm || i.venc : "" }));
+    else { ltAplicarTipo(); ltGerar(); }
+    ltAplicarTipo(true);
+    ltRenderParcelas();
+    ligarModalLanc();
+  }
+  const guiaPadrao = (comp) => (comp ? somarMes(comp, 1) + "-20" : hoje());
+  const ltTipo = () => $("#ltTipo").value;
+  function ltAplicarTipo(manter) {
+    const t = ltTipo();
+    $("#ltBlocoPro").hidden = t !== "prolabore";
+    $("#ltBlocoParc").hidden = t === "prolabore";
+    $("#ltRotValor").textContent = t === "prolabore" ? "Pró-labore bruto (R$)" : "Valor total (R$)";
+    $("#ltRotDesc").textContent = t === "prolabore" ? "Descrição (opcional)" : t === "das" ? "Descrição (ex.: DAS 10/2026)" : t === "distribuicao" ? "Descrição (ex.: Distribuição de lucros out/2026)" : "Descrição (ex.: Contador, tarifa, certificado digital)";
+    if (!manter && t === "prolabore") { ltPro(); }
+  }
+  function ltPro() { // pró-labore: líquido e guia viram as duas parcelas
+    const bruto = num($("#ltValor").value), inss = $("#ltInss").value === "" ? r2((bruto * cfgNum("inss_retido_pct", 11)) / 100) : num($("#ltInss").value), irrf = num($("#ltIrrf").value);
+    if ($("#ltInss").value === "" && bruto) $("#ltInss").value = inss;
+    const liq = r2(bruto - inss - irrf);
+    $("#ltLiquido").value = brl(liq);
+    const velhas = LT.linhas, pLiq = velhas.find((l) => !/guia/i.test(l.nome || "")), pGu = velhas.find((l) => /guia/i.test(l.nome || ""));
+    LT.linhas = [{ id: pLiq && pLiq.id, nome: "Pró-labore líquido", valor: liq, data: $("#ltDataTransf").value, pago: pLiq ? pLiq.pago : false, pagoEm: pLiq ? pLiq.pagoEm : "" }];
+    if (inss + irrf > 0.004) LT.linhas.push({ id: pGu && pGu.id, nome: "Guia INSS/IRRF", valor: r2(inss + irrf), data: $("#ltDataGuia").value, pago: pGu ? pGu.pago : false, pagoEm: pGu ? pGu.pagoEm : "" });
+  }
+  function ltGerar() { // refaz as parcelas ainda não pagas (as pagas ficam como estão)
+    if (ltTipo() === "prolabore") return ltPro();
+    const total = num($("#ltValor").value), pagas = LT.linhas.filter((l) => l.pago), abertas = LT.linhas.filter((l) => !l.pago);
+    const n = Math.max(Math.floor(num($("#ltQtd").value)) || 1, pagas.length), faltam = n - pagas.length;
+    const resto = r2(total - soma(pagas, (l) => l.valor)), prim = $("#ltPrimeira").value || hoje(), novas = [];
+    for (let j = 0; j < faltam; j++) {
+      const base = Math.floor((resto / faltam) * 100) / 100;
+      novas.push({ id: abertas[j] && abertas[j].id, nome: "", valor: j === faltam - 1 ? r2(resto - base * (faltam - 1)) : base, data: somarDataMes(prim, pagas.length + j), pago: false, pagoEm: "" });
+    }
+    LT.linhas = [...pagas, ...novas];
+  }
+  function ltRenderParcelas() {
+    $("#ltCorpo").innerHTML = LT.linhas.map((l, i) => `<tr data-i="${i}"><td>${i + 1}/${LT.linhas.length}${l.nome && ltTipo() === "prolabore" ? "<br><small>" + esc(l.nome) + "</small>" : ""}</td>
+      <td><input type="number" step="0.01" min="0" data-k="valor" value="${l.valor}" ${l.pago || ltTipo() === "prolabore" ? "readonly" : ""}></td>
+      <td><input type="date" data-k="data" value="${l.data}" ${l.pago ? "readonly" : ""}></td>
+      <td><select data-k="status"><option value="0" ${l.pago ? "" : "selected"}>Prevista</option><option value="1" ${l.pago ? "selected" : ""}>Paga</option></select></td>
+      <td><input type="date" data-k="pagoEm" value="${l.pagoEm}" ${l.pago ? "" : "disabled"}></td></tr>`).join("");
+    ltPrevia();
+  }
+  function ltPrevia() {
+    const t = ltTipo(), bruto = num($("#ltValor").value), erros = [];
+    const somaP = r2(soma(LT.linhas, (l) => l.valor)), alvo = bruto; // no pró-labore, líquido + guia = bruto
+    if (!bruto) erros.push("Informe o valor.");
+    if (t === "prolabore" && num($("#ltInss").value) + num($("#ltIrrf").value) > bruto) erros.push("INSS e IRRF somam mais que o bruto.");
+    if (bruto && Math.abs(somaP - alvo) > 0.005) erros.push(`As parcelas somam ${brl(somaP)}, mas o valor total é ${brl(alvo)}.`);
+    if (LT.linhas.some((l) => l.pago && !l.pagoEm)) erros.push("Informe a data real do pagamento das parcelas pagas.");
+    if (LT.linhas.some((l) => !l.data)) erros.push("Toda parcela precisa de vencimento.");
+    const comp = $("#ltComp").value;
+    const texto = t === "prolabore"
+      ? `No DRE entra o <b>bruto</b> (${brl(bruto)}) em ${esc(comp ? nomeMes(comp) : "—")}. No caixa sai o líquido na data da transferência${LT.linhas.length > 1 ? " e a guia de INSS/IRRF no dia 20 do mês seguinte" : ""}.`
+      : t === "distribuicao" ? `Não é despesa: aparece só em “Destinação do resultado” (${esc(comp ? nomeMes(comp) : "—")}).`
+      : t === "das" ? `O DAS não entra no DRE das frentes (elas usam o imposto estimado): serve para a linha “estimado × pago” de ${esc(comp ? nomeMes(comp) : "—")}.`
+      : `Entra no DRE da empresa em ${esc(comp ? nomeMes(comp) : "—")}; o dinheiro sai nas datas das parcelas.`;
+    $("#ltPrevia").innerHTML = texto + erros.map((e) => `<span class="erro">✕ ${esc(e)}</span>`).join("");
+    return erros;
+  }
+  function ligarModalLanc() {
+    const fechar = () => ($("#modalRoot").innerHTML = "");
+    $("#ltCancelar").onclick = fechar;
+    $("#ovLanc").addEventListener("mousedown", (e) => { if (e.target.id === "ovLanc") fechar(); });
+    $("#ltTipo").addEventListener("change", () => { LT.linhas = []; ltAplicarTipo(); ltGerar(); ltRenderParcelas(); });
+    ["ltValor", "ltQtd", "ltPrimeira"].forEach((id) => $("#" + id).addEventListener("input", () => { ltGerar(); ltRenderParcelas(); }));
+    ["ltInss", "ltIrrf", "ltDataTransf", "ltDataGuia"].forEach((id) => $("#" + id).addEventListener("input", () => { ltPro(); ltRenderParcelas(); }));
+    $("#ltComp").addEventListener("input", () => { if (ltTipo() === "prolabore" && !LT.x) { $("#ltDataGuia").value = guiaPadrao($("#ltComp").value); ltPro(); ltRenderParcelas(); } else ltPrevia(); });
+    $("#ltCorpo").addEventListener("change", (ev) => {
+      const tr = ev.target.closest("tr[data-i]"), k = ev.target.dataset.k, l = tr && LT.linhas[Number(tr.dataset.i)];
+      if (!l || !k) return;
+      if (k === "valor") l.valor = num(ev.target.value);
+      else if (k === "data") l.data = ev.target.value;
+      else if (k === "pagoEm") l.pagoEm = ev.target.value;
+      else if (k === "status") { l.pago = ev.target.value === "1"; l.pagoEm = l.pago ? l.pagoEm || l.data : ""; ltRenderParcelas(); return; }
+      ltPrevia();
+    });
+    const sv = $("#ltSalvar");
+    if (sv) sv.onclick = salvarLancamento;
+    const ex = $("#ltExcluir");
+    if (ex) ex.onclick = excluirLancamento;
+  }
+  async function salvarLancamento() {
+    if (ltTipo() === "prolabore") ltPro();
+    const erros = ltPrevia();
+    if (erros.length) { alert(erros[0]); return; }
+    const botao = $("#ltSalvar"); botao.disabled = true;
+    try {
+      const t = ltTipo(), comp = $("#ltComp").value, bruto = num($("#ltValor").value), conta = $("#ltConta").value, forma = $("#ltForma").value;
+      const agora = new Date().toISOString();
+      const nome = $("#ltDesc").value.trim() || (t === "prolabore" ? "Pró-labore " + comp.slice(5, 7) + "/" + comp.slice(0, 4) : TIPOS[t]);
+      const pagas = LT.linhas.filter((l) => l.pago), tudoPago = LT.linhas.length > 0 && pagas.length === LT.linhas.length;
+      const modoFilhas = LT.linhas.length > 1 || (LT.x && LT.x.filhas.length > 0);
+      const mae = (compMes, linhas) => {
+        const pg = linhas.filter((l) => l.pago), todas = linhas.length > 0 && pg.length === linhas.length;
+        return {
+          nome, valor: bruto, data: linhas.map((l) => l.data).sort()[0] || null, data_competencia: compMes + "-01", tipo_despesa: t, frente: "Empresa", conta, forma_pagamento: forma,
+          categoria: t === "compartilhada" ? $("#ltDesc").value.trim() || "Despesa da empresa (compartilhada)" : TIPOS[t], status: todas ? "Pago" : "Pendente",
+          valor_pago: modoFilhas ? r2(soma(pg, (l) => l.valor)) : todas ? bruto : 0, pago_em: pg.map((l) => l.pagoEm).sort().pop() || null,
+          so_fluxo: false, so_resultado: false, contrato_id: null, parent_id: null, updated_at: agora,
+          inss_retido: t === "prolabore" ? num($("#ltInss").value) : null, irrf: t === "prolabore" ? num($("#ltIrrf").value) : null,
+        };
+      };
+      const filhasDe = (maeId, linhas, nomes) => linhas.map((l, i) => ({
+        nome: nomes ? l.nome : `Parcela ${i + 1}/${linhas.length}`, valor: l.valor, data: l.data, data_competencia: l.data, categoria: TIPOS[t], status: l.pago ? "Pago" : "Pendente",
+        valor_pago: l.pago ? l.valor : 0, pago_em: l.pago ? l.pagoEm : null, parent_id: maeId, frente: "Empresa", conta, so_fluxo: false, so_resultado: false, contrato_id: null, updated_at: agora,
+      }));
+      const verificar = ({ error }) => { if (error) throw error; };
+      if (LT.x) {
+        verificar(await Auth.sb.from("financas_despesas").update(mae(comp, LT.linhas)).eq("id", LT.x.m.id));
+        verificar(await Auth.sb.from("financas_despesas").delete().eq("parent_id", LT.x.m.id));
+        if (modoFilhas) verificar(await Auth.sb.from("financas_despesas").insert(filhasDe(LT.x.m.id, LT.linhas, t === "prolabore")));
+      } else {
+        // novo (e, se pedido, repetido todo mês até a data escolhida; as cópias começam como previstas)
+        const ate = $("#ltRepAte").value, meses = ate && ate >= comp ? (Number(ate.slice(0, 4)) - Number(comp.slice(0, 4))) * 12 + Number(ate.slice(5, 7)) - Number(comp.slice(5, 7)) + 1 : 1;
+        const maes = [];
+        for (let i = 0; i < meses; i++) {
+          const linhas = LT.linhas.map((l) => ({ ...l, data: somarDataMes(l.data, i), pago: i === 0 ? l.pago : false, pagoEm: i === 0 ? l.pagoEm : "" }));
+          maes.push({ linhas, campos: { ...mae(somarMes(comp, i), linhas), ...(meses > 1 ? { fixa: true, grupo_repeticao: crypto.randomUUID() } : {}) } });
+        }
+        if (meses > 1) { const g = crypto.randomUUID(); maes.forEach((x) => (x.campos.grupo_repeticao = g)); }
+        const { data, error } = await Auth.sb.from("financas_despesas").insert(maes.map((x) => x.campos)).select();
+        if (error) throw error;
+        if (modoFilhas) {
+          const filhas = data.flatMap((row, i) => filhasDe(row.id, maes[i].linhas, t === "prolabore"));
+          verificar(await Auth.sb.from("financas_despesas").insert(filhas));
+        }
+      }
+      $("#modalRoot").innerHTML = "";
+      await carregar(); render();
+    } catch (e) {
+      console.error(e);
+      alert("Não foi possível salvar. Se você deveria poder lançar, avise a administradora.");
+      botao.disabled = false;
+    }
+  }
+  async function excluirLancamento() {
+    if (!LT.x || !confirm(`Excluir "${LT.x.m.nome}"? Isso também remove as ${LT.x.filhas.length || 1} parcela(s) dele.`)) return;
+    const { error } = await Auth.sb.from("financas_despesas").delete().eq("id", LT.x.m.id);
+    if (error) { alert("Não foi possível excluir."); return; }
+    $("#modalRoot").innerHTML = "";
+    await carregar(); render();
+  }
+
+  // ---------------- acessos (só a administradora) ----------------
+  async function chamarAcessos(corpo) {
+    const { data, error } = await Auth.sb.functions.invoke("gerir-acessos", { body: corpo });
+    if (error) {
+      let msg = error.message;
+      try { const j = await error.context.json(); if (j && j.error) msg = j.error; } catch (e) {}
+      throw new Error(msg);
+    }
+    if (data && data.error) throw new Error(data.error);
+    return data;
+  }
+  async function carregarAcessos() {
+    if (!PODE.acessos) return;
+    LOG = (await Auth.sb.from("acessos_log").select("*").order("em", { ascending: false }).limit(100)).data || [];
+    try { PESSOAS = (await chamarAcessos({ acao: "listar" })).pessoas || []; }
+    catch (e) { PESSOAS = []; E.erroAcessos = e.message; }
+  }
+  function telaAcessos() {
+    if (!PODE.acessos) return '<div class="vazio">Só a administradora vê esta área.</div>';
+    const rotPapel = { dono: "Administradora", contador: "Contador", socio: "Sócio/gestor" };
+    const linha = (p) => `<tr data-uid="${p.user_id}">
+      <td>${esc(p.nome || "")}<br><small>${esc(p.email || "")}</small></td><td>${esc(rotPapel[p.papel] || p.papel)}</td>
+      <td>${p.papel === "dono" ? "Tudo" : `<select data-f="ugc" ${PODE.admin ? "" : "disabled"}><option value="nenhum" ${p.ugc === "nenhum" ? "selected" : ""}>Sem acesso</option><option value="leitura" ${p.ugc === "leitura" ? "selected" : ""}>Somente leitura</option><option value="edicao" ${p.ugc === "edicao" ? "selected" : ""}>Leitura e edição</option></select>`}</td>
+      <td>${p.papel === "dono" ? "Sim" : `<select data-f="retiradas" ${PODE.admin ? "" : "disabled"}><option value="1" ${p.retiradas ? "selected" : ""}>Vê</option><option value="0" ${p.retiradas ? "" : "selected"}>Não vê</option></select>`}</td>
+      <td>${p.ativo ? (p.bloqueado ? '<span class="chip rosa">Bloqueado</span>' : p.convite_pendente ? '<span class="chip ambar">Convite pendente</span>' : '<span class="chip verde">Ativo</span>') : '<span class="chip rosa">Desativado</span>'}</td>
+      <td>${p.ultimo_login ? new Date(p.ultimo_login).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : "—"}</td>
+      <td style="white-space:nowrap">${p.papel === "dono" ? "" : `<button class="btn btn-peq" data-a="salvar">Salvar</button> ${p.ativo ? '<button class="btn btn-peq btn-perigo" data-a="desativar">Desativar</button>' : '<button class="btn btn-peq" data-a="reativar">Reativar</button>'}${p.convite_pendente && p.ativo ? ' <button class="btn btn-peq" data-a="reenviar">Reenviar convite</button>' : ""}`}</td></tr>`;
+    return `<div class="bloco"><h2>Acessos</h2><p class="sub">Cada pessoa recebe um convite por e-mail e cria a própria senha. Desativar corta o acesso na hora.</p>
+        ${E.erroAcessos ? `<div class="aviso erro">Não consegui carregar as pessoas: ${esc(E.erroAcessos)}. Confira se a função <b>gerir-acessos</b> foi publicada.</div>` : ""}
+        <div class="tabela-wrap"><table><thead><tr><th>Pessoa</th><th>Perfil</th><th>Painel UGC</th><th>Retiradas e PF</th><th>Situação</th><th>Último login</th><th></th></tr></thead><tbody>${PESSOAS.map(linha).join("") || '<tr><td colspan="7" class="vazio">Ninguém ainda.</td></tr>'}</tbody></table></div>
+      </div>
+      ${PODE.admin ? `<div class="bloco"><h2>Convidar pessoa</h2><div class="campos" style="margin-top:8px">
+        <div class="campo"><label>Nome</label><input id="cvNome" type="text" autocomplete="off"></div>
+        <div class="campo"><label>E-mail</label><input id="cvEmail" type="email" autocomplete="off"></div>
+        <div class="campo"><label>Perfil</label><select id="cvPapel"><option value="contador">Contador — DRE da empresa só leitura</option><option value="socio">Sócio/gestor — DRE + lançar e editar os lançamentos da empresa</option></select></div>
+        <div class="campo"><label>Pode ver o painel UGC?</label><select id="cvUgc"><option value="nenhum">Sem acesso</option><option value="leitura">Somente leitura</option><option value="edicao">Leitura e edição</option></select></div>
+        <div class="campo"><label>Vê “Retiradas” e o recebido na PF?</label><select id="cvRet"><option value="1">Sim</option><option value="0">Não</option></select></div>
+        </div><div class="acoes-modal"><button class="btn btn-escuro" id="btnConvidar" type="button">Enviar convite</button></div><div id="cvMsg"></div></div>
+      <div class="bloco"><h2>Configurações da empresa</h2><p class="sub">Padrões usados nos lançamentos e no caixa.</p><div class="campos">
+        <div class="campo"><label>INSS retido do pró-labore (%)</label><input id="cfInss" type="number" step="0.01" min="0" value="${cfgNum("inss_retido_pct", 11)}"></div>
+        <div class="campo"><label>IRRF padrão do pró-labore (R$)</label><input id="cfIrrf" type="number" step="0.01" min="0" value="${cfgNum("irrf_padrao", 0)}"></div>
+        <div class="campo"><label>INSS patronal sobre o pró-labore (%)</label><input id="cfPat" type="number" step="0.01" min="0" value="${cfgNum("inss_patronal_pct", 0)}"></div>
+        <div class="campo"><label>Saldo inicial Nubank PJ (R$)</label><input id="cfNu" type="number" step="0.01" value="${saldoInicial("nubank")}"></div>
+        <div class="campo"><label>Saldo inicial Mercado Pago (R$)</label><input id="cfMp" type="number" step="0.01" value="${saldoInicial("mercado_pago")}"></div>
+        </div><div class="acoes-modal"><button class="btn btn-escuro" id="btnCfg" type="button">Salvar configurações</button></div><div id="cfMsg"></div></div>` : ""}
+      <div class="bloco"><h2>Registro de acessos</h2><p class="sub">Os 100 acessos mais recentes.</p>
+        <div class="tabela-wrap"><table><thead><tr><th>Quando</th><th>Pessoa</th><th>Página</th></tr></thead><tbody>${LOG.map((l) => `<tr><td>${new Date(l.em).toLocaleString("pt-BR")}</td><td>${esc(l.email || "")}</td><td>${esc(l.pagina || "")}</td></tr>`).join("") || '<tr><td colspan="3" class="vazio">Sem registros.</td></tr>'}</tbody></table></div></div>`;
+  }
+  async function acaoAcessos(ev) {
+    const b = ev.target.closest("[data-a]"); if (!b) return;
+    const tr = b.closest("tr"), uid = tr.dataset.uid, a = b.dataset.a;
+    try {
+      if (a === "salvar") await chamarAcessos({ acao: "atualizar", user_id: uid, ugc: tr.querySelector('[data-f="ugc"]').value, retiradas: tr.querySelector('[data-f="retiradas"]').value === "1" });
+      else if (a === "desativar") { if (!confirm("Desativar esta pessoa? O acesso é cortado na hora.")) return; await chamarAcessos({ acao: "desativar", user_id: uid }); }
+      else if (a === "reativar") await chamarAcessos({ acao: "reativar", user_id: uid });
+      else if (a === "reenviar") { await chamarAcessos({ acao: "reenviar", user_id: uid }); alert("Convite reenviado."); }
+      await carregarAcessos(); render();
+    } catch (e) { alert(e.message); }
+  }
+  async function convidar() {
+    const msg = $("#cvMsg"); msg.innerHTML = "";
+    try {
+      await chamarAcessos({ acao: "convidar", nome: $("#cvNome").value, email: $("#cvEmail").value, papel: $("#cvPapel").value, ugc: $("#cvUgc").value, retiradas: $("#cvRet").value === "1" });
+      await carregarAcessos(); render();
+      $("#cvMsg").innerHTML = '<div class="aviso ok">Convite enviado. A pessoa recebe um e-mail para criar a senha.</div>';
+    } catch (e) { msg.innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
+  }
+  async function salvarCfg() {
+    const linhas = [["inss_retido_pct", num($("#cfInss").value)], ["irrf_padrao", num($("#cfIrrf").value)], ["inss_patronal_pct", num($("#cfPat").value)], ["saldo_inicial", { nubank: num($("#cfNu").value), mercado_pago: num($("#cfMp").value) }]];
+    const { error } = await Auth.sb.from("empresa_config").upsert(linhas.map(([chave, valor]) => ({ chave, valor, atualizado_em: new Date().toISOString() })), { onConflict: "chave" });
+    $("#cfMsg").innerHTML = error ? '<div class="aviso erro">Não foi possível salvar.</div>' : '<div class="aviso ok">Configurações salvas.</div>';
+    if (!error) { await carregar(); }
+  }
+
+  // ---------------- exportar ----------------
+  function dadosExport() {
+    const meses = mesesDoPeriodo(), linhas = linhasDRE(meses);
+    const cab = ["", ...meses.map(nomeMes), ...(meses.length > 1 ? ["Total"] : [])];
+    const corpo = linhas.map((l) => [(l.filho ? "    " : "") + l.rot, ...l.vals.map((v) => (l.pct ? (v == null ? "" : (v * 100).toFixed(1) + "%") : r2(v))), ...(meses.length > 1 ? [l.pct ? (l.tot == null ? "" : (l.tot * 100).toFixed(1) + "%") : r2(l.tot)] : [])]);
+    return { cab, corpo, titulo: "DRE da empresa — " + rotuloPeriodo() };
+  }
+  const nomeArquivo = (ext) => "dre-empresa-" + rotuloPeriodo().replace(/[^\w]+/g, "-") + "." + ext;
+  function montarXlsx() {
+    const { cab, corpo, titulo } = dadosExport();
+    const ws = XLSX.utils.aoa_to_sheet([[titulo], [], cab, ...corpo]);
+    ws["!cols"] = [{ wch: 52 }, ...cab.slice(1).map(() => ({ wch: 16 }))];
+    const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "DRE");
+    return wb;
+  }
+  function montarPdf() {
+    const { cab, corpo, titulo } = dadosExport();
+    const doc = new window.jspdf.jsPDF({ orientation: cab.length > 6 ? "landscape" : "portrait", unit: "pt", format: "a4" });
+    doc.setFontSize(14); doc.text(titulo, 40, 40);
+    doc.setFontSize(9); doc.text("Gerado em " + new Date().toLocaleString("pt-BR"), 40, 56);
+    const fmt = (c) => (typeof c === "number" ? brl(c) : c);
+    doc.autoTable({ head: [cab], body: corpo.map((l) => l.map(fmt)), startY: 70, styles: { fontSize: 8, cellPadding: 3 }, headStyles: { fillColor: [20, 17, 13] }, columnStyles: Object.fromEntries(cab.slice(1).map((_, i) => [i + 1, { halign: "right" }])) });
+    return doc;
+  }
+  function baixarXlsx() {
+    if (!window.XLSX) { alert("A biblioteca da planilha ainda está carregando. Tente de novo em instantes."); return; }
+    XLSX.writeFile(montarXlsx(), nomeArquivo("xlsx"));
+  }
+  function baixarPdf() {
+    if (!window.jspdf) { alert("A biblioteca do PDF ainda está carregando. Tente de novo em instantes."); return; }
+    montarPdf().save(nomeArquivo("pdf"));
+  }
+  // ---------------- tela ----------------
+  function abas() {
+    const lista = [["dre", "DRE"], ["caixa", "Caixa e retiradas"], ["lanc", "Lançamentos"], ["conc", "Conciliação"]];
+    if (PODE.acessos) lista.push(["acessos", "Acessos"]);
+    $("#abas").innerHTML = lista.map(([k, r]) => `<button class="aba ${E.aba === k ? "ativa" : ""}" data-aba="${k}" type="button" role="tab" aria-selected="${E.aba === k}">${r}</button>`).join("");
+  }
+  function render() {
+    abas();
+    const tela = { dre: telaDRE, caixa: telaCaixa, lanc: telaLancamentos, conc: telaConciliacao, acessos: telaAcessos }[E.aba] || telaDRE;
+    $("#conteudo").innerHTML = tela();
+  }
+  document.addEventListener("click", (ev) => {
+    const aba = ev.target.closest("[data-aba]");
+    if (aba) { E.aba = aba.dataset.aba; if (E.aba === "acessos") carregarAcessos().then(render); render(); return; }
+    const exp = ev.target.closest("tr[data-exp]");
+    if (exp) { E.abertos[exp.dataset.exp] = !E.abertos[exp.dataset.exp]; render(); return; }
+    const lanc = ev.target.closest("tr[data-lanc]");
+    if (lanc) { abrirLancamento(lanc.dataset.lanc); return; }
+    if (ev.target.id === "btnNovoLanc") { abrirLancamento(null); return; }
+    if (ev.target.id === "btnPdf") return baixarPdf();
+    if (ev.target.id === "btnXlsx") return baixarXlsx();
+    if (ev.target.id === "btnConvidar") return convidar();
+    if (ev.target.id === "btnCfg") return salvarCfg();
+    if (ev.target.closest("[data-a]")) return acaoAcessos(ev);
+  });
+  document.addEventListener("change", (ev) => {
+    const id = ev.target.id;
+    if (id === "selModo") E.modo = ev.target.value;
+    else if (id === "selMes") E.mes = Number(ev.target.value);
+    else if (id === "selTri") E.tri = Number(ev.target.value);
+    else if (id === "selAno") E.ano = Number(ev.target.value);
+    else if (id === "selFiltroTipo") E.filtroTipo = ev.target.value;
+    else if (id === "selFiltroLanc") E.filtroLanc = ev.target.value;
+    else return;
+    render();
+  });
+  $("#btnAtualizar").addEventListener("click", async () => { await carregar(); render(); });
+  $("#btnSair").addEventListener("click", () => Auth.logout());
+
+  try { await carregar(); } catch (e) {
+    console.error(e);
+    $("#aviso").innerHTML = '<div class="aviso erro">Não consegui carregar os dados. Tente atualizar a página.</div>';
+  }
+  // o painel pode ter mudado de dono/papel desde o último acesso: reconfere as permissões de tempos em tempos
+  setInterval(async () => { const p = await Auth.minhasPermissoes(); if (!p.erro && (p.semPerfil || p.ativo === false)) Auth.logout(); }, 120000);
+  render();
+  window.__empresa = { E, conta, linhasDRE, mesesDoPeriodo, saldos, indexar: () => idx, render, carregar, abrirLancamento, montarPdf, montarXlsx };
+})();
+</script>
+</body>
+</html>

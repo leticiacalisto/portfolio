@@ -61,10 +61,40 @@ async function logout() {
  * Envia o e-mail de recuperação de senha.
  */
 async function recuperarSenha(email, captchaToken) {
-  const { error } = await sb.auth.resetPasswordForEmail(email, { captchaToken: captchaToken });
+  const { error } = await sb.auth.resetPasswordForEmail(email, { captchaToken: captchaToken, redirectTo: location.origin + "/login/definir-senha.html" });
   if (error) {
     throw new Error(error.message);
   }
+}
+
+/**
+ * Papel e permissões de quem está logado (função minhas_permissoes do banco).
+ * Devolve: { erro: true } se não deu pra consultar (ex.: SQL ainda não rodou; quem chama segue normal),
+ *          { semPerfil: true } se o usuário não tem perfil, ou o objeto { papel, ativo, permissoes: { recurso: { ler, escrever } } }.
+ */
+async function minhasPermissoes() {
+  try {
+    const { data, error } = await sb.rpc("minhas_permissoes");
+    if (error) return { erro: true };
+    return data || { semPerfil: true };
+  } catch (e) {
+    return { erro: true };
+  }
+}
+
+/** Grava "quem entrou e quando" (a pessoa só consegue gravar o próprio acesso). Nunca atrapalha a página. */
+async function registrarAcesso(pagina) {
+  try {
+    const { data } = await sb.auth.getSession();
+    const u = data.session && data.session.user;
+    if (u) await sb.from("acessos_log").insert({ user_id: u.id, email: u.email, pagina });
+  } catch (e) {}
+}
+
+/** Pra onde cada pessoa vai depois de entrar: painel UGC (se pode ler) ou página da empresa. */
+function paginaInicial(perm) {
+  if (perm && !perm.erro && !perm.semPerfil && perm.permissoes && !perm.permissoes.ugc_operacao.ler) return "empresa.html";
+  return "painel.html";
 }
 
 // Objeto global exposto para as páginas usarem
@@ -74,4 +104,7 @@ window.Auth = {
   checkAuth,
   logout,
   recuperarSenha,
+  minhasPermissoes,
+  registrarAcesso,
+  paginaInicial,
 };
