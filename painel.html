@@ -5321,6 +5321,11 @@
         <span class="rotulo-limpo">Data da 1ª parcela</span>
         <input type="date" id="ndPrimeira" class="input-limpo">
       </div>
+      <div class="prop-limpa larga" id="ndLinhaFatura" hidden>
+        <span class="rotulo-limpo">Fatura do cartão (mês do vencimento)</span>
+        <select id="ndFatura" class="input-limpo"></select>
+        <span class="texto-pequeno" style="display:block; margin-top:4px;">Lançou na fatura errada? Escolha outro mês: o vencimento muda para ele (e as parcelas seguintes acompanham). A data da compra em Resultados não muda.</span>
+      </div>
     </div>
     <div style="margin:4px 0 8px;"><button type="button" class="btn-cancelar-quadro" id="btnNdGerar" title="Recria as parcelas ainda não pagas">Gerar parcelas</button></div>
     <div class="tabela-cheia-wrap">
@@ -13896,6 +13901,36 @@
       ndEl("ndCompetencia").value = (k && k.data_assinatura) || "";
     }
     if (mensal) ndEl("ndQtd").value = 1;
+    ndAtualizarFatura();
+  }
+
+  // Fatura do cartão (Nubank PJ): é o mês do vencimento da 1ª parcela. Mudar o mês move o vencimento, sem mexer na competência.
+  function ndAtualizarFatura() {
+    const linha = ndEl("ndLinhaFatura");
+    const cartao = ndEl("ndForma").value === "Cartão" && ndEl("ndConta").value === CONTA_PADRAO;
+    linha.hidden = !cartao;
+    if (!cartao) return;
+    const atual = mesDe(ndEl("ndPrimeira").value || hojeIso());
+    const meses = new Set([atual]);
+    const hoje = hojeIso().slice(0, 7);
+    for (let i = -18; i <= 12; i++) meses.add(deslocarData(hoje + "-01", i, "meses").slice(0, 7));
+    ndEl("ndFatura").innerHTML = [...meses].sort().map((m) => `<option value="${m}">${rotuloMes(m)}</option>`).join("");
+    ndEl("ndFatura").value = atual;
+  }
+  function ndMudarFatura() {
+    if (!nd) return;
+    const novoMes = ndEl("ndFatura").value;
+    if (nd.linhas.some((l) => l.pago)) {
+      alert("Esta compra já tem parcela paga. Para trocar de fatura, desfaça o pagamento dessa parcela primeiro.");
+      ndAtualizarFatura();
+      return;
+    }
+    const dataAtual = ndEl("ndPrimeira").value || hojeIso();
+    const ultimoDia = new Date(Number(novoMes.slice(0, 4)), Number(novoMes.slice(5, 7)), 0).getDate();
+    const dia = String(Math.min(Number(dataAtual.slice(8, 10)) || 1, ultimoDia)).padStart(2, "0");
+    ndEl("ndPrimeira").value = `${novoMes}-${dia}`;
+    ndGerarParcelas(); // refaz as parcelas (nenhuma está paga); a competência fica como está
+    ndAtualizarFatura();
   }
 
   // ---- parcelas ----
@@ -14126,7 +14161,10 @@
   ndEl("ndPrimeira").addEventListener("input", () => {
     if (!nd.compTocada && ndEl("ndTipo").value !== "campanha") ndEl("ndCompetencia").value = ndEl("ndPrimeira").value;
     ndGerarParcelas();
+    ndAtualizarFatura();
   });
+  ndEl("ndForma").addEventListener("change", ndRecalcular);
+  ndEl("ndFatura").addEventListener("change", ndMudarFatura);
   ndEl("btnNdGerar").addEventListener("click", ndGerarParcelas);
   ndEl("btnNdCancelar").addEventListener("click", fecharDespesaNova);
   overlayDespesaNova.addEventListener("click", (evento) => {
