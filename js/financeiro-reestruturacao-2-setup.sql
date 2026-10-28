@@ -8,7 +8,9 @@
 --   * fornecedor: campo opcional da "Nova despesa".
 --   * resumo_mensal_frente: um resumo por frente e por mês, gravado pelo
 --     painel, pra futura página da empresa somar as frentes (UGC + loja).
---     Só o usuário que gravou lê e grava (user_id = auth.uid()).
+--     A política daqui (só quem gravou lê) é PROVISÓRIA: js/financeiro-permissoes-setup.sql
+--     (parte 3) troca por papéis (recurso 'empresa_dre'), pra o sócio ler também.
+--     user_id fica como "quem gravou".
 -- =====================================================================
 
 alter table contratos add column if not exists aliquota_manual numeric;
