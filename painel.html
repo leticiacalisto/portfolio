@@ -3296,11 +3296,11 @@
   #painel-fin-resultados .trilho-meta{ background:#ECE6F6; }
   #painel-fin-resultados .preenchido-meta{ background: linear-gradient(90deg, #F8A9CB, #9B83E2); }
   #painel-fin-resultados .topo-meta-receita input{ border:none; background:#fff; }
-  .cartao-fluxo.analise{ border:1px solid var(--borda); border-top:3px solid var(--cinza-claro); border-left:1px solid var(--borda); }
-  .cartao-fluxo.analise.entradas{ border-top-color: var(--verde-sucesso); }
-  .cartao-fluxo.analise.saidas{ border-top-color: var(--vermelho-erro); }
-  .cartao-fluxo.analise.saldo{ border-top-color:#2a78d6; }
-  .cartao-fluxo.analise.melhor{ border-top-color: var(--grafite); }
+  /* Análises: mesmos cartões lisos (sem contorno nem fita); saldo em azul, melhor mês em lilás, saldo negativo em coral */
+  .cartao-fluxo.cartao-fluxo.analise{ border:none; }
+  .cartao-fluxo.cartao-fluxo.analise.saldo{ --a-fundo-1:#F5FAFF; --a-fundo-2:#E3F0FD; --a-borda:#C3DCF6; --a-forte:#1F6CB0; }
+  .cartao-fluxo.cartao-fluxo.analise.saldo.negativo{ --a-fundo-1:#FFF8F4; --a-fundo-2:#FFEADF; --a-borda:#F8D2C0; --a-forte:#C2491D; }
+  .cartao-fluxo.cartao-fluxo.analise.melhor{ --a-fundo-1:#FAF7FF; --a-fundo-2:#EFE8FC; --a-borda:#DACCF5; --a-forte:#6B46C1; }
   .cartao-fluxo.analise.saldo .valor-cartao-fluxo{ color:#2a78d6; }
   .cartao-fluxo.analise.saldo.negativo .valor-cartao-fluxo{ color: var(--vermelho-erro); }
   .cartao-fluxo.analise.melhor .valor-cartao-fluxo{ color: var(--grafite); }
