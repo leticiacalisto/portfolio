@@ -276,7 +276,7 @@
       fatUgc: num(u.receita_bruta), fatMl: num(l.receita_bruta), fat: num(u.receita_bruta) + num(l.receita_bruta),
       resUgc: num(u.resultado_frente), resMl: num(l.resultado_frente), resOp, resLiq, ...a,
       impEst: num(u.impostos_estimados) + num(l.impostos_estimados), retido: resLiq - a.distrib,
-      rbtMes: num(u.receita_bruta) - num(u.receita_pf) + num(l.receita_bruta), // PF não passa pelo CNPJ: não conta pro limite do Simples
+      rbtMes: num(u.receita_bruta) + num(l.receita_bruta), // receita_bruta já vem sem a PF (ela não passa pelo CNPJ nem conta pro limite do Simples)
     };
   }
 

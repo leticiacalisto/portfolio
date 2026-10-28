@@ -3288,21 +3288,28 @@
   .linha-filha-fatura select{ font-family:inherit; font-size:.78rem; border:1.5px solid var(--borda); border-radius:8px; padding:3px 6px; background: var(--branco); max-width:150px; }
 
   /* Importação de OFX */
-  .modal-ofx{ max-width: 1040px; }
-  .ofx-tabela td.ofx-vinculo select{ max-width:300px; }
-  .ofx-aprovar{ display:flex; align-items:center; gap:6px; font-size:.74rem; margin-top:4px; color:#8A5A00; font-weight:700; cursor:pointer; }
-  .ofx-tabela tr.aguardando td{ background:#FFF6E0; }
-  .ofx-lista-wrap{ max-height:42vh; }
-  .linha-ofx-campos{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px; }
-  .linha-ofx-campos label{ margin-top:0; }
-  .linha-ofx-ferramentas{ display:flex; align-items:center; gap:10px; margin:16px 0 10px; flex-wrap:wrap; }
-  .linha-ofx-ferramentas select{ width:auto; min-width:180px; }
-  .linha-ofx-ferramentas label.ofx-inverter{ display:flex; align-items:center; gap:6px; margin:0 0 0 auto; font-size:.8rem; font-weight:500; }
+  .modal-ofx{ max-width: 1040px; padding: 24px 28px; }
+  .ofx-topo{ display:flex; align-items:baseline; gap:12px; margin-bottom:14px; }
+  .ofx-topo h3{ margin:0; }
+  .linha-ofx-campos{ display:grid; grid-template-columns: 220px 220px 1fr; gap:12px; align-items:end; margin-bottom:12px; }
+  .linha-ofx-campos label{ margin:0 0 4px; font-size:.78rem; }
+  .linha-ofx-campos .ofx-acoes-topo{ display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap; }
+  .linha-ofx-campos .ofx-acoes-topo select{ width:210px; padding:9px 12px; }
   .modal-ofx input[type="checkbox"]{ width:auto; margin:0; }
-  .ofx-lista-wrap{ max-height:38vh; overflow:auto; border:1px solid var(--borda); border-radius:12px; }
+  .ofx-lista-wrap{ max-height:50vh; overflow-y:auto; overflow-x:hidden; border:1px solid var(--borda); border-radius:12px; }
+  .ofx-tabela{ width:100%; table-layout:fixed; }
+  .ofx-tabela th, .ofx-tabela td{ padding:9px 10px; }
+  .ofx-tabela th:nth-child(1){ width:38px; } .ofx-tabela th:nth-child(2){ width:84px; } .ofx-tabela th:nth-child(4){ width:100px; }
+  .ofx-tabela th:nth-child(5){ width:300px; } .ofx-tabela th:nth-child(6){ width:170px; }
+  .ofx-tabela td:nth-child(3){ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .ofx-tabela tbody tr{ cursor:default; }
   .ofx-tabela input[type="checkbox"]{ width:auto; }
-  .ofx-tabela select{ width:auto; max-width:170px; padding:5px 8px; font-size:.8rem; }
+  .ofx-tabela select{ width:100%; max-width:100%; padding:5px 8px; font-size:.8rem; }
+  .ofx-aprovar{ display:flex; align-items:center; gap:6px; font-size:.74rem; margin-top:4px; color:#8A5A00; font-weight:700; cursor:pointer; }
+  .ofx-tabela tr.aguardando td{ background:#FFF6E0; }
+  .ofx-rodape{ display:flex; align-items:center; gap:14px; margin-top:14px; }
+  .ofx-rodape .texto-pequeno{ flex:1; line-height:1.4; }
+  .ofx-inverter{ display:flex; align-items:center; gap:6px; font-size:.74rem; color: var(--texto-suave); margin:0; font-weight:500; }
   .ofx-tabela td.valor-neg{ color: var(--verde-sucesso); }
   .ofx-tabela tr.desmarcada{ opacity:.45; }
   .titulo-lista-categorias{ font-family: var(--fonte-sans); font-size:.72rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:#6B6B6B; margin:18px 0 8px; }
@@ -3881,6 +3888,13 @@
           <select id="campoAnoResultados" title="Ano"></select>
           <button type="button" class="btn-seta-mes" data-seta-mes="1" data-sel-mes="campoMesResultados" data-sel-ano="campoAnoResultados" title="Próximo mês" aria-label="Próximo mês"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
         </div>
+        <div class="grupo-seletores-mes" id="grupoPeriodoResultados" hidden>
+          <select id="campoPeriodoAnaliseResultados" title="Período da análise">
+            <option value="6">Últimos 6 meses</option>
+            <option value="12">Últimos 12 meses</option>
+            <option value="3">Últimos 3 meses</option>
+          </select>
+        </div>
         <div class="alternador-visualizacao alternador-mini" id="alternadorVisaoResultados">
           <button type="button" class="btn-alternador ativo" data-visao-resultados="mes">Mês atual</button>
           <button type="button" class="btn-alternador" data-visao-resultados="analise">Análises</button>
@@ -3990,18 +4004,6 @@
           </div>
         </div>
 
-        <div class="painel-quadro-secao" id="blocoDifereCaixa">
-          <div class="topo-quadro">
-            <div>
-              <h2 style="margin-bottom:2px;">Por que o resultado do mês é diferente do caixa?</h2>
-              <p class="texto-pequeno">Resultado da frente → caixa do período (só Nubank PJ, sem a PF).</p>
-            </div>
-          </div>
-          <div class="tabela-cheia-wrap">
-            <table class="tabela-contratos tabela-dre-resumo"><tbody id="corpoDifereCaixa"></tbody></table>
-          </div>
-        </div>
-
         <div class="painel-quadro-secao" id="blocoEquipamentos">
           <div class="topo-quadro">
             <div>
@@ -4019,19 +4021,6 @@
       </div>
 
       <div id="resultadosVisaoAnalise" hidden>
-        <div class="topo-analise-fluxo">
-          <div>
-            <h2 style="margin-bottom:2px;">Análise de Resultados</h2>
-            <p class="texto-pequeno">Faturamento, despesas e lucro líquido ao longo dos meses</p>
-          </div>
-          <label class="seletor-periodo-analise">Período:
-            <select id="campoPeriodoAnaliseResultados">
-              <option value="6">Últimos 6 meses</option>
-              <option value="12">Últimos 12 meses</option>
-              <option value="3">Últimos 3 meses</option>
-            </select>
-          </label>
-        </div>
         <div class="cartoes-fluxo" id="cartoesAnaliseResultados"></div>
         <div class="cartao-grafico">
           <h3>Faturamento × Despesas por mês</h3>
@@ -4054,6 +4043,13 @@
           <select id="campoMesFluxo" title="Mês"></select>
           <select id="campoAnoFluxo" title="Ano"></select>
           <button type="button" class="btn-seta-mes" data-seta-mes="1" data-sel-mes="campoMesFluxo" data-sel-ano="campoAnoFluxo" title="Próximo mês" aria-label="Próximo mês"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div>
+        <div class="grupo-seletores-mes" id="grupoPeriodoFluxo" hidden>
+          <select id="campoPeriodoAnalise" title="Período da análise">
+            <option value="6">Últimos 6 meses</option>
+            <option value="12">Últimos 12 meses</option>
+            <option value="3">Últimos 3 meses</option>
+          </select>
         </div>
         <div class="alternador-visualizacao alternador-mini" id="alternadorVisaoFluxo">
           <button type="button" class="btn-alternador ativo" data-visao-fluxo="mes">Mês atual</button>
@@ -4201,19 +4197,6 @@
       </div>
 
       <div id="fluxoVisaoAnalise" hidden>
-        <div class="topo-analise-fluxo">
-          <div>
-            <h2 style="margin-bottom:2px;">Análise do Fluxo de Caixa</h2>
-            <p class="texto-pequeno">Visão geral das entradas e saídas ao longo dos meses</p>
-          </div>
-          <label class="seletor-periodo-analise">Período:
-            <select id="campoPeriodoAnalise">
-              <option value="6">Últimos 6 meses</option>
-              <option value="12">Últimos 12 meses</option>
-              <option value="3">Últimos 3 meses</option>
-            </select>
-          </label>
-        </div>
         <div class="cartoes-fluxo" id="cartoesAnalise"></div>
         <div class="cartao-grafico">
           <h3>Entradas × Saídas por mês</h3>
@@ -5090,30 +5073,28 @@
 <!-- Nada é lançado até clicar em "OK, lançar fatura". -->
 <div class="overlay-modal" id="overlayOfx" hidden>
   <div class="modal-quadro modal-quadro-grande modal-ofx">
-    <h3>Importar fatura de cartão</h3>
-    <p class="texto-pequeno" id="ofxArquivoInfo" style="margin:-8px 0 4px;"></p>
-    <p class="texto-pequeno" style="margin:0 0 12px;">Compras que batem com algo que você já lançou no cartão (mesmo valor e nome, parcela ou mês parecidos) vêm <strong>sugeridas como vínculo</strong> e só valem depois que você aprovar. O que ficar sem vínculo vira despesa avulsa no mês desta fatura.</p>
+    <div class="ofx-topo"><h3>Importar fatura</h3><span class="texto-pequeno" id="ofxArquivoInfo"></span></div>
+    <input type="hidden" id="ofxReferencia">
     <div class="linha-ofx-campos">
-      <div><label for="ofxCartao">Cartão</label><input type="text" id="ofxCartao" placeholder="Ex.: Nubank"></div>
-      <div><label for="ofxReferencia">Mês da fatura</label><input type="month" id="ofxReferencia"></div>
       <div><label for="ofxVencimento">Vencimento da fatura</label><input type="date" id="ofxVencimento"></div>
-    </div>
-    <div class="linha-ofx-ferramentas">
-      <select id="ofxCategoriaTodas"></select>
-      <button type="button" class="btn-cancelar-quadro" id="btnOfxAplicarTodas">Aplicar categoria às selecionadas</button>
-      <button type="button" class="btn-cancelar-quadro" id="btnOfxAprovarTodos" hidden>Aprovar todos os vínculos sugeridos</button>
-      <label class="ofx-inverter"><input type="checkbox" id="ofxInverter"><span>Compras vêm positivas no arquivo (inverter sinais)</span></label>
+      <div><label for="ofxCartao">Cartão (opcional)</label><input type="text" id="ofxCartao" placeholder="Ex.: Nubank"></div>
+      <div class="ofx-acoes-topo">
+        <select id="ofxCategoriaTodas" title="Categoria para as selecionadas"></select>
+        <button type="button" class="btn-cancelar-quadro" id="btnOfxAplicarTodas">Aplicar categoria</button>
+        <button type="button" class="btn-cancelar-quadro" id="btnOfxAprovarTodos" hidden>Aprovar todos os vínculos</button>
+      </div>
     </div>
     <div class="ofx-lista-wrap">
       <table class="tabela-contratos ofx-tabela">
-        <thead><tr><th><input type="checkbox" id="ofxMarcarTodas" checked title="Marcar/desmarcar todas"></th><th>Data</th><th>Descrição</th><th>Valor</th><th>Vínculo com o que você já lançou</th><th>Categoria</th></tr></thead>
+        <thead><tr><th><input type="checkbox" id="ofxMarcarTodas" checked title="Marcar/desmarcar todas"></th><th>Data</th><th>Descrição</th><th>Valor</th><th>Vínculo</th><th>Categoria</th></tr></thead>
         <tbody id="ofxCorpo"></tbody>
       </table>
     </div>
-    <div class="acoes-modal-quadro">
-      <span class="texto-pequeno" id="ofxTotal" style="flex-grow:1;"></span>
+    <div class="ofx-rodape">
+      <span class="texto-pequeno" id="ofxTotal"></span>
+      <label class="ofx-inverter"><input type="checkbox" id="ofxInverter"><span>Compras vêm positivas (inverter)</span></label>
       <button type="button" class="btn-cancelar-quadro" id="btnOfxCancelar">Cancelar</button>
-      <button type="button" class="btn-salvar-quadro" id="btnOfxConfirmar">OK, confirmar fatura</button>
+      <button type="button" class="btn-salvar-quadro" id="btnOfxConfirmar">Confirmar fatura</button>
     </div>
   </div>
 </div>
@@ -5324,7 +5305,6 @@
       <div class="prop-limpa larga" id="ndLinhaFatura" hidden>
         <span class="rotulo-limpo">Fatura do cartão (mês do vencimento)</span>
         <select id="ndFatura" class="input-limpo"></select>
-        <span class="texto-pequeno" style="display:block; margin-top:4px;">Lançou na fatura errada? Escolha outro mês: o vencimento muda para ele (e as parcelas seguintes acompanham). A data da compra em Resultados não muda.</span>
       </div>
     </div>
     <div style="margin:4px 0 8px;"><button type="button" class="btn-cancelar-quadro" id="btnNdGerar" title="Recria as parcelas ainda não pagas">Gerar parcelas</button></div>
@@ -10514,13 +10494,13 @@
       pilula.textContent = String(taxa).replace(".", ",") + "%" + (estado.aliq != null ? " ✎" : "");
       const nota = el("fatNota");
       let texto = "";
-      if (estado.fat === "pj_nf") texto = `Imposto de ${String(taxa).replace(".", ",")}% (alíquota ${estado.aliq != null ? "desta receita" : "do mês do fechamento"}) = ${formatarMoeda((estado.total * taxa) / 100)}. A conta de cada parcela (padrão Nubank PJ) fica na tabela abaixo.`;
+      if (estado.fat === "pj_nf") texto = `Imposto de ${String(taxa).replace(".", ",")}% (alíquota ${estado.aliq != null ? "desta receita" : "do mês do fechamento"}) = ${formatarMoeda((estado.total * taxa) / 100)}.`;
       else if (estado.fat === "pj_sem_nf") texto = "⚠ Empresa sem nota: imposto zero (fica sinalizado em Resultados).";
       else if (estado.fat === "pf") {
         const mes = mesDe(estado.dataRef) || hojeIso().slice(0, 7);
         const outras = pfDoMes(mes, estado.chave).total;
         const com = outras + estado.total;
-        texto = `Pessoa física: não entra no Fluxo de Caixa. Em ${mes.slice(5, 7)}/${mes.slice(0, 4)}: ${formatarMoeda(com)} de ${formatarMoeda(LIMITE_PF_MES)} (${Math.round((com / LIMITE_PF_MES) * 100)}%) — ${com > LIMITE_PF_MES ? "⚠ passa do limite em " + formatarMoeda(com - LIMITE_PF_MES) : "ainda cabem " + formatarMoeda(LIMITE_PF_MES - com)}.`;
+        texto = `Em ${mes.slice(5, 7)}/${mes.slice(0, 4)}: ${formatarMoeda(com)} de ${formatarMoeda(LIMITE_PF_MES)} no limite da PF (${Math.round((com / LIMITE_PF_MES) * 100)}%) — ${com > LIMITE_PF_MES ? "⚠ passa do limite em " + formatarMoeda(com - LIMITE_PF_MES) : "ainda cabem " + formatarMoeda(LIMITE_PF_MES - com)}.`;
       } else texto = "Sem classificação: tratada como empresa sem imposto até você escolher.";
       nota.hidden = false;
       nota.textContent = texto;
@@ -12097,6 +12077,7 @@
       document.getElementById("fluxoVisaoMes").hidden = visaoFluxo !== "mes";
       document.getElementById("fluxoVisaoAnalise").hidden = visaoFluxo !== "analise";
       document.getElementById("grupoSeletoresMes").hidden = visaoFluxo !== "mes";
+      document.getElementById("grupoPeriodoFluxo").hidden = visaoFluxo !== "analise";
       renderizarGraficosFluxo();
     });
   });
@@ -12388,7 +12369,7 @@
   function opcoesVinculoOfx(l, i) {
     const v = arredondar(valorOfx(l));
     const livres = (ofx.candidatos || []).filter((c) => Math.abs(c.valor - v) <= 0.02 && (c.id === l.vinculo || !ofx.linhas.some((x, j) => j !== i && x.vinculo === c.id)));
-    return `<option value="">Nova despesa da fatura</option>` + livres.map((c) => `<option value="${c.id}" ${c.id === l.vinculo ? "selected" : ""}>${esc(c.nome)}${c.rotulo ? " · " + esc(c.rotulo) : ""} · venc. ${formatarDataBr(c.venc)}</option>`).join("");
+    return `<option value="">Nova despesa</option>` + livres.map((c) => `<option value="${c.id}" ${c.id === l.vinculo ? "selected" : ""}>${esc(c.nome)}${c.rotulo ? " · " + esc(c.rotulo) : ""}</option>`).join("");
   }
 
   function renderizarOfx() {
@@ -12401,7 +12382,7 @@
           <td>${formatarDataBr(l.data)}</td>
           <td>${esc(l.descricao)}${l.jaImportada ? ' <span class="texto-pequeno">(já importada)</span>' : ""}</td>
           <td class="${v < 0 ? "valor-neg" : ""}">${formatarMoeda(v)}</td>
-          <td class="ofx-vinculo"><select data-ofx-vinculo ${l.incluir ? "" : "disabled"}>${opcoesVinculoOfx(l, i)}</select>${l.incluir && l.vinculo ? `<label class="ofx-aprovar"><input type="checkbox" data-ofx-aprovar ${l.aprovado ? "checked" : ""}> ${l.aprovado ? "vínculo aprovado" : "aprovar este vínculo"}</label>` : ""}</td>
+          <td class="ofx-vinculo"><select data-ofx-vinculo ${l.incluir ? "" : "disabled"}>${opcoesVinculoOfx(l, i)}</select>${l.incluir && l.vinculo ? `<label class="ofx-aprovar"><input type="checkbox" data-ofx-aprovar ${l.aprovado ? "checked" : ""}> ${l.aprovado ? "aprovado" : "aprovar"}</label>` : ""}</td>
           <td><select data-ofx-categoria ${l.vinculo ? "disabled" : ""}>${opcoesCategoriaOfx(l.categoria)}</select></td>
         </tr>`;
       })
@@ -12414,9 +12395,8 @@
     const vinculadas = marcadas.filter((l) => l.vinculo);
     const aguardando = vinculadas.filter((l) => !l.aprovado).length;
     document.getElementById("ofxTotal").innerHTML =
-      `${marcadas.length} de ${ofx.linhas.length} lançamentos · total da fatura ${formatarMoeda(arredondar(total))}<br>` +
-      `${vinculadas.length} vinculado${vinculadas.length === 1 ? "" : "s"} ao que você já lançou · ${marcadas.length - vinculadas.length} novo${marcadas.length - vinculadas.length === 1 ? "" : "s"}` +
-      (aguardando ? ` · <strong style="color:#8A5A00;">${aguardando} aguardando a sua aprovação</strong>` : "");
+      `<strong>${formatarMoeda(arredondar(total))}</strong> · ${marcadas.length} de ${ofx.linhas.length} compras · ${vinculadas.length} vinculada${vinculadas.length === 1 ? "" : "s"} · ${marcadas.length - vinculadas.length} nova${marcadas.length - vinculadas.length === 1 ? "" : "s"}` +
+      (aguardando ? ` · <strong style="color:#8A5A00;">${aguardando} para aprovar</strong>` : "");
     document.getElementById("ofxMarcarTodas").checked = marcadas.length === ofx.linhas.length;
     const confirmar = document.getElementById("btnOfxConfirmar");
     confirmar.disabled = aguardando > 0;
@@ -13136,7 +13116,8 @@
     const bruto = soma(fechamentos, (l) => l.cache);
     const brutoPF = soma(fechamentos.filter((l) => l.pf), (l) => l.cache);
     const impostos = soma(fechamentos, (l) => l.impostos); // negativo
-    const receitaLiquida = bruto + impostos;
+    const brutoEmpresa = bruto - brutoPF; // o que passou pela empresa: o recebido direto na PF não é receita dela
+    const receitaLiquida = brutoEmpresa + impostos;
     const custosCamp = linhasCustosCampanhas(prefixo);
     const custosCampanhas = soma(custosCamp, (x) => Number(x.d.valor) || 0);
     const custosPorCategoria = new Map();
@@ -13150,9 +13131,9 @@
     const depreciacao = soma(deprec, (d) => Number(d.valor) || 0);
     const resultado = margem - totalDespesas - depreciacao;
     return {
-      prefixo, fechamentos, bruto, brutoPF, impostos, receitaLiquida, custosCamp, custosCampanhas, custosPorCategoria, margem,
-      margemPct: bruto ? (margem / bruto) * 100 : 0, despesas, despesasPorCategoria, totalDespesas, deprec, depreciacao, resultado,
-      resultadoPct: bruto ? (resultado / bruto) * 100 : 0,
+      prefixo, fechamentos, bruto, brutoPF, brutoEmpresa, impostos, receitaLiquida, custosCamp, custosCampanhas, custosPorCategoria, margem,
+      margemPct: brutoEmpresa ? (margem / brutoEmpresa) * 100 : 0, despesas, despesasPorCategoria, totalDespesas, deprec, depreciacao, resultado,
+      resultadoPct: brutoEmpresa ? (resultado / brutoEmpresa) * 100 : 0,
     };
   }
   function linhasCustosFiltradas() {
@@ -13206,11 +13187,11 @@
     texto("resultadosTotalFaturado", formatarMoeda(r.bruto));
     texto("resultadosNotaFaturado", `${r.fechamentos.length} fechamento${r.fechamentos.length === 1 ? "" : "s"}` + (r.brutoPF ? ` · ${formatarMoeda(r.brutoPF)} na PF` : ""));
     texto("resultadosLucroBruto", formatarMoeda(r.margem));
-    texto("resultadosNotaMargemContrib", r.bruto ? `Margem de contribuição de ${r.margemPct.toFixed(1)}%` : "Sem faturamento");
+    texto("resultadosNotaMargemContrib", r.brutoEmpresa ? `Margem de contribuição de ${r.margemPct.toFixed(1)}%` : "Sem faturamento");
     texto("resultadosDespesas", formatarMoeda(r.totalDespesas + r.depreciacao));
     texto("resultadosNotaDespesas", `${formatarMoeda(r.totalDespesas)} despesas + ${formatarMoeda(r.depreciacao)} depreciação`);
     texto("resultadosLucroLiquido", formatarMoeda(r.resultado));
-    texto("resultadosNotaMargem", r.bruto ? `Margem de ${r.resultadoPct.toFixed(1)}%` : "Sem faturamento");
+    texto("resultadosNotaMargem", r.brutoEmpresa ? `Margem de ${r.resultadoPct.toFixed(1)}%` : "Sem faturamento");
     document.getElementById("cartaoResultadosLucroBruto").classList.toggle("negativo", r.margem < 0);
     document.getElementById("cartaoResultadosLucroLiquido").classList.toggle("negativo", r.resultado < 0);
     definirListasResultados(r.fechamentos, [...r.despesas, ...r.deprec]);
@@ -13239,7 +13220,7 @@
           ? ` <span class="pilula-status status-atrasado" title="Empresa sem nota fiscal: imposto zero">⚠ sem nota</span>`
           : "";
         return `
-        <tr${l.automatico ? "" : ` data-manual-id="${l.id}"`}>
+        <tr ${l.automatico ? `data-campanha-id="${l.id}"` : `data-manual-id="${l.id}"`} class="linha-clicavel-lista">
           <td><span class="pilula-status ${l.automatico ? "fechado-automatico" : "fechado-manual"}">${l.automatico ? "Campanha" : "Manual"}</span> ${esc(l.nome)}${selo}</td>
           <td>${formatarDataBr(l.data)}</td>
           <td>${formatarMoeda(l.cache)}</td>
@@ -13314,11 +13295,11 @@
       ordenar(mapa)
         .map((cat) => `<tr class="linha-dre-categoria"><td>${esc(rotuloCategoria(cat))}</td><td class="valor-negativo-resultado">${menos(mapa.get(cat))}</td></tr>`)
         .join("");
-    const pct = (v) => (r.bruto ? ` <span class="texto-pequeno">(${v.toFixed(1)}%)</span>` : "");
+    const pct = (v) => (r.brutoEmpresa ? ` <span class="texto-pequeno">(${v.toFixed(1)}%)</span>` : "");
 
     corpo.innerHTML = `
       <tr><td>Faturamento bruto <span class="texto-pequeno">(contratos fechados no mês)</span></td><td>${formatarMoeda(r.bruto)}</td></tr>
-      <tr class="linha-dre-categoria"><td><em>dos quais recebidos na PF</em></td><td><em>${formatarMoeda(r.brutoPF)}</em></td></tr>
+      ${r.brutoPF ? `<tr><td>(−) Recebido direto na PF <span class="texto-pequeno">(não é receita da empresa)</span></td><td class="valor-negativo-resultado">${menos(r.brutoPF)}</td></tr>` : ""}
       <tr><td>(−) Impostos sobre as receitas</td><td class="${neg(r.impostos)}">${formatarMoeda(r.impostos)}</td></tr>
       <tr><td>(−) Descontos</td><td>${formatarMoeda(0)}</td></tr>
       <tr class="linha-dre-subtotal"><td>= Receita líquida</td><td>${formatarMoeda(r.receitaLiquida)}</td></tr>
@@ -13408,6 +13389,7 @@
       document.getElementById("resultadosVisaoMes").hidden = visaoResultados !== "mes";
       document.getElementById("resultadosVisaoAnalise").hidden = visaoResultados !== "analise";
       document.getElementById("grupoSeletoresMesResultados").hidden = visaoResultados !== "mes";
+      document.getElementById("grupoPeriodoResultados").hidden = visaoResultados !== "analise";
       if (visaoResultados === "analise") renderizarAnaliseResultados();
     });
   });
@@ -13499,7 +13481,7 @@
       const d = new Date(agora.getFullYear(), agora.getMonth() - i, 1);
       const chave = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
       const r = calcularResultado(chave); // mesma conta do DRE
-      dados.push({ chave, rotulo: abrevMes(chave), ent: r.bruto, sai: r.custosCampanhas + r.totalDespesas + r.depreciacao, saldo: r.resultado, meta: metaReceitaDoMes(chave) });
+      dados.push({ chave, rotulo: abrevMes(chave), ent: r.brutoEmpresa, sai: r.custosCampanhas + r.totalDespesas + r.depreciacao, saldo: r.resultado, meta: metaReceitaDoMes(chave) });
     }
     const totalFat = dados.reduce((s, d) => s + d.ent, 0);
     const totalDesp = dados.reduce((s, d) => s + d.sai, 0);
@@ -14408,34 +14390,6 @@
       document.getElementById("pctLimitePF").textContent = Math.round(pct) + "%";
     }
 
-    // por que o resultado do período é diferente do caixa
-    const prefixo = prefixoResultados();
-    const r = calcularResultado(prefixo);
-    const cx = caixaDoPrefixo(prefixo);
-    const ehTransf = (i) => i.linha.categoria === CAT_TRANSFERENCIA;
-    const recFaturamento = cx.recP.filter((i) => !ehTransf(i)).reduce((s, i) => s + i.valor, 0);
-    const transfEntrou = cx.recP.filter(ehTransf).reduce((s, i) => s + i.valor, 0);
-    const pagoDre = (i) => !!i.linha.reg && entraNoResultado(i.linha.reg);
-    const pagoNaoDre = cx.desP.filter((i) => !pagoDre(i)).reduce((s, i) => s + i.valor, 0); // equipamento, rateio, empresa, transferência
-    const pagoDreSoma = cx.desP.filter(pagoDre).reduce((s, i) => s + i.valor, 0);
-    const semCaixa = r.depreciacao + r.despesas.filter((d) => d.so_resultado).reduce((s, d) => s + (Number(d.valor) || 0), 0); // rateios + depreciação
-    const despesasComCaixa = r.totalDespesas - r.despesas.filter((d) => d.so_resultado).reduce((s, d) => s + (Number(d.valor) || 0), 0);
-    const aReceber = r.bruto - r.brutoPF - recFaturamento;
-    const aPagar = -r.impostos + r.custosCampanhas + despesasComCaixa - pagoDreSoma;
-    const caixa = cx.entradas - cx.saidas;
-    const fechamento = r.resultado - aReceber - r.brutoPF + aPagar - pagoNaoDre + semCaixa + transfEntrou;
-    const ln = (rotulo, valor, dica) => `<tr><td>${rotulo}${dica ? ` <span class="texto-pequeno">${dica}</span>` : ""}</td><td class="${valor < 0 ? "valor-negativo-resultado" : ""}">${formatarMoeda(valor)}</td></tr>`;
-    document.getElementById("corpoDifereCaixa").innerHTML = `
-      <tr class="linha-dre-subtotal"><td>Resultado da frente (competência)</td><td>${formatarMoeda(r.resultado)}</td></tr>
-      ${ln("(−) A receber de campanhas", -aReceber, "faturado no período − recebido no período")}
-      ${ln("(−) Faturado na PF", -r.brutoPF, "fora do caixa")}
-      ${ln("(+) A pagar", aPagar, "custos, despesas e impostos ainda não pagos")}
-      ${ln("(−) Equipamentos, rateios e empresa pagos", -pagoNaoDre, "saem do caixa, não do resultado")}
-      ${ln("(+) Depreciação e rateios", semCaixa, "saem do resultado, não do caixa")}
-      ${transfEntrou ? ln("(+) Transferências recebidas", transfEntrou, "só caixa") : ""}
-      <tr class="linha-dre-final"><td>= Caixa do período (Nubank PJ)</td><td>${formatarMoeda(fechamento)}</td></tr>
-      ${Math.abs(fechamento - caixa) > 0.01 ? `<tr><td colspan="2" class="texto-pequeno">⚠ O caixa do Fluxo de Caixa é ${formatarMoeda(caixa)} — a diferença de ${formatarMoeda(fechamento - caixa)} indica lançamento em data estranha. Use “Conferir dados antigos”.</td></tr>` : ""}
-    `;
     renderizarEquipamentos();
   }
 
@@ -14622,7 +14576,7 @@
       const r = calcularResultado(mes);
       const cx = caixaDoPrefixo(mes);
       return {
-        frente: "ugc", mes, receita_bruta: arred(r.bruto), impostos_estimados: arred(-r.impostos), custos_diretos: arred(r.custosCampanhas),
+        frente: "ugc", mes, receita_bruta: arred(r.brutoEmpresa), impostos_estimados: arred(-r.impostos), custos_diretos: arred(r.custosCampanhas),
         despesas_proprias: arred(r.totalDespesas), depreciacao: arred(r.depreciacao), resultado_frente: arred(r.resultado),
         recebido_pf: arred(pfDoMes(mes).recebido), receita_pf: arred(r.brutoPF), caixa_entradas: arred(cx.entradasOp), caixa_saidas: arred(cx.saidasOp), saldo_conta: arred(cx.saldoAcumulado),
         ...(migracaoEmpresaOk ? { transferencias_liquidas: arred(cx.transf) } : {}),
@@ -14869,13 +14823,19 @@
     else if (fat === "pf") {
       const outras = pfDoMes(mes, fechamentoEmEdicao ? "r" + fechamentoEmEdicao.id : "").total;
       const com = outras + valor;
-      texto = `Pessoa física: não entra no Fluxo de Caixa. Em ${mes.slice(5, 7)}/${mes.slice(0, 4)}: ${formatarMoeda(com)} de ${formatarMoeda(LIMITE_PF_MES)} — ${com > LIMITE_PF_MES ? "⚠ passa do limite em " + formatarMoeda(com - LIMITE_PF_MES) : "ainda cabem " + formatarMoeda(LIMITE_PF_MES - com)}.`;
+      texto = `Em ${mes.slice(5, 7)}/${mes.slice(0, 4)}: ${formatarMoeda(com)} de ${formatarMoeda(LIMITE_PF_MES)} no limite da PF — ${com > LIMITE_PF_MES ? "⚠ passa do limite em " + formatarMoeda(com - LIMITE_PF_MES) : "ainda cabem " + formatarMoeda(LIMITE_PF_MES - com)}.`;
     }
     notaFechamentoFaturamento.hidden = !texto;
     notaFechamentoFaturamento.textContent = texto;
   }
   [campoFechamentoFaturamento, campoFechamentoNfTaxa, campoFechamentoValor, campoFechamentoData].forEach((c) => c.addEventListener("input", atualizarFaturamentoFechamento));
   document.getElementById("corpoResultadoContratos").addEventListener("click", (evento) => {
+    const campanha = evento.target.closest("tr[data-campanha-id]");
+    if (campanha) {
+      const linhaC = linhasReceitas().find((x) => x.contrato && x.contrato.id === campanha.dataset.campanhaId);
+      if (linhaC) abrirLancamento(false, linhaC); // a janela da campanha abre aqui mesmo, em Resultados
+      return;
+    }
     const linha = evento.target.closest("tr[data-manual-id]");
     if (!linha) return;
     const reg = receitasCache.find((r) => r.id === linha.dataset.manualId);
