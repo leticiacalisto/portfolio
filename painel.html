@@ -4738,6 +4738,7 @@
           <div class="prop-limpa">
             <span class="rotulo-limpo">Data de assinatura</span>
             <input type="date" id="campoAssinaturaContrato" class="input-limpo">
+            <span class="texto-pequeno" id="avisoAssinaturaAutomatica" hidden>Campanha criada ao fechar a oportunidade. Resultados conta a receita pelo mês desta data: ajuste se a assinatura foi em outro mês.</span>
           </div>
           <div class="prop-limpa">
             <span class="rotulo-limpo">Prazo de entrega (dias úteis)</span>
@@ -6640,7 +6641,13 @@
     if (!cartao) return;
     const id = cartao.dataset.leadId;
     const respondidos = cfgLer("leads_respondidos", []) || [];
-    if (!respondidos.includes(id)) cfgGravar("leads_respondidos", respondidos.concat(id).slice(-1000));
+    if (!respondidos.includes(id)) {
+      cfgGravar("leads_respondidos", respondidos.concat(id).slice(-1000));
+      // responder o lead = registrar contato na oportunidade criada por ele (só se ainda espera resposta)
+      const lead = leadsCache.find((l) => String(l.id) === id);
+      const op = lead && lead.oportunidade_id ? oportunidadesCache.find((o) => o.id === lead.oportunidade_id) : null;
+      if (op && oportunidadeAberta(op) && cadenciaDaOportunidade(op) === "IN_RESPOSTA") executarAcaoOportunidade(op, "contato");
+    }
     if (botao.hasAttribute("data-lead-respondido")) renderizarMensagens(filtrarPorPeriodo(leadsCache));
     else setTimeout(() => renderizarMensagens(filtrarPorPeriodo(leadsCache)), 300);
   });
@@ -10109,6 +10116,7 @@
   const seletorPlataformaContrato = document.getElementById("seletorPlataformaContrato");
   const campoPlataformaContrato = document.getElementById("campoPlataformaContrato");
   const campoAssinaturaContrato = document.getElementById("campoAssinaturaContrato");
+  const avisoAssinaturaAutomatica = document.getElementById("avisoAssinaturaAutomatica");
   const campoPrazoEntregaContrato = document.getElementById("campoPrazoEntregaContrato");
   const campoValorContrato = document.getElementById("campoValorContrato");
   const campoPagamentoCondicaoContrato = document.getElementById("campoPagamentoCondicaoContrato");
@@ -11173,6 +11181,7 @@
   // Abre a janela compartilhada direto na aba Campanha (chamado a partir
   // da lista de Campanhas, ou depois que uma oportunidade fecha).
   function abrirModalContrato(contrato, prefill) {
+    avisoAssinaturaAutomatica.hidden = true;
     idCardEmEdicao = null;
     cardEmEdicaoObjeto = null;
     idEmpresaEmEdicao = null;
@@ -16607,6 +16616,92 @@
     await recarregarOportunidades();
   }
 
+  // ---- Formulário do portfólio vira oportunidade (Inbound, em Qualificação) ----
+  // Só leads dos últimos 30 dias: as respostas antigas não enchem o funil de uma vez.
+  const DIAS_LEADS_PARA_OPORTUNIDADE = 30;
+  let convertendoLeads = false;
+
+  async function converterLeadsEmOportunidades() {
+    if (convertendoLeads || !oportunidadesDisponivel || !comercialDisponivel || !etapasOportunidadeCache.length || !captacaoDisponivel) return;
+    const qualif = etapaPorNomeOportunidade("qualifica");
+    if (!qualif) return;
+    const desde = somarDiasIso(hojeIso(), -DIAS_LEADS_PARA_OPORTUNIDADE);
+    const pendentes = leadsCache.filter((l) => "oportunidade_id" in l && !l.oportunidade_id && diaLocalDe(l.created_at) >= desde);
+    if (!pendentes.length) return;
+    convertendoLeads = true;
+    try {
+      let mudou = false;
+      for (const lead of pendentes.sort((a, b) => String(a.created_at).localeCompare(String(b.created_at)))) {
+        try {
+          const nomeMarca = (lead.brand || lead.name || lead.email || "").trim();
+          if (!nomeMarca) continue;
+          const alvo = semAcentoOp(nomeMarca);
+          const emailLead = semAcentoOp(lead.email);
+          let empresa = empresasCache.find(
+            (e) => semAcentoOp(e.nome) === alvo || (emailLead && (semAcentoOp(e.email) === emailLead || semAcentoOp(e.email_marketing) === emailLead))
+          );
+          if (!empresa) {
+            const { data, error } = await Auth.sb
+              .from("empresas")
+              .insert({ nome: nomeMarca, email: lead.email || null, whatsapp: lead.phone || null, contato_principal: lead.name || null, status: "Lead" })
+              .select()
+              .single();
+            if (error) throw error;
+            empresa = data;
+            empresasCache.push(data);
+          }
+          const hoje = hojeIso();
+          const existente = oportunidadesCache.find((o) => o.empresa_id === empresa.id && oportunidadeAberta(o));
+          let opId;
+          if (existente) {
+            // a marca já está no funil: só avisa que chegou mensagem nova
+            const nota = "Formulário do portfólio (" + formatarDataBr(diaLocalDe(lead.created_at)) + "): " + (lead.message || "(sem mensagem)");
+            const { error } = await Auth.sb
+              .from("oportunidades")
+              .update({
+                observacoes: existente.observacoes ? existente.observacoes + "\n\n" + nota : nota,
+                proximo_followup: hoje,
+                proxima_acao: "Responder formulário do portfólio",
+                modelo_sugerido: "IN-1",
+                updated_at: new Date().toISOString(),
+              })
+              .eq("id", existente.id);
+            if (error) throw error;
+            opId = existente.id;
+          } else {
+            const dados = {
+              empresa_id: empresa.id,
+              contato: lead.name || null,
+              canal_contato: lead.email ? "E-mail" : "WhatsApp",
+              captacao: "Inbound",
+              origem_lead: "Formulário portfólio",
+              etapa_id: qualif.id,
+              data_entrada: diaLocalDe(lead.created_at) || hoje,
+              observacoes: lead.message || null,
+              qualificacao: lead.budget ? { budget: String(lead.budget) } : {},
+              ...agendarProximoToque("IN_RESPOSTA", 0, hoje),
+            };
+            const { data, error } = await Auth.sb.from("oportunidades").insert(dados).select().single();
+            if (error) throw error;
+            opId = data.id;
+          }
+          const { error: erroLead } = await Auth.sb.from("portfolio_leads").update({ oportunidade_id: opId }).eq("id", lead.id);
+          if (erroLead) throw erroLead;
+          lead.oportunidade_id = opId;
+          mudou = true;
+        } catch (erro) {
+          console.error("Lead do portfólio -> oportunidade:", erro);
+        }
+      }
+      if (mudou) {
+        await recarregarComercial();
+        await recarregarOportunidades();
+      }
+    } finally {
+      convertendoLeads = false;
+    }
+  }
+
   function oportunidadeAberta(op) {
     const etapa = etapaOportunidade(op.etapa_id);
     return !!etapa && etapa.tipo === "aberta";
@@ -16862,7 +16957,51 @@
     }
     await recarregarComercial();
     const empresa = empresasCache.find((e) => e.id === op.empresa_id);
-    abrirModalContrato(null, { empresa, oportunidade: op });
+
+    // Já existe campanha ligada a esta oportunidade? Só abre ela.
+    const jaExiste = contratosCache.find((k) => k.oportunidade_id === op.id);
+    if (jaExiste) {
+      abrirModalContrato(jaExiste);
+      return;
+    }
+
+    // Cria a campanha com o que já se sabe e abre a janela para completar (Autentique, pagamento, NF)
+    try {
+      const qtd = parseInt(String((op.qualificacao || {}).qtd_videos || "").replace(/\D+/g, ""), 10);
+      const novo = {
+        marca: empresa ? empresa.nome : nomeEmpresa(op.empresa_id),
+        empresa_id: op.empresa_id,
+        oportunidade_id: op.id,
+        qtde_videos: qtd > 0 ? qtd : null,
+        valor: op.valor_estimado != null ? op.valor_estimado : null,
+        escopo: op.servico_interesse || null,
+        data_assinatura: hojeIso(),
+        updated_at: new Date().toISOString(),
+      };
+      if (coluna_moeda_existe()) novo.moeda = "BRL";
+      const { data, error } = await Auth.sb.from("contratos").insert(novo).select().single();
+      if (error) throw error;
+      await Auth.sb.from("oportunidades").update({ projeto_id: data.id }).eq("id", op.id);
+      await recarregarComercial();
+      await recarregarQuadro();
+      await recarregarOportunidades();
+      await recarregarFinancas();
+      await sincronizarParcelasAutomaticasContrato(data.id);
+      const criado = contratosCache.find((k) => k.id === data.id) || data;
+      abrirModalContrato(criado);
+      avisoAssinaturaAutomatica.hidden = false;
+    } catch (erro) {
+      console.error("Criar campanha automática:", erro);
+      abrirModalContrato(null, { empresa, oportunidade: op });
+    }
+  }
+
+  // Saiu de Fechado: a campanha criada continua existindo (não é apagada), só avisa
+  function avisarSaidaDeFechado(op, etapaAnterior, novaEtapa) {
+    if (!op || !etapaAnterior || !novaEtapa) return;
+    if (etapaAnterior.tipo === "ganha" && novaEtapa.tipo !== "ganha" && op.projeto_id) {
+      alert("Esta oportunidade saiu de Fechado, mas a campanha criada para ela continua em Campanhas. Se não valer mais, exclua a campanha por lá.");
+    }
   }
 
   async function moverOportunidade(id, novaEtapaId) {
@@ -16897,6 +17036,7 @@
     try {
       await Auth.sb.from("oportunidades").update(dados).eq("id", id);
       await recarregarOportunidades();
+      avisarSaidaDeFechado(op, etapaAnterior, novaEtapa);
       if (viraGanha) await tratarOportunidadeGanha({ ...op, ...dados });
     } catch (erro) {
       console.error(erro);
@@ -17391,7 +17531,8 @@
       }
       fecharModalOportunidade();
       await recarregarOportunidades();
-      if (viraGanha) await tratarOportunidadeGanha({ id: opId, ...dados });
+      avisarSaidaDeFechado(anterior, etapaAnterior, etapaSelecionada);
+      if (viraGanha) await tratarOportunidadeGanha({ ...(anterior || {}), id: opId, ...dados });
     } catch (erro) {
       alert("Não foi possível salvar a oportunidade. Tente de novo.");
       console.error(erro);
@@ -19431,6 +19572,11 @@
       if (!soJanela) irParaAba("comercial-empresas");
       const empresa = empresasCache.find((e) => e.id === d.id);
       if (empresa) abrirModalEmpresa(empresa);
+    } else if (d.tipo === "lead") {
+      // lead do formulário: abre a oportunidade criada por ele; sem ela, a lista de mensagens
+      const lead = leadsCache.find((l) => String(l.id) === String(d.id));
+      if (lead && lead.oportunidade_id) executarDestino({ tipo: "oportunidade", id: lead.oportunidade_id }, soJanela);
+      else irParaAba("portfolio");
     } else if (d.tipo === "oportunidade") {
       if (!soJanela) irParaAba("comercial-oportunidades");
       const op = oportunidadesCache.find((o) => o.id === d.id);
@@ -20080,7 +20226,7 @@
         novos.push({
           chave: "lead:" + chave, tipo: "lead", titulo: "Nova resposta no formulário",
           texto: `${lead.name || "Sem nome"} · ${lead.source === "popup" ? "Popup" : "Contato"}`,
-          em: lead.created_at || agora, destino: { tipo: "aba", tab: "portfolio" },
+          em: lead.created_at || agora, destino: { tipo: "lead", id: lead.id },
         });
     });
 
@@ -20645,6 +20791,7 @@
     setInterval(async () => {
       try {
         leadsCache = await buscarTudo("portfolio_leads");
+        await converterLeadsEmOportunidades();
         atualizarNotificacoes();
       } catch (erro) {
         console.error(erro);
@@ -22007,8 +22154,9 @@
   carregarCfg();
   recarregarQuadro();
   recarregarFinancas();
-  recarregarComercial();
-  recarregarOportunidades();
+  Promise.all([recarregarComercial(), recarregarOportunidades()])
+    .then(() => converterLeadsEmOportunidades())
+    .catch((erro) => console.error(erro));
   recarregarVideosPortfolio();
   recarregarAfiliados();
   // Ao atualizar a página, volta para a aba em que você estava (não para o Início)
