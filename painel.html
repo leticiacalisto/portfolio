@@ -16728,6 +16728,11 @@
     if (typeof renderizarDashboard === "function") renderizarDashboard();
     renderizarOportunidades();
     renderizarEmpresas(); // a coluna "Fase" das Marcas em Lead depende da etapa da oportunidade aberta
+    try {
+      atualizarNotificacoes(); // follow-ups novos entram no sino
+    } catch (erro) {
+      // o sino ainda não foi montado na primeira carga
+    }
   }
 
   function nomeEmpresa(empresaId) {
@@ -20158,6 +20163,78 @@
     }
   }
 
+  // Datas comemorativas para o aviso sazonal (45 dias antes). A chave é o que fica
+  // gravado em empresas.datas_sazonais.
+  function enesimoDiaDaSemana(ano, mes, diaSemana, n) {
+    const primeiro = new Date(ano, mes, 1);
+    return new Date(ano, mes, 1 + ((diaSemana - primeiro.getDay() + 7) % 7) + 7 * (n - 1));
+  }
+  const FESTAS_SAZONAIS = {
+    dia_da_mulher: { rotulo: "Dia da Mulher", data: (a) => new Date(a, 2, 8) },
+    dia_do_consumidor: { rotulo: "Dia do Consumidor", data: (a) => new Date(a, 2, 15) },
+    dia_das_maes: { rotulo: "Dia das Mães", data: (a) => enesimoDiaDaSemana(a, 4, 0, 2) },
+    dia_dos_namorados: { rotulo: "Dia dos Namorados", data: (a) => new Date(a, 5, 12) },
+    dia_dos_pais: { rotulo: "Dia dos Pais", data: (a) => enesimoDiaDaSemana(a, 7, 0, 2) },
+    dia_das_criancas: { rotulo: "Dia das Crianças", data: (a) => new Date(a, 9, 12) },
+    black_friday: { rotulo: "Black Friday", data: (a) => { const q = enesimoDiaDaSemana(a, 10, 4, 4); return new Date(a, 10, q.getDate() + 1); } },
+    natal: { rotulo: "Natal", data: (a) => new Date(a, 11, 25) },
+  };
+  const ANTECEDENCIA_SAZONAL_DIAS = 45;
+  const MAX_FOLLOWUPS_INDIVIDUAIS = 8;
+
+  // Avisos do funil comercial, calculados na hora (follow-up, nutrição, reativação, sazonal).
+  function avisosComerciais(hoje, doDia, lista, agoraIso) {
+    if (!oportunidadesDisponivel) return;
+    const limiteJanela = somarDiasIso(hoje, -7);
+
+    // follow-up: oportunidades abertas com data de hoje ou atrasada
+    const devidas = oportunidadesCache
+      .filter((o) => oportunidadeAberta(o) && o.proximo_followup && o.proximo_followup <= hoje)
+      .sort((a, b) => a.proximo_followup.localeCompare(b.proximo_followup));
+    devidas.slice(0, MAX_FOLLOWUPS_INDIVIDUAIS).forEach((o) => {
+      const atraso = Math.round((new Date(hoje + "T00:00:00") - new Date(o.proximo_followup + "T00:00:00")) / 86400000);
+      const acao = (o.proxima_acao || "Fazer follow-up") + (o.modelo_sugerido ? " · " + o.modelo_sugerido : "");
+      doDia("followup", "Follow-up: " + nomeEmpresa(o.empresa_id), acao + (atraso > 0 ? " · atrasado há " + atraso + (atraso === 1 ? " dia" : " dias") : ""), o.id, { tipo: "oportunidade", id: o.id });
+    });
+    if (devidas.length > MAX_FOLLOWUPS_INDIVIDUAIS) {
+      doDia("followup", "Follow-ups pendentes", "+ " + (devidas.length - MAX_FOLLOWUPS_INDIVIDUAIS) + " além dos listados", "resumo", { tipo: "aba", tab: "comercial-oportunidades" });
+    }
+
+    // nutrição: perdidas que chegaram na data de voltar a chamar (janela de 7 dias)
+    oportunidadesCache
+      .filter((o) => (etapaOportunidade(o.etapa_id) || {}).tipo === "perdida" && o.data_retorno && o.data_retorno <= hoje && o.data_retorno >= limiteJanela)
+      .forEach((o) => {
+        const motivo = MOTIVOS_PERDA[o.motivo_perda] ? MOTIVOS_PERDA[o.motivo_perda].rotulo : "";
+        doDia("nutricao", "Hora de retomar: " + nomeEmpresa(o.empresa_id), motivo ? "Perdida por: " + motivo : "Voltar a chamar", o.id, { tipo: "oportunidade", id: o.id });
+      });
+
+    // reativação de cliente antigo
+    empresasCache
+      .filter((e) => !e.optout && e.proxima_reativacao && e.proxima_reativacao <= hoje && e.proxima_reativacao >= limiteJanela)
+      .forEach((e) => {
+        const toque = e.reativacao_toque || 0;
+        const modelo = toque === 0 ? "REAT-7" : toque === 1 ? "REAT-30" : "REAT-CHECK";
+        doDia("reativacao", "Reativar: " + e.nome, "Check-in com cliente antigo · " + modelo, e.id, { tipo: "empresa", id: e.id });
+      });
+
+    // sazonal: 45 dias antes da data (janela de 5 dias), clientes que marcaram aquela data
+    const hojeData = new Date(hoje + "T00:00:00");
+    const ano = hojeData.getFullYear();
+    Object.keys(FESTAS_SAZONAIS).forEach((chave) => {
+      [ano, ano + 1].forEach((a) => {
+        const dias = Math.round((FESTAS_SAZONAIS[chave].data(a) - hojeData) / 86400000);
+        if (dias > ANTECEDENCIA_SAZONAL_DIAS || dias < ANTECEDENCIA_SAZONAL_DIAS - 5) return;
+        const marcas = empresasCache.filter((e) => !e.optout && (e.datas_sazonais || []).includes(chave)).map((e) => e.nome);
+        if (!marcas.length) return;
+        lista.push({
+          chave: "sazonal:" + chave + ":" + a, tipo: "sazonal", titulo: FESTAS_SAZONAIS[chave].rotulo + " em " + dias + " dias",
+          texto: marcas.slice(0, 3).join(", ") + (marcas.length > 3 ? " e mais " + (marcas.length - 3) : ""),
+          destino: { tipo: "aba", tab: "comercial-empresas" }, dia: hoje, em: agoraIso, ordem: Date.now(),
+        });
+      });
+    });
+  }
+
   // Tudo que o sino mostra, do mais novo pro mais antigo.
   function listaNotificacoes() {
     const hoje = hojeIso();
@@ -20181,11 +20258,16 @@
     direitosDeUsoExpirando()
       .filter((i) => i.dias === 0)
       .forEach((i) => doDia("direito", "Direito de uso expira hoje", `${i.nome} · ${i.videos} vídeo(s)`, i.id, { tipo: "campanha", id: i.id }));
+    try {
+      avisosComerciais(hoje, doDia, lista, agoraIso);
+    } catch (erro) {
+      console.error("Avisos comerciais:", erro);
+    }
 
     return lista.sort((a, b) => b.ordem - a.ordem).slice(0, 50);
   }
 
-  const ICONES_NOTIF = { lead: "✉", briefing: "▤", roteiro: "✎", conquista: "★", meta: "◎", receber: "＋", pagar: "−", prazo: "⏰", direito: "©" };
+  const ICONES_NOTIF = { lead: "✉", briefing: "▤", roteiro: "✎", conquista: "★", meta: "◎", receber: "＋", pagar: "−", prazo: "⏰", direito: "©", followup: "↻", nutricao: "◷", reativacao: "⟲", sazonal: "✦" };
 
   function atualizarNotificacoes() {
     const btn = document.getElementById("btnNotificacoes");
@@ -20254,7 +20336,19 @@
     if ((cfgLer(CFG_NOTIF_RESOLVIDAS, []) || []).includes(n.chave)) return true;
     const d = n.destino || {};
     try {
-      if (n.tipo === "conquista" || n.tipo === "meta" || n.tipo === "roteiro") return lidas.has(n.chave);
+      if (n.tipo === "conquista" || n.tipo === "meta" || n.tipo === "roteiro" || n.tipo === "sazonal") return lidas.has(n.chave);
+      if (n.tipo === "followup" && d.tipo === "oportunidade" && oportunidadesCache.length) {
+        const op = oportunidadesCache.find((o) => o.id === d.id);
+        return !op || !oportunidadeAberta(op) || !op.proximo_followup || op.proximo_followup > (n.dia || hojeIso());
+      }
+      if (n.tipo === "nutricao" && oportunidadesCache.length) {
+        const op = oportunidadesCache.find((o) => o.id === d.id);
+        return !op || oportunidadeAberta(op) || !op.data_retorno || op.data_retorno > (n.dia || hojeIso());
+      }
+      if (n.tipo === "reativacao" && empresasCache.length) {
+        const emp = empresasCache.find((e) => e.id === d.id);
+        return !emp || !emp.proxima_reativacao || emp.proxima_reativacao > (n.dia || hojeIso());
+      }
       if (n.tipo === "receber" && financasDisponivel && receitasCache.length) return !recebimentosEmAberto().some((r) => r.chave === d.chave && (!n.dia || r.data === n.dia));
       if (n.tipo === "pagar" && financasDisponivel && despesasFinCache.length) {
         const linha = linhasDespesas().find((l) => l.chave === d.chave);
