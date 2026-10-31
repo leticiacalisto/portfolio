@@ -4909,6 +4909,53 @@
           </div>
         </div>
 
+        <div id="blocoCrmEmpresa" hidden>
+          <p class="secao-modal-op">Prospecção <span id="selosPerfilEmpresa" class="texto-pequeno"></span></p>
+          <div class="grade-propriedades-limpa">
+            <div class="prop-limpa">
+              <span class="rotulo-limpo">Porte</span>
+              <select id="campoPorteEmpresa" class="input-limpo">
+                <option value="">—</option>
+                <option value="pequena">Pequena (DM personalizada)</option>
+                <option value="grande">Grande (pedir e-mail)</option>
+              </select>
+            </div>
+            <div class="prop-limpa">
+              <span class="rotulo-limpo">Seguidores no Instagram</span>
+              <input type="number" min="0" step="1" id="campoSeguidoresEmpresa" class="input-limpo">
+            </div>
+            <div class="prop-limpa">
+              <span class="rotulo-limpo">UF</span>
+              <input type="text" id="campoUfEmpresa" class="input-limpo" maxlength="2" autocomplete="off" placeholder="SC">
+            </div>
+            <div class="prop-limpa">
+              <span class="rotulo-limpo">Já usa UGC?</span>
+              <select id="campoUsaUgcEmpresa" class="input-limpo">
+                <option value="">Não sei</option>
+                <option value="sim">Sim</option>
+                <option value="nao">Não</option>
+              </select>
+            </div>
+            <div class="prop-limpa">
+              <span class="rotulo-limpo">E-mail do marketing</span>
+              <input type="email" id="campoEmailMarketingEmpresa" class="input-limpo" autocomplete="off" placeholder="Se for diferente do principal">
+            </div>
+            <div class="prop-limpa">
+              <span class="rotulo-limpo">Próxima reativação</span>
+              <input type="date" id="campoProximaReativacaoEmpresa" class="input-limpo">
+            </div>
+          </div>
+          <label class="rotulo-limpo rotulo-descricao">Datas comemorativas (avisa 45 dias antes)</label>
+          <div id="datasSazonaisEmpresa" style="display:flex; flex-wrap:wrap; gap:6px 14px; margin:6px 0 10px;"></div>
+          <label style="display:flex; align-items:center; gap:8px; margin:6px 0;">
+            <input type="checkbox" id="campoOptoutEmpresa"> Pediu para não receber contato (opt-out: fora de disparos e avisos)
+          </label>
+          <label style="display:flex; align-items:center; gap:8px; margin:6px 0;" id="blocoCriarOportunidadeEmpresa" hidden>
+            <input type="checkbox" id="campoCriarOportunidadeEmpresa" checked> Criar também a oportunidade em Lista
+          </label>
+          <button type="button" class="btn-acao-op" id="btnReativarEmpresa" hidden>Reativar cliente (criar oportunidade)</button>
+        </div>
+
         <label for="campoObservacoesEmpresa" class="rotulo-limpo rotulo-descricao">Observações</label>
         <textarea id="campoObservacoesEmpresa" class="textarea-limpa" rows="3"></textarea>
 
@@ -15178,6 +15225,7 @@
       });
       if (!abertas.length) return "Sem oportunidade aberta";
       const etapa = etapaOportunidade(abertas[0].etapa_id);
+      if (etapa && /^lista/i.test(etapa.nome)) return "Lista / a prospectar";
       return etapa ? etapa.nome : "Sem oportunidade aberta";
     }
     if (status === "Ativo") return "Em produção";
@@ -15202,8 +15250,18 @@
     site: { rotulo: "Site" },
     status: { rotulo: "Status" },
     fase: { rotulo: "Fase" },
+    perfil: { rotulo: "Perfil" },
+    porte: { rotulo: "Porte" },
+    seguidores_instagram: { rotulo: "Seguidores" },
+    uf: { rotulo: "UF" },
+    usa_ugc: { rotulo: "Usa UGC" },
+    ultimo_contato: { rotulo: "Último contato" },
+    ultima_campanha: { rotulo: "Última campanha" },
+    optout: { rotulo: "Opt-out" },
   };
-  const ORDEM_COLUNAS_MARCAS_PADRAO = ["segmento", "contato_principal", "whatsapp", "email", "instagram", "site", "status", "fase"];
+  const ORDEM_COLUNAS_MARCAS_PADRAO = ["segmento", "contato_principal", "whatsapp", "email", "instagram", "site", "status", "fase", "perfil", "porte", "seguidores_instagram", "uf", "usa_ugc", "ultimo_contato", "ultima_campanha", "optout"];
+  // colunas de prospecção: existem, mas começam escondidas (liga em "Colunas")
+  const COLUNAS_MARCAS_OCULTAS_POR_PADRAO = ["perfil", "porte", "seguidores_instagram", "uf", "usa_ugc", "ultimo_contato", "ultima_campanha", "optout"];
   const CHAVE_COLUNAS_MARCAS = "painelMarcasColunas";
   const OPCOES_CAMPO_MARCAS = [{ campo: "nome", rotulo: "Marca" }, ...ORDEM_COLUNAS_MARCAS_PADRAO.map((campo) => ({ campo, rotulo: COLUNAS_MARCAS_DEF[campo].rotulo }))];
 
@@ -15212,11 +15270,11 @@
       const salvo = JSON.parse(localStorage.getItem(CHAVE_COLUNAS_MARCAS) || "null");
       if (Array.isArray(salvo) && salvo.length) {
         const vistos = new Set(salvo.map((c) => c.campo));
-        const extras = ORDEM_COLUNAS_MARCAS_PADRAO.filter((c) => !vistos.has(c)).map((campo) => ({ campo, visivel: true }));
+        const extras = ORDEM_COLUNAS_MARCAS_PADRAO.filter((c) => !vistos.has(c)).map((campo) => ({ campo, visivel: !COLUNAS_MARCAS_OCULTAS_POR_PADRAO.includes(campo) }));
         return salvo.filter((c) => COLUNAS_MARCAS_DEF[c.campo]).concat(extras);
       }
     } catch (erro) {}
-    return ORDEM_COLUNAS_MARCAS_PADRAO.map((campo) => ({ campo, visivel: true }));
+    return ORDEM_COLUNAS_MARCAS_PADRAO.map((campo) => ({ campo, visivel: !COLUNAS_MARCAS_OCULTAS_POR_PADRAO.includes(campo) }));
   }
   function salvarColunasMarcas() {
     localStorage.setItem(CHAVE_COLUNAS_MARCAS, JSON.stringify(colunasMarcas));
@@ -15262,10 +15320,40 @@
       .filter((c) => c.visivel);
   }
 
+  // Perfil ideal: 5 mil a 200 mil seguidores, SC ou Sul, já usa UGC e tem e-mail.
+  const UFS_SUL = ["SC", "PR", "RS"];
+  function perfilDaMarca(empresa) {
+    const seg = Number(empresa.seguidores_instagram) || 0;
+    const itens = [
+      { rotulo: "5 mil a 200 mil seguidores", ok: seg >= 5000 && seg <= 200000 },
+      { rotulo: "SC ou região Sul", ok: UFS_SUL.includes(String(empresa.uf || "").toUpperCase()) },
+      { rotulo: "já usa UGC", ok: empresa.usa_ugc === true },
+      { rotulo: "tem e-mail", ok: !!(empresa.email || empresa.email_marketing) },
+    ];
+    const ok = itens.filter((i) => i.ok).length;
+    return { itens, ok, total: itens.length, qualificada: ok === itens.length };
+  }
+  function ultimoContatoDaMarca(empresa) {
+    return oportunidadesCache.filter((o) => o.empresa_id === empresa.id && o.ultimo_contato).reduce((m, o) => (o.ultimo_contato > m ? o.ultimo_contato : m), "");
+  }
+  function ultimaCampanhaDaMarca(empresa) {
+    return contratosCache.filter((k) => k.empresa_id === empresa.id && k.data_assinatura).reduce((m, k) => (k.data_assinatura > m ? k.data_assinatura : m), "");
+  }
+
   function valorExibicaoEmpresaCampo(empresa, campo) {
     if (campo === "nome") return empresa.nome || "";
     if (campo === "status") return statusEfetivoEmpresa(empresa) || "";
     if (campo === "fase") return faseDaEmpresa(empresa) || "";
+    if (campo === "perfil") {
+      const perfil = perfilDaMarca(empresa);
+      return perfil.qualificada ? "Qualificada" : perfil.ok + "/" + perfil.total;
+    }
+    if (campo === "porte") return empresa.porte === "grande" ? "Grande" : empresa.porte === "pequena" ? "Pequena" : "";
+    if (campo === "seguidores_instagram") return empresa.seguidores_instagram != null ? String(empresa.seguidores_instagram) : "";
+    if (campo === "usa_ugc") return empresa.usa_ugc === true ? "Sim" : empresa.usa_ugc === false ? "Não" : "";
+    if (campo === "optout") return empresa.optout ? "Sim" : "";
+    if (campo === "ultimo_contato") return ultimoContatoDaMarca(empresa);
+    if (campo === "ultima_campanha") return ultimaCampanhaDaMarca(empresa);
     return empresa[campo] || "";
   }
 
@@ -15442,6 +15530,19 @@
           window.open(url, "_blank", "noopener");
         });
       }
+      return td;
+    }
+    if (campo === "perfil") {
+      const perfil = perfilDaMarca(empresa);
+      const faltam = perfil.itens.filter((i) => !i.ok).map((i) => i.rotulo);
+      td.innerHTML = `<span class="chip-card-quadro${perfil.qualificada ? " chip-acao" : ""}" title="${perfil.qualificada ? "Cumpre o perfil ideal" : "Falta: " + esc(faltam.join(", "))}">${perfil.qualificada ? "★ Qualificada" : perfil.ok + "/" + perfil.total}</span>`;
+      return td;
+    }
+    if (["porte", "seguidores_instagram", "uf", "usa_ugc", "optout", "ultimo_contato", "ultima_campanha"].includes(campo)) {
+      let valor = valorExibicaoEmpresaCampo(empresa, campo);
+      if (valor && (campo === "ultimo_contato" || campo === "ultima_campanha")) valor = formatarDataBr(valor);
+      if (valor && campo === "seguidores_instagram") valor = formatarNumero(Number(valor));
+      td.textContent = valor || "—";
       return td;
     }
     td.textContent = empresa[campo] || "—";
@@ -16333,7 +16434,71 @@
     campoEnderecoEmpresa.value = (empresa && empresa.endereco) || "";
     campoObservacoesEmpresa.value = (empresa && empresa.observacoes) || "";
     btnExcluirEmpresa.hidden = !empresa;
+    preencherBlocoCrmEmpresa(empresa);
   }
+
+  // ---- Prospecção (porte, seguidores, UF, opt-out, datas comemorativas) ----
+  const campoPorteEmpresa = document.getElementById("campoPorteEmpresa");
+  const campoSeguidoresEmpresa = document.getElementById("campoSeguidoresEmpresa");
+  const campoUfEmpresa = document.getElementById("campoUfEmpresa");
+  const campoUsaUgcEmpresa = document.getElementById("campoUsaUgcEmpresa");
+  const campoEmailMarketingEmpresa = document.getElementById("campoEmailMarketingEmpresa");
+  const campoProximaReativacaoEmpresa = document.getElementById("campoProximaReativacaoEmpresa");
+  const campoOptoutEmpresa = document.getElementById("campoOptoutEmpresa");
+  const campoCriarOportunidadeEmpresa = document.getElementById("campoCriarOportunidadeEmpresa");
+  const btnReativarEmpresa = document.getElementById("btnReativarEmpresa");
+
+  // as colunas novas só existem depois de rodar js/crm-funil-setup.sql
+  function colunasCrmEmpresaExistem() {
+    return empresasCache.some((e) => e && "porte" in e);
+  }
+
+  function preencherBlocoCrmEmpresa(empresa) {
+    const bloco = document.getElementById("blocoCrmEmpresa");
+    bloco.hidden = !colunasCrmEmpresaExistem();
+    if (bloco.hidden) return;
+    campoPorteEmpresa.value = (empresa && empresa.porte) || "";
+    campoSeguidoresEmpresa.value = empresa && empresa.seguidores_instagram != null ? empresa.seguidores_instagram : "";
+    campoUfEmpresa.value = (empresa && empresa.uf) || "";
+    campoUsaUgcEmpresa.value = !empresa || empresa.usa_ugc == null ? "" : empresa.usa_ugc ? "sim" : "nao";
+    campoEmailMarketingEmpresa.value = (empresa && empresa.email_marketing) || "";
+    campoProximaReativacaoEmpresa.value = (empresa && empresa.proxima_reativacao) || "";
+    campoOptoutEmpresa.checked = !!(empresa && empresa.optout);
+    const marcadas = (empresa && empresa.datas_sazonais) || [];
+    document.getElementById("datasSazonaisEmpresa").innerHTML = Object.keys(FESTAS_SAZONAIS)
+      .map((k) => `<label style="display:flex; align-items:center; gap:6px; font-size:.82rem;"><input type="checkbox" data-data-sazonal="${k}"${marcadas.includes(k) ? " checked" : ""}> ${FESTAS_SAZONAIS[k].rotulo}</label>`)
+      .join("");
+    document.getElementById("blocoCriarOportunidadeEmpresa").hidden = !!empresa;
+    campoCriarOportunidadeEmpresa.checked = true;
+    btnReativarEmpresa.hidden = !empresa;
+    const perfil = empresa ? perfilDaMarca(empresa) : null;
+    document.getElementById("selosPerfilEmpresa").textContent = perfil
+      ? perfil.qualificada
+        ? "· ★ cumpre o perfil ideal"
+        : "· perfil " + perfil.ok + "/" + perfil.total + " (falta: " + perfil.itens.filter((i) => !i.ok).map((i) => i.rotulo).join(", ") + ")"
+      : "";
+  }
+
+  function coletarBlocoCrmEmpresa() {
+    if (!colunasCrmEmpresaExistem()) return {};
+    return {
+      porte: campoPorteEmpresa.value || null,
+      seguidores_instagram: campoSeguidoresEmpresa.value ? Math.round(Number(campoSeguidoresEmpresa.value)) : null,
+      uf: campoUfEmpresa.value.trim().toUpperCase() || null,
+      usa_ugc: campoUsaUgcEmpresa.value === "sim" ? true : campoUsaUgcEmpresa.value === "nao" ? false : null,
+      email_marketing: campoEmailMarketingEmpresa.value.trim() || null,
+      proxima_reativacao: campoProximaReativacaoEmpresa.value || null,
+      optout: campoOptoutEmpresa.checked,
+      datas_sazonais: [...document.querySelectorAll("#datasSazonaisEmpresa [data-data-sazonal]")].filter((c) => c.checked).map((c) => c.dataset.dataSazonal),
+    };
+  }
+
+  btnReativarEmpresa.addEventListener("click", () => {
+    const id = idEmpresaEmEdicao;
+    if (!id) return;
+    fecharModalCard();
+    iniciarReativacao(id);
+  });
 
   function colunaTiktokExiste() {
     return empresasCache.some((e) => e && "tiktok" in e);
@@ -16343,6 +16508,7 @@
     const tiktok = colunaTiktokExiste() ? { tiktok: document.getElementById("campoTiktokEmpresa").value.trim() || null } : {};
     return {
       ...tiktok,
+      ...coletarBlocoCrmEmpresa(),
       nome: campoNomeEmpresa.value.trim(),
       segmento: campoSegmentoEmpresa.value.trim() || null,
       contato_principal: campoContatoEmpresa.value.trim() || null,
@@ -16404,8 +16570,11 @@
   formEmpresa.addEventListener("submit", comFila("form-marca", async () => {
     if (!campoNomeEmpresa.value.trim()) return;
     try {
-      await salvarEmpresaAtual();
+      const eraNova = !idEmpresaEmEdicao;
+      const criarOportunidade = eraNova && colunasCrmEmpresaExistem() && campoCriarOportunidadeEmpresa.checked;
+      const empresaId = await salvarEmpresaAtual();
       await recarregarComercial();
+      if (criarOportunidade && empresaId) await criarOportunidadeEmLista(empresaId);
       fecharModalCard();
     } catch (erro) {
       alert(
@@ -16456,6 +16625,8 @@
     OUT_GRANDE: { rotulo: "Outbound marca grande", toques: [0, 4], modelos: ["OUT-G1", "OUT-G2"], abre: true },
     EMAIL_SEQ: { rotulo: "Sequência de e-mail", toques: [0, 4, 9, 16], modelos: ["EM-1", "EM-2", "EM-3", "EM-4"], abre: true },
     PROPOSTA: { rotulo: "Proposta enviada", toques: [2, 5, 10, 20], modelos: ["PROP-1", "PROP-2", "PROP-3", "PROP-4"] },
+    // oportunidade aberta por "Reativar cliente": o 1º modelo (REAT-7/30/CHECK) depende de quantas reativações a marca já teve
+    REATIVACAO: { rotulo: "Reativação de cliente", toques: [0, 5, 12], modelos: ["REAT-CHECK", "OUT-P2", "OUT-P3"], abre: true },
   };
   const DIAS_ESPERA_FIM_CADENCIA = 5;
   const MOTIVOS_PERDA = {
@@ -16699,6 +16870,118 @@
       }
     } finally {
       convertendoLeads = false;
+    }
+  }
+
+  // ---- Nova marca em Lista: já entra no funil como Outbound para prospectar ----
+  async function criarOportunidadeEmLista(empresaId) {
+    const lista = etapaPorNomeOportunidade("lista");
+    if (!lista || !oportunidadesDisponivel || !captacaoDisponivel) return;
+    try {
+      const { error } = await Auth.sb.from("oportunidades").insert({
+        empresa_id: empresaId,
+        captacao: "Outbound",
+        etapa_id: lista.id,
+        data_entrada: hojeIso(),
+      });
+      if (error) throw error;
+      await recarregarOportunidades();
+    } catch (erro) {
+      console.error("Criar oportunidade em Lista:", erro);
+    }
+  }
+
+  // ---- Reativação de clientes antigos ----
+  // Marca com campanhas todas entregues: reativa 7 dias úteis depois da entrega, depois
+  // ~30 dias após a entrega e a cada 75 dias (a cada 30 se for cliente recorrente).
+  const DIAS_REATIVACAO_TOQUE_2 = 23;
+  const DIAS_REATIVACAO_PADRAO = 75;
+  const DIAS_REATIVACAO_RECORRENTE = 30;
+  const JANELA_REATIVACAO_AUTOMATICA_DIAS = 60;
+  let atualizandoReativacoes = false;
+
+  function entregaDaMarca(empresa) {
+    const campanhas = contratosCache.filter((k) => k.empresa_id === empresa.id);
+    if (!campanhas.length || campanhas.some((k) => statusCampanha(k) === "em_producao")) return "";
+    const ids = new Set(campanhas.map((k) => k.id));
+    return quadroCache
+      .filter((c) => ids.has(c.contrato_id) && c.concluido_em)
+      .map((c) => diaLocalDe(c.concluido_em))
+      .reduce((m, d) => (d > m ? d : m), "");
+  }
+
+  function clienteRecorrente(empresa) {
+    const desde = somarDiasIso(hojeIso(), -180);
+    return contratosCache.filter((k) => k.empresa_id === empresa.id && k.data_assinatura && k.data_assinatura >= desde).length > 2;
+  }
+
+  // Agenda a 1ª reativação das marcas que acabaram de ter a campanha entregue
+  async function atualizarReativacoes() {
+    if (atualizandoReativacoes || !comercialDisponivel || !colunaFinal() || !empresasCache.some((e) => "proxima_reativacao" in e)) return;
+    atualizandoReativacoes = true;
+    try {
+      const hoje = hojeIso();
+      const limite = somarDiasIso(hoje, -JANELA_REATIVACAO_AUTOMATICA_DIAS);
+      for (const empresa of empresasCache) {
+        if (empresa.optout || empresa.proxima_reativacao || (empresa.reativacao_toque || 0) > 0) continue;
+        const entrega = entregaDaMarca(empresa);
+        if (!entrega || entrega < limite) continue;
+        const data = somarDiasUteis(entrega, 7);
+        const proxima = data < hoje ? hoje : data;
+        const { error } = await Auth.sb.from("empresas").update({ proxima_reativacao: proxima, reativacao_toque: 0 }).eq("id", empresa.id);
+        if (!error) empresa.proxima_reativacao = proxima;
+      }
+    } catch (erro) {
+      console.error("Agendar reativações:", erro);
+    } finally {
+      atualizandoReativacoes = false;
+    }
+  }
+
+  // "Chamar" um cliente antigo: abre a oportunidade (Reativação, em Abordado) e avança a agenda da marca
+  async function iniciarReativacao(empresaId) {
+    const empresa = empresasCache.find((e) => e.id === empresaId);
+    if (!empresa) return;
+    const aberta = oportunidadesCache.find((o) => o.empresa_id === empresaId && oportunidadeAberta(o));
+    if (aberta) {
+      executarDestino({ tipo: "oportunidade", id: aberta.id });
+      return;
+    }
+    const abordado = etapaPorNomeOportunidade("abordado");
+    if (!abordado || !captacaoDisponivel || !oportunidadesDisponivel) return alert("Falta rodar js/crm-funil-setup.sql no Supabase.");
+    if (!confirm("Criar a oportunidade de reativação para " + empresa.nome + "?")) return;
+    const toque = empresa.reativacao_toque || 0;
+    const hoje = hojeIso();
+    try {
+      const { data, error } = await Auth.sb
+        .from("oportunidades")
+        .insert({
+          empresa_id: empresaId,
+          contato: empresa.contato_principal || null,
+          canal_contato: empresa.whatsapp ? "WhatsApp" : empresa.email ? "E-mail" : null,
+          captacao: "Reativação",
+          origem_lead: "Cliente antigo",
+          etapa_id: abordado.id,
+          data_entrada: hoje,
+          cadencia: "REATIVACAO",
+          toque_n: 0,
+          proximo_followup: hoje,
+          proxima_acao: "Mensagem de reativação",
+          modelo_sugerido: toque === 0 ? "REAT-7" : toque === 1 ? "REAT-30" : "REAT-CHECK",
+        })
+        .select()
+        .single();
+      if (error) throw error;
+      const dias = toque === 0 ? DIAS_REATIVACAO_TOQUE_2 : clienteRecorrente(empresa) ? DIAS_REATIVACAO_RECORRENTE : DIAS_REATIVACAO_PADRAO;
+      const proxima = somarDiasIso(hoje, dias);
+      await Auth.sb.from("empresas").update({ reativacao_toque: toque + 1, proxima_reativacao: proxima }).eq("id", empresaId);
+      empresa.reativacao_toque = toque + 1;
+      empresa.proxima_reativacao = proxima;
+      await recarregarOportunidades();
+      executarDestino({ tipo: "oportunidade", id: data.id });
+    } catch (erro) {
+      alert("Não foi possível criar a oportunidade de reativação.");
+      console.error(erro);
     }
   }
 
@@ -19572,6 +19855,8 @@
       if (!soJanela) irParaAba("comercial-empresas");
       const empresa = empresasCache.find((e) => e.id === d.id);
       if (empresa) abrirModalEmpresa(empresa);
+    } else if (d.tipo === "reativar") {
+      iniciarReativacao(d.id);
     } else if (d.tipo === "lead") {
       // lead do formulário: abre a oportunidade criada por ele; sem ela, a lista de mensagens
       const lead = leadsCache.find((l) => String(l.id) === String(d.id));
@@ -20360,7 +20645,7 @@
       .forEach((e) => {
         const toque = e.reativacao_toque || 0;
         const modelo = toque === 0 ? "REAT-7" : toque === 1 ? "REAT-30" : "REAT-CHECK";
-        doDia("reativacao", "Reativar: " + e.nome, "Check-in com cliente antigo · " + modelo, e.id, { tipo: "empresa", id: e.id });
+        doDia("reativacao", "Reativar: " + e.nome, "Check-in com cliente antigo · " + modelo, e.id, { tipo: "reativar", id: e.id });
       });
 
     // sazonal: 45 dias antes da data (janela de 5 dias), clientes que marcaram aquela data
@@ -20792,6 +21077,7 @@
       try {
         leadsCache = await buscarTudo("portfolio_leads");
         await converterLeadsEmOportunidades();
+        await atualizarReativacoes();
         atualizarNotificacoes();
       } catch (erro) {
         console.error(erro);
@@ -22152,10 +22438,11 @@
 
   renderizarTudo();
   carregarCfg();
-  recarregarQuadro();
+  const cargaQuadro = recarregarQuadro();
   recarregarFinancas();
-  Promise.all([recarregarComercial(), recarregarOportunidades()])
+  Promise.all([cargaQuadro, recarregarComercial(), recarregarOportunidades()])
     .then(() => converterLeadsEmOportunidades())
+    .then(() => atualizarReativacoes())
     .catch((erro) => console.error(erro));
   recarregarVideosPortfolio();
   recarregarAfiliados();
