@@ -3829,6 +3829,14 @@
         <div class="cartao"><h2>Funil Outbound</h2><div id="dashFunilOutbound"></div></div>
       </div>
       <div class="grade-marcadores grade-3" id="dashFunilTotais"></div>
+      <div class="grade-marcadores grade-3" id="dashFunilIndicadores" style="margin-top:18px;"></div>
+      <div class="dash-funis" style="margin-top:18px;">
+        <div class="cartao"><h2>Resposta por origem</h2><div id="dashRespostaOrigem"></div></div>
+        <div class="cartao"><h2>Receita por captação</h2><div id="dashReceitaCaptacao"></div></div>
+      </div>
+      <div class="dash-funis" style="margin-top:18px; grid-template-columns:1fr;">
+        <div class="cartao"><h2>Tempo médio em cada etapa</h2><div id="dashTempoEtapa"></div></div>
+      </div>
       <button type="button" class="btn-mais-detalhes-campanha" data-dash-detalhes="prosp" aria-expanded="false">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
         Mais detalhes
@@ -17232,6 +17240,8 @@
   let etapasOportunidadeCache = [];
   let oportunidadesDisponivel = true;
   let captacaoDisponivel = false;
+  let eventosOportunidadeCache = [];
+  let eventosOportunidadeDisponivel = false;
   let visaoOportunidadeAtual = "kanban";
 
   async function buscarEtapasOportunidade() {
@@ -17257,6 +17267,13 @@
       captacaoDisponivel = !error;
     } catch (erro) {
       captacaoDisponivel = false;
+    }
+    // histórico de etapas e contatos só existe depois de rodar js/crm-funil-4-setup.sql
+    try {
+      eventosOportunidadeCache = await buscarTudo("oportunidades_eventos");
+      eventosOportunidadeDisponivel = true;
+    } catch (erro) {
+      eventosOportunidadeDisponivel = false;
     }
     if (typeof renderizarDashboard === "function") renderizarDashboard();
     renderizarOportunidades();
@@ -22095,7 +22112,7 @@
     geral: { aberto: false, sel: new Set(["marcas"]), periodo: "6" },
     prosp: { aberto: false, sel: new Set(["inbound"]), periodo: "6" },
   };
-  const GRUPO_DO_MARCADOR = { marcas: "geral", campanhas: "geral", videos: "geral", si: "geral", inbound: "prosp", outbound: "prosp" };
+  const GRUPO_DO_MARCADOR = { marcas: "geral", campanhas: "geral", videos: "geral", si: "geral", inbound: "prosp", outbound: "prosp", reativacao: "prosp" };
 
   const contarPorMes = (lista) => {
     const o = {};
@@ -22148,6 +22165,8 @@
         return contarPorMes(oportunidadesDoTipo("Inbound"));
       case "outbound":
         return contarPorMes(oportunidadesDoTipo("Outbound"));
+      case "reativacao":
+        return contarPorMes(oportunidadesDoTipo("Reativação"));
       default:
         return {};
     }
@@ -22309,30 +22328,41 @@
     return !!etapa && etapa.tipo === "perdida";
   };
 
+  // ---- indicadores do funil (usam o estado atual + o histórico em oportunidades_eventos) ----
+  const alvoAbordado = () => etapaAlvoFunil(/^abordad/);
+  const alvoQualificacao = () => etapaAlvoFunil(/^qualifica/);
+  const alvoProposta = () => etapaAlvoFunil(/^propost/);
+  const alvoNegociacaoFunil = () => etapaAlvoFunil(/negocia/);
+  // perdida com motivo diferente de "sem resposta" = a marca respondeu em algum momento
+  const perdidaComResposta = (o) => foiPerdida(o) && !!o.motivo_perda && o.motivo_perda !== "sem_resposta";
+  const foiAbordada = (o) => alcancouEtapa(o, alvoAbordado()) || (o.toque_n || 0) > 0 || (foiPerdida(o) && !!o.ultimo_contato);
+  const respondeu = (o) => alcancouEtapa(o, alvoQualificacao()) || perdidaComResposta(o);
+  const chegouNaProposta = (o) => alcancouEtapa(o, alvoProposta()) || !!o.proposta_enviada_em;
+  const pct = (parte, total) => (total ? Math.round((parte / total) * 100) + "%" : "—");
+
   function renderizarFunis(agora, s) {
     const avisoSql = !captacaoDisponivel ? "Falta rodar js/dashboard-setup.sql no Supabase para marcar Inbound/Outbound nas oportunidades." : "";
     const doMes = (tipo) => oportunidadesDoTipo(tipo).filter((o) => o.data.startsWith(agora));
 
     const inbound = doMes("Inbound");
-    const alvoNegociacao = etapaAlvoFunil(/negocia/);
     document.getElementById("dashFunilInbound").innerHTML = htmlFunil(
       [
         { nome: "Entraram", valor: inbound.length, cor: PALETA_BALOES[0].suave },
-        { nome: "Foram para negociação", valor: inbound.filter((o) => alcancouEtapa(o, alvoNegociacao)).length, cor: PALETA_BALOES[1].suave },
+        { nome: "Receberam proposta", valor: inbound.filter(chegouNaProposta).length, cor: PALETA_BALOES[1].suave },
+        { nome: "Foram para negociação", valor: inbound.filter((o) => alcancouEtapa(o, alvoNegociacaoFunil())).length, cor: PALETA_BALOES[2].suave },
         { nome: "Fechadas", valor: inbound.filter(foiGanha).length, cor: PALETA_BALOES[3].suave },
       ],
       avisoSql
     );
 
     const outbound = doMes("Outbound");
-    const alvoResposta = etapaAlvoFunil(/respond|propost/);
-    const alvoOrcamento = etapaAlvoFunil(/propost/);
     document.getElementById("dashFunilOutbound").innerHTML = htmlFunil(
       [
         { nome: "Entraram", valor: outbound.length, cor: PALETA_BALOES[0].suave },
-        { nome: "Responderam (proposta + negados)", valor: outbound.filter((o) => alcancouEtapa(o, alvoResposta) || foiPerdida(o)).length, cor: PALETA_BALOES[1].suave },
-        { nome: "Chegaram a orçamento", valor: outbound.filter((o) => alcancouEtapa(o, alvoOrcamento)).length, cor: PALETA_BALOES[2].suave },
-        { nome: "Fecharam", valor: outbound.filter(foiGanha).length, cor: PALETA_BALOES[3].suave },
+        { nome: "Abordadas", valor: outbound.filter(foiAbordada).length, cor: PALETA_BALOES[1].suave },
+        { nome: "Responderam", valor: outbound.filter(respondeu).length, cor: PALETA_BALOES[2].suave },
+        { nome: "Receberam proposta", valor: outbound.filter(chegouNaProposta).length, cor: PALETA_BALOES[3].suave },
+        { nome: "Fecharam", valor: outbound.filter(foiGanha).length, cor: PALETA_BALOES[4] ? PALETA_BALOES[4].suave : PALETA_BALOES[3].suave },
       ],
       avisoSql
     );
@@ -22343,9 +22373,107 @@
       return htmlBlocoMarcador({ id, rotulo, st: estatisticasMes(valores, agora), nota: `total geral: ${formatarNumero(total)}` });
     };
     document.getElementById("dashFunilTotais").innerHTML =
-      bloco("inbound", "Total de inbound", "Inbound") +
-      bloco("outbound", "Total de outbound", "Outbound") +
-      htmlBlocoMarcador({ rotulo: "Follow-ups enviados", neutro: true, textoGrande: "—", nota: "Em construção" });
+      bloco("inbound", "Total de inbound", "Inbound") + bloco("outbound", "Total de outbound", "Outbound") + bloco("reativacao", "Total de reativação", "Reativação");
+
+    renderizarIndicadoresFunil(agora);
+  }
+
+  const cartaoIndicador = (rotulo, valor, nota) =>
+    `<div class="cartao-fluxo marcador neutro"><span class="rotulo-cartao-fluxo">${esc(rotulo)}</span><span class="valor-cartao-fluxo">${esc(valor)}</span><span class="nota-cartao-fluxo">${esc(nota || "")}</span></div>`;
+
+  function renderizarIndicadoresFunil(agora) {
+    const hoje = hojeIso();
+    const abertas = oportunidadesCache.filter(oportunidadeAberta);
+
+    // taxa de fechamento = fechadas ÷ propostas enviadas (geral e no mês)
+    const comProposta = oportunidadesCache.filter(chegouNaProposta);
+    const fechadas = comProposta.filter(foiGanha);
+    const propostasMes = oportunidadesCache.filter((o) => (o.proposta_enviada_em || "").startsWith(agora)).length;
+    const fechadasMes = oportunidadesCache.filter((o) => foiGanha(o) && (o.data_fechamento || "").startsWith(agora)).length;
+
+    // follow-ups: feitos no mês (histórico) e atrasados agora
+    const atrasados = abertas.filter((o) => o.proximo_followup && o.proximo_followup < hoje).length;
+    const feitos = eventosOportunidadeCache.filter((e) => e.tipo === "contato" && diaLocalDe(e.created_at).startsWith(agora)).length;
+    const inicioHistorico = eventosOportunidadeCache.reduce((m, e) => (!m || e.created_at < m ? e.created_at : m), "");
+
+    document.getElementById("dashFunilIndicadores").innerHTML =
+      cartaoIndicador("Taxa de fechamento", pct(fechadas.length, comProposta.length), `${fechadas.length} de ${comProposta.length} propostas · no mês: ${fechadasMes} fechadas, ${propostasMes} propostas`) +
+      cartaoIndicador(
+        "Follow-ups feitos no mês",
+        eventosOportunidadeDisponivel ? String(feitos) : "—",
+        eventosOportunidadeDisponivel ? `contados desde ${formatarDataBr(diaLocalDe(inicioHistorico || new Date().toISOString()))}` : "falta rodar js/crm-funil-4-setup.sql"
+      ) +
+      cartaoIndicador("Follow-ups atrasados", String(atrasados), atrasados ? "abertos com a data vencida" : "nenhum atrasado");
+
+    // resposta por origem = chegaram a Qualificação ÷ abordadas
+    const origens = {};
+    oportunidadesCache
+      .filter((o) => o.captacao !== "Inbound" && foiAbordada(o))
+      .forEach((o) => {
+        const nome = o.origem_lead || "Sem origem";
+        const g = (origens[nome] = origens[nome] || { abordadas: 0, responderam: 0, abordadasMes: 0, responderamMes: 0 });
+        const doMes = (o.data_entrada || "").startsWith(agora);
+        g.abordadas++;
+        if (respondeu(o)) g.responderam++;
+        if (doMes) {
+          g.abordadasMes++;
+          if (respondeu(o)) g.responderamMes++;
+        }
+      });
+    const linhasOrigem = Object.keys(origens)
+      .sort((a, b) => origens[b].abordadas - origens[a].abordadas)
+      .map((nome) => {
+        const g = origens[nome];
+        return `<tr><td>${esc(nome)}</td><td>${g.abordadasMes}</td><td>${g.responderamMes}</td><td><b>${pct(g.responderamMes, g.abordadasMes)}</b></td><td>${pct(g.responderam, g.abordadas)} <span class="texto-pequeno">(${g.responderam}/${g.abordadas})</span></td></tr>`;
+      })
+      .join("");
+    document.getElementById("dashRespostaOrigem").innerHTML = linhasOrigem
+      ? `<table class="tabela-contratos"><thead><tr><th>Origem</th><th>Abordadas (mês)</th><th>Responderam (mês)</th><th>Taxa (mês)</th><th>Taxa geral</th></tr></thead><tbody>${linhasOrigem}</tbody></table>`
+      : `<p class="alerta-vazio">Nenhuma oportunidade abordada ainda.</p>`;
+
+    // receita por captação: valor das campanhas pelo mês da assinatura, ligadas à oportunidade de origem
+    const porCaptacao = { Inbound: 0, Outbound: 0, Reativação: 0, "Sem origem": 0 };
+    const totalCaptacao = { Inbound: 0, Outbound: 0, Reativação: 0, "Sem origem": 0 };
+    contratosCache
+      .filter((k) => k.data_assinatura && (k.moeda || "BRL") === "BRL")
+      .forEach((k) => {
+        const op = k.oportunidade_id ? oportunidadesCache.find((o) => o.id === k.oportunidade_id) : null;
+        const chave = op && op.captacao ? op.captacao : "Sem origem";
+        const valor = Number(k.valor) || 0;
+        totalCaptacao[chave] += valor;
+        if (k.data_assinatura.startsWith(agora)) porCaptacao[chave] += valor;
+      });
+    document.getElementById("dashReceitaCaptacao").innerHTML = `<table class="tabela-contratos"><thead><tr><th>Captação</th><th>No mês</th><th>Total</th></tr></thead><tbody>${Object.keys(porCaptacao)
+      .map((c) => `<tr><td>${esc(c)}</td><td><b>${formatarMoeda(porCaptacao[c])}</b></td><td>${formatarMoeda(totalCaptacao[c])}</td></tr>`)
+      .join("")}</tbody></table><p class="texto-pequeno">"Sem origem" = campanhas que não vieram de uma oportunidade do funil.</p>`;
+
+    // tempo médio em cada etapa (só estadias que já terminaram)
+    const alvoTempo = document.getElementById("dashTempoEtapa");
+    if (!eventosOportunidadeDisponivel) {
+      alvoTempo.innerHTML = `<p class="alerta-vazio">Falta rodar js/crm-funil-4-setup.sql no Supabase.</p>`;
+      return;
+    }
+    const porOp = {};
+    eventosOportunidadeCache
+      .filter((e) => e.tipo === "etapa")
+      .forEach((e) => (porOp[e.oportunidade_id] = porOp[e.oportunidade_id] || []).push(e));
+    const soma = {};
+    const qtd = {};
+    Object.values(porOp).forEach((lista) => {
+      lista.sort((a, b) => String(a.created_at).localeCompare(String(b.created_at)));
+      for (let i = 0; i < lista.length - 1; i++) {
+        const dias = (new Date(lista[i + 1].created_at) - new Date(lista[i].created_at)) / 86400000;
+        const id = lista[i].etapa_id;
+        if (!id || dias < 0) continue;
+        soma[id] = (soma[id] || 0) + dias;
+        qtd[id] = (qtd[id] || 0) + 1;
+      }
+    });
+    const linhasTempo = etapasOportunidadeCache
+      .filter((e) => e.tipo === "aberta")
+      .map((e) => `<tr><td>${esc(e.nome)}</td><td><b>${qtd[e.id] ? (Math.round((soma[e.id] / qtd[e.id]) * 10) / 10).toString().replace(".", ",") + " dias" : "—"}</b></td><td>${qtd[e.id] || 0}</td></tr>`)
+      .join("");
+    alvoTempo.innerHTML = `<table class="tabela-contratos"><thead><tr><th>Etapa</th><th>Tempo médio</th><th>Passagens medidas</th></tr></thead><tbody>${linhasTempo}</tbody></table><p class="texto-pequeno">O histórico começa quando o SQL da fase 7 foi rodado; os números ficam mais confiáveis com o tempo.</p>`;
   }
 
   // Mês exibido no Dashboard ("AAAA-MM"); null = mês atual. Todos os
@@ -22414,6 +22542,7 @@
     graficosDoGrupo("prosp", [
       { id: "inbound", rotulo: "Inbound", porMes: valoresPorMes("inbound", s) },
       { id: "outbound", rotulo: "Outbound", porMes: valoresPorMes("outbound", s) },
+      { id: "reativacao", rotulo: "Reativação", porMes: valoresPorMes("reativacao", s) },
     ]);
 
     // financeiro
