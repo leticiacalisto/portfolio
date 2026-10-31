@@ -3498,6 +3498,18 @@
         </svg>
         <span class="rotulo-item">Marcas</span>
       </button>
+      <button class="item-nav item-pagina" data-tab="comercial-modelos">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 5h16v11H9l-5 4V5z"/>
+        </svg>
+        <span class="rotulo-item">Modelos</span>
+      </button>
+      <button class="item-nav item-pagina" data-tab="comercial-disparos">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>
+        </svg>
+        <span class="rotulo-item">Disparo de e-mail</span>
+      </button>
       <button class="item-nav item-pagina" data-tab="portfolio">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M4 20V10"/><path d="M12 20V4"/><path d="M20 20v-6"/>
@@ -4347,6 +4359,74 @@
             <tbody id="corpoTabelaOportunidades"></tbody>
           </table>
         </div>
+      </div>
+    </section>
+    <section id="painel-comercial-modelos" class="painel-aba" hidden>
+      <div class="painel-quadro-secao">
+        <div class="topo-quadro">
+          <div>
+            <h2 style="margin-bottom:2px;">Modelos</h2>
+            <p class="texto-pequeno" style="margin:0;">Variáveis: <code>{{marca}}</code> <code>{{contato}}</code> <code>{{nicho}}</code> <code>{{produto}}</code> <code>{{link_portfolio}}</code> <code>{{ideia_video}}</code> <code>{{case}}</code> <code>{{data_sazonal}}</code> <code>{{gancho_casa}}</code> <code>{{link_optout}}</code></p>
+          </div>
+          <div class="acoes-topo-quadro">
+            <button type="button" class="btn-novo-card" id="btnNovoModelo">+ Novo modelo</button>
+          </div>
+        </div>
+        <p class="texto-pequeno" id="avisoModelosSql" style="color:var(--vermelho-erro);" hidden>Falta rodar js/crm-funil-3-setup.sql no Supabase.</p>
+        <div id="listaModelos"></div>
+      </div>
+    </section>
+    <section id="painel-comercial-disparos" class="painel-aba" hidden>
+      <div class="painel-quadro-secao">
+        <div class="topo-quadro">
+          <div>
+            <h2 style="margin-bottom:2px;">Disparo de e-mail</h2>
+            <p class="texto-pequeno" style="margin:0;">Escolha as marcas, confira a sequência e registre o disparo. O envio automático ainda não está ligado: marque cada envio como enviado depois de mandar.</p>
+          </div>
+        </div>
+        <p class="texto-pequeno" id="avisoDisparosSql" style="color:var(--vermelho-erro);" hidden>Falta rodar js/crm-funil-3-setup.sql no Supabase.</p>
+
+        <p class="secao-modal-op">1. Marcas</p>
+        <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:8px 0;">
+          <input type="text" id="buscaDisparo" class="input-limpo" placeholder="Buscar marca ou nicho" autocomplete="off" style="max-width:260px;">
+          <select id="filtroPorteDisparo" class="input-limpo" style="max-width:170px;">
+            <option value="">Qualquer porte</option>
+            <option value="pequena">Pequena</option>
+            <option value="grande">Grande</option>
+          </select>
+          <input type="text" id="filtroUfDisparo" class="input-limpo" placeholder="UF" maxlength="2" style="max-width:70px;">
+          <label style="display:flex; align-items:center; gap:6px; font-size:.85rem;"><input type="checkbox" id="filtroQualificadasDisparo"> Só qualificadas</label>
+          <label style="display:flex; align-items:center; gap:6px; font-size:.85rem;"><input type="checkbox" id="filtroMostrarExcluidasDisparo"> Mostrar quem fica de fora</label>
+          <button type="button" class="btn-acao-op" id="btnSelecionarElegiveisDisparo">Selecionar todas da lista</button>
+          <button type="button" class="btn-acao-op" id="btnLimparSelecaoDisparo">Limpar seleção</button>
+          <span class="texto-pequeno" id="contagemDisparo"></span>
+        </div>
+        <div class="tabela-scroll" style="max-height:340px; overflow:auto;">
+          <table class="tabela-contratos">
+            <thead><tr><th></th><th>Marca</th><th>Nicho</th><th>Porte</th><th>UF</th><th>Perfil</th><th>E-mail</th><th>Situação</th></tr></thead>
+            <tbody id="corpoTabelaDisparo"></tbody>
+          </table>
+        </div>
+
+        <p class="secao-modal-op">2. Sequência</p>
+        <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:8px 0;">
+          <select id="campoSequenciaDisparo" class="input-limpo" style="max-width:260px;">
+            <option value="EMAIL_SEQ">Sequência de e-mail (EM-1 a EM-4)</option>
+          </select>
+          <label class="texto-pequeno" for="campoMarcaExemploDisparo">Prévia com a marca:</label>
+          <select id="campoMarcaExemploDisparo" class="input-limpo" style="max-width:260px;"></select>
+        </div>
+        <div id="previaSequenciaDisparo"></div>
+
+        <p class="secao-modal-op">3. Disparar</p>
+        <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:8px 0;">
+          <input type="text" id="campoNomeDisparo" class="input-limpo" placeholder="Nome do disparo (ex.: Moda SC novembro)" autocomplete="off" style="max-width:340px;">
+          <button type="button" class="btn-novo-card" id="btnDispararEmail">Disparar</button>
+        </div>
+        <p class="texto-pequeno">"Disparar" registra os envios como agendados. Não manda e-mail sozinho.</p>
+
+        <p class="secao-modal-op">Disparos anteriores</p>
+        <div id="listaDisparos"></div>
       </div>
     </section>
     <section id="painel-comercial-empresas" class="painel-aba" hidden>
@@ -5702,6 +5782,7 @@
       <p class="texto-status-op" id="textoStatusCadenciaOp"></p>
       <div class="botoes-acoes-op">
         <button type="button" class="btn-acao-op principal" data-acao-modal="contato">Registrar contato</button>
+        <button type="button" class="btn-acao-op" data-acao-modal="modelo">Usar modelo sugerido</button>
         <button type="button" class="btn-acao-op" data-acao-modal="respondeu">Respondeu</button>
         <button type="button" class="btn-acao-op" data-acao-modal="proposta">Proposta enviada</button>
       </div>
@@ -5834,6 +5915,76 @@
         <button type="submit" class="btn-salvar-quadro">Salvar</button>
       </div>
     </form>
+  </div>
+</div>
+
+<div class="overlay-modal" id="overlayModalModelo" hidden>
+  <div class="modal-quadro modal-quadro-grande">
+    <h3 id="tituloModalModelo">Modelo</h3>
+    <form id="formModelo">
+      <div class="linha-dupla-modal">
+        <div>
+          <label for="campoCodigoModelo">Código</label>
+          <input type="text" id="campoCodigoModelo" autocomplete="off" required placeholder="Ex.: OUT-P1">
+        </div>
+        <div>
+          <label for="campoNomeModelo">Nome</label>
+          <input type="text" id="campoNomeModelo" autocomplete="off" required>
+        </div>
+      </div>
+      <div class="linha-dupla-modal">
+        <div>
+          <label for="campoCanalModelo">Canal</label>
+          <select id="campoCanalModelo">
+            <option value="dm">DM</option>
+            <option value="email">E-mail</option>
+            <option value="whatsapp">WhatsApp</option>
+            <option value="dm/email">DM ou e-mail</option>
+          </select>
+        </div>
+        <div>
+          <label for="campoCadenciaModelo">Cadência</label>
+          <input type="text" id="campoCadenciaModelo" autocomplete="off" placeholder="Ex.: OUT_PEQUENA">
+        </div>
+      </div>
+      <div class="linha-dupla-modal">
+        <div>
+          <label for="campoToqueModelo">Toque</label>
+          <input type="text" id="campoToqueModelo" autocomplete="off" placeholder="1, 2, 3+">
+        </div>
+        <div>
+          <label for="campoAssuntoModelo">Assunto (e-mail)</label>
+          <input type="text" id="campoAssuntoModelo" autocomplete="off">
+        </div>
+      </div>
+      <label for="campoCorpoModelo">Texto</label>
+      <textarea id="campoCorpoModelo" rows="12"></textarea>
+      <div class="acoes-modal-quadro">
+        <button type="button" id="btnExcluirModelo" class="btn-excluir-quadro" hidden>Excluir</button>
+        <span style="flex-grow:1"></span>
+        <button type="button" id="btnCancelarModelo" class="btn-cancelar-quadro">Cancelar</button>
+        <button type="submit" class="btn-salvar-quadro">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="overlay-modal" id="overlayModalUsarModelo" hidden>
+  <div class="modal-quadro modal-quadro-grande">
+    <h3 id="tituloModalUsarModelo">Usar modelo</h3>
+    <p class="texto-pequeno" id="subtituloModalUsarModelo" style="margin:-8px 0 6px;"></p>
+    <div id="camposUsarModelo" class="linha-dupla-modal" style="flex-wrap:wrap;"></div>
+    <label for="campoAssuntoUsarModelo" id="rotuloAssuntoUsarModelo">Assunto</label>
+    <input type="text" id="campoAssuntoUsarModelo" autocomplete="off">
+    <label for="campoTextoUsarModelo">Texto</label>
+    <textarea id="campoTextoUsarModelo" rows="12"></textarea>
+    <div class="acoes-modal-quadro">
+      <button type="button" id="btnCopiarUsarModelo" class="btn-salvar-quadro">Copiar</button>
+      <button type="button" id="btnWhatsappUsarModelo" class="btn-cancelar-quadro">Abrir no WhatsApp</button>
+      <button type="button" id="btnEmailUsarModelo" class="btn-cancelar-quadro">Abrir no e-mail</button>
+      <span style="flex-grow:1"></span>
+      <button type="button" id="btnFecharUsarModelo" class="btn-cancelar-quadro">Fechar</button>
+    </div>
   </div>
 </div>
 
@@ -5985,6 +6136,8 @@
     "fin-fluxo-caixa": "Fluxo de Caixa",
     "comercial-oportunidades": "Oportunidades",
     "comercial-empresas": "Marcas",
+    "comercial-modelos": "Modelos",
+    "comercial-disparos": "Disparo de e-mail",
     "crm-contratos": "Campanhas",
     "cc-insights": "Insights",
     "cc-criacao": "Criação",
@@ -17000,6 +17153,8 @@
         const faltando = qualificacaoFaltando(op);
         if (faltando.length && !confirm("Faltam na qualificação: " + faltando.join(", ") + ".\nMarcar a proposta como enviada mesmo assim?")) return;
         await salvarPatchOportunidade(op, planejarPropostaEnviada(op));
+      } else if (acao === "modelo") {
+        abrirUsarModelo(op.modelo_sugerido, op);
       } else if (acao === "perdido") {
         abrirModalPerda(op, (etapaPorNomeOportunidade("perdido") || {}).id, "sem_resposta");
       }
@@ -17175,6 +17330,7 @@
       `<button type="button" class="btn-acao-op${principal ? " principal" : ""}" data-acao-op="${acao}" data-id="${o.id}">${texto}</button>`;
     if (cadenciaEncerrada(o)) return `<div class="acoes-card-op">${botao("perdido", "Mover para Perdido", true)}${botao("respondeu", "Respondeu")}</div>`;
     const botoes = [botao("contato", "Registrar contato", true)];
+    if (o.modelo_sugerido) botoes.push(botao("modelo", "Usar modelo · " + o.modelo_sugerido));
     if (nome.startsWith("lista") || nome.startsWith("abordado") || nome.startsWith("qualifica")) botoes.push(botao("respondeu", "Respondeu"));
     if (nome.startsWith("qualifica") || nome.startsWith("abordado")) botoes.push(botao("proposta", "Proposta enviada"));
     return `<div class="acoes-card-op">${botoes.join("")}</div>`;
@@ -17665,6 +17821,7 @@
     if (op.proxima_acao) partes.push("próximo: " + op.proxima_acao + (op.modelo_sugerido ? " (" + op.modelo_sugerido + ")" : ""));
     if (op.proximo_followup) partes.push("em " + formatarDataBr(op.proximo_followup));
     document.getElementById("textoStatusCadenciaOp").textContent = partes.join(" · ");
+    barra.querySelector('[data-acao-modal="modelo"]').hidden = !op.modelo_sugerido;
     barra.hidden = false;
   }
 
@@ -17833,6 +17990,505 @@
       alert("Não foi possível excluir a oportunidade.");
       console.error(erro);
     }
+  });
+
+
+  // ---------------------------------------------------------------
+  // MODELOS DE ABORDAGEM e DISPARO DE E-MAIL (tabelas em js/crm-funil-3-setup.sql)
+  // ---------------------------------------------------------------
+  let modelosCache = [];
+  let modelosDisponivel = false;
+  let disparosCache = [];
+  let enviosCache = [];
+  let disparosDisponivel = false;
+  const GANCHO_CASA_TEXTO = "Como sou arquiteta de interiores, tenho um olhar bem cuidadoso para mostrar produto dentro de casa, de um jeito real e bonito.";
+  const EDITAVEIS_MODELO = [
+    { chave: "contato", rotulo: "Contato" },
+    { chave: "produto", rotulo: "Produto" },
+    { chave: "nicho", rotulo: "Nicho" },
+    { chave: "ideia_video", rotulo: "Ideia de vídeo" },
+    { chave: "case", rotulo: "Case / marca parecida" },
+    { chave: "data_sazonal", rotulo: "Data sazonal" },
+  ];
+  const DIAS_SEM_CONTATO_DISPARO = 30;
+
+  async function recarregarModelos() {
+    try {
+      modelosCache = await buscarTudo("crm_modelos");
+      modelosDisponivel = true;
+    } catch (erro) {
+      modelosDisponivel = false;
+    }
+    renderizarModelos();
+  }
+
+  function modeloPorCodigo(codigo) {
+    return modelosCache.find((m) => m.codigo === codigo) || null;
+  }
+
+  // próxima data comemorativa em até 90 dias (sugestão para {{data_sazonal}})
+  function proximaDataSazonalSugerida() {
+    const hoje = new Date(hojeIso() + "T00:00:00");
+    let melhor = null;
+    Object.keys(FESTAS_SAZONAIS).forEach((k) => {
+      [hoje.getFullYear(), hoje.getFullYear() + 1].forEach((a) => {
+        const dias = Math.round((FESTAS_SAZONAIS[k].data(a) - hoje) / 86400000);
+        if (dias >= 0 && dias <= 90 && (!melhor || dias < melhor.dias)) melhor = { dias, rotulo: FESTAS_SAZONAIS[k].rotulo };
+      });
+    });
+    return melhor ? melhor.rotulo : "";
+  }
+
+  function variaveisDoModelo(empresa, op) {
+    const marca = empresa ? empresa.nome : "";
+    const contato = ((op && op.contato) || (empresa && empresa.contato_principal) || "").trim();
+    const nicho = (empresa && empresa.segmento) || "";
+    const ehCasa = /casa|decor|reforma|arquitet|interior|m[oó]ve|constru/i.test(nicho);
+    const link = (salvosAtuais().portfolio || "").trim() || "https://leticiacalisto.com";
+    return {
+      marca,
+      contato: contato || (marca ? "time " + marca : ""),
+      nicho,
+      produto: ((op && op.qualificacao && op.qualificacao.produto) || (op && op.servico_interesse) || "").trim(),
+      link_portfolio: link,
+      ideia_video: "",
+      case: "",
+      data_sazonal: proximaDataSazonalSugerida(),
+      gancho_casa: ehCasa ? GANCHO_CASA_TEXTO : "",
+      link_optout: "",
+    };
+  }
+
+  // variável sem valor continua aparecendo como {{nome}} (pra você ver o que falta); só o gancho de casa some
+  function preencherModelo(texto, variaveis) {
+    return String(texto || "").replace(/\{\{(\w+)\}\}/g, (m, chave) => {
+      if (chave === "gancho_casa") return variaveis.gancho_casa || "";
+      return variaveis[chave] ? variaveis[chave] : m;
+    });
+  }
+
+  // ---- aba Modelos ----
+  function renderizarModelos() {
+    const lista = document.getElementById("listaModelos");
+    if (!lista) return;
+    document.getElementById("avisoModelosSql").hidden = modelosDisponivel;
+    if (!modelosDisponivel) {
+      lista.innerHTML = "";
+      return;
+    }
+    const grupos = new Map();
+    modelosCache
+      .slice()
+      .sort((a, b) => (a.ordem || 0) - (b.ordem || 0) || a.codigo.localeCompare(b.codigo))
+      .forEach((m) => {
+        const chave = m.cadencia || "Sem cadência";
+        if (!grupos.has(chave)) grupos.set(chave, []);
+        grupos.get(chave).push(m);
+      });
+    lista.innerHTML = [...grupos.entries()]
+      .map(
+        ([cadencia, itens]) => `
+        <p class="secao-modal-op">${esc((CADENCIAS[cadencia] && CADENCIAS[cadencia].rotulo) || cadencia)} <span class="texto-pequeno">· ${esc(cadencia)}</span></p>
+        <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:12px; margin:10px 0 18px;">
+          ${itens
+            .map(
+              (m) => `<div class="card-quadro" data-modelo="${esc(m.codigo)}" style="margin:0;">
+                <span class="titulo-card-quadro" style="margin-bottom:6px;">${esc(m.codigo)} · ${esc(m.nome)}</span>
+                <div class="meta-card-quadro" style="margin-bottom:8px;"><span class="chip-card-quadro">${esc(m.canal)}</span>${m.toque ? `<span class="chip-card-quadro">toque ${esc(m.toque)}</span>` : ""}</div>
+                <p class="texto-pequeno" style="margin:0; white-space:pre-line; max-height:4.6em; overflow:hidden;">${esc((m.corpo || "").slice(0, 200))}</p>
+              </div>`
+            )
+            .join("")}
+        </div>`
+      )
+      .join("");
+    lista.querySelectorAll("[data-modelo]").forEach((el) => el.addEventListener("click", () => abrirEditorModelo(modeloPorCodigo(el.dataset.modelo))));
+  }
+
+  const overlayModalModelo = document.getElementById("overlayModalModelo");
+  let idModeloEmEdicao = null;
+  function abrirEditorModelo(m) {
+    idModeloEmEdicao = m ? m.id : null;
+    document.getElementById("tituloModalModelo").textContent = m ? "Editar modelo " + m.codigo : "Novo modelo";
+    document.getElementById("campoCodigoModelo").value = m ? m.codigo : "";
+    document.getElementById("campoNomeModelo").value = m ? m.nome : "";
+    document.getElementById("campoCanalModelo").value = m ? m.canal : "dm";
+    document.getElementById("campoCadenciaModelo").value = (m && m.cadencia) || "";
+    document.getElementById("campoToqueModelo").value = (m && m.toque) || "";
+    document.getElementById("campoAssuntoModelo").value = (m && m.assunto) || "";
+    document.getElementById("campoCorpoModelo").value = (m && m.corpo) || "";
+    document.getElementById("btnExcluirModelo").hidden = !m;
+    overlayModalModelo.hidden = false;
+  }
+  function fecharEditorModelo() {
+    overlayModalModelo.hidden = true;
+    idModeloEmEdicao = null;
+  }
+  document.getElementById("btnNovoModelo").addEventListener("click", () => abrirEditorModelo(null));
+  document.getElementById("btnCancelarModelo").addEventListener("click", fecharEditorModelo);
+  overlayModalModelo.addEventListener("click", (evento) => {
+    if (evento.target === overlayModalModelo) fecharEditorModelo();
+  });
+  document.getElementById("formModelo").addEventListener(
+    "submit",
+    comFila("form-modelo", async () => {
+      const dados = {
+        codigo: document.getElementById("campoCodigoModelo").value.trim(),
+        nome: document.getElementById("campoNomeModelo").value.trim(),
+        canal: document.getElementById("campoCanalModelo").value,
+        cadencia: document.getElementById("campoCadenciaModelo").value.trim() || null,
+        toque: document.getElementById("campoToqueModelo").value.trim() || null,
+        assunto: document.getElementById("campoAssuntoModelo").value.trim() || null,
+        corpo: document.getElementById("campoCorpoModelo").value,
+        updated_at: new Date().toISOString(),
+      };
+      if (!dados.codigo || !dados.nome) return;
+      try {
+        const consulta = idModeloEmEdicao ? Auth.sb.from("crm_modelos").update(dados).eq("id", idModeloEmEdicao) : Auth.sb.from("crm_modelos").insert(dados);
+        const { error } = await consulta;
+        if (error) throw error;
+        fecharEditorModelo();
+        await recarregarModelos();
+      } catch (erro) {
+        alert(erro && erro.code === "23505" ? "Já existe um modelo com esse código." : "Não foi possível salvar o modelo.");
+        console.error(erro);
+      }
+    })
+  );
+  document.getElementById("btnExcluirModelo").addEventListener("click", async () => {
+    if (!idModeloEmEdicao || !confirm("Excluir este modelo?")) return;
+    try {
+      const { error } = await Auth.sb.from("crm_modelos").delete().eq("id", idModeloEmEdicao);
+      if (error) throw error;
+      fecharEditorModelo();
+      await recarregarModelos();
+    } catch (erro) {
+      alert("Não foi possível excluir o modelo.");
+      console.error(erro);
+    }
+  });
+
+  // ---- "Usar modelo": preenche as variáveis, deixa ajustar e oferece copiar / WhatsApp / e-mail ----
+  const overlayModalUsarModelo = document.getElementById("overlayModalUsarModelo");
+  let usoModelo = null;
+
+  function atualizarPreviaUsarModelo() {
+    if (!usoModelo) return;
+    document.querySelectorAll("#camposUsarModelo [data-var-modelo]").forEach((input) => (usoModelo.variaveis[input.dataset.varModelo] = input.value.trim()));
+    document.getElementById("campoAssuntoUsarModelo").value = preencherModelo(usoModelo.modelo.assunto, usoModelo.variaveis);
+    document.getElementById("campoTextoUsarModelo").value = preencherModelo(usoModelo.modelo.corpo, usoModelo.variaveis);
+  }
+
+  function abrirUsarModelo(codigo, op) {
+    const modelo = modeloPorCodigo(codigo);
+    if (!modelo) return alert("Não achei o modelo " + codigo + ". Confira se rodou js/crm-funil-3-setup.sql no Supabase.");
+    const empresa = op ? empresasCache.find((e) => e.id === op.empresa_id) || null : null;
+    usoModelo = { modelo, empresa, op, variaveis: variaveisDoModelo(empresa, op) };
+    document.getElementById("tituloModalUsarModelo").textContent = modelo.codigo + " · " + modelo.nome;
+    document.getElementById("subtituloModalUsarModelo").textContent = empresa ? empresa.nome : "";
+    const texto = (modelo.assunto || "") + " " + (modelo.corpo || "");
+    document.getElementById("camposUsarModelo").innerHTML = EDITAVEIS_MODELO.filter((v) => texto.includes("{{" + v.chave + "}}"))
+      .map(
+        (v) => `<div style="flex:1 1 220px;"><label>${v.rotulo}</label><input type="text" data-var-modelo="${v.chave}" value="${esc(usoModelo.variaveis[v.chave] || "")}" autocomplete="off"></div>`
+      )
+      .join("");
+    document.querySelectorAll("#camposUsarModelo [data-var-modelo]").forEach((input) => input.addEventListener("input", atualizarPreviaUsarModelo));
+    const ehEmail = !!modelo.assunto;
+    document.getElementById("campoAssuntoUsarModelo").hidden = !ehEmail;
+    document.getElementById("rotuloAssuntoUsarModelo").hidden = !ehEmail;
+    atualizarPreviaUsarModelo();
+    overlayModalUsarModelo.hidden = false;
+  }
+  function fecharUsarModelo() {
+    overlayModalUsarModelo.hidden = true;
+    usoModelo = null;
+  }
+  document.getElementById("btnFecharUsarModelo").addEventListener("click", fecharUsarModelo);
+  overlayModalUsarModelo.addEventListener("click", (evento) => {
+    if (evento.target === overlayModalUsarModelo) fecharUsarModelo();
+  });
+  document.getElementById("btnCopiarUsarModelo").addEventListener("click", async () => {
+    const botao = document.getElementById("btnCopiarUsarModelo");
+    const texto = document.getElementById("campoTextoUsarModelo").value;
+    try {
+      await navigator.clipboard.writeText(texto);
+    } catch (erro) {
+      document.getElementById("campoTextoUsarModelo").select();
+      document.execCommand("copy");
+    }
+    botao.textContent = "Copiado!";
+    setTimeout(() => (botao.textContent = "Copiar"), 1500);
+  });
+  document.getElementById("btnWhatsappUsarModelo").addEventListener("click", () => {
+    if (!usoModelo) return;
+    const numero = usoModelo.empresa ? normalizarWhatsapp(usoModelo.empresa.whatsapp) : "";
+    const texto = encodeURIComponent(document.getElementById("campoTextoUsarModelo").value);
+    window.open("https://wa.me/" + (numero || "") + "?text=" + texto, "_blank", "noopener");
+  });
+  document.getElementById("btnEmailUsarModelo").addEventListener("click", () => {
+    if (!usoModelo) return;
+    const e = usoModelo.empresa;
+    const destino = (e && (e.email_marketing || e.email)) || "";
+    const assunto = encodeURIComponent(document.getElementById("campoAssuntoUsarModelo").value);
+    const corpo = encodeURIComponent(document.getElementById("campoTextoUsarModelo").value);
+    window.location.href = "mailto:" + destino + "?subject=" + assunto + "&body=" + corpo;
+  });
+
+  // ---- aba Disparo de e-mail ----
+  const selecionadasDisparo = new Set();
+
+  async function recarregarDisparos() {
+    try {
+      [disparosCache, enviosCache] = await Promise.all([buscarTudo("disparos"), buscarTudo("disparo_envios")]);
+      disparosDisponivel = true;
+    } catch (erro) {
+      disparosDisponivel = false;
+    }
+    renderizarDisparos();
+  }
+
+  function emailDeDisparo(empresa) {
+    return (empresa.email_marketing || empresa.email || "").trim();
+  }
+
+  // Quem fica de fora do disparo automaticamente, e por quê
+  function motivoForaDoDisparo(empresa) {
+    if (empresa.optout) return "Opt-out";
+    if (!emailDeDisparo(empresa)) return "Sem e-mail";
+    if (enviosCache.some((v) => v.empresa_id === empresa.id && v.status === "agendado")) return "Já em disparo agendado";
+    const ultimo = ultimoContatoDaMarca(empresa);
+    if (ultimo && ultimo >= somarDiasIso(hojeIso(), -DIAS_SEM_CONTATO_DISPARO)) return "Contato nos últimos " + DIAS_SEM_CONTATO_DISPARO + " dias";
+    const abordado = etapaPorNomeOportunidade("abordado");
+    const adiantada = oportunidadesCache.some((o) => {
+      const etapa = etapaOportunidade(o.etapa_id);
+      return o.empresa_id === empresa.id && etapa && etapa.tipo === "aberta" && abordado && etapa.ordem > abordado.ordem;
+    });
+    if (adiantada) return "Oportunidade em andamento";
+    return "";
+  }
+
+  function marcasListadasDisparo() {
+    const busca = semAcentoOp(document.getElementById("buscaDisparo").value);
+    const porte = document.getElementById("filtroPorteDisparo").value;
+    const uf = document.getElementById("filtroUfDisparo").value.trim().toUpperCase();
+    const soQualificadas = document.getElementById("filtroQualificadasDisparo").checked;
+    const mostrarExcluidas = document.getElementById("filtroMostrarExcluidasDisparo").checked;
+    return empresasCache
+      .filter((e) => {
+        if (busca && !semAcentoOp(e.nome + " " + (e.segmento || "")).includes(busca)) return false;
+        if (porte && e.porte !== porte) return false;
+        if (uf && String(e.uf || "").toUpperCase() !== uf) return false;
+        if (soQualificadas && !perfilDaMarca(e).qualificada) return false;
+        if (!mostrarExcluidas && motivoForaDoDisparo(e)) return false;
+        return true;
+      })
+      .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+  }
+
+  function renderizarDisparos() {
+    const corpo = document.getElementById("corpoTabelaDisparo");
+    if (!corpo) return;
+    document.getElementById("avisoDisparosSql").hidden = disparosDisponivel;
+    const lista = marcasListadasDisparo();
+    corpo.innerHTML = lista.length
+      ? lista
+          .map((e) => {
+            const motivo = motivoForaDoDisparo(e);
+            const perfil = perfilDaMarca(e);
+            return `<tr${motivo ? ' style="opacity:.55;"' : ""}>
+              <td><input type="checkbox" data-sel-disparo="${e.id}"${selecionadasDisparo.has(e.id) ? " checked" : ""}${motivo ? " disabled" : ""}></td>
+              <td><b style="font-weight:600">${esc(e.nome)}</b></td>
+              <td>${esc(e.segmento || "—")}</td>
+              <td>${esc(valorExibicaoEmpresaCampo(e, "porte") || "—")}</td>
+              <td>${esc(e.uf || "—")}</td>
+              <td>${perfil.qualificada ? "★" : perfil.ok + "/" + perfil.total}</td>
+              <td>${esc(emailDeDisparo(e) || "—")}</td>
+              <td>${motivo ? `<span class="chip-card-quadro chip-alerta">${esc(motivo)}</span>` : "Pode receber"}</td>
+            </tr>`;
+          })
+          .join("")
+      : `<tr><td colspan="8" class="texto-vazio">Nenhuma marca com esses filtros.</td></tr>`;
+    corpo.querySelectorAll("[data-sel-disparo]").forEach((c) =>
+      c.addEventListener("change", () => {
+        if (c.checked) selecionadasDisparo.add(c.dataset.selDisparo);
+        else selecionadasDisparo.delete(c.dataset.selDisparo);
+        atualizarContagemDisparo();
+      })
+    );
+    atualizarContagemDisparo();
+    renderizarPreviaSequenciaDisparo();
+    renderizarHistoricoDisparos();
+  }
+
+  function atualizarContagemDisparo() {
+    const elegiveis = empresasCache.filter((e) => !motivoForaDoDisparo(e)).length;
+    document.getElementById("contagemDisparo").textContent = `${selecionadasDisparo.size} selecionada(s) · ${elegiveis} podem receber de ${empresasCache.length}`;
+  }
+
+  function renderizarPreviaSequenciaDisparo() {
+    const seletor = document.getElementById("campoMarcaExemploDisparo");
+    const anterior = seletor.value;
+    const base = empresasCache.filter((e) => selecionadasDisparo.has(e.id));
+    const opcoes = (base.length ? base : empresasCache.filter((e) => !motivoForaDoDisparo(e)).slice(0, 30)).sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+    seletor.innerHTML = '<option value="">Sem marca (mostra as variáveis)</option>' + opcoes.map((e) => `<option value="${e.id}">${esc(e.nome)}</option>`).join("");
+    seletor.value = opcoes.some((e) => e.id === anterior) ? anterior : opcoes[0] ? opcoes[0].id : "";
+    const empresa = empresasCache.find((e) => e.id === seletor.value) || null;
+    const variaveis = variaveisDoModelo(empresa, null);
+    const passos = modelosCache.filter((m) => m.cadencia === document.getElementById("campoSequenciaDisparo").value).sort((a, b) => (a.ordem || 0) - (b.ordem || 0));
+    document.getElementById("previaSequenciaDisparo").innerHTML = passos.length
+      ? passos
+          .map(
+            (m, i) => `<details${i === 0 ? " open" : ""} style="margin:6px 0; padding:8px 12px; border:1px solid var(--borda); border-radius:10px;">
+              <summary><b>${esc(m.codigo)}</b> · ${esc(preencherModelo(m.assunto, variaveis))}</summary>
+              <p style="white-space:pre-line; margin:8px 0 0; font-size:.88rem;">${esc(preencherModelo(m.corpo, variaveis))}</p>
+            </details>`
+          )
+          .join("")
+      : `<p class="texto-pequeno">Os modelos EM-1 a EM-4 ainda não foram cadastrados (aba Modelos).</p>`;
+  }
+
+  // 1º e-mail enviado: a marca entra (ou atualiza) no funil como Outbound, em Abordado, com a sequência de e-mail
+  async function registrarPrimeiroEmailEnviado(empresa) {
+    const abordado = etapaPorNomeOportunidade("abordado");
+    if (!abordado || !captacaoDisponivel) return;
+    const hoje = hojeIso();
+    const cadencia = { ultimo_contato: hoje, ...agendarProximoToque("EMAIL_SEQ", 1, hoje) };
+    const existente = oportunidadesCache.find((o) => o.empresa_id === empresa.id && oportunidadeAberta(o));
+    if (existente) {
+      const { error } = await Auth.sb.from("oportunidades").update({ ...cadencia, origem_lead: "Disparo de e-mail", updated_at: new Date().toISOString() }).eq("id", existente.id);
+      if (error) throw error;
+    } else {
+      const { error } = await Auth.sb.from("oportunidades").insert({
+        empresa_id: empresa.id,
+        contato: empresa.contato_principal || null,
+        canal_contato: "E-mail",
+        captacao: "Outbound",
+        origem_lead: "Disparo de e-mail",
+        etapa_id: abordado.id,
+        data_entrada: hoje,
+        ...cadencia,
+      });
+      if (error) throw error;
+    }
+    await recarregarOportunidades();
+  }
+
+  function renderizarHistoricoDisparos() {
+    const alvo = document.getElementById("listaDisparos");
+    if (!alvo) return;
+    if (!disparosDisponivel || !disparosCache.length) {
+      alvo.innerHTML = `<p class="texto-pequeno">Nenhum disparo registrado ainda.</p>`;
+      return;
+    }
+    const nomeStatus = { agendado: "Agendado", enviado: "Enviado", respondeu: "Respondeu", erro: "Erro", optout: "Descadastrou" };
+    alvo.innerHTML = disparosCache
+      .slice()
+      .sort((a, b) => String(b.criado_em).localeCompare(String(a.criado_em)))
+      .map((d) => {
+        const envios = enviosCache.filter((v) => v.disparo_id === d.id);
+        const contagem = (st) => envios.filter((v) => v.status === st).length;
+        return `<details style="margin:8px 0; padding:8px 12px; border:1px solid var(--borda); border-radius:10px;">
+          <summary><b>${esc(d.nome)}</b> · ${formatarDataBr(diaLocalDe(d.criado_em))} · ${envios.length} marca(s) · ${contagem("enviado")} enviado(s) · ${contagem("respondeu")} respondeu</summary>
+          <table class="tabela-contratos" style="margin-top:8px;"><tbody>
+            ${envios
+              .map((v) => {
+                const empresa = empresasCache.find((e) => e.id === v.empresa_id);
+                return `<tr>
+                  <td>${esc(empresa ? empresa.nome : "(marca removida)")}</td>
+                  <td>${esc(v.email)}</td>
+                  <td>${esc(v.passo)}</td>
+                  <td>${esc(nomeStatus[v.status] || v.status)}</td>
+                  <td>
+                    ${v.status === "agendado" ? `<button type="button" class="btn-acao-op principal" data-envio-acao="enviado" data-envio="${v.id}">Marcar como enviado</button>` : ""}
+                    ${v.status === "enviado" ? `<button type="button" class="btn-acao-op" data-envio-acao="respondeu" data-envio="${v.id}">Respondeu</button>` : ""}
+                    ${v.status === "agendado" || v.status === "enviado" ? `<button type="button" class="btn-acao-op" data-envio-acao="optout" data-envio="${v.id}">Descadastrou</button>` : ""}
+                  </td>
+                </tr>`;
+              })
+              .join("")}
+          </tbody></table>
+        </details>`;
+      })
+      .join("");
+    alvo.querySelectorAll("[data-envio-acao]").forEach((botao) =>
+      botao.addEventListener(
+        "click",
+        comFila("acao-envio-disparo", async () => {
+          const envio = enviosCache.find((v) => v.id === botao.dataset.envio);
+          const empresa = envio && empresasCache.find((e) => e.id === envio.empresa_id);
+          if (!envio || !empresa) return;
+          const acao = botao.dataset.envioAcao;
+          try {
+            if (acao === "enviado") {
+              await registrarPrimeiroEmailEnviado(empresa);
+              await Auth.sb.from("disparo_envios").update({ status: "enviado", enviado_em: new Date().toISOString() }).eq("id", envio.id);
+            } else if (acao === "respondeu") {
+              await Auth.sb.from("disparo_envios").update({ status: "respondeu" }).eq("id", envio.id);
+              const op = oportunidadesCache.find((o) => o.empresa_id === empresa.id && oportunidadeAberta(o));
+              if (op) await executarAcaoOportunidade(op, "respondeu");
+            } else if (acao === "optout") {
+              await Auth.sb.from("disparo_envios").update({ status: "optout" }).eq("id", envio.id);
+              await Auth.sb.from("empresas").update({ optout: true }).eq("id", empresa.id);
+              empresa.optout = true;
+            }
+            await recarregarDisparos();
+          } catch (erro) {
+            alert("Não foi possível atualizar o envio.");
+            console.error(erro);
+          }
+        })
+      )
+    );
+  }
+
+  ["buscaDisparo", "filtroPorteDisparo", "filtroUfDisparo", "filtroQualificadasDisparo", "filtroMostrarExcluidasDisparo"].forEach((id) =>
+    document.getElementById(id).addEventListener(id === "buscaDisparo" || id === "filtroUfDisparo" ? "input" : "change", renderizarDisparos)
+  );
+  document.getElementById("campoSequenciaDisparo").addEventListener("change", renderizarPreviaSequenciaDisparo);
+  document.getElementById("campoMarcaExemploDisparo").addEventListener("change", renderizarPreviaSequenciaDisparo);
+  document.getElementById("btnSelecionarElegiveisDisparo").addEventListener("click", () => {
+    marcasListadasDisparo().forEach((e) => {
+      if (!motivoForaDoDisparo(e)) selecionadasDisparo.add(e.id);
+    });
+    renderizarDisparos();
+  });
+  document.getElementById("btnLimparSelecaoDisparo").addEventListener("click", () => {
+    selecionadasDisparo.clear();
+    renderizarDisparos();
+  });
+
+  document.getElementById("btnDispararEmail").addEventListener(
+    "click",
+    comFila("disparar-email", async () => {
+      const marcas = empresasCache.filter((e) => selecionadasDisparo.has(e.id) && !motivoForaDoDisparo(e));
+      const nome = document.getElementById("campoNomeDisparo").value.trim();
+      if (!disparosDisponivel) return alert("Falta rodar js/crm-funil-3-setup.sql no Supabase.");
+      if (!marcas.length) return alert("Selecione ao menos uma marca que possa receber.");
+      if (!nome) return alert("Dê um nome ao disparo.");
+      if (!confirm("Registrar o disparo \"" + nome + "\" com " + marcas.length + " marca(s)?\nOs envios ficam como agendados; o painel ainda não manda o e-mail sozinho.")) return;
+      try {
+        const { data, error } = await Auth.sb.from("disparos").insert({ nome, sequencia: document.getElementById("campoSequenciaDisparo").value, status: "agendado" }).select().single();
+        if (error) throw error;
+        const linhas = marcas.map((e) => ({ disparo_id: data.id, empresa_id: e.id, email: emailDeDisparo(e), passo: "EM-1", status: "agendado" }));
+        for (let i = 0; i < linhas.length; i += 100) {
+          const { error: erroEnvios } = await Auth.sb.from("disparo_envios").insert(linhas.slice(i, i + 100));
+          if (erroEnvios) throw erroEnvios;
+        }
+        selecionadasDisparo.clear();
+        document.getElementById("campoNomeDisparo").value = "";
+        await recarregarDisparos();
+        alert("Disparo registrado: " + marcas.length + " envio(s) agendado(s). Mande os e-mails e marque cada um como enviado em \"Disparos anteriores\".");
+      } catch (erro) {
+        alert("Não foi possível registrar o disparo.");
+        console.error(erro);
+      }
+    })
+  );
+
+  document.querySelector('.item-nav[data-tab="comercial-modelos"]').addEventListener("click", recarregarModelos);
+  document.querySelector('.item-nav[data-tab="comercial-disparos"]').addEventListener("click", async () => {
+    if (!modelosCache.length) await recarregarModelos();
+    await recarregarDisparos();
   });
 
   // ---------------------------------------------------------------
@@ -22444,6 +23100,7 @@
     .then(() => converterLeadsEmOportunidades())
     .then(() => atualizarReativacoes())
     .catch((erro) => console.error(erro));
+  recarregarModelos();
   recarregarVideosPortfolio();
   recarregarAfiliados();
   // Ao atualizar a página, volta para a aba em que você estava (não para o Início)
