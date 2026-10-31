@@ -1010,6 +1010,22 @@
     background: var(--creme);
     color: var(--texto-suave);
   }
+  .chip-card-quadro.chip-acao{ background: var(--coral); color: #fff; }
+  .chip-card-quadro.chip-alerta{ background: #FAD4D8; color: #8F2330; }
+  .acoes-card-op{ display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+  .btn-acao-op{
+    font: inherit; font-size:.68rem; font-weight:700;
+    padding: 4px 10px; border-radius: 999px;
+    border: 1px solid var(--borda); background: var(--branco); color: var(--grafite);
+    cursor: pointer;
+  }
+  .btn-acao-op:hover{ background: var(--creme); }
+  .btn-acao-op.principal{ background: var(--grafite); color:#fff; border-color: var(--grafite); }
+  .btn-acao-op.principal:hover{ opacity:.88; }
+  .barra-acoes-op{ margin: 4px 0 6px; padding: 12px 14px; border-radius: 12px; background: var(--creme); }
+  .barra-acoes-op .texto-status-op{ margin:0 0 8px; font-size:.8rem; color: var(--texto-suave); }
+  .botoes-acoes-op{ display:flex; flex-wrap:wrap; gap:8px; }
+  .botoes-acoes-op .btn-acao-op{ font-size:.78rem; padding: 7px 14px; }
   .progresso-card-quadro{
     font-size: .72rem;
     font-weight:600;
@@ -5634,6 +5650,14 @@
       <span class="eyebrow-modal-op">Oportunidade</span>
       <h3 id="tituloModalOportunidade">Nova oportunidade</h3>
     </div>
+    <div class="barra-acoes-op" id="barraAcoesOportunidade" hidden>
+      <p class="texto-status-op" id="textoStatusCadenciaOp"></p>
+      <div class="botoes-acoes-op">
+        <button type="button" class="btn-acao-op principal" data-acao-modal="contato">Registrar contato</button>
+        <button type="button" class="btn-acao-op" data-acao-modal="respondeu">Respondeu</button>
+        <button type="button" class="btn-acao-op" data-acao-modal="proposta">Proposta enviada</button>
+      </div>
+    </div>
     <form id="formOportunidade">
       <p class="secao-modal-op">Marca e contato</p>
       <label for="campoEmpresaOportunidade">Marca</label>
@@ -5658,16 +5682,17 @@
       <div id="blocoCaptacaoOportunidade">
         <label for="campoCaptacaoOportunidade">Captação</label>
         <select id="campoCaptacaoOportunidade">
-          <option value="">—</option>
+          <option value="">Escolha…</option>
           <option value="Inbound">Inbound (a marca me procurou)</option>
           <option value="Outbound">Outbound (eu procurei a marca)</option>
+          <option value="Reativação">Reativação (cliente antigo)</option>
         </select>
       </div>
 
       <div class="linha-dupla-modal">
         <div>
           <label for="campoOrigemOportunidade">Origem do lead</label>
-          <input type="text" id="campoOrigemOportunidade" autocomplete="off" placeholder="Ex.: Indicação, site, DM">
+          <select id="campoOrigemOportunidade"></select>
         </div>
         <div>
           <label for="campoServicoOportunidade">Serviço de interesse</label>
@@ -5703,6 +5728,28 @@
         </div>
       </div>
 
+      <p class="secao-modal-op">Qualificação <span id="contagemQualificacaoOp" class="texto-pequeno"></span></p>
+      <div class="linha-dupla-modal">
+        <div>
+          <label for="campoQualProduto">Produto</label>
+          <input type="text" id="campoQualProduto" autocomplete="off" placeholder="Qual produto divulgar">
+        </div>
+        <div>
+          <label for="campoQualQtd">Quantidade de vídeos</label>
+          <input type="text" id="campoQualQtd" autocomplete="off">
+        </div>
+      </div>
+      <div class="linha-dupla-modal">
+        <div>
+          <label for="campoQualBudget">Budget</label>
+          <input type="text" id="campoQualBudget" autocomplete="off">
+        </div>
+        <div>
+          <label for="campoQualPrazo">Prazo</label>
+          <input type="text" id="campoQualPrazo" autocomplete="off" placeholder="Lançamento, campanha…">
+        </div>
+      </div>
+
       <p class="secao-modal-op">Datas</p>
       <div class="linha-dupla-modal">
         <div>
@@ -5716,8 +5763,16 @@
       </div>
 
       <div id="blocoMotivoPerdaOportunidade" hidden>
-        <label for="campoMotivoPerdaOportunidade">Motivo da perda</label>
-        <input type="text" id="campoMotivoPerdaOportunidade" autocomplete="off">
+        <div class="linha-dupla-modal">
+          <div>
+            <label for="campoMotivoPerdaOportunidade">Motivo da perda</label>
+            <select id="campoMotivoPerdaOportunidade"></select>
+          </div>
+          <div>
+            <label for="campoRetornoOportunidade">Voltar a chamar em</label>
+            <input type="date" id="campoRetornoOportunidade">
+          </div>
+        </div>
       </div>
 
       <p class="secao-modal-op">Anotações</p>
@@ -5731,6 +5786,22 @@
         <button type="submit" class="btn-salvar-quadro">Salvar</button>
       </div>
     </form>
+  </div>
+</div>
+
+<div class="overlay-modal" id="overlayModalPerda" hidden>
+  <div class="modal-quadro">
+    <h3 id="tituloModalPerda">Mover para Perdido</h3>
+    <p class="texto-pequeno" id="textoModalPerda" style="margin:-8px 0 6px;"></p>
+    <label for="campoMotivoPerda">Motivo</label>
+    <select id="campoMotivoPerda"></select>
+    <label for="campoRetornoPerda">Voltar a chamar em</label>
+    <input type="date" id="campoRetornoPerda">
+    <div class="acoes-modal-quadro">
+      <span style="flex-grow:1"></span>
+      <button type="button" id="btnCancelarPerda" class="btn-cancelar-quadro">Cancelar</button>
+      <button type="button" id="btnConfirmarPerda" class="btn-salvar-quadro">Mover para Perdido</button>
+    </div>
   </div>
 </div>
 
@@ -15773,6 +15844,7 @@
             empresa_id: empresa.id,
             contato: empresa.contato_principal,
             origem_lead: "Importação de planilha",
+            ...(captacaoDisponivel ? { captacao: "Outbound" } : {}),
             etapa_id: etapa.id,
             data_entrada: hoje,
             updated_at: agora,
@@ -16359,6 +16431,270 @@
   // ---------------------------------------------------------------
   const TEXTO_SEMAFORO_FOLLOWUP = { vermelho: "Follow-up atrasado", amarelo: "Follow-up é hoje" };
 
+  // ---------------------------------------------------------------
+  // MOTOR DE CADÊNCIA. "toques" são dias úteis acumulados desde o início
+  // da cadência (toque k acontece em toques[k-1]); o próximo follow-up é
+  // calculado a partir do último contato REAL pela diferença entre toques
+  // (atrasou? a data se ajusta). "modelos" são os códigos da aba Modelos.
+  // abre: o 1º toque é a própria abordagem. ancora: a contagem só começa
+  // quando ela registra a primeira mensagem (as perguntas de qualificação).
+  // ---------------------------------------------------------------
+  const CADENCIAS = {
+    IN_RESPOSTA: { rotulo: "Responder inbound", toques: [0], modelos: ["IN-1"] },
+    QUALIF_DM: { rotulo: "Qualificação (direct)", toques: [1, 5, 10], modelos: ["QF-1", "QF-2", "QF-3"], ancora: true },
+    QUALIF_EMAIL: { rotulo: "Qualificação (e-mail)", toques: [2, 5, 10], modelos: ["QF-1", "QF-2", "QF-3"], ancora: true },
+    OUT_PEQUENA: { rotulo: "Outbound marca pequena", toques: [0, 3, 7, 14], modelos: ["OUT-P1", "OUT-P2", "OUT-P3", "OUT-P4"], abre: true },
+    OUT_GRANDE: { rotulo: "Outbound marca grande", toques: [0, 4], modelos: ["OUT-G1", "OUT-G2"], abre: true },
+    EMAIL_SEQ: { rotulo: "Sequência de e-mail", toques: [0, 4, 9, 16], modelos: ["EM-1", "EM-2", "EM-3", "EM-4"], abre: true },
+    PROPOSTA: { rotulo: "Proposta enviada", toques: [2, 5, 10, 20], modelos: ["PROP-1", "PROP-2", "PROP-3", "PROP-4"] },
+  };
+  const DIAS_ESPERA_FIM_CADENCIA = 5;
+  const MOTIVOS_PERDA = {
+    sem_resposta: { rotulo: "Sem resposta", retornoDias: 90 },
+    preco: { rotulo: "Preço", retornoDias: 120 },
+    timing: { rotulo: "Timing (adiado)", retornoDias: null },
+    sem_interesse: { rotulo: "Sem interesse", retornoDias: null },
+    fora_do_perfil: { rotulo: "Fora do perfil", retornoDias: null },
+  };
+  const ORIGENS_POR_CAPTACAO = {
+    Inbound: ["E-mail", "Direct Instagram", "TikTok", "Formulário portfólio", "Indicação"],
+    Outbound: ["DM personalizada", "DM pedir e-mail", "Disparo de e-mail"],
+    Reativação: ["Cliente antigo"],
+  };
+  const ITENS_QUALIFICACAO = [
+    { chave: "produto", rotulo: "produto", campo: "campoQualProduto" },
+    { chave: "qtd_videos", rotulo: "quantidade de vídeos", campo: "campoQualQtd" },
+    { chave: "budget", rotulo: "budget", campo: "campoQualBudget" },
+    { chave: "prazo", rotulo: "prazo", campo: "campoQualPrazo" },
+  ];
+
+  function semAcentoOp(s) {
+    return String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+  }
+
+  function somarDiasUteis(dataIso, dias) {
+    const d = new Date(dataIso + "T00:00:00");
+    let restantes = dias;
+    while (restantes > 0) {
+      d.setDate(d.getDate() + 1);
+      if (d.getDay() !== 0 && d.getDay() !== 6) restantes--;
+    }
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+
+  function etapaPorNomeOportunidade(trecho) {
+    return etapasOportunidadeCache.find((e) => semAcentoOp(e.nome).startsWith(trecho)) || null;
+  }
+
+  function qualificacaoFaltando(op) {
+    const q = (op && op.qualificacao) || {};
+    return ITENS_QUALIFICACAO.filter((i) => !String(q[i.chave] || "").trim()).map((i) => i.rotulo);
+  }
+
+  function canalPorEmail(op) {
+    return /mail/i.test((op.canal_contato || "") + " " + (op.origem_lead || ""));
+  }
+
+  function cadenciaDeQualificacao(op) {
+    return canalPorEmail(op) ? "QUALIF_EMAIL" : "QUALIF_DM";
+  }
+
+  function cadenciaDaOportunidade(op) {
+    if (op.cadencia && CADENCIAS[op.cadencia]) return op.cadencia;
+    const etapa = etapaOportunidade(op.etapa_id);
+    const nomeEtapa = etapa ? semAcentoOp(etapa.nome) : "";
+    const empresa = empresasCache.find((e) => e.id === op.empresa_id);
+    if (nomeEtapa.startsWith("proposta") || nomeEtapa.startsWith("negoc")) return "PROPOSTA";
+    if (nomeEtapa.startsWith("qualifica")) return cadenciaDeQualificacao(op);
+    if (op.captacao === "Inbound" && !op.ultimo_contato) return "IN_RESPOSTA";
+    if (/disparo/i.test(op.origem_lead || "")) return "EMAIL_SEQ";
+    if (empresa && empresa.porte === "grande") return "OUT_GRANDE";
+    return "OUT_PEQUENA";
+  }
+
+  function toquesTotaisCadencia(op) {
+    const cad = CADENCIAS[op.cadencia];
+    return cad ? cad.toques.length : 0;
+  }
+
+  function cadenciaEncerrada(op) {
+    return !!CADENCIAS[op.cadencia] && !!op.toque_n && op.toque_n >= toquesTotaisCadencia(op);
+  }
+
+  // Campos de cadência para quando já foram feitos "n" toques
+  function agendarProximoToque(chave, n, hoje) {
+    const cad = CADENCIAS[chave];
+    if (n >= cad.toques.length) {
+      return {
+        cadencia: chave,
+        toque_n: n,
+        proximo_followup: somarDiasUteis(hoje, DIAS_ESPERA_FIM_CADENCIA),
+        proxima_acao: "Sem resposta: mover para Perdido?",
+        modelo_sugerido: null,
+      };
+    }
+    const espera = cad.toques[n] - (n > 0 ? cad.toques[n - 1] : 0);
+    let acao;
+    if (chave === "IN_RESPOSTA") acao = "Responder inbound";
+    else if (cad.abre && n === 0) acao = "Primeira abordagem";
+    else acao = "Follow-up " + (cad.abre ? n : n + 1);
+    return {
+      cadencia: chave,
+      toque_n: n,
+      proximo_followup: somarDiasUteis(hoje, espera),
+      proxima_acao: acao,
+      modelo_sugerido: cad.modelos[n] || null,
+    };
+  }
+
+  // O que muda quando ela registra "mandei mensagem"
+  function planejarRegistroContato(op) {
+    const hoje = hojeIso();
+    const chave = cadenciaDaOportunidade(op);
+    const cad = CADENCIAS[chave];
+    const base = { ultimo_contato: hoje };
+    let patch;
+    if (chave === "IN_RESPOSTA") {
+      // respondeu o inbound: começa a cadência de qualificação a partir de hoje
+      patch = { ...base, ...agendarProximoToque(cadenciaDeQualificacao(op), 0, hoje) };
+    } else if (cad.ancora && !op.proximo_followup && !op.toque_n) {
+      // 1ª mensagem de qualificação: só marca o ponto de partida
+      patch = { ...base, ...agendarProximoToque(chave, 0, hoje) };
+    } else {
+      patch = { ...base, ...agendarProximoToque(chave, (op.toque_n || 0) + 1, hoje) };
+    }
+    const etapa = etapaOportunidade(op.etapa_id);
+    const lista = etapaPorNomeOportunidade("lista");
+    const abordado = etapaPorNomeOportunidade("abordado");
+    const qualif = etapaPorNomeOportunidade("qualifica");
+    if (etapa && etapa.tipo === "aberta") {
+      if (patch.cadencia.indexOf("QUALIF") === 0 && qualif && etapa.ordem < qualif.ordem) patch.etapa_id = qualif.id;
+      else if (lista && abordado && etapa.id === lista.id) patch.etapa_id = abordado.id;
+    }
+    return patch;
+  }
+
+  // "Respondeu": a marca respondeu, vai pra Qualificação e a contagem recomeça
+  function planejarRespondeu(op) {
+    const etapa = etapaOportunidade(op.etapa_id);
+    const qualif = etapaPorNomeOportunidade("qualifica");
+    const patch = {
+      ultimo_contato: hojeIso(),
+      cadencia: cadenciaDeQualificacao(op),
+      toque_n: 0,
+      proximo_followup: null,
+      proxima_acao: "Fazer as perguntas de qualificação",
+      modelo_sugerido: "IN-1",
+    };
+    if (qualif && (!etapa || etapa.ordem < qualif.ordem)) patch.etapa_id = qualif.id;
+    return patch;
+  }
+
+  function planejarPropostaEnviada(op) {
+    const hoje = hojeIso();
+    const proposta = etapaPorNomeOportunidade("proposta");
+    const patch = { ultimo_contato: hoje, proposta_enviada_em: hoje, ...agendarProximoToque("PROPOSTA", 0, hoje) };
+    if (proposta) patch.etapa_id = proposta.id;
+    return patch;
+  }
+
+  async function salvarPatchOportunidade(op, patch) {
+    const { error } = await Auth.sb
+      .from("oportunidades")
+      .update({ ...patch, updated_at: new Date().toISOString() })
+      .eq("id", op.id);
+    if (error) throw error;
+    await recarregarOportunidades();
+  }
+
+  function oportunidadeAberta(op) {
+    const etapa = etapaOportunidade(op.etapa_id);
+    return !!etapa && etapa.tipo === "aberta";
+  }
+
+  async function executarAcaoOportunidade(op, acao) {
+    try {
+      if (acao === "contato") {
+        await salvarPatchOportunidade(op, planejarRegistroContato(op));
+      } else if (acao === "respondeu") {
+        await salvarPatchOportunidade(op, planejarRespondeu(op));
+      } else if (acao === "proposta") {
+        const faltando = qualificacaoFaltando(op);
+        if (faltando.length && !confirm("Faltam na qualificação: " + faltando.join(", ") + ".\nMarcar a proposta como enviada mesmo assim?")) return;
+        await salvarPatchOportunidade(op, planejarPropostaEnviada(op));
+      } else if (acao === "perdido") {
+        abrirModalPerda(op, (etapaPorNomeOportunidade("perdido") || {}).id, "sem_resposta");
+      }
+    } catch (erro) {
+      alert("Não foi possível atualizar a oportunidade. Confira se rodou js/crm-funil-setup.sql no Supabase.");
+      console.error(erro);
+    }
+  }
+
+  // ---- Modal: mover para Perdido (motivo + quando voltar a chamar) ----
+  const overlayModalPerda = document.getElementById("overlayModalPerda");
+  const campoMotivoPerda = document.getElementById("campoMotivoPerda");
+  const campoRetornoPerda = document.getElementById("campoRetornoPerda");
+  let perdaEmAndamento = null;
+
+  function opcoesMotivoPerda(valorAtual) {
+    const extra = valorAtual && !MOTIVOS_PERDA[valorAtual] ? `<option value="${valorAtual}">${valorAtual}</option>` : "";
+    return (
+      '<option value="">Escolha…</option>' +
+      Object.keys(MOTIVOS_PERDA)
+        .map((k) => `<option value="${k}">${MOTIVOS_PERDA[k].rotulo}</option>`)
+        .join("") +
+      extra
+    );
+  }
+  function retornoSugeridoPorMotivo(motivo) {
+    const m = MOTIVOS_PERDA[motivo];
+    return m && m.retornoDias ? somarDiasIso(hojeIso(), m.retornoDias) : "";
+  }
+
+  function abrirModalPerda(op, etapaPerdidaId, motivoInicial) {
+    if (!etapaPerdidaId) return alert("Não achei a etapa Perdido no funil.");
+    perdaEmAndamento = { op, etapaPerdidaId };
+    document.getElementById("textoModalPerda").textContent = nomeEmpresa(op.empresa_id);
+    campoMotivoPerda.innerHTML = opcoesMotivoPerda(motivoInicial);
+    campoMotivoPerda.value = motivoInicial || "";
+    campoRetornoPerda.value = retornoSugeridoPorMotivo(motivoInicial);
+    overlayModalPerda.hidden = false;
+  }
+  function fecharModalPerda() {
+    overlayModalPerda.hidden = true;
+    perdaEmAndamento = null;
+  }
+  campoMotivoPerda.addEventListener("change", () => {
+    campoRetornoPerda.value = retornoSugeridoPorMotivo(campoMotivoPerda.value);
+  });
+  document.getElementById("btnCancelarPerda").addEventListener("click", fecharModalPerda);
+  overlayModalPerda.addEventListener("click", (evento) => {
+    if (evento.target === overlayModalPerda) fecharModalPerda();
+  });
+  document.getElementById("btnConfirmarPerda").addEventListener(
+    "click",
+    comFila("perda-oportunidade", async () => {
+      if (!perdaEmAndamento) return;
+      if (!campoMotivoPerda.value) return alert("Escolha o motivo da perda.");
+      const { op, etapaPerdidaId } = perdaEmAndamento;
+      try {
+        await salvarPatchOportunidade(op, {
+          etapa_id: etapaPerdidaId,
+          motivo_perda: campoMotivoPerda.value,
+          data_retorno: campoRetornoPerda.value || null,
+          proximo_followup: null,
+          proxima_acao: null,
+          modelo_sugerido: null,
+        });
+        fecharModalPerda();
+      } catch (erro) {
+        alert("Não foi possível mover para Perdido. Confira se rodou js/crm-funil-setup.sql no Supabase.");
+        console.error(erro);
+      }
+    })
+  );
+
   let oportunidadesCache = [];
   let etapasOportunidadeCache = [];
   let oportunidadesDisponivel = true;
@@ -16449,6 +16785,18 @@
     }
   }
 
+  function botoesAcaoCardOportunidade(o, etapa) {
+    if (!etapa || etapa.tipo !== "aberta") return "";
+    const nome = semAcentoOp(etapa.nome);
+    const botao = (acao, texto, principal) =>
+      `<button type="button" class="btn-acao-op${principal ? " principal" : ""}" data-acao-op="${acao}" data-id="${o.id}">${texto}</button>`;
+    if (cadenciaEncerrada(o)) return `<div class="acoes-card-op">${botao("perdido", "Mover para Perdido", true)}${botao("respondeu", "Respondeu")}</div>`;
+    const botoes = [botao("contato", "Registrar contato", true)];
+    if (nome.startsWith("lista") || nome.startsWith("abordado") || nome.startsWith("qualifica")) botoes.push(botao("respondeu", "Respondeu"));
+    if (nome.startsWith("qualifica") || nome.startsWith("abordado")) botoes.push(botao("proposta", "Proposta enviada"));
+    return `<div class="acoes-card-op">${botoes.join("")}</div>`;
+  }
+
   function renderizarKanbanOportunidades() {
     const wrap = document.getElementById("quadroOportunidadesWrap");
     wrap.innerHTML = etapasOportunidadeCache
@@ -16465,10 +16813,19 @@
                 const dataFollowup = o.proximo_followup
                   ? `<span class="data-card-quadro">📅 ${formatarDataBr(o.proximo_followup)}</span>`
                   : "";
+                const encerrada = cadenciaEncerrada(o);
+                const chipAcao = o.proxima_acao
+                  ? `<span class="chip-card-quadro ${encerrada ? "chip-alerta" : "chip-acao"}">${o.proxima_acao}${o.modelo_sugerido ? " · " + o.modelo_sugerido : ""}</span>`
+                  : "";
+                const chipQualif =
+                  semAcentoOp(etapa.nome).startsWith("qualifica")
+                    ? `<span class="chip-card-quadro">Qualif. ${ITENS_QUALIFICACAO.length - qualificacaoFaltando(o).length}/${ITENS_QUALIFICACAO.length}</span>`
+                    : "";
                 return `
                 <div class="card-quadro" draggable="true" data-id="${o.id}">
                   <span class="titulo-card-quadro">${selo}${nomeEmpresa(o.empresa_id)}</span>
-                  <div class="meta-card-quadro">${dataFollowup}${chipValor}${chipTemp}</div>
+                  <div class="meta-card-quadro">${dataFollowup}${chipValor}${chipTemp}${chipQualif}${chipAcao}</div>
+                  ${botoesAcaoCardOportunidade(o, etapa)}
                 </div>`;
               })
               .join("")
@@ -16508,7 +16865,26 @@
     if (!op) return;
     const etapaAnterior = etapaOportunidade(op.etapa_id);
     const novaEtapa = etapaOportunidade(novaEtapaId);
+    if (etapaAnterior && novaEtapa && etapaAnterior.id === novaEtapa.id) return;
+    if (novaEtapa && novaEtapa.tipo === "perdida") {
+      abrirModalPerda(op, novaEtapaId, op.toque_n ? "sem_resposta" : "");
+      return;
+    }
     const dados = { etapa_id: novaEtapaId, updated_at: new Date().toISOString() };
+    const nomeNova = novaEtapa ? semAcentoOp(novaEtapa.nome) : "";
+    const avancou = !etapaAnterior || !novaEtapa || novaEtapa.ordem > etapaAnterior.ordem;
+    if (novaEtapa && novaEtapa.tipo === "aberta" && avancou) {
+      if (nomeNova.startsWith("qualifica")) {
+        Object.assign(dados, planejarRespondeu(op));
+      } else if (nomeNova.startsWith("proposta")) {
+        const faltando = qualificacaoFaltando(op);
+        if (faltando.length && !confirm("Faltam na qualificação: " + faltando.join(", ") + ".\nMover para Proposta enviada mesmo assim?")) return;
+        Object.assign(dados, planejarPropostaEnviada(op));
+      } else if (nomeNova.startsWith("abordado") && !op.toque_n) {
+        Object.assign(dados, planejarRegistroContato(op));
+      }
+      dados.etapa_id = novaEtapaId;
+    }
     if (novaEtapa && novaEtapa.tipo === "ganha" && !op.data_fechamento) {
       dados.data_fechamento = new Date().toISOString().slice(0, 10);
     }
@@ -16528,6 +16904,17 @@
         evento.stopPropagation();
         abrirModalOportunidade(null, elemento.dataset.etapaAdd);
       });
+    });
+
+    document.querySelectorAll("#quadroOportunidadesWrap [data-acao-op]").forEach((botao) => {
+      botao.addEventListener(
+        "click",
+        comFila("acao-oportunidade", async (evento) => {
+          evento.stopPropagation();
+          const op = oportunidadesCache.find((o) => o.id === botao.dataset.id);
+          if (op) await executarAcaoOportunidade(op, botao.dataset.acaoOp);
+        })
+      );
     });
 
     document.querySelectorAll("#quadroOportunidadesWrap .card-quadro").forEach((elCard) => {
@@ -16604,7 +16991,7 @@
           <td>${etapa ? etapa.nome : "—"}</td>
           <td>${o.valor_estimado != null ? formatarMoeda(o.valor_estimado) : "—"}</td>
           <td>${o.temperatura || "—"}</td>
-          <td>${selo}${o.proximo_followup ? formatarDataBr(o.proximo_followup) : "—"}</td>
+          <td>${selo}${o.proximo_followup ? formatarDataBr(o.proximo_followup) : "—"}${o.proxima_acao ? `<br><small>${o.proxima_acao}${o.modelo_sugerido ? " · " + o.modelo_sugerido : ""}</small>` : ""}</td>
           <td>${o.responsavel || "—"}</td>
         </tr>`;
       })
@@ -16811,7 +17198,61 @@
   const campoObservacoesOportunidade = document.getElementById("campoObservacoesOportunidade");
   const btnExcluirOportunidade = document.getElementById("btnExcluirOportunidade");
   const btnCancelarOportunidade = document.getElementById("btnCancelarOportunidade");
+  const campoRetornoOportunidade = document.getElementById("campoRetornoOportunidade");
   let idOportunidadeEmEdicao = null;
+
+  function popularOrigemOportunidade(captacao, atual) {
+    const lista = (ORIGENS_POR_CAPTACAO[captacao] || []).slice();
+    // origem antiga (ex.: "Importação de planilha") continua visível enquanto não for trocada
+    if (atual && lista.indexOf(atual) === -1) lista.push(atual);
+    campoOrigemOportunidade.innerHTML =
+      '<option value="">—</option>' + lista.map((o) => `<option value="${o}">${o}</option>`).join("");
+    campoOrigemOportunidade.value = atual || "";
+  }
+
+  function lerQualificacaoDoModal() {
+    const q = {};
+    ITENS_QUALIFICACAO.forEach((i) => {
+      const v = document.getElementById(i.campo).value.trim();
+      if (v) q[i.chave] = v;
+    });
+    return q;
+  }
+  function atualizarContagemQualificacaoModal() {
+    const feitos = Object.keys(lerQualificacaoDoModal()).length;
+    document.getElementById("contagemQualificacaoOp").textContent = `· ${feitos}/${ITENS_QUALIFICACAO.length}`;
+  }
+  ITENS_QUALIFICACAO.forEach((i) => document.getElementById(i.campo).addEventListener("input", atualizarContagemQualificacaoModal));
+
+  function atualizarBarraAcoesOportunidade(op) {
+    const barra = document.getElementById("barraAcoesOportunidade");
+    const etapa = op ? etapaOportunidade(op.etapa_id) : null;
+    if (!op || !etapa || etapa.tipo !== "aberta") {
+      barra.hidden = true;
+      return;
+    }
+    const chave = cadenciaDaOportunidade(op);
+    const cad = CADENCIAS[chave];
+    const partes = [cad.rotulo + " · toque " + (op.toque_n || 0) + "/" + cad.toques.length];
+    if (op.proxima_acao) partes.push("próximo: " + op.proxima_acao + (op.modelo_sugerido ? " (" + op.modelo_sugerido + ")" : ""));
+    if (op.proximo_followup) partes.push("em " + formatarDataBr(op.proximo_followup));
+    document.getElementById("textoStatusCadenciaOp").textContent = partes.join(" · ");
+    barra.hidden = false;
+  }
+
+  document.querySelectorAll("#barraAcoesOportunidade [data-acao-modal]").forEach((botao) => {
+    botao.addEventListener(
+      "click",
+      comFila("acao-oportunidade", async () => {
+        const op = oportunidadesCache.find((o) => o.id === idOportunidadeEmEdicao);
+        if (!op) return;
+        fecharModalOportunidade();
+        await executarAcaoOportunidade(op, botao.dataset.acaoModal);
+      })
+    );
+  });
+
+  campoCaptacaoOportunidade.addEventListener("change", () => popularOrigemOportunidade(campoCaptacaoOportunidade.value, ""));
 
   function popularSelectEmpresaOportunidade(empresaIdSelecionada) {
     campoEmpresaOportunidade.innerHTML =
@@ -16838,8 +17279,12 @@
     campoNovaEmpresaNomeOportunidade.value = "";
     campoContatoOportunidade.value = (op && op.contato) || "";
     campoCanalOportunidade.value = (op && op.canal_contato) || "";
-    campoOrigemOportunidade.value = (op && op.origem_lead) || "";
     campoCaptacaoOportunidade.value = (op && op.captacao) || "";
+    popularOrigemOportunidade(campoCaptacaoOportunidade.value, (op && op.origem_lead) || "");
+    const qual = (op && op.qualificacao) || {};
+    ITENS_QUALIFICACAO.forEach((i) => (document.getElementById(i.campo).value = qual[i.chave] || ""));
+    atualizarContagemQualificacaoModal();
+    atualizarBarraAcoesOportunidade(op);
     document.getElementById("blocoCaptacaoOportunidade").hidden = !captacaoDisponivel;
     campoServicoOportunidade.value = (op && op.servico_interesse) || "";
     campoValorOportunidade.value = op && op.valor_estimado != null ? op.valor_estimado : "";
@@ -16848,7 +17293,9 @@
     campoResponsavelOportunidade.value = (op && op.responsavel) || "";
     campoEntradaOportunidade.value = (op && op.data_entrada) || new Date().toISOString().slice(0, 10);
     campoFollowupOportunidade.value = (op && op.proximo_followup) || "";
+    campoMotivoPerdaOportunidade.innerHTML = opcoesMotivoPerda(op && op.motivo_perda);
     campoMotivoPerdaOportunidade.value = (op && op.motivo_perda) || "";
+    campoRetornoOportunidade.value = (op && op.data_retorno) || "";
     campoObservacoesOportunidade.value = (op && op.observacoes) || "";
     const etapaSelecionada = etapaOportunidade(campoEtapaOportunidade.value);
     blocoMotivoPerdaOportunidade.hidden = !etapaSelecionada || etapaSelecionada.tipo !== "perdida";
@@ -16867,6 +17314,9 @@
   });
   campoEmpresaOportunidade.addEventListener("change", () => {
     blocoNovaEmpresaOportunidade.hidden = campoEmpresaOportunidade.value !== "__nova__";
+  });
+  campoMotivoPerdaOportunidade.addEventListener("change", () => {
+    if (!campoRetornoOportunidade.value) campoRetornoOportunidade.value = retornoSugeridoPorMotivo(campoMotivoPerdaOportunidade.value);
   });
   campoEtapaOportunidade.addEventListener("change", () => {
     const etapaSelecionada = etapaOportunidade(campoEtapaOportunidade.value);
@@ -16893,6 +17343,7 @@
       }
     }
     if (!empresaId) return alert("Selecione a marca.");
+    if (captacaoDisponivel && !campoCaptacaoOportunidade.value) return alert("Escolha a captação (Inbound, Outbound ou Reativação).");
 
     const etapaId = campoEtapaOportunidade.value;
     const etapaSelecionada = etapaOportunidade(etapaId);
@@ -16910,7 +17361,9 @@
       responsavel: campoResponsavelOportunidade.value.trim() || null,
       data_entrada: campoEntradaOportunidade.value || null,
       proximo_followup: campoFollowupOportunidade.value || null,
-      motivo_perda: etapaSelecionada && etapaSelecionada.tipo === "perdida" ? campoMotivoPerdaOportunidade.value.trim() || null : null,
+      motivo_perda: etapaSelecionada && etapaSelecionada.tipo === "perdida" ? campoMotivoPerdaOportunidade.value || null : null,
+      data_retorno: etapaSelecionada && etapaSelecionada.tipo === "perdida" ? campoRetornoOportunidade.value || null : null,
+      qualificacao: lerQualificacaoDoModal(),
       observacoes: campoObservacoesOportunidade.value.trim() || null,
       updated_at: new Date().toISOString(),
     };
