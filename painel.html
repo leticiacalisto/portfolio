@@ -21616,19 +21616,64 @@
     novas.slice(0, 3).forEach((n) => mostrarNotificacaoDoSistema(n.titulo, n.texto || "", n.chave));
     if (novas.length > 3) mostrarNotificacaoDoSistema("Painel", `+ ${novas.length - 3} notificações novas`, "painel-varias");
   }
+  // ---- PUSH: avisos que chegam com o painel fechado (js/push-setup.sql + função enviar-push) ----
+  // Chave pública do Web Push (a privada fica só nos segredos do Supabase).
+  const VAPID_PUBLICA = "BGJE-VgDH2UI5AnwvCGYPq2Yn5fGzXZZpMjiXRufo9gAZOZvNwNP7ySHB-JcU6oYeJvtLO3ZLnEPl9-1basqKA0";
+  let pushSituacao = ""; // "ok" | "sem-suporte" | "erro"
+  function chaveVapidEmBytes(base64url) {
+    const base64 = (base64url + "=".repeat((4 - (base64url.length % 4)) % 4)).replace(/-/g, "+").replace(/_/g, "/");
+    return Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
+  }
+  async function inscreverPush() {
+    try {
+      const reg = (await registrarServiceWorkerPainel()) && (await navigator.serviceWorker.ready);
+      if (!reg || !reg.pushManager) {
+        pushSituacao = "sem-suporte";
+        return false;
+      }
+      let inscricao = await reg.pushManager.getSubscription();
+      if (!inscricao) inscricao = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: chaveVapidEmBytes(VAPID_PUBLICA) });
+      const j = inscricao.toJSON();
+      const { error } = await Auth.sb.from("push_inscricoes").upsert(
+        { endpoint: j.endpoint, p256dh: j.keys.p256dh, auth: j.keys.auth, dispositivo: nomeDoDispositivo(), updated_at: new Date().toISOString() },
+        { onConflict: "endpoint" }
+      );
+      if (error) throw error;
+      pushSituacao = "ok";
+      return true;
+    } catch (erro) {
+      console.error("Push:", erro);
+      pushSituacao = "erro";
+      return false;
+    }
+  }
+  async function cancelarPush() {
+    try {
+      const reg = "serviceWorker" in navigator ? await navigator.serviceWorker.getRegistration() : null;
+      const inscricao = reg && reg.pushManager ? await reg.pushManager.getSubscription() : null;
+      if (!inscricao) return;
+      await Auth.sb.from("push_inscricoes").delete().eq("endpoint", inscricao.endpoint);
+      await inscricao.unsubscribe();
+    } catch (erro) {
+      console.error("Push:", erro);
+    }
+    pushSituacao = "";
+  }
+
   async function alternarNotificacaoDoDispositivo() {
     if (!dispositivoSuportaNotificacao()) return;
     if (dispositivoNotificaAtivo()) {
       try {
         localStorage.setItem(CHAVE_DISPOSITIVO_ATIVO, "0");
       } catch (erro) {}
+      await cancelarPush();
     } else {
       const permissao = Notification.permission === "granted" ? "granted" : await Notification.requestPermission();
       if (permissao !== "granted") {
         renderizarDispositivosNotificacao();
         return;
       }
-      await registrarServiceWorkerPainel();
+      await inscreverPush();
       try {
         localStorage.setItem(CHAVE_DISPOSITIVO_ATIVO, "1");
         // o que já existe não vira aviso de uma vez: só o que chegar daqui pra frente
@@ -21649,6 +21694,9 @@
     let situacao;
     if (!dispositivoSuportaNotificacao()) situacao = "Este navegador não suporta notificações. No iPhone, abra o painel pelo ícone da tela inicial (Compartilhar › Adicionar à Tela de Início) e volte aqui.";
     else if (Notification.permission === "denied") situacao = "As notificações estão bloqueadas nas configurações do navegador para este site. Libere lá e volte aqui.";
+    else if (dispositivoNotificaAtivo() && pushSituacao === "ok") situacao = "Ativadas neste aparelho. Lead, briefing e resposta de roteiro chegam mesmo com o painel fechado; os outros avisos, quando o painel está aberto.";
+    else if (dispositivoNotificaAtivo() && pushSituacao === "erro") situacao = "Ativadas, mas não consegui registrar este aparelho para receber com o painel fechado. Desative e ative de novo.";
+    else if (dispositivoNotificaAtivo() && pushSituacao === "sem-suporte") situacao = "Ativadas só com o painel aberto: este navegador não recebe avisos com o painel fechado. No iPhone, use o painel pelo ícone da Tela de Início (iOS 16.4 ou mais novo).";
     else if (dispositivoNotificaAtivo()) situacao = "Ativadas neste aparelho. O painel confere novidades a cada 2 minutos e avisa quando você está em outra tela.";
     else situacao = "Desativadas neste aparelho.";
     const dispositivos = (cfgLer(CFG_NOTIF_DISPOSITIVOS, []) || []).map((d) => (d.id === id ? { ...d, ativo: dispositivoNotificaAtivo(), nome: nomeDoDispositivo() } : d));
@@ -21754,7 +21802,8 @@
     document.getElementById("notifDispositivo").addEventListener("click", (evento) => {
       if (evento.target.closest("#btnAlternarNotifDispositivo")) alternarNotificacaoDoDispositivo();
     });
-    if (dispositivoNotificaAtivo()) registrarServiceWorkerPainel();
+    // aparelho que já estava ativado entra no push sozinho (e renova a inscrição a cada abertura)
+    if (dispositivoNotificaAtivo()) inscreverPush().then(renderizarDispositivosNotificacao);
     // novas respostas de formulário chegam com a página aberta: confere de tempos em tempos
     setInterval(async () => {
       try {
