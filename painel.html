@@ -19523,6 +19523,14 @@
     botao.click();
   });
 
+  // N abre a janela de nova campanha, de qualquer página (igual ao "+ Nova campanha"; só fora de digitação)
+  document.addEventListener("keydown", (evento) => {
+    if (evento.key.toLowerCase() !== "n" || evento.ctrlKey || evento.metaKey || evento.altKey || evento.repeat) return;
+    if ((evento.target.closest && evento.target.closest("input, textarea, select, [contenteditable]")) || document.querySelector(".overlay-modal:not([hidden])")) return;
+    evento.preventDefault();
+    abrirModalContrato(null);
+  });
+
   // V alterna a visualização em qualquer página que tenha mais de uma
   const ALTERNADORES_V = ["alternadorProducao", "alternadorVisaoResultados", "alternadorVisaoFluxo", "alternadorPortfolio", "alternadorOportunidades", "alternadorCampanhas", "alternadorMarcas", "alternadorJornada"];
   document.addEventListener("keydown", (evento) => {
