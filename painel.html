@@ -19536,7 +19536,9 @@
     botoes[(i + 1) % botoes.length].click();
     evento.preventDefault();
   });
-  aplicarVistaProducao(vistaSalvaProducao);
+  // a vista salva é aplicada lá no fim do script (antes de carregar os dados):
+  // aqui a Timeline ainda não consegue ler a configuração (cfgCache) e o erro
+  // travava o painel inteiro, que abria sem dados.
 
   // ---------------------------------------------------------------
   // MENU PRINCIPAL: salvos (estrela), campanhas em andamento, minha
@@ -23221,6 +23223,12 @@
     }
   });
 
+  // vista salva da Produção (Kanban/Timeline...); um erro aqui nunca impede os dados de carregar
+  try {
+    aplicarVistaProducao(vistaSalvaProducao);
+  } catch (erro) {
+    console.error(erro);
+  }
   renderizarTudo();
   carregarCfg();
   const cargaQuadro = recarregarQuadro();
