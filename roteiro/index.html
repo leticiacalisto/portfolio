@@ -43,7 +43,6 @@ html{-webkit-text-size-adjust:100%;}
 body{
   margin:0;
   background-color:var(--creme);
-  background-image:repeating-linear-gradient(90deg, rgba(20,17,13,.016) 0 26px, rgba(20,17,13,0) 26px 52px);
   color:var(--tinta);
   font-family:var(--sans);
   font-size:16px;
@@ -90,6 +89,23 @@ h1{font-family:var(--impacto);font-weight:800;font-size:clamp(2rem,7vw,2.9rem);l
   .ficha div:nth-child(-n+2){border-bottom:1px solid var(--borda);}
 }
 .angulo{font-family:var(--serif);font-style:italic;font-size:1.05rem;color:var(--tinta-suave);margin:0;}
+
+/* ---------- Moodboard ---------- */
+.mood{background:var(--branco);border:1px solid var(--borda);border-radius:var(--raio-g);box-shadow:var(--sombra);padding:clamp(18px,4vw,28px);}
+.mood-sub{display:block;font-size:.66rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--tijolo);margin:0 0 8px;}
+.mood-sub + *{margin-top:0;}
+.mood-parte + .mood-parte{margin-top:22px;}
+.mood-clima{font-family:var(--serif);font-size:1.05rem;line-height:1.5;margin:0;}
+.mood-tags{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 0;padding:0;list-style:none;}
+.mood-tags li{padding:4px 12px;border-radius:99px;background:var(--creme);border:1px solid var(--borda);font-size:.82rem;}
+.mood-paleta{display:grid;grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:10px;}
+.mood-cor i{display:block;height:46px;border-radius:10px;border:1px solid var(--borda);}
+.mood-cor span{display:block;margin-top:5px;font-size:.74rem;color:var(--tinta-suave);line-height:1.3;}
+.mood-imagens{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.mood-imagens figure{position:relative;margin:0;border-radius:var(--raio);overflow:hidden;background:var(--creme-escuro);aspect-ratio:4/5;}
+.mood-imagens figure.largo{grid-column:span 2;aspect-ratio:16/10;}
+.mood-imagens img{display:block;width:100%;height:100%;object-fit:cover;}
+.mood-imagens figcaption{position:absolute;left:8px;bottom:8px;max-width:calc(100% - 16px);padding:3px 10px;border-radius:99px;background:rgba(20,17,13,.78);color:var(--branco);font-size:.74rem;}
 
 /* ---------- Cenas ---------- */
 h2{font-family:var(--impacto);font-weight:700;font-size:1.1rem;letter-spacing:.06em;text-transform:uppercase;margin:40px 0 14px;}
@@ -259,6 +275,37 @@ h2{font-family:var(--impacto);font-weight:700;font-size:1.1rem;letter-spacing:.0
         "</div></article>";
     }).join("");
 
+    // Moodboard (opcional): clima, palavras, paleta e imagens de referência
+    var mood = "";
+    var m = r.moodboard;
+    if (m && (m.clima || (m.paleta || []).length || (m.imagens || []).length)) {
+      var partes = [];
+      if (m.clima || (m.tags || []).length) {
+        partes.push('<div class="mood-parte"><span class="mood-sub">Clima</span>' +
+          (m.clima ? '<p class="mood-clima">' + esc(m.clima) + "</p>" : "") +
+          ((m.tags || []).length ? '<ul class="mood-tags">' + m.tags.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ul>" : "") +
+          "</div>");
+      }
+      var cores = (m.paleta || []).filter(function (p) { return p && /^#[0-9a-f]{3,8}$/i.test(p.cor || ""); });
+      if (cores.length) {
+        partes.push('<div class="mood-parte"><span class="mood-sub">Paleta</span><div class="mood-paleta">' +
+          cores.map(function (p) { return '<div class="mood-cor"><i style="background:' + p.cor + '"></i><span>' + esc(p.nome || p.cor) + "</span></div>"; }).join("") +
+          "</div></div>");
+      }
+      // só aceita imagem embutida (data:image) ou link https
+      var imagens = (m.imagens || []).filter(function (im) { return im && /^(data:image\/(jpeg|png|webp);base64,|https:\/\/)/.test(im.src || ""); });
+      if (imagens.length) {
+        partes.push('<div class="mood-parte"><span class="mood-sub">Imagens</span><div class="mood-imagens">' +
+          imagens.map(function (im, i) {
+            var largo = im.largo || (imagens.length % 2 === 1 && i === imagens.length - 1);
+            return '<figure' + (largo ? ' class="largo"' : "") + '><img src="' + esc(im.src) + '" alt="' + esc(im.legenda || "referência") + '" loading="lazy">' +
+              (im.legenda ? "<figcaption>" + esc(im.legenda) + "</figcaption>" : "") + "</figure>";
+          }).join("") +
+          "</div></div>");
+      }
+      mood = '<h2>Moodboard</h2><section class="mood">' + partes.join("") + "</section>";
+    }
+
     var secoes = (r.secoes || []).map(function (s) {
       var tag = s.numerada ? "ol" : "ul";
       return "<h2>" + esc(s.titulo) + '</h2><div class="bloco"><' + tag + ">" + (s.itens || []).map(function (x) { return "<li>" + rico(x) + "</li>"; }).join("") + "</" + tag + "></div>";
@@ -290,6 +337,7 @@ h2{font-family:var(--impacto);font-weight:700;font-size:1.1rem;letter-spacing:.0
       aviso +
       '<div class="ficha">' + ficha + "</div>" +
       '<p class="angulo">' + esc(r.angulo) + "</p>" +
+      mood +
       "<h2>As cenas</h2>" + cenas + secoes + resposta +
       '<footer class="rodape"><span>Roteiro ' + esc(r.marca) + " " + esc(r.numero) + " · " + esc(r.titulo) + '</span><span class="cursiva">Letícia Calisto</span></footer>';
 
