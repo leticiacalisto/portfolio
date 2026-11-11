@@ -98,7 +98,88 @@
   }
 
   // Visita: uma vez por carregamento de página (com a origem junto)
-  evento("page_view", null, origemDaVisita());
+  var origemAtual = origemDaVisita();
+  evento("page_view", null, origemAtual);
+
+  // LEITURA (só no portfólio, a página inicial): quanto tempo a pessoa ficou com
+  // a página na tela, até quantos % rolou e até qual seção chegou. Vai como evento
+  // "leitura" toda vez que a página sai da tela (troca de aba, app, fecha); os
+  // valores são acumulados e o painel fica com o maior de cada visita.
+  var caminho = location.pathname.replace(/\/index\.html$/, "/");
+  if (caminho === "/") {
+    var visita = "v_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+    var TEMPO_MAXIMO_MS = 30 * 60 * 1000; // aba esquecida aberta não distorce a média
+    var tempoAtivo = 0;
+    var desde = document.visibilityState === "visible" ? Date.now() : null;
+    var rolagemMaxima = 0;
+    var secoes = [];
+    var secoesVistas = {};
+    var secaoMaisFunda = "";
+
+    var medirRolagem = function () {
+      var doc = document.documentElement;
+      var total = Math.max(doc.scrollHeight, document.body ? document.body.scrollHeight : 0);
+      var visto = (window.scrollY || doc.scrollTop || 0) + window.innerHeight;
+      var pct = total > 0 ? Math.min(100, Math.round((visto / total) * 100)) : 100;
+      if (pct > rolagemMaxima) rolagemMaxima = pct;
+      // seção "alcançada" = o topo dela já apareceu nos 3/4 de cima da tela
+      for (var i = 0; i < secoes.length; i++) {
+        var s = secoes[i];
+        if (!secoesVistas[s.id] && s.getBoundingClientRect().top < window.innerHeight * 0.75) {
+          secoesVistas[s.id] = true;
+          secaoMaisFunda = s.id;
+        }
+      }
+    };
+    var tempoAteAgora = function () {
+      return Math.min(TEMPO_MAXIMO_MS, tempoAtivo + (desde ? Date.now() - desde : 0));
+    };
+    var ultimoEnvio = "";
+    var enviarLeitura = function () {
+      medirRolagem();
+      var tempoS = Math.round(tempoAteAgora() / 1000);
+      var resumo = tempoS + "|" + rolagemMaxima + "|" + secaoMaisFunda;
+      if (resumo === ultimoEnvio || tempoS < 1) return;
+      ultimoEnvio = resumo;
+      evento("leitura", "portfolio", {
+        visita: visita,
+        origem: origemAtual.origem,
+        tempo_s: tempoS,
+        rolagem: rolagemMaxima,
+        secao: secaoMaisFunda || null,
+        secoes: Object.keys(secoesVistas),
+        largura: window.innerWidth,
+      });
+    };
+
+    var iniciarLeitura = function () {
+      secoes = Array.prototype.slice.call(document.querySelectorAll("section[id]"));
+      medirRolagem();
+    };
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", iniciarLeitura);
+    else iniciarLeitura();
+
+    var agendado = false;
+    window.addEventListener("scroll", function () {
+      if (agendado) return;
+      agendado = true;
+      setTimeout(function () {
+        agendado = false;
+        medirRolagem();
+      }, 250);
+    }, { passive: true });
+
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState === "hidden") {
+        if (desde) tempoAtivo += Date.now() - desde;
+        desde = null;
+        enviarLeitura();
+      } else {
+        desde = Date.now();
+      }
+    });
+    window.addEventListener("pagehide", enviarLeitura);
+  }
 
   // Cliques: vídeos abertos (data-youtube) e qualquer elemento com data-rastrear
   document.addEventListener("click", function (evt) {

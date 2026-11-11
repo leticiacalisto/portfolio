@@ -2393,6 +2393,11 @@
   .linha-origem .nome-origem{ width:200px; flex-shrink:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .linha-origem .trilho-origem{ flex-grow:1; height:9px; border-radius:999px; background:#EFEFEF; overflow:hidden; }
   .linha-origem .trilho-origem i{ display:block; height:100%; border-radius:999px; }
+  .sub-leitura{ margin:0; font-size:.8rem; color:#8a8a8a; }
+  .tabela-leitura td.num, .tabela-leitura th.num{ text-align:right; white-space:nowrap; }
+  .tabela-leitura .poucos{ display:block; font-size:.72rem; font-weight:400; color:#9a9a9a; }
+  .barra-rolagem{ display:inline-block; vertical-align:middle; width:56px; height:6px; margin-left:8px; border-radius:999px; background:#EFEFEF; overflow:hidden; }
+  .barra-rolagem i{ display:block; height:100%; border-radius:999px; background:#991a0e; }
   .linha-origem .qtd-origem{ width:110px; flex-shrink:0; text-align:right; font-weight:700; font-size:.85rem; white-space:nowrap; }
   .menu-links-origem{ position:relative; }
   .popover-links-origem{ position:absolute; top:calc(100% + 6px); right:0; z-index:40; min-width:230px; background: var(--branco); border:1px solid var(--borda); border-radius:12px; box-shadow:0 12px 32px rgba(20,17,13,.16); padding:6px; display:flex; flex-direction:column; }
@@ -3734,6 +3739,19 @@
         <div class="painel-quadro-secao">
           <div class="topo-quadro"><div><h2 style="margin-bottom:2px;">De onde vêm os acessos</h2></div></div>
           <div id="listaOrigens"></div>
+        </div>
+
+        <div class="painel-quadro-secao">
+          <div class="topo-quadro"><div><h2 style="margin-bottom:2px;">Quanto leem o portfólio, por canal</h2><p class="sub-leitura">Tempo com a página na tela (aba em segundo plano não conta) e até onde a pessoa rolou.</p></div></div>
+          <div id="tabelaLeitura"></div>
+        </div>
+
+        <div class="painel-quadro-secao">
+          <div class="topo-quadro">
+            <div><h2 style="margin-bottom:2px;">Até onde chegam no portfólio</h2><p class="sub-leitura">% das visitas que chegaram a cada parte da página.</p></div>
+            <select class="input-limpo" id="selCanalLeitura" aria-label="Canal"></select>
+          </div>
+          <div id="funilLeitura"></div>
         </div>
 
         <div class="painel-quadro-secao">
@@ -6626,7 +6644,91 @@
     );
     renderizarMensagens(leads);
     renderizarOrigens(eventos.filter((e) => e.event_type === "page_view"));
+    renderizarLeitura(eventos.filter((e) => e.event_type === "leitura"));
   }
+
+  // ---- LEITURA DO PORTFÓLIO: tempo na tela e rolagem por canal (evento "leitura" do js/rastreamento.js) ----
+  // Cada visita manda vários "leitura" (um a cada vez que sai da tela), com valores
+  // acumulados: aqui fica o maior de cada visita.
+  // var (e não const/let): este bloco pode ser desenhado antes de o script chegar aqui
+  var SECOES_PORTFOLIO = [
+    ["sobre", "Sobre"], ["marcas", "Marcas"], ["case", "Case"], ["portfolio", "Vídeos"], ["fotos", "Fotos"],
+    ["servicos", "Serviços"], ["depoimentos", "Depoimentos"], ["contato", "Contato"],
+  ];
+  var POUCAS_VISITAS = 10;
+  var canalLeitura = "todos";
+  // o mesmo canal chega com nomes diferentes nos links (?origem=ig e ?origem=instagram)
+  function normalizarOrigem(origem) {
+    const o = String(origem || "").toLowerCase();
+    return { ig: "instagram", insta: "instagram", si: "seuinfluencer", "seu-influencer": "seuinfluencer", wpp: "whatsapp", zap: "whatsapp", tt: "tiktok" }[o] || o;
+  }
+  function formatarTempoLeitura(s) {
+    s = Math.round(s);
+    if (s < 60) return s + "s";
+    const m = Math.floor(s / 60);
+    return m + "min" + (s % 60 ? " " + String(s % 60).padStart(2, "0") + "s" : "");
+  }
+  function visitasDeLeitura(eventos) {
+    const mapa = new Map();
+    eventos.forEach((e) => {
+      const m = e.metadata || {};
+      const chave = m.visita || e.id;
+      const atual = mapa.get(chave) || { origem: normalizarOrigem(m.origem || "direto"), tempo: 0, rolagem: 0, secoes: new Set() };
+      atual.tempo = Math.max(atual.tempo, Number(m.tempo_s) || 0);
+      atual.rolagem = Math.max(atual.rolagem, Number(m.rolagem) || 0);
+      (m.secoes || []).forEach((s) => atual.secoes.add(s));
+      mapa.set(chave, atual);
+    });
+    return [...mapa.values()];
+  }
+  function resumoLeitura(visitas) {
+    const tempos = visitas.map((v) => v.tempo).sort((a, b) => a - b);
+    const meio = Math.floor(tempos.length / 2);
+    return {
+      n: visitas.length,
+      tempoMedio: tempos.reduce((s, t) => s + t, 0) / (tempos.length || 1),
+      tempoMediano: tempos.length % 2 ? tempos[meio] : (tempos[meio - 1] + tempos[meio]) / 2,
+      rolagemMedia: visitas.reduce((s, v) => s + v.rolagem, 0) / (visitas.length || 1),
+      fim: visitas.filter((v) => v.rolagem >= 90).length / (visitas.length || 1),
+    };
+  }
+  function renderizarLeitura(eventos) {
+    const tabela = document.getElementById("tabelaLeitura");
+    const funil = document.getElementById("funilLeitura");
+    const sel = document.getElementById("selCanalLeitura");
+    if (!tabela || !funil || !sel) return;
+    const visitas = visitasDeLeitura(eventos);
+    if (!visitas.length) {
+      tabela.innerHTML = textoVazio("A medição de tempo e rolagem começou em 10/11/2026. Os números aparecem conforme as visitas chegam.");
+      funil.innerHTML = "";
+      sel.hidden = true;
+      return;
+    }
+    sel.hidden = false;
+    const porCanal = new Map();
+    visitas.forEach((v) => porCanal.set(v.origem, (porCanal.get(v.origem) || []).concat(v)));
+    const canais = [...porCanal.entries()].sort((a, b) => b[1].length - a[1].length);
+    const linha = (nome, lista, destaque) => {
+      const r = resumoLeitura(lista);
+      const poucos = r.n < POUCAS_VISITAS ? '<span class="poucos">poucos dados ainda</span>' : "";
+      return `<tr${destaque ? ' style="font-weight:700"' : ""}><td>${esc(nome)}${poucos}</td><td class="num">${r.n}</td><td class="num">${formatarTempoLeitura(r.tempoMedio)}</td><td class="num">${formatarTempoLeitura(r.tempoMediano)}</td><td class="num">${Math.round(r.rolagemMedia)}%<span class="barra-rolagem"><i style="width:${Math.round(r.rolagemMedia)}%"></i></span></td><td class="num">${Math.round(r.fim * 100)}%</td></tr>`;
+    };
+    tabela.innerHTML = `<div style="overflow-x:auto"><table class="tabela-contratos tabela-leitura">
+      <thead><tr><th>Canal</th><th class="num">Visitas</th><th class="num" title="Soma dos tempos dividida pelas visitas">Tempo médio</th><th class="num" title="Metade das visitas fica mais que isso, metade menos">Tempo típico</th><th class="num">Rolagem média</th><th class="num" title="Visitas que rolaram 90% ou mais da página">Chegaram ao fim</th></tr></thead>
+      <tbody>${canais.map(([c, lista]) => linha(nomeDaOrigem(c), lista)).join("")}${canais.length > 1 ? linha("Todos os canais", visitas, true) : ""}</tbody></table></div>`;
+
+    if (canalLeitura !== "todos" && !porCanal.has(canalLeitura)) canalLeitura = "todos";
+    sel.innerHTML = `<option value="todos">Todos os canais</option>` + canais.map(([c]) => `<option value="${esc(c)}"${c === canalLeitura ? " selected" : ""}>${esc(nomeDaOrigem(c))}</option>`).join("");
+    const lista = canalLeitura === "todos" ? visitas : porCanal.get(canalLeitura);
+    funil.innerHTML = SECOES_PORTFOLIO.map(([id, nome], i) => {
+      const pct = Math.round((lista.filter((v) => v.secoes.has(id)).length / lista.length) * 100);
+      return `<div class="linha-origem"><span class="nome-origem">${esc(nome)}</span><div class="trilho-origem"><i style="width:${pct}%; background:${degradeBarra(i, SECOES_PORTFOLIO.length)}"></i></div><span class="qtd-origem">${pct}%</span></div>`;
+    }).join("") + `<p class="sub-leitura" style="margin-top:8px;">${lista.length} ${lista.length === 1 ? "visita medida" : "visitas medidas"}${lista.length < POUCAS_VISITAS ? " · poucos dados ainda" : ""}.</p>`;
+  }
+  document.getElementById("selCanalLeitura").addEventListener("change", (evento) => {
+    canalLeitura = evento.target.value;
+    renderizarPortfolio();
+  });
 
   // ---- ORIGEM DOS ACESSOS: vem do metadata do page_view (js/rastreamento.js) ----
   const NOMES_ORIGEM = {
@@ -6648,7 +6750,7 @@
     const mapa = new Map();
     let semInfo = 0;
     visitas.forEach((v) => {
-      const origem = v.metadata && v.metadata.origem;
+      const origem = v.metadata && v.metadata.origem && normalizarOrigem(v.metadata.origem);
       if (!origem) semInfo++;
       else mapa.set(origem, (mapa.get(origem) || 0) + 1);
     });
