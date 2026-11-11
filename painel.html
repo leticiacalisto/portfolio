@@ -3081,6 +3081,7 @@
   .rank-num{ text-align:right; min-width:84px; display:flex; flex-direction:column; flex-shrink:0; }
   .rank-num b{ font-family: var(--fonte-impacto); font-size:1.3rem; line-height:1.1; }
   .rank-num span{ font-size:.72rem; color: var(--texto-suave); }
+  .rank-num .rank-tempo{ margin-top:2px; font-weight:700; color:#991a0e; white-space:nowrap; }
   /* Todos: busca, chips de nicho e linhas em cartão */
   .barra-videos-pf{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin:2px 0 14px; }
   .busca-videos-pf{
@@ -6637,7 +6638,7 @@
 
     // "Vídeos mais vistos" (aba Vídeos) sempre mostra tudo — o filtro de
     // período no topo só vale pra Análise Geral.
-    renderizarVideos(eventosCache.filter((e) => e.event_type === "video_view"));
+    renderizarVideos(eventosCache.filter((e) => e.event_type === "video_view"), eventosCache.filter((e) => e.event_type === "video_tempo"));
     renderizarBotoes(eventos.filter((e) => e.event_type === "button_click"));
     renderizarContatos(
       eventos.filter((e) => e.event_type === "button_click" && (e.event_name || "").startsWith("contact_"))
@@ -6792,7 +6793,7 @@
     }
   });
 
-  function renderizarVideos(eventosVideo) {
+  function renderizarVideos(eventosVideo, tempoVideos = []) {
     const container = document.getElementById("listaVideos");
     const resumo = document.getElementById("resumoVideosPf");
     if (eventosVideo.length === 0) {
@@ -6801,23 +6802,49 @@
       return;
     }
 
+    // Pódio por PESSOAS (sessões diferentes que abriram o vídeo); os cliques repetidos
+    // da mesma pessoa aparecem à parte. O título é o mais recente (a lista vem do
+    // mais novo para o mais antigo).
     const mapa = new Map();
     eventosVideo.forEach((e) => {
       const id = e.event_name;
       const titulo = e.metadata && e.metadata.title ? e.metadata.title : id;
-      if (!mapa.has(id)) mapa.set(id, { id, titulo, contagem: 0 });
-      mapa.get(id).contagem++;
+      if (!mapa.has(id)) mapa.set(id, { id, titulo, cliques: 0, sessoes: new Set(), aberturas: new Map() });
+      const v = mapa.get(id);
+      v.cliques++;
+      v.sessoes.add(e.session_id || e.id);
+    });
+    // Tempo assistido (evento "video_tempo", medido desde 10/11/2026): o maior valor de cada abertura
+    tempoVideos.forEach((e) => {
+      const v = mapa.get(e.event_name);
+      const m = e.metadata || {};
+      if (!v || !m.abertura) return;
+      const atual = v.aberturas.get(m.abertura) || { segundos: 0, pct: null };
+      atual.segundos = Math.max(atual.segundos, Number(m.segundos) || 0);
+      if (m.pct != null) atual.pct = Math.max(atual.pct || 0, Number(m.pct));
+      v.aberturas.set(m.abertura, atual);
+    });
+    mapa.forEach((v) => {
+      v.contagem = v.sessoes.size;
+      const ab = [...v.aberturas.values()];
+      v.medidas = ab.length;
+      v.tempoMedio = ab.length ? ab.reduce((s, a) => s + a.segundos, 0) / ab.length : null;
+      const comPct = ab.filter((a) => a.pct != null);
+      v.pctMedio = comPct.length ? comPct.reduce((s, a) => s + a.pct, 0) / comPct.length : null;
     });
 
-    const lista = [...mapa.values()].sort((a, b) => b.contagem - a.contagem);
+    const lista = [...mapa.values()].sort((a, b) => b.contagem - a.contagem || b.cliques - a.cliques);
     const maximo = lista[0].contagem;
     const total = lista.reduce((s, v) => s + v.contagem, 0);
+    const totalCliques = lista.reduce((s, v) => s + v.cliques, 0);
+    const todasAberturas = lista.flatMap((v) => [...v.aberturas.values()]);
+    const tempoGeral = todasAberturas.length ? todasAberturas.reduce((s, a) => s + a.segundos, 0) / todasAberturas.length : null;
 
-    // resumo no topo: total de visualizações, quantos vídeos foram vistos e o campeão do período
+    // resumo no topo: total de visualizações, tempo médio assistido e o campeão (desde o início)
     if (resumo) {
       resumo.innerHTML = `
-      <div class="cartao-fluxo acumulado"><span class="rotulo-cartao-fluxo">Visualizações</span><span class="valor-cartao-fluxo">${formatarNumero(total)}</span><span class="nota-cartao-fluxo">no período escolhido</span></div>
-      <div class="cartao-fluxo previsto"><span class="rotulo-cartao-fluxo">Vídeos assistidos</span><span class="valor-cartao-fluxo">${formatarNumero(lista.length)}</span><span class="nota-cartao-fluxo">média de ${formatarNumero(Math.round((total / lista.length) * 10) / 10)} por vídeo</span></div>
+      <div class="cartao-fluxo acumulado"><span class="rotulo-cartao-fluxo">Visualizações</span><span class="valor-cartao-fluxo">${formatarNumero(total)}</span><span class="nota-cartao-fluxo">pessoas que abriram um vídeo, desde o início (${formatarNumero(totalCliques)} cliques)</span></div>
+      <div class="cartao-fluxo previsto"><span class="rotulo-cartao-fluxo">Tempo médio assistido</span><span class="valor-cartao-fluxo">${tempoGeral == null ? "—" : formatarTempoLeitura(tempoGeral)}</span><span class="nota-cartao-fluxo">${todasAberturas.length ? `em ${formatarNumero(todasAberturas.length)} ${todasAberturas.length === 1 ? "abertura medida" : "aberturas medidas"} (desde 10/11)` : "medindo desde 10/11/2026"}</span></div>
       <div class="cartao-fluxo entradas"><span class="rotulo-cartao-fluxo">Mais visto</span><span class="valor-cartao-fluxo">${formatarNumero(lista[0].contagem)}</span><span class="nota-cartao-fluxo nota-truncada">${esc(lista[0].titulo)}</span></div>`;
     }
 
@@ -6831,7 +6858,7 @@
           <span class="rank-titulo">${esc(v.titulo)}</span>
           <div class="rank-barra"><i style="width:${(v.contagem / maximo) * 100}%"></i></div>
         </div>
-        <div class="rank-num"><b>${formatarNumero(v.contagem)}</b><span>${Math.round((v.contagem / total) * 100)}% do total</span></div>
+        <div class="rank-num"><b>${formatarNumero(v.contagem)}</b><span>${v.contagem === 1 ? "pessoa" : "pessoas"}${v.cliques > v.contagem ? ` · ${formatarNumero(v.cliques)} cliques` : ""}</span>${v.tempoMedio == null ? "" : `<span class="rank-tempo" title="Média de ${v.medidas} ${v.medidas === 1 ? "abertura medida" : "aberturas medidas"}">${formatarTempoLeitura(v.tempoMedio)} em média${v.pctMedio == null ? "" : ` · ${Math.round(v.pctMedio)}% do vídeo`}</span>`}</div>
       </a>
     `
       )

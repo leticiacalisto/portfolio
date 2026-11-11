@@ -3443,11 +3443,68 @@ if(IDIOMA === "en"){
         try{ frame.contentWindow.postMessage(JSON.stringify({ event: "command", func: "unloadModule", args: ["captions"] }), "*"); }catch(e){}
       };
       [500, 1200, 2500].forEach(function(t){ window.setTimeout(desligarLegenda, t); });
+      iniciarTempoAssistido(frame, id, origem);
     }
   };
 
+  /* Tempo assistido de cada vídeo aberto no lightbox. O player do YouTube
+     (enablejsapi) manda o tempo atual do vídeo várias vezes por segundo depois
+     do "listening"; somamos só os avanços pequenos (o vídeo tocando), então
+     pular para frente ou voltar não conta como assistido. Vai para o painel
+     como evento "video_tempo" ao fechar, ao trocar de vídeo ou ao sair da tela
+     (valores acumulados; o painel fica com o maior de cada abertura). */
+  let assistindo = null;
+  const enviarTempoAssistido = function(){
+    const a = assistindo;
+    if(!a || !window.Rastreamento) return;
+    const segundos = Math.round(a.segundos);
+    if(segundos < 1 || segundos === a.enviado) return;
+    a.enviado = segundos;
+    window.Rastreamento.evento("video_tempo", a.id, {
+      abertura: a.abertura,
+      origem: window.Rastreamento.origem || null,
+      title: a.titulo,
+      segundos: segundos,
+      duracao: a.duracao ? Math.round(a.duracao) : null,
+      pct: a.duracao ? Math.min(100, Math.round((a.segundos / a.duracao) * 100)) : null,
+      ate_o_fim: !!a.fim
+    });
+  };
+  const iniciarTempoAssistido = function(frame, id, cardOrigem){
+    enviarTempoAssistido();
+    assistindo = {
+      frame: frame, id: id, segundos: 0, ultimo: null, duracao: 0, fim: false, enviado: 0,
+      abertura: "a_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 6),
+      titulo: (cardOrigem && cardOrigem.dataset && cardOrigem.dataset.titulo) || id
+    };
+    const pedirAvisos = function(){
+      if(!frame.isConnected) return;
+      try{ frame.contentWindow.postMessage(JSON.stringify({ event: "listening", id: 1, channel: "widget" }), "*"); }catch(e){}
+    };
+    frame.addEventListener("load", function(){ [0, 500, 1500, 3000].forEach(function(t){ window.setTimeout(pedirAvisos, t); }); });
+  };
+  window.addEventListener("message", function(evento){
+    const a = assistindo;
+    if(!a || evento.source !== a.frame.contentWindow || evento.origin.indexOf("youtube.com") < 0) return;
+    let dados = evento.data;
+    if(typeof dados === "string"){ try{ dados = JSON.parse(dados); }catch(e){ return; } }
+    const info = dados && dados.info;
+    if(!info) return;
+    if(info.duration) a.duracao = info.duration;
+    if(info.playerState === 0) a.fim = true; // 0 = terminou
+    if(typeof info.currentTime === "number"){
+      const delta = a.ultimo === null ? 0 : info.currentTime - a.ultimo;
+      if(delta > 0 && delta < 3) a.segundos += delta;
+      a.ultimo = info.currentTime;
+    }
+  });
+  document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "hidden") enviarTempoAssistido(); });
+  window.addEventListener("pagehide", enviarTempoAssistido);
+
   const fecharVideo = function(){
     if(lightbox.hidden) return;
+    enviarTempoAssistido();
+    assistindo = null;
     lightbox.classList.remove("aberto");
     document.body.style.overflow = "";
     /* Espera a animação de saída para só então tirar o iframe (o que já para

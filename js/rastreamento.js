@@ -99,6 +99,7 @@
 
   // Visita: uma vez por carregamento de página (com a origem junto)
   var origemAtual = origemDaVisita();
+  window.Rastreamento.origem = origemAtual.origem;
   evento("page_view", null, origemAtual);
 
   // LEITURA (só no portfólio, a página inicial): quanto tempo a pessoa ficou com
