@@ -395,7 +395,9 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
     document.title = "Roteiro " + (r.marca || "") + " " + (r.numero || "") + " · " + (r.titulo || "") + " | Letícia Calisto";
 
     var aviso = "";
-    if (status === "aprovado") {
+    if (status === "aprovado" && !dados.respondido_em) {
+      aviso = ""; // roteiro dos meus próprios posts: não passa por aprovação
+    } else if (status === "aprovado") {
       aviso = '<div class="aviso aprovado"><b>Roteiro aprovado</b>Aprovado em ' + esc(dataHora(dados.respondido_em)) + ". Obrigada! Agora é comigo: vou gravar.</div>";
     } else if (status === "ajuste") {
       aviso = '<div class="aviso ajuste"><b>Ajustes enviados</b>Recebi os seus comentários em ' + esc(dataHora(dados.respondido_em)) + ". Vou ajustar e te mando a nova versão neste mesmo link.</div>";

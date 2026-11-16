@@ -3124,6 +3124,71 @@
   }
   .cartao-fluxo.clicavel{ cursor:pointer; transition: box-shadow .15s ease; }
   .cartao-fluxo.clicavel:hover{ box-shadow:0 0 0 1px var(--borda), 0 2px 8px rgba(0,0,0,.06); }
+  /* Janela do vídeo: Post esconde o que é de marca; Post e Publipost mostram a data de publicação */
+  #overlayModalQuadro.video-post .so-cliente{ display:none !important; }
+  #overlayModalQuadro .so-publicacao{ display:none; }
+  #overlayModalQuadro.video-com-publicacao .so-publicacao{ display:flex; }
+
+  /* ---- Calendário editorial ---- */
+  #topoCalendario{ align-items:center; }
+  .nav-mes-cal{ display:flex; align-items:center; gap:6px; margin-right:auto; margin-left:18px; }
+  .nav-mes-cal strong{ min-width:150px; text-align:center; font-family:var(--fonte-impacto); font-weight:600; font-size:1rem; }
+  .nav-mes-cal .btn-ferramenta-tabela{ font-size:1.1rem; line-height:1; }
+  .btn-hoje-cal{ margin-left:4px; padding:5px 12px; border:1.5px solid var(--borda); border-radius:8px; background:#fff; font:inherit; font-size:.74rem; font-weight:600; color:var(--texto-suave); cursor:pointer; }
+  .btn-hoje-cal:hover{ color:var(--grafite); background:var(--creme); }
+  #painel-cc-criacao .acoes-topo-quadro .btn-novo-card{ padding:6px 14px; font-size:.76rem; }
+  .legenda-cal{ display:flex; align-items:center; gap:16px; margin:-6px 0 12px; font-size:.74rem; color:var(--texto-suave); }
+  .legenda-cal span{ display:inline-flex; align-items:center; gap:6px; }
+  .legenda-cal i{ width:10px; height:10px; border-radius:3px; }
+  .legenda-cal i.tipo-post{ background:#7A5CC8; }
+  .legenda-cal i.tipo-publipost{ background:#C2603A; }
+  .legenda-cal .dica-cal{ margin-left:auto; color:var(--cinza-claro); }
+
+  .grade-cal{ display:grid; grid-template-columns:repeat(7, minmax(0,1fr)); border-top:1px solid #EFEBF4; border-left:1px solid #EFEBF4; border-radius:14px; overflow:hidden; }
+  .cab-dia-cal{ padding:8px 10px; font-size:.68rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--texto-suave); background:#FAF8FD; border-right:1px solid #EFEBF4; border-bottom:1px solid #EFEBF4; }
+  .dia-cal{ min-height:118px; padding:6px 6px 8px; border-right:1px solid #EFEBF4; border-bottom:1px solid #EFEBF4; background:#fff; display:flex; flex-direction:column; gap:4px; transition:background .12s; }
+  .dia-cal.fora{ background:#FCFBFD; }
+  .dia-cal.fora .num-dia-cal{ color:var(--cinza-claro); }
+  .dia-cal.sobre-arraste, .sem-data-cal.sobre-arraste{ background:#F3EEFB; }
+  .num-dia-cal{ align-self:flex-start; min-width:24px; height:24px; padding:0 6px; display:inline-flex; align-items:center; justify-content:center; border-radius:99px; font-size:.76rem; font-weight:600; color:var(--grafite); }
+  .dia-cal.hoje .num-dia-cal{ background:var(--grafite); color:#fff; }
+
+  .post-cal{ display:flex; flex-direction:column; gap:1px; padding:5px 7px; border-radius:8px; border-left:3px solid; cursor:pointer; font-size:.72rem; line-height:1.3; transition:transform .12s, box-shadow .12s; }
+  .post-cal:hover{ transform:translateY(-1px); box-shadow:0 3px 10px rgba(20,17,13,.08); }
+  .post-cal.arrastando{ opacity:.4; }
+  .post-cal.tipo-post{ background:#F3EFFB; border-left-color:#7A5CC8; }
+  .post-cal.tipo-publipost{ background:#FBEFE9; border-left-color:#C2603A; }
+  .titulo-post-cal{ font-weight:600; color:var(--grafite); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .status-post-cal{ font-size:.64rem; color:var(--texto-suave); }
+  .post-cal.status-postado{ opacity:.6; }
+  .post-cal.status-postado .status-post-cal{ color:var(--verde-sucesso); font-weight:600; }
+  .post-cal.atrasado .status-post-cal{ color:var(--vermelho-erro); font-weight:600; }
+
+  .sem-data-cal{ margin-top:16px; padding:12px 14px; border-radius:14px; background:#FAF8FD; transition:background .12s; }
+  .rotulo-sem-data-cal{ display:block; margin-bottom:8px; font-size:.68rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#9A8CC4; }
+  .chips-sem-data-cal{ display:flex; flex-wrap:wrap; gap:6px; }
+  .chips-sem-data-cal .post-cal{ max-width:240px; }
+
+  .lista-cal{ display:flex; flex-direction:column; max-width:860px; }
+  .semana-cal{ margin:22px 0 6px; font-size:.68rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#9A8CC4; }
+  .semana-cal:first-child{ margin-top:4px; }
+  .linha-cal{ display:grid; grid-template-columns:64px minmax(0,1fr) auto; align-items:center; gap:16px; width:100%; padding:12px 14px; margin-bottom:6px; border:1px solid #F0ECF6; border-radius:14px; background:#fff; font:inherit; text-align:left; color:var(--grafite); cursor:pointer; transition:box-shadow .12s; }
+  .linha-cal:hover{ box-shadow:0 4px 14px rgba(20,17,13,.06); }
+  .dia-linha-cal{ display:flex; flex-direction:column; font-size:.7rem; color:var(--texto-suave); }
+  .dia-linha-cal b{ font-size:.86rem; color:var(--grafite); font-weight:600; }
+  .dia-linha-cal.hoje b{ color:#6B5BA8; }
+  .corpo-linha-cal{ display:flex; flex-direction:column; gap:3px; min-width:0; }
+  .corpo-linha-cal > b{ font-size:.9rem; font-weight:600; }
+  .chips-linha-cal{ display:flex; align-items:center; gap:8px; }
+  .chip-tipo-cal{ font-size:.62rem; font-weight:700; padding:2px 8px; border-radius:99px; }
+  .chip-tipo-cal.tipo-post{ background:#EFEAF8; color:#6B5BA8; }
+  .chip-tipo-cal.tipo-publipost{ background:#FBEBE2; color:#B4532A; }
+  .marca-linha-cal{ font-size:.72rem; color:var(--texto-suave); }
+  .chip-status-cal{ font-size:.7rem; font-weight:600; padding:4px 10px; border-radius:99px; background:#F4F2F0; color:var(--texto-suave); white-space:nowrap; }
+  .chip-status-cal.status-postado{ background:#E3F4EA; color:#2F8A5A; }
+  .chip-status-cal.atrasado{ background:#FDEDEC; color:#C4453C; }
+  @media (max-width: 900px){ .dia-cal{ min-height:90px; } .legenda-cal .dica-cal{ display:none; } }
+
   /* Lista de Oportunidades: colunas que ordenam */
   #tabelaOportunidades th[data-ordem-op]{ cursor:pointer; user-select:none; white-space:nowrap; }
   #tabelaOportunidades th[data-ordem-op]:hover{ color:var(--grafite); }
@@ -3700,7 +3765,7 @@
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M4 20l4-1 11-11-3-3L5 16l-1 4z"/><line x1="14" y1="7" x2="17" y2="10"/>
         </svg>
-        <span class="rotulo-item">Criação</span>
+        <span class="rotulo-item">Calendário</span>
       </button>
       <button class="item-nav item-pagina" data-tab="cc-news">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -4806,9 +4871,30 @@
       </div>
     </section>
     <section id="painel-cc-criacao" class="painel-aba" hidden>
-      <div class="cartao">
-        <h2>Criação</h2>
-        <p class="texto-vazio">Em construção.</p>
+      <div class="painel-quadro-secao">
+        <div class="cartoes-fluxo" id="cartoesCalendario" style="grid-template-columns: repeat(4, 1fr); margin-bottom:18px;"></div>
+        <div class="topo-quadro" id="topoCalendario">
+          <div class="alternador-visualizacao alternador-mini" id="alternadorCalEditorial">
+            <button type="button" class="btn-alternador ativo" data-vis-cal="mes">Mês</button>
+            <button type="button" class="btn-alternador" data-vis-cal="lista">Lista</button>
+          </div>
+          <div class="nav-mes-cal">
+            <button type="button" class="btn-ferramenta-tabela" id="btnMesAnteriorCal" aria-label="Mês anterior">‹</button>
+            <strong id="tituloMesCal"></strong>
+            <button type="button" class="btn-ferramenta-tabela" id="btnMesSeguinteCal" aria-label="Próximo mês">›</button>
+            <button type="button" class="btn-hoje-cal" id="btnHojeCal">Hoje</button>
+          </div>
+          <div class="acoes-topo-quadro">
+            <button type="button" class="btn-novo-card" id="btnNovoPostCal">+ Novo post</button>
+          </div>
+        </div>
+        <div class="legenda-cal">
+          <span><i class="tipo-post"></i>Post</span>
+          <span><i class="tipo-publipost"></i>Publipost</span>
+          <span class="dica-cal">Arraste um post para outro dia para mudar a data de publicação.</span>
+        </div>
+        <div id="calendarioEditorial"></div>
+        <div id="semDataCalendario"></div>
       </div>
     </section>
     <section id="painel-cc-news" class="painel-aba" hidden>
@@ -4854,8 +4940,8 @@
       <div class="alternador-visualizacao alternador-mini" id="alternadorAbaCard">
         <button type="button" class="btn-alternador ativo" data-aba-card="detalhes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h9"/></svg>Detalhes</button>
         <button type="button" class="btn-alternador" data-aba-card="producao"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l11 0M9 12l11 0M9 18l11 0"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>Etapa da produção</button>
-        <button type="button" class="btn-alternador" data-aba-card="campanha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11v3l11 4V7L4 11Z"/><path d="M18 9.5a3.5 3.5 0 0 1 0 5"/></svg>Campanha</button>
-        <button type="button" class="btn-alternador" data-aba-card="marca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9l1.5-4h13L20 9"/><path d="M5 9v10h14V9"/><path d="M9 19v-5h6v5"/></svg>Marca</button>
+        <button type="button" class="btn-alternador so-cliente" data-aba-card="campanha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11v3l11 4V7L4 11Z"/><path d="M18 9.5a3.5 3.5 0 0 1 0 5"/></svg>Campanha</button>
+        <button type="button" class="btn-alternador so-cliente" data-aba-card="marca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9l1.5-4h13L20 9"/><path d="M5 9v10h14V9"/><path d="M9 19v-5h6v5"/></svg>Marca</button>
       </div>
     </div>
     <form id="formCardQuadro">
@@ -4874,7 +4960,7 @@
               <div class="menu-status-card" id="menuStatusCard" role="listbox" hidden></div>
             </div>
           </div>
-          <div class="prop-limpa">
+          <div class="prop-limpa so-cliente">
             <span class="rotulo-limpo">Campanha</span>
             <select id="campoContratoCard" class="input-limpo">
               <option value="">Nenhuma</option>
@@ -4885,26 +4971,31 @@
             <select id="campoFormatoCard" class="input-limpo">
               <option value="ugc">UGC</option>
               <option value="publipost">Publipost</option>
+              <option value="post">Post (minhas redes)</option>
             </select>
           </div>
-          <div class="prop-limpa">
+          <div class="prop-limpa so-publicacao">
+            <span class="rotulo-limpo">Data de publicação</span>
+            <input type="date" id="campoPublicacaoCard" class="input-limpo" title="A mesma data da etapa Publicação e do Calendário editorial">
+          </div>
+          <div class="prop-limpa so-cliente">
             <span class="rotulo-limpo">Marca</span>
             <span class="valor-limpo" id="valorMarcaCard">—</span>
           </div>
-          <div class="prop-limpa">
+          <div class="prop-limpa so-cliente">
             <span class="rotulo-limpo">Plataforma/agência</span>
             <span class="valor-limpo" id="valorPlataformaCard">—</span>
           </div>
-          <div class="prop-limpa">
+          <div class="prop-limpa so-cliente">
             <span class="rotulo-limpo">Início (assinatura do contrato)</span>
             <input type="date" id="valorInicioCard" class="input-limpo">
           </div>
-          <div class="prop-limpa prop-com-balao" id="propVencimentoCard">
+          <div class="prop-limpa prop-com-balao so-cliente" id="propVencimentoCard">
             <span class="rotulo-limpo">Vencimento</span>
             <span class="valor-limpo" id="valorVencimentoCard" hidden>—</span>
             <input type="date" id="campoPrazoCard" class="input-limpo" hidden>
           </div>
-          <div class="prop-limpa">
+          <div class="prop-limpa so-cliente">
             <span class="rotulo-limpo">Direitos autorais</span>
             <div class="controle-data-acao">
               <button type="button" class="btn-icone-linha" id="btnRenovarDireitosCard" title="Renovar direito de uso" hidden>
@@ -4913,14 +5004,14 @@
               <span class="valor-limpo" id="valorDireitosCard">—</span>
             </div>
           </div>
-          <div class="prop-limpa" id="propPrioridadeCard">
+          <div class="prop-limpa so-cliente" id="propPrioridadeCard">
             <span class="rotulo-limpo">Prioridade</span>
             <span class="valor-limpo valor-semaforo">
               <span class="selo-semaforo" id="seloSemaforoCard"></span>
               <span id="textoSemaforoCard">—</span>
             </span>
           </div>
-          <div class="prop-limpa">
+          <div class="prop-limpa so-cliente">
             <span class="rotulo-limpo">Produto físico</span>
             <div class="controle-data-acao">
               <button type="button" class="btn-icone-linha" id="btnRecebidoCard" title="Marcar como recebido hoje">
@@ -4929,7 +5020,7 @@
               <input type="date" class="input-limpo" id="campoRecebidoCard">
             </div>
           </div>
-          <div class="prop-limpa">
+          <div class="prop-limpa so-cliente">
             <span class="rotulo-limpo">Entrega do vídeo</span>
             <div class="controle-data-acao">
               <button type="button" class="btn-icone-linha" id="btnEnviarCard" title="Marcar como enviado hoje">
@@ -4948,7 +5039,7 @@
         <textarea id="campoDescricaoCard" class="textarea-limpa" rows="4" placeholder="Briefing, links, observações..."></textarea>
 
         <div id="blocoRoteiroCard" class="bloco-autentique" hidden>
-          <span class="rotulo-limpo">Roteiro para aprovação da marca</span>
+          <span class="rotulo-limpo" id="rotuloRoteiroCard">Roteiro para aprovação da marca</span>
           <p class="texto-pequeno" id="statusRoteiroCard"></p>
           <div class="linha-link-autentique" id="linhaLinkRoteiroCard" hidden>
             <input type="text" id="linkRoteiroCard" class="input-limpo" readonly>
@@ -6366,7 +6457,7 @@
     "comercial-disparos": "Disparo de e-mail",
     "crm-contratos": "Campanhas",
     "cc-insights": "Insights",
-    "cc-criacao": "Criação",
+    "cc-criacao": "Calendário editorial",
     "cc-news": "News",
     "cc-afiliados": "Afiliados",
     notificacoes: "Central de notificações",
@@ -6671,6 +6762,7 @@
     if (typeof renderizarResultados === "function") renderizarResultados();
     if (typeof renderizarTrafegoPago === "function") renderizarTrafegoPago();
     if (typeof atualizarMenuPrincipal === "function") atualizarMenuPrincipal();
+    if (typeof renderizarCalendarioEditorial === "function") renderizarCalendarioEditorial();
   }
 
   // ---------------------------------------------------------------
@@ -7737,10 +7829,9 @@
     const corpo = cards.length
       ? cards
           .map((c) => {
-            const nomesExtraLowerCapa = ETAPAS_EXTRA_PUBLIPOST.map((n) => n.toLowerCase());
             const subtarefasCard = subtarefasCache
               .filter((s) => s.card_id === c.id)
-              .filter((s) => c.formato === "publipost" || !nomesExtraLowerCapa.includes(s.nome.trim().toLowerCase()));
+              .filter((s) => !etapaEscondidaNoFormato(s.nome, c.formato));
             const totalEtapas = subtarefasCard.length || etapasPadraoParaFormato(c.formato).length;
             const feitas = subtarefasCard.filter((s) => s.status === "concluido").length;
             const completo = subtarefasCard.length > 0 && feitas === totalEtapas;
@@ -7913,19 +8004,30 @@
   // 2 são acrescentadas às etapas que já tem (nunca apaga nada).
   const ETAPAS_BASE_PRODUCAO = ["Roteiro", "Gravação", "Edição", "Revisão"];
   const ETAPAS_EXTRA_PUBLIPOST = ["Publicação", "Envio de métricas"];
+  // Post (minhas redes): sem aprovação de marca e sem envio de métricas
+  const ETAPAS_POST_PROPRIO = ["Roteiro", "Gravação", "Edição", "Publicação"];
   function etapasPadraoParaFormato(formato) {
+    if (formato === "post") return ETAPAS_POST_PROPRIO;
     return formato === "publipost" ? ETAPAS_BASE_PRODUCAO.concat(ETAPAS_EXTRA_PUBLIPOST) : ETAPAS_BASE_PRODUCAO;
+  }
+  // Etapas extras que ficam escondidas em cada formato (nunca são apagadas)
+  function etapaEscondidaNoFormato(nome, formato) {
+    const n = String(nome || "").trim().toLowerCase();
+    if (formato === "publipost") return false;
+    if (formato === "post") return n === "envio de métricas";
+    return ETAPAS_EXTRA_PUBLIPOST.some((e) => e.toLowerCase() === n);
   }
 
   // Cria só as etapas extras de Publipost que ainda não existem pra esse
   // vídeo (não mexe nas que já tem) e já alimenta subtarefasCache, pra
   // Etapa da produção atualizar na hora, sem precisar salvar/recarregar.
-  async function garantirEtapasPublipost(cardId) {
+  async function garantirEtapasPublipost(cardId, formato) {
     // consulta o banco (não o cache), senão dois salvamentos seguidos criariam a etapa duas vezes
     const { data: doBanco } = await Auth.sb.from("quadro_subtarefas").select("nome").eq("card_id", cardId);
     const existentes = doBanco || subtarefasCache.filter((s) => s.card_id === cardId);
     const nomesExistentes = existentes.map((s) => s.nome.trim().toLowerCase());
-    const faltando = ETAPAS_EXTRA_PUBLIPOST.filter((nome) => !nomesExistentes.includes(nome.toLowerCase()));
+    const extras = formato === "post" ? ["Publicação"] : ETAPAS_EXTRA_PUBLIPOST;
+    const faltando = extras.filter((nome) => !nomesExistentes.includes(nome.toLowerCase()));
     if (!faltando.length) return;
     const novas = faltando.map((nome, i) => ({ card_id: cardId, nome, ordem: existentes.length + i, etiqueta_ids: etiquetaIdsPadrao() }));
     const { data, error } = await Auth.sb.from("quadro_subtarefas").insert(novas).select();
@@ -8185,10 +8287,18 @@
 
   // Trocar pra Publipost já cria (se faltar) Publicação/Envio de métricas
   // e atualiza a aba Etapa da produção na hora — não espera o Salvar.
+  // Post (minhas redes) esconde o que é de marca: campanha, contrato, produto, entrega, direitos
+  function aplicarFormatoNaJanelaVideo() {
+    const formato = campoFormatoCard.value;
+    overlayModalQuadro.classList.toggle("video-post", contextoRaizModal === "video" && formato === "post");
+    overlayModalQuadro.classList.toggle("video-com-publicacao", contextoRaizModal === "video" && (formato === "post" || formato === "publipost"));
+    if (cardEmEdicaoObjeto && typeof atualizarBlocoRoteiro === "function") atualizarBlocoRoteiro(cardEmEdicaoObjeto);
+  }
+  campoFormatoCard.addEventListener("change", aplicarFormatoNaJanelaVideo);
   campoFormatoCard.addEventListener("change", async () => {
-    if (cardEmEdicaoObjeto && campoFormatoCard.value === "publipost") {
+    if (cardEmEdicaoObjeto && (campoFormatoCard.value === "publipost" || campoFormatoCard.value === "post")) {
       try {
-        await garantirEtapasPublipost(idCardEmEdicao);
+        await garantirEtapasPublipost(idCardEmEdicao, campoFormatoCard.value);
       } catch (erro) {
         alert("Não foi possível criar as etapas de Publipost.");
         console.error(erro);
@@ -8569,11 +8679,10 @@
       return;
     }
 
-    const nomesExtraLower = ETAPAS_EXTRA_PUBLIPOST.map((n) => n.toLowerCase());
-    const ehPublipost = campoFormatoCard.value === "publipost";
+    const formatoAtual = campoFormatoCard.value;
     const subtarefas = subtarefasCache
       .filter((s) => s.card_id === cardEmEdicaoObjeto.id)
-      .filter((s) => ehPublipost || !nomesExtraLower.includes(s.nome.trim().toLowerCase()))
+      .filter((s) => !etapaEscondidaNoFormato(s.nome, formatoAtual))
       .sort((a, b) => a.ordem - b.ordem);
 
     listaSubtarefasCard.innerHTML = subtarefas
@@ -8918,14 +9027,17 @@
     campoContratoCard.value = card && card.contrato_id ? card.contrato_id : "";
 
     campoFormatoCard.value = card && card.formato ? card.formato : "ugc";
+    const etapaPub = card ? subtarefasCache.find((s) => s.card_id === card.id && String(s.nome).trim().toLowerCase() === "publicação") : null;
+    document.getElementById("campoPublicacaoCard").value = etapaPub ? String(etapaPub.data_fim || etapaPub.data_execucao || "").slice(0, 10) : "";
+    aplicarFormatoNaJanelaVideo();
 
     atualizarCamposDerivadosCard();
     renderizarSubtarefasModal();
 
     // Se o vídeo já é Publipost mas ainda não tem as etapas extras (ex.:
     // criado antes de existir esse campo), completa e re-renderiza.
-    if (card && card.formato === "publipost") {
-      garantirEtapasPublipost(card.id)
+    if (card && (card.formato === "publipost" || card.formato === "post")) {
+      garantirEtapasPublipost(card.id, card.formato)
         .then(() => renderizarSubtarefasModal())
         .catch((erro) => console.error(erro));
     }
@@ -9167,7 +9279,7 @@
     try {
       if (idCardEmEdicao) {
         await Auth.sb.from("quadro_cards").update(dados).eq("id", idCardEmEdicao);
-        if (dados.formato === "publipost") await garantirEtapasPublipost(idCardEmEdicao);
+        if (dados.formato === "publipost" || dados.formato === "post") await garantirEtapasPublipost(idCardEmEdicao, dados.formato);
         const colunaFinalSalvar = colunaFinal();
         if (colunaFinalSalvar && novaColunaId === colunaFinalSalvar.id && colunaAnteriorId !== colunaFinalSalvar.id) await perguntarConcluirSubtarefas(idCardEmEdicao);
         else if (colunaAnteriorId !== novaColunaId) await sincronizarSubtarefasComFase(idCardEmEdicao, novaColunaId);
@@ -9189,6 +9301,15 @@
           if (error) throw error;
           idCardEmEdicao = data.id;
           await criarEtapasPadrao(data.id, dados.formato);
+        }
+      }
+      if (dados.formato === "post" || dados.formato === "publipost") {
+        const dataPub = document.getElementById("campoPublicacaoCard").value || null;
+        const pub = subtarefasCache.find((s) => s.card_id === idCardEmEdicao && String(s.nome).trim().toLowerCase() === "publicação");
+        const atual = pub ? String(pub.data_fim || pub.data_execucao || "").slice(0, 10) || null : null;
+        if (dataPub !== atual) {
+          await Auth.sb.from("quadro_subtarefas").update({ data_execucao: dataPub, data_fim: dataPub }).eq("card_id", idCardEmEdicao).eq("nome", "Publicação");
+          if (pub) Object.assign(pub, { data_execucao: dataPub, data_fim: dataPub });
         }
       }
       return true;
@@ -11756,6 +11877,7 @@
     contratoOportunidadeIdPendente = contrato ? contrato.oportunidade_id || null : prefill && prefill.oportunidade ? prefill.oportunidade.id : null;
     preencherFormContrato(contrato, prefill);
     contextoRaizModal = "campanha";
+    overlayModalQuadro.classList.remove("video-post", "video-com-publicacao");
     overlayModalQuadro.hidden = false;
     atualizarCabecalhoModalCard();
     alternarAbaCard("campanha");
@@ -17073,6 +17195,7 @@
     idEmpresaEmEdicao = empresa ? empresa.id : null;
     preencherFormEmpresa(empresa);
     contextoRaizModal = "marca";
+    overlayModalQuadro.classList.remove("video-post", "video-com-publicacao");
     overlayModalQuadro.hidden = false;
     atualizarCabecalhoModalCard();
     alternarAbaCard("marca");
@@ -19505,6 +19628,235 @@ E me conta: vocês querem renovar o direito de uso desse vídeo ou preferem test
     return lista;
   }
 
+  // ---------------- CALENDÁRIO EDITORIAL ----------------
+  // Os meus posts (formato "post") e os publiposts, pela data da etapa Publicação.
+  // O status sai das etapas: Roteiro -> Gravação -> Edição -> Publicação.
+  let mesCalendario = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  let visaoCalendario = "mes";
+  const NOMES_MESES_CAL = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
+  const DIAS_CAL = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
+  const STATUS_POST_CAL = {
+    afazer: { rotulo: "A fazer", ordem: 0 },
+    roteiro: { rotulo: "Roteiro pronto", ordem: 1 },
+    gravado: { rotulo: "Gravado", ordem: 2 },
+    editado: { rotulo: "Editado", ordem: 3 },
+    postado: { rotulo: "Postado", ordem: 4 },
+  };
+
+  function etapaDoCard(cardId, nome) {
+    const alvo = nome.toLowerCase();
+    return subtarefasCache.find((s) => s.card_id === cardId && String(s.nome).trim().toLowerCase() === alvo) || null;
+  }
+  function statusPostCal(card) {
+    const feita = (nome) => {
+      const s = etapaDoCard(card.id, nome);
+      return !!s && subtarefaConcluida(s);
+    };
+    if (feita("Publicação")) return "postado";
+    if (feita("Edição")) return "editado";
+    if (feita("Gravação")) return "gravado";
+    if (feita("Roteiro")) return "roteiro";
+    return "afazer";
+  }
+  function postsDoCalendario() {
+    return quadroCache
+      .filter((c) => c.formato === "post" || c.formato === "publipost")
+      .map((c) => {
+        const pub = etapaDoCard(c.id, "Publicação");
+        const data = pub ? pub.data_fim || pub.data_execucao || null : null;
+        const contrato = c.contrato_id ? contratosCache.find((k) => k.id === c.contrato_id) : null;
+        return { card: c, data: data ? String(data).slice(0, 10) : null, status: statusPostCal(c), tipo: c.formato, marca: contrato ? contrato.marca : "" };
+      });
+  }
+  function rotuloTipoCal(tipo) {
+    return tipo === "post" ? "Post" : "Publi";
+  }
+  function htmlPostCal(p, compacto) {
+    const atrasado = p.data && p.data < hojeIso() && p.status !== "postado";
+    return `<div class="post-cal tipo-${p.tipo} status-${p.status}${atrasado ? " atrasado" : ""}" draggable="true" data-post-cal="${p.card.id}" title="${esc(p.card.titulo + " · " + STATUS_POST_CAL[p.status].rotulo)}">
+      <span class="titulo-post-cal">${esc(p.card.titulo)}</span>
+      ${compacto ? "" : `<span class="status-post-cal">${p.status === "postado" ? "✓ " : ""}${STATUS_POST_CAL[p.status].rotulo}${atrasado ? " · atrasado" : ""}</span>`}
+    </div>`;
+  }
+
+  function renderizarCalendarioEditorial() {
+    const area = document.getElementById("calendarioEditorial");
+    if (!area) return;
+    const todos = postsDoCalendario();
+    const hoje = hojeIso();
+    const ano = mesCalendario.getFullYear();
+    const mes = mesCalendario.getMonth();
+    const prefixoMes = ano + "-" + String(mes + 1).padStart(2, "0");
+    document.getElementById("tituloMesCal").textContent = capitalizar(NOMES_MESES_CAL[mes]) + " " + ano;
+
+    // números do topo
+    const doMes = todos.filter((p) => p.data && p.data.startsWith(prefixoMes));
+    const postadosMes = doMes.filter((p) => p.status === "postado").length;
+    const em7 = somarDiasIso(hoje, 7);
+    const proximos = todos.filter((p) => p.data && p.data >= hoje && p.data <= em7 && p.status !== "postado");
+    const atrasados = todos.filter((p) => p.data && p.data < hoje && p.status !== "postado");
+    const semData = todos.filter((p) => !p.data && p.status !== "postado");
+    const balao = (classe, rotulo, valor, nota) =>
+      `<div class="cartao-fluxo ${classe}"><span class="rotulo-cartao-fluxo">${esc(rotulo)}</span><span class="valor-cartao-fluxo">${esc(valor)}</span><span class="nota-cartao-fluxo">${esc(nota)}</span></div>`;
+    document.getElementById("cartoesCalendario").innerHTML =
+      balao("entradas", "Postados em " + NOMES_MESES_CAL[mes], postadosMes + " de " + doMes.length, doMes.length ? "posts do mês" : "nenhum post no mês") +
+      balao("previsto", "Próximos 7 dias", String(proximos.length), proximos.length ? "para gravar e postar" : "nada agendado") +
+      balao("saidas", "Atrasados", String(atrasados.length), atrasados.length ? "passaram da data" : "tudo em dia") +
+      balao("pendente", "Sem data", String(semData.length), semData.length ? "arraste para um dia" : "todos com data");
+
+    if (visaoCalendario === "lista") {
+      const lista = doMes.concat(atrasados.filter((p) => !p.data.startsWith(prefixoMes))).sort((a, b) => a.data.localeCompare(b.data));
+      if (!lista.length) {
+        area.innerHTML = `<p class="texto-vazio" style="padding:30px 0;">Nenhum post em ${NOMES_MESES_CAL[mes]}. Crie um em "+ Novo post" ou marque o formato Post num vídeo da Produção.</p>`;
+      } else {
+        let semanaAtual = "";
+        area.innerHTML = `<div class="lista-cal">` + lista.map((p) => {
+          const d = dataDoIso(p.data);
+          const inicioSemana = somarDiasData(d, -((d.getDay() + 6) % 7));
+          const chaveSemana = formatarDataISO(inicioSemana);
+          let cab = "";
+          if (chaveSemana !== semanaAtual) {
+            semanaAtual = chaveSemana;
+            cab = `<p class="semana-cal">Semana de seg, ${formatarDataBr(chaveSemana).slice(0, 5)}</p>`;
+          }
+          const atrasado = p.data < hoje && p.status !== "postado";
+          return cab + `<button type="button" class="linha-cal" data-abrir-post="${p.card.id}">
+            <span class="dia-linha-cal${p.data === hoje ? " hoje" : ""}">${DIAS_CAL[d.getDay()]}<b>${formatarDataBr(p.data).slice(0, 5)}</b></span>
+            <span class="corpo-linha-cal">
+              <span class="chips-linha-cal"><span class="chip-tipo-cal tipo-${p.tipo}">${rotuloTipoCal(p.tipo)}</span>${p.marca ? `<span class="marca-linha-cal">${esc(p.marca)}</span>` : ""}</span>
+              <b>${esc(p.card.titulo)}</b>
+            </span>
+            <span class="chip-status-cal status-${p.status}${atrasado ? " atrasado" : ""}">${p.status === "postado" ? "✓ " : ""}${STATUS_POST_CAL[p.status].rotulo}${atrasado ? " · atrasado" : ""}</span>
+          </button>`;
+        }).join("") + `</div>`;
+      }
+    } else {
+      const primeiro = new Date(ano, mes, 1);
+      const inicio = somarDiasData(primeiro, -primeiro.getDay());
+      const porDia = new Map();
+      todos.forEach((p) => {
+        if (!p.data) return;
+        if (!porDia.has(p.data)) porDia.set(p.data, []);
+        porDia.get(p.data).push(p);
+      });
+      let celulas = DIAS_CAL.map((d) => `<div class="cab-dia-cal">${d}</div>`).join("");
+      const semanas = Math.ceil((primeiro.getDay() + new Date(ano, mes + 1, 0).getDate()) / 7);
+      for (let i = 0; i < semanas * 7; i++) {
+        const d = somarDiasData(inicio, i);
+        const iso = formatarDataISO(d);
+        const posts = (porDia.get(iso) || []).sort((a, b) => STATUS_POST_CAL[a.status].ordem - STATUS_POST_CAL[b.status].ordem);
+        const fora = d.getMonth() !== mes;
+        celulas += `<div class="dia-cal${fora ? " fora" : ""}${iso === hoje ? " hoje" : ""}" data-dia-cal="${iso}">
+          <span class="num-dia-cal">${d.getDate()}</span>
+          ${posts.map((p) => htmlPostCal(p)).join("")}
+        </div>`;
+      }
+      area.innerHTML = `<div class="grade-cal">${celulas}</div>`;
+    }
+
+    const caixaSemData = document.getElementById("semDataCalendario");
+    caixaSemData.innerHTML = semData.length
+      ? `<div class="sem-data-cal" data-dia-cal="">
+          <span class="rotulo-sem-data-cal">Sem data de publicação</span>
+          <div class="chips-sem-data-cal">${semData.map((p) => htmlPostCal(p, true)).join("")}</div>
+        </div>`
+      : "";
+  }
+
+  // Muda a data da etapa Publicação (cria a etapa se o vídeo ainda não tiver)
+  async function mudarDataPublicacao(cardId, dataIso) {
+    const card = quadroCache.find((c) => c.id === cardId);
+    if (!card) return;
+    const pub = etapaDoCard(cardId, "Publicação");
+    try {
+      if (pub) {
+        const campos = { data_execucao: dataIso || null, data_fim: dataIso || null, updated_at: new Date().toISOString() };
+        const { error } = await Auth.sb.from("quadro_subtarefas").update(campos).eq("id", pub.id);
+        if (error) throw error;
+        Object.assign(pub, campos);
+      } else if (dataIso) {
+        const ordem = subtarefasCache.filter((s) => s.card_id === cardId).length;
+        const { data, error } = await Auth.sb
+          .from("quadro_subtarefas")
+          .insert({ card_id: cardId, nome: "Publicação", ordem, data_execucao: dataIso, data_fim: dataIso, etiqueta_ids: etiquetaIdsPadrao() })
+          .select()
+          .single();
+        if (error) throw error;
+        subtarefasCache.push(data);
+      }
+      renderizarCalendarioEditorial();
+      if (typeof renderizarQuadro === "function") renderizarQuadro();
+    } catch (erro) {
+      alert("Não foi possível mudar a data do post.");
+      console.error(erro);
+    }
+  }
+
+  (function ligarCalendarioEditorial() {
+    const secao = document.getElementById("painel-cc-criacao");
+    if (!secao) return;
+    document.querySelectorAll("#alternadorCalEditorial [data-vis-cal]").forEach((b) =>
+      b.addEventListener("click", () => {
+        visaoCalendario = b.dataset.visCal;
+        document.querySelectorAll("#alternadorCalEditorial [data-vis-cal]").forEach((x) => x.classList.toggle("ativo", x === b));
+        renderizarCalendarioEditorial();
+      })
+    );
+    const mudarMes = (delta) => {
+      mesCalendario = new Date(mesCalendario.getFullYear(), mesCalendario.getMonth() + delta, 1);
+      renderizarCalendarioEditorial();
+    };
+    document.getElementById("btnMesAnteriorCal").addEventListener("click", () => mudarMes(-1));
+    document.getElementById("btnMesSeguinteCal").addEventListener("click", () => mudarMes(1));
+    document.getElementById("btnHojeCal").addEventListener("click", () => {
+      mesCalendario = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+      renderizarCalendarioEditorial();
+    });
+    document.getElementById("btnNovoPostCal").addEventListener("click", () => {
+      abrirModalCard(null);
+      campoFormatoCard.value = "post";
+      campoFormatoCard.dispatchEvent(new Event("change"));
+    });
+    // abrir o vídeo
+    secao.addEventListener("click", (evento) => {
+      const alvo = evento.target.closest("[data-post-cal], [data-abrir-post]");
+      if (!alvo) return;
+      const card = quadroCache.find((c) => c.id === (alvo.dataset.postCal || alvo.dataset.abrirPost));
+      if (card) abrirModalCard(card);
+    });
+    // arrastar para outro dia (ou para "Sem data")
+    secao.addEventListener("dragstart", (evento) => {
+      const post = evento.target.closest("[data-post-cal]");
+      if (!post) return;
+      evento.dataTransfer.setData("text/plain", post.dataset.postCal);
+      post.classList.add("arrastando");
+    });
+    secao.addEventListener("dragend", (evento) => {
+      const post = evento.target.closest("[data-post-cal]");
+      if (post) post.classList.remove("arrastando");
+    });
+    secao.addEventListener("dragover", (evento) => {
+      const dia = evento.target.closest("[data-dia-cal]");
+      if (!dia) return;
+      evento.preventDefault();
+      secao.querySelectorAll(".sobre-arraste").forEach((x) => x !== dia && x.classList.remove("sobre-arraste"));
+      dia.classList.add("sobre-arraste");
+    });
+    secao.addEventListener("dragleave", (evento) => {
+      const dia = evento.target.closest("[data-dia-cal]");
+      if (dia && !dia.contains(evento.relatedTarget)) dia.classList.remove("sobre-arraste");
+    });
+    secao.addEventListener("drop", (evento) => {
+      const dia = evento.target.closest("[data-dia-cal]");
+      if (!dia) return;
+      evento.preventDefault();
+      dia.classList.remove("sobre-arraste");
+      const id = evento.dataTransfer.getData("text/plain");
+      if (id) mudarDataPublicacao(id, dia.dataset.diaCal || null);
+    });
+    document.querySelector('.item-nav[data-tab="cc-criacao"]').addEventListener("click", () => setTimeout(renderizarCalendarioEditorial, 0));
+  })();
+
   // ---------------- TIMELINE ----------------
   // Largura do dia = largura da tela / dias visíveis. Padrão: 1 semana
   // (7 dias) ocupando a tela toda; Ctrl+scroll muda o período (mínimo 1 semana).
@@ -20109,10 +20461,9 @@ E me conta: vocês querem renovar o direito de uso desse vídeo ou preferem test
   // Mesma coleção de vídeos do Kanban, em tabela. "Vídeo" é sempre a primeira
   // coluna; as outras podem ser mostradas/ocultas e reordenadas.
   function progressoDoCard(c) {
-    const extras = ETAPAS_EXTRA_PUBLIPOST.map((n) => n.toLowerCase());
     const subs = subtarefasCache
       .filter((s) => s.card_id === c.id)
-      .filter((s) => c.formato === "publipost" || !extras.includes(s.nome.trim().toLowerCase()));
+      .filter((s) => !etapaEscondidaNoFormato(s.nome, c.formato));
     const total = subs.length || etapasPadraoParaFormato(c.formato).length;
     return { feitas: subs.filter((s) => s.status === "concluido").length, total };
   }
@@ -21953,6 +22304,11 @@ E me conta: vocês querem renovar o direito de uso desse vídeo ou preferem test
     return iso ? new Date(iso).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "";
   }
 
+  function roteiroEhProprio(card) {
+    const formato = cardEmEdicaoObjeto && card && cardEmEdicaoObjeto.id === card.id ? campoFormatoCard.value : card && card.formato;
+    return formato === "post";
+  }
+
   function atualizarBlocoRoteiro(card) {
     const bloco = document.getElementById("blocoRoteiroCard");
     bloco.hidden = !card || !card.id || !roteirosDisponivel;
@@ -21962,15 +22318,25 @@ E me conta: vocês querem renovar o direito de uso desse vídeo ou preferem test
     const status = document.getElementById("statusRoteiroCard");
     const caixaComentarios = document.getElementById("comentariosRoteiroCard");
     const btn = document.getElementById("btnEnviarRoteiro");
+    // Post (minhas redes): o roteiro é meu, não passa por aprovação
+    const proprio = roteiroEhProprio(card);
+    document.getElementById("rotuloRoteiroCard").textContent = proprio ? "Roteiro" : "Roteiro para aprovação da marca";
     linha.hidden = !r;
-    btn.textContent = r ? "Enviar nova versão" : "Enviar roteiro";
+    btn.textContent = proprio ? (r ? "Subir nova versão" : "Subir roteiro") : r ? "Enviar nova versão" : "Enviar roteiro";
     if (!r) {
-      status.textContent = "Ainda não enviado. Suba o arquivo .json do roteiro (o estúdio gera junto com o PDF).";
+      status.textContent = proprio
+        ? "Suba o arquivo .json do roteiro (o estúdio gera junto com o PDF)."
+        : "Ainda não enviado. Suba o arquivo .json do roteiro (o estúdio gera junto com o PDF).";
       caixaComentarios.hidden = true;
       return;
     }
     document.getElementById("linkRoteiroCard").value = URL_ROTEIRO + "?r=" + r.token;
     const versao = r.versao > 1 ? ` (versão ${r.versao})` : "";
+    if (proprio) {
+      status.textContent = `Salvo em ${dataHoraBr(r.enviado_em)}${versao}. Abra o link no celular para ler enquanto grava.`;
+      caixaComentarios.hidden = true;
+      return;
+    }
     status.textContent =
       r.status === "aprovado" ? `Aprovado pela marca em ${dataHoraBr(r.respondido_em)}${versao}.`
       : r.status === "ajuste" ? `A marca pediu ajuste em ${dataHoraBr(r.respondido_em)}${versao}.`
@@ -22005,7 +22371,7 @@ E me conta: vocês querem renovar o direito de uso desse vídeo ou preferem test
   document.getElementById("btnEnviarRoteiro").addEventListener("click", () => {
     if (!cardEmEdicaoObjeto) return;
     const r = roteiroDoCard(cardEmEdicaoObjeto.id);
-    if (r && r.status === "aprovado" && !confirm("Este roteiro já foi aprovado. Enviar uma nova versão reabre a aprovação no mesmo link. Continuar?")) return;
+    if (r && r.status === "aprovado" && !roteiroEhProprio(cardEmEdicaoObjeto) && !confirm("Este roteiro já foi aprovado. Enviar uma nova versão reabre a aprovação no mesmo link. Continuar?")) return;
     document.getElementById("arquivoRoteiroCard").click();
   });
 
@@ -22025,22 +22391,25 @@ E me conta: vocês querem renovar o direito de uso desse vídeo ou preferem test
     const btn = document.getElementById("btnEnviarRoteiro");
     btn.disabled = true;
     const agora = new Date().toISOString();
+    const proprio = roteiroEhProprio(card);
+    // meu roteiro já nasce pronto (sem aprovação nem aviso de resposta da marca)
+    const statusNovo = proprio ? "aprovado" : "aprovacao";
     try {
       const atual = roteiroDoCard(card.id);
       if (atual) {
         const anterior = { versao: atual.versao, conteudo: atual.conteudo, status: atual.status, comentarios: atual.comentarios, enviado_em: atual.enviado_em, respondido_em: atual.respondido_em };
         const { error } = await Auth.sb
           .from("roteiros")
-          .update({ conteudo, versao: atual.versao + 1, status: "aprovacao", comentarios: {}, historico: (atual.historico || []).concat(anterior), enviado_em: agora, respondido_em: null, updated_at: agora })
+          .update({ conteudo, versao: atual.versao + 1, status: statusNovo, comentarios: {}, historico: (atual.historico || []).concat(anterior), enviado_em: agora, respondido_em: null, updated_at: agora })
           .eq("id", atual.id);
         if (error) throw error;
       } else {
-        const { error } = await Auth.sb.from("roteiros").insert({ card_id: card.id, token: gerarTokenBriefing(), conteudo, enviado_em: agora });
+        const { error } = await Auth.sb.from("roteiros").insert({ card_id: card.id, token: gerarTokenBriefing(), conteudo, status: statusNovo, enviado_em: agora });
         if (error) throw error;
       }
 
-      // Card vai para "Aprovação de Roteiro"
-      const fase = colunaPorNome("Aprovação de Roteiro");
+      // Card de marca vai para "Aprovação de Roteiro" (o meu não precisa)
+      const fase = proprio ? null : colunaPorNome("Aprovação de Roteiro");
       if (fase && card.coluna_id !== fase.id) {
         const concluidoEm = calcularConcluidoEm(fase.id, card.coluna_id, card.concluido_em);
         const { error } = await Auth.sb.from("quadro_cards").update({ coluna_id: fase.id, concluido_em: concluidoEm, updated_at: agora }).eq("id", card.id);
@@ -22053,7 +22422,7 @@ E me conta: vocês querem renovar o direito de uso desse vídeo ou preferem test
         atualizarCamposDerivadosCard();
         renderizarQuadro();
         renderizarDashboardProducao();
-      } else if (!fase) {
+      } else if (!fase && !proprio) {
         alert('Roteiro enviado, mas não achei a fase "Aprovação de Roteiro" no quadro para mover o card.');
       }
 
@@ -24222,7 +24591,9 @@ E me conta: vocês querem renovar o direito de uso desse vídeo ou preferem test
   recarregarAfiliados();
   // Ao atualizar a página, volta para a aba em que você estava (não para o Início)
   try {
-    const abaSalva = localStorage.getItem("painelAbaAtiva");
+    // ?aba=gp-tarefas (ex.: o widget do iPhone) abre direto naquela aba
+    const abaDoLink = new URLSearchParams(location.search).get("aba");
+    const abaSalva = abaDoLink || localStorage.getItem("painelAbaAtiva");
     const botaoSalvo = abaSalva && abaSalva !== "principal" && [...botoesNav].find((b) => b.dataset.tab === abaSalva);
     if (botaoSalvo) botaoSalvo.click();
   } catch (erro) {}
