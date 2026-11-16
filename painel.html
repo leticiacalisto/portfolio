@@ -21198,6 +21198,10 @@
         const cena = cenas[i] || {};
         return `<div class="comentario-roteiro"><b>Cena ${String(Number(i) + 1).padStart(2, "0")}${cena.nome ? " · " + esc(cena.nome) : ""}</b>${cena.fala ? `<span class="fala-roteiro">"${esc(cena.fala)}"</span>` : ""}${esc(comentarios.cenas[i])}</div>`;
       });
+    if (comentarios.gancho && comentarios.gancho.fala) {
+      const g = comentarios.gancho;
+      itens.unshift(`<div class="comentario-roteiro"><b>Gancho trocado pela marca${g.tipo ? " · " + esc(g.tipo) : ""}</b><span class="fala-roteiro">"${esc(g.fala)}"</span>${g.visual ? "Visual: " + esc(g.visual) : ""}${g.tela ? (g.visual ? "\n" : "") + "Texto na tela: " + esc(g.tela) : ""}</div>`);
+    }
     if (comentarios.geral) itens.push(`<div class="comentario-roteiro"><b>Comentário geral</b>${esc(comentarios.geral)}</div>`);
     caixaComentarios.innerHTML = itens.join("");
     caixaComentarios.hidden = !itens.length || r.status === "aprovacao";
