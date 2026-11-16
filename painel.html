@@ -1046,11 +1046,6 @@
   .valor-card-op{ font-size:.74rem; font-weight:600; color:var(--texto-suave); white-space:nowrap; }
   .sub-card-op{ display:flex; flex-wrap:wrap; align-items:center; gap:4px 8px; margin-top:4px; font-size:.72rem; color:var(--texto-suave); }
   .seq-op{ color:#6B5BA8; font-weight:600; }
-  .temp-op{ display:inline-flex; align-items:center; gap:4px; }
-  .temp-op::before{ content:""; width:7px; height:7px; border-radius:50%; background:var(--cinza-claro); }
-  .temp-op.temp-quente::before{ background:#E5484D; }
-  .temp-op.temp-morno::before{ background:#E0A100; }
-  .temp-op.temp-frio::before{ background:#3E8ED0; }
 
   .passo-op{ margin-top:10px; padding:9px 11px; border-radius:10px; background:#F8F6FB; }
   .passo-op .linha-passo{ display:flex; justify-content:space-between; align-items:center; gap:8px; }
@@ -3129,6 +3124,13 @@
   }
   .cartao-fluxo.clicavel{ cursor:pointer; transition: box-shadow .15s ease; }
   .cartao-fluxo.clicavel:hover{ box-shadow:0 0 0 1px var(--borda), 0 2px 8px rgba(0,0,0,.06); }
+  /* Lista de Oportunidades: colunas que ordenam */
+  #tabelaOportunidades th[data-ordem-op]{ cursor:pointer; user-select:none; white-space:nowrap; }
+  #tabelaOportunidades th[data-ordem-op]:hover{ color:var(--grafite); }
+  #tabelaOportunidades th.ordenado{ color:var(--grafite); }
+  #tabelaOportunidades th[data-ordem-op]::after{ content:attr(data-seta); margin-left:5px; font-size:.9em; }
+  /* balão de Oportunidades escolhido como filtro */
+  #cartoesOportunidades .cartao-fluxo.filtro-ativo{ box-shadow:0 0 0 1px rgba(20,17,13,.14), 0 6px 18px rgba(20,17,13,.07); }
   .cartao-fluxo.entradas{ border-left-color: var(--verde-sucesso); }
   .cartao-fluxo.saidas{ border-left-color: var(--vermelho-erro); }
   .cartao-fluxo.pendente{ border-left-color: #C98A1F; }
@@ -4528,10 +4530,6 @@
               <button type="button" class="btn-alternador ativo" data-vis-oportunidade="kanban">Kanban</button>
               <button type="button" class="btn-alternador" data-vis-oportunidade="lista">Lista</button>
               <button type="button" class="btn-alternador" data-vis-oportunidade="hoje">Follow-up hoje</button>
-              <button type="button" class="btn-alternador" data-vis-oportunidade="atrasados">Atrasados</button>
-              <button type="button" class="btn-alternador" data-vis-oportunidade="negociacao">Em negociação</button>
-              <button type="button" class="btn-alternador" data-vis-oportunidade="fechadas">Fechadas</button>
-              <button type="button" class="btn-alternador" data-vis-oportunidade="perdidas">Perdidas</button>
             </div>
           <div class="acoes-topo-quadro">
             <button type="button" class="btn-ferramenta-tabela" id="btnEtapasOportunidade" title="Etapas do funil" aria-label="Etapas do funil">
@@ -4544,7 +4542,7 @@
         <div class="tabela-scroll" id="listaOportunidadesWrap" hidden>
           <table class="tabela-contratos" id="tabelaOportunidades">
             <thead>
-              <tr><th>Empresa</th><th>Contato</th><th>Etapa</th><th>Valor estimado</th><th>Temperatura</th><th>Próximo follow-up</th><th>Responsável</th></tr>
+              <tr><th data-ordem-op="empresa">Empresa</th><th data-ordem-op="contato">Contato</th><th data-ordem-op="etapa">Etapa</th><th data-ordem-op="valor">Valor</th><th data-ordem-op="proximo">Próximo contato</th></tr>
             </thead>
             <tbody id="corpoTabelaOportunidades"></tbody>
           </table>
@@ -6031,7 +6029,6 @@
               <input type="date" id="campoFollowupOportunidade" class="input-limpo">
             </div>
         </div>
-        <input type="hidden" id="campoTemperaturaOportunidade">
         <input type="hidden" id="campoResponsavelOportunidade">
 
         <div id="blocoMotivoPerdaOportunidade" hidden>
@@ -17825,6 +17822,11 @@
       ]);
       oportunidadesDisponivel = true;
       if (await garantirEtapaEmEspera()) etapasOportunidadeCache = await buscarEtapasOportunidade();
+      // temperatura não é mais usada: apaga o que ficou salvo
+      if (oportunidadesCache.some((o) => o.temperatura)) {
+        const { error } = await Auth.sb.from("oportunidades").update({ temperatura: null }).not("temperatura", "is", null);
+        if (!error) oportunidadesCache.forEach((o) => (o.temperatura = null));
+      }
     } catch (erro) {
       oportunidadesDisponivel = false;
       console.error(erro);
@@ -17994,6 +17996,17 @@
     </div>`;
   }
 
+  // Igual à Produção: o Kanban vai até o fim da tela (barra horizontal colada embaixo)
+  // e só as colunas rolam na vertical. Os cartões do topo empurram o quadro para
+  // baixo, então a altura é o que sobra da tela.
+  function ajustarAlturaQuadroOportunidades() {
+    const wrap = document.getElementById("quadroOportunidadesWrap");
+    if (!wrap || wrap.hidden || !wrap.offsetParent) return;
+    const topo = wrap.getBoundingClientRect().top + window.scrollY;
+    wrap.style.height = Math.max(380, window.innerHeight - topo - 5) + "px";
+  }
+  window.addEventListener("resize", ajustarAlturaQuadroOportunidades);
+
   function renderizarKanbanOportunidades() {
     const wrap = document.getElementById("quadroOportunidadesWrap");
     wrap.innerHTML = etapasOportunidadeCache
@@ -18004,7 +18017,6 @@
           ? cards
               .map((o) => {
                 const valor = o.valor_estimado != null ? `<span class="valor-card-op">${formatarMoeda(o.valor_estimado)}</span>` : "";
-                const temp = ""; // temperatura saiu da tela (o dado continua salvo)
                 const s = situacaoDaSequencia(o);
                 const sequencia = s && (s.codigo || s.encerrada) ? `<span class="seq-op">${esc(s.cad.nome)}</span>` : "";
                 let extra = "";
@@ -18025,7 +18037,7 @@
                 return `
                 <div class="card-quadro card-op" draggable="true" data-id="${o.id}">
                   <div class="topo-card-op"><span class="nome-card-op">${esc(nomeEmpresa(o.empresa_id))}</span>${valor}</div>
-                  ${temp || sequencia ? `<div class="sub-card-op">${temp}${sequencia}</div>` : ""}
+                  ${sequencia ? `<div class="sub-card-op">${sequencia}</div>` : ""}
                   ${htmlPassoCardOp(o)}
                   ${extra}
                   ${botoesAcaoCardOportunidade(o, etapa)}
@@ -18047,6 +18059,7 @@
       })
       .join("");
     ligarEventosOportunidades();
+    setTimeout(ajustarAlturaQuadroOportunidades, 0);
   }
 
   // Quando uma oportunidade vira "ganha": marca a empresa como Ativo e
@@ -18222,9 +18235,9 @@
     wrapKanban.hidden = true;
     wrapLista.hidden = false;
 
-    const lista = listaFiltradaOportunidades().sort((a, b) => (b.data_entrada || "").localeCompare(a.data_entrada || ""));
+    const lista = ordenarListaOportunidades(listaFiltradaOportunidades());
     if (!lista.length) {
-      corpo.innerHTML = `<tr><td colspan="7" class="texto-vazio">Nada por aqui.</td></tr>`;
+      corpo.innerHTML = `<tr><td colspan="5" class="texto-vazio">Nada por aqui.</td></tr>`;
       return;
     }
     corpo.innerHTML = lista
@@ -18240,13 +18253,51 @@
           <td>${o.contato || "—"}</td>
           <td>${etapa ? etapa.nome : "—"}</td>
           <td>${o.valor_estimado != null ? formatarMoeda(o.valor_estimado) : "—"}</td>
-          <td>${o.temperatura || "—"}</td>
           <td>${selo}${o.proximo_followup ? formatarDataBr(o.proximo_followup) : "—"}${textoProximoPasso(o) ? `<br><small>${esc(textoProximoPasso(o))}</small>` : ""}</td>
-          <td>${o.responsavel || "—"}</td>
         </tr>`;
       })
       .join("");
   }
+
+  // ---- Lista: clicar no nome da coluna ordena (de novo, inverte) ----
+  // Primeira ordem de cada coluna: texto de A a Z, data da mais próxima para a mais
+  // distante, valor do maior para o menor. Campo vazio fica sempre no fim.
+  var ordemListaOp = { campo: null, crescente: true }; // var: a lista pode ser desenhada antes desta linha rodar
+  var CAMPOS_ORDEM_OP = {
+    empresa: { valor: (o) => semAcentoOp(nomeEmpresa(o.empresa_id)), crescente: true },
+    contato: { valor: (o) => semAcentoOp(o.contato), crescente: true },
+    etapa: { valor: (o) => { const e = etapaOportunidade(o.etapa_id); return e ? Number(e.ordem) || 0 : null; }, crescente: true },
+    valor: { valor: (o) => (o.valor_estimado != null ? Number(o.valor_estimado) : null), crescente: false },
+    proximo: { valor: (o) => o.proximo_followup || null, crescente: true },
+  };
+  function ordenarListaOportunidades(lista) {
+    const cfg = ordemListaOp && CAMPOS_ORDEM_OP ? CAMPOS_ORDEM_OP[ordemListaOp.campo] : null;
+    if (!cfg) return lista.sort((a, b) => (b.data_entrada || "").localeCompare(a.data_entrada || ""));
+    const sinal = ordemListaOp.crescente ? 1 : -1;
+    return lista.sort((a, b) => {
+      const va = cfg.valor(a), vb = cfg.valor(b);
+      const vazioA = va === null || va === "", vazioB = vb === null || vb === "";
+      if (vazioA || vazioB) return vazioA === vazioB ? 0 : vazioA ? 1 : -1;
+      return (typeof va === "number" ? va - vb : String(va).localeCompare(String(vb), "pt-BR")) * sinal;
+    });
+  }
+  function marcarCabecalhoOrdemOp() {
+    document.querySelectorAll("#tabelaOportunidades th[data-ordem-op]").forEach((th) => {
+      const ativo = th.dataset.ordemOp === ordemListaOp.campo;
+      th.classList.toggle("ordenado", ativo);
+      th.dataset.seta = ativo ? (ordemListaOp.crescente ? "↑" : "↓") : "";
+    });
+  }
+  document.querySelectorAll("#tabelaOportunidades th[data-ordem-op]").forEach((th) => {
+    th.addEventListener("click", () => {
+      const campo = th.dataset.ordemOp;
+      ordemListaOp = ordemListaOp.campo === campo
+        ? { campo, crescente: !ordemListaOp.crescente }
+        : { campo, crescente: CAMPOS_ORDEM_OP[campo].crescente };
+      marcarCabecalhoOrdemOp();
+      renderizarOportunidades();
+    });
+  });
 
   document.getElementById("corpoTabelaOportunidades").addEventListener("click", (evento) => {
     const linha = evento.target.closest("tr[data-oportunidade-id]");
@@ -18255,13 +18306,25 @@
     if (op) abrirModalOportunidade(op);
   });
 
+  function mostrarVisaoOportunidade(vis) {
+    visaoOportunidadeAtual = vis;
+    document.querySelectorAll("#alternadorOportunidades button").forEach((b) => b.classList.toggle("ativo", b.dataset.visOportunidade === vis));
+    renderizarOportunidades();
+  }
   document.querySelectorAll("#alternadorOportunidades button").forEach((botao) => {
-    botao.addEventListener("click", () => {
-      document.querySelectorAll("#alternadorOportunidades button").forEach((b) => b.classList.remove("ativo"));
-      botao.classList.add("ativo");
-      visaoOportunidadeAtual = botao.dataset.visOportunidade;
-      renderizarOportunidades();
-    });
+    botao.addEventListener("click", () => mostrarVisaoOportunidade(botao.dataset.visOportunidade));
+  });
+  // balões do topo: o mesmo que os antigos botões Atrasados, Em negociação, Fechadas e Perdidas
+  const cartoesOportunidadesEl = document.getElementById("cartoesOportunidades");
+  cartoesOportunidadesEl.addEventListener("click", (evento) => {
+    const balao = evento.target.closest("[data-vis-balao]");
+    if (balao) mostrarVisaoOportunidade(balao.dataset.visBalao);
+  });
+  cartoesOportunidadesEl.addEventListener("keydown", (evento) => {
+    const balao = evento.target.closest("[data-vis-balao]");
+    if (!balao || (evento.key !== "Enter" && evento.key !== " ")) return;
+    evento.preventDefault();
+    mostrarVisaoOportunidade(balao.dataset.visBalao);
   });
 
   // ---- Modal: configurar etapas do funil comercial ----
@@ -18439,7 +18502,6 @@
   const campoServicoOportunidade = document.getElementById("campoServicoOportunidade");
   const campoValorOportunidade = document.getElementById("campoValorOportunidade");
   const campoEtapaOportunidade = document.getElementById("campoEtapaOportunidade");
-  const campoTemperaturaOportunidade = document.getElementById("campoTemperaturaOportunidade");
   const campoResponsavelOportunidade = document.getElementById("campoResponsavelOportunidade");
   const campoEntradaOportunidade = document.getElementById("campoEntradaOportunidade");
   const campoFollowupOportunidade = document.getElementById("campoFollowupOportunidade");
@@ -18614,7 +18676,6 @@
     document.getElementById("campoUltimoContatoOportunidade").value = (op && op.ultimo_contato) || "";
     montarChipCanalOp((op && op.canal_contato) || "");
     popularSelectEtapaOportunidade((op && op.etapa_id) || etapaIdInicial);
-    campoTemperaturaOportunidade.value = (op && op.temperatura) || "";
     campoResponsavelOportunidade.value = (op && op.responsavel) || "";
     campoEntradaOportunidade.value = (op && op.data_entrada) || new Date().toISOString().slice(0, 10);
     campoFollowupOportunidade.value = (op && op.proximo_followup) || "";
@@ -18686,7 +18747,6 @@
       ...(captacaoDisponivel ? { captacao: campoCaptacaoOportunidade.value || null } : {}),
       valor_estimado: campoValorOportunidade.value ? Number(campoValorOportunidade.value) : null,
       etapa_id: etapaId,
-      temperatura: campoTemperaturaOportunidade.value || null,
       responsavel: campoResponsavelOportunidade.value.trim() || null,
       data_entrada: campoEntradaOportunidade.value || null,
       proximo_followup: campoFollowupOportunidade.value || null,
@@ -19357,6 +19417,7 @@ E me conta: vocês querem renovar o direito de uso desse vídeo ou preferem test
   );
 
   document.querySelector('.item-nav[data-tab="comercial-modelos"]').addEventListener("click", recarregarModelos);
+  document.querySelector('.item-nav[data-tab="comercial-oportunidades"]').addEventListener("click", () => setTimeout(ajustarAlturaQuadroOportunidades, 0));
   document.querySelector('.item-nav[data-tab="comercial-disparos"]').addEventListener("click", async () => {
     if (!modelosCache.length) await recarregarModelos();
     await recarregarDisparos();
@@ -22827,12 +22888,16 @@ E me conta: vocês querem renovar o direito de uso desse vídeo ou preferem test
     lista("op-fechadas", "Oportunidades fechadas", "Marcadas como ganhas", ganhas);
     lista("op-perdidas", "Oportunidades perdidas", "Marcadas como perdidas", perdidas);
     lista("op-atrasadas", "Follow-ups atrasados", "Abertas com a data do próximo follow-up já passada", atrasadas);
+    // Cada balão é um filtro: clicar mostra essas oportunidades logo abaixo
+    const balao = (vis, classe, rotulo, valor, nota) =>
+      `<div class="cartao-fluxo ${classe} clicavel${visaoOportunidadeAtual === vis ? " filtro-ativo" : ""}" data-vis-balao="${vis}" role="button" tabindex="0" title="Mostrar">` +
+      `<span class="rotulo-cartao-fluxo">${esc(rotulo)}</span><span class="valor-cartao-fluxo">${esc(valor)}</span><span class="nota-cartao-fluxo">${esc(nota)}</span></div>`;
     el.innerHTML =
-      htmlCartaoLista("op-abertas", "previsto", "Abertas", formatarNumero(abertas.length), `${formatarMoeda(soma(abertas))} estimados`) +
-      htmlCartaoLista("op-negociacao", "acumulado", "Em negociação", formatarNumero(negociacao.length), `${formatarMoeda(soma(negociacao))} estimados`) +
-      htmlCartaoLista("op-fechadas", "entradas", "Fechadas", formatarNumero(ganhas.length), `${formatarMoeda(soma(ganhas))} fechados`) +
-      htmlCartaoLista("op-perdidas", "saidas", "Perdidas", formatarNumero(perdidas.length), "Total geral") +
-      htmlCartaoLista("op-atrasadas", "pendente", "Follow-ups atrasados", formatarNumero(atrasadas.length), atrasadas.length ? "Precisam de retorno" : "Tudo em dia");
+      balao("kanban", "previsto", "Abertas", formatarNumero(abertas.length), `${formatarMoeda(soma(abertas))} estimados`) +
+      balao("negociacao", "acumulado", "Em negociação", formatarNumero(negociacao.length), `${formatarMoeda(soma(negociacao))} estimados`) +
+      balao("fechadas", "entradas", "Fechadas", formatarNumero(ganhas.length), `${formatarMoeda(soma(ganhas))} fechados`) +
+      balao("perdidas", "saidas", "Perdidas", formatarNumero(perdidas.length), "Total geral") +
+      balao("atrasados", "pendente", "Follow-ups atrasados", formatarNumero(atrasadas.length), atrasadas.length ? "Precisam de retorno" : "Tudo em dia");
   }
 
   // Marcas: as três listas dos cartões do topo
