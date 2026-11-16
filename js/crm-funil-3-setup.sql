@@ -186,3 +186,16 @@ $m$Oi, {{contato}}! Tudo bem por aí? Lembrei da {{marca}} porque vi {{ideia_vid
 $m$Oi, {{contato}}! {{data_sazonal}} está chegando e eu já estou organizando minha agenda de produção. Querem garantir vídeos novos para a {{marca}} a tempo de rodar nos anúncios? Tenho algumas ideias para o {{produto}} 💛$m$, 73)
 
 on conflict (codigo) do nothing;
+
+-- ---------------------------------------------------------------------
+-- 5. DIREITO DE USO VENCENDO (usado em Campanhas > Tráfego Pago).
+-- O painel também cria este modelo sozinho na primeira vez que carrega.
+-- ---------------------------------------------------------------------
+insert into crm_modelos (codigo, nome, canal, cadencia, toque, assunto, corpo, ordem) values
+('DIR-USO', 'Pedir resultados e oferecer renovação', 'dm/email', 'DIREITO_USO', null, 'Direito de uso do vídeo da {{marca}}',
+$m$Oi, {{contato}}! Tudo bem? 😊
+
+Passando porque o direito de uso do vídeo "{{video}}" {{vencimento}}. Antes de tudo, queria saber: como ele performou? Se puderem compartilhar alguns números (views, CTR, vendas ou custo por resultado), me ajuda muito a entender o que funcionou para a {{marca}}.
+
+E me conta: vocês querem renovar o direito de uso desse vídeo ou preferem testar um criativo novo? Posso montar uma proposta para as duas opções 💛$m$, 80)
+on conflict (codigo) do nothing;

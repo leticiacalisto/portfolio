@@ -491,6 +491,7 @@
   }
   .conteudo.conteudo-cheia{ max-width: none; padding-bottom: 0; }
 
+  #painel-comercial-oportunidades .topo-quadro{ align-items:center; }
   .topo-quadro{
     display:flex;
     align-items:flex-start;
@@ -543,6 +544,7 @@
   #painel-gp-quadro .acoes-topo-quadro .btn-novo-card,
   #painel-comercial-empresas .acoes-topo-quadro .btn-novo-card,
   #painel-crm-contratos .acoes-topo-quadro .btn-novo-card,
+  #painel-comercial-oportunidades .acoes-topo-quadro .btn-novo-card,
   #painel-fin-fluxo-caixa .acoes-topo-quadro .btn-novo-card{
     padding: 6px 14px;
     font-size: .76rem;
@@ -1036,6 +1038,90 @@
   }
   .progresso-card-quadro.completo{ color: var(--verde-sucesso); }
   .data-card-quadro{ font-size: .72rem; color: var(--texto-suave); display:flex; align-items:center; gap:4px; }
+
+  /* ---- Cartão de oportunidade: marca, sequência, próximo passo e no máximo dois botões ---- */
+  .card-op{ padding:14px; border-radius:14px; }
+  .topo-card-op{ display:flex; align-items:baseline; justify-content:space-between; gap:8px; }
+  .nome-card-op{ font-weight:700; font-size:.9rem; line-height:1.25; }
+  .valor-card-op{ font-size:.74rem; font-weight:600; color:var(--texto-suave); white-space:nowrap; }
+  .sub-card-op{ display:flex; flex-wrap:wrap; align-items:center; gap:4px 8px; margin-top:4px; font-size:.72rem; color:var(--texto-suave); }
+  .seq-op{ color:#6B5BA8; font-weight:600; }
+  .temp-op{ display:inline-flex; align-items:center; gap:4px; }
+  .temp-op::before{ content:""; width:7px; height:7px; border-radius:50%; background:var(--cinza-claro); }
+  .temp-op.temp-quente::before{ background:#E5484D; }
+  .temp-op.temp-morno::before{ background:#E0A100; }
+  .temp-op.temp-frio::before{ background:#3E8ED0; }
+
+  .passo-op{ margin-top:10px; padding:9px 11px; border-radius:10px; background:#F8F6FB; }
+  .passo-op .linha-passo{ display:flex; justify-content:space-between; align-items:center; gap:8px; }
+  .rotulo-passo{ font-size:.62rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#9A8CC4; }
+  .quando-passo{ font-size:.7rem; font-weight:600; color:var(--texto-suave); white-space:nowrap; }
+  .passo-op.hoje .quando-passo{ color:#B7791F; }
+  .passo-op.atrasado{ background:#FDF0F0; }
+  .passo-op.atrasado .rotulo-passo{ color:#C4453C; }
+  .passo-op.atrasado .quando-passo{ color:#C4453C; }
+  .passo-op.encerrado{ background:#F4F2F0; }
+  .passo-op.encerrado .rotulo-passo{ color:var(--texto-suave); }
+  .nome-passo{ display:block; margin-top:3px; font-size:.82rem; font-weight:600; line-height:1.3; }
+  .trilha-passo{ display:flex; align-items:center; gap:4px; margin-top:7px; }
+  .trilha-passo i{ flex:1; max-width:28px; height:4px; border-radius:99px; background:#E4DEEF; }
+  .trilha-passo i.feito{ background:#B6A6DE; }
+  .trilha-passo i.atual{ background:#6B5BA8; }
+  .passo-op.atrasado .trilha-passo i.atual{ background:#C4453C; }
+  .trilha-passo span{ margin-left:4px; font-size:.66rem; color:var(--texto-suave); white-space:nowrap; }
+
+  .qualif-op{ display:grid; grid-template-columns:1fr auto; gap:4px 8px; margin-top:10px; font-size:.7rem; color:var(--texto-suave); }
+  .qualif-op b{ color:var(--grafite); font-weight:600; }
+  .barra-qualif-op{ grid-column:1 / -1; height:4px; border-radius:99px; background:#EDE9F3; overflow:hidden; }
+  .barra-qualif-op i{ display:block; height:100%; background:#2D7A4F; border-radius:99px; }
+  .info-card-op{ margin:8px 0 0; font-size:.72rem; color:var(--texto-suave); }
+
+  .card-op .acoes-card-op{ display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:10px; }
+  .card-op .acoes-card-op .btn-acao-op:only-child{ grid-column:1 / -1; }
+  .card-op .btn-acao-op{ padding:7px 8px; font-size:.72rem; text-align:center; white-space:nowrap; }
+  .atalho-card-op{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:2px 8px; margin-top:6px; }
+  .btn-acao-op.link{ border:0; background:none; padding:2px 4px; font-size:.68rem; font-weight:600; color:#6B5BA8; }
+  .btn-acao-op.link:hover{ background:none; text-decoration:underline; text-underline-offset:2px; }
+
+  #overlayModalUsarModelo .acoes-modal-quadro button{ white-space:nowrap; }
+  /* Aba Modelos: cada sequência explicada, com as mensagens numeradas na ordem */
+  .ajuda-variaveis{ margin:4px 0 22px; padding:12px 16px; border-radius:14px; background:#F8F6FB; font-size:.82rem; }
+  .ajuda-variaveis summary{ cursor:pointer; font-weight:600; color:#6B5BA8; }
+  .ajuda-variaveis p{ margin:10px 0 8px; color:var(--texto-suave); }
+  .ajuda-variaveis dl{ display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:6px 18px; margin:0; }
+  .ajuda-variaveis dt{ font-family:ui-monospace, Menlo, Consolas, monospace; font-size:.76rem; color:#6B5BA8; }
+  .ajuda-variaveis dd{ margin:0 0 4px; color:var(--texto-suave); font-size:.78rem; }
+  .grupo-modelos{ margin:0 0 30px; }
+  .cab-grupo-modelos h3{ margin:0; font-size:1.02rem; font-weight:700; }
+  .cab-grupo-modelos p{ margin:3px 0 0; max-width:680px; font-size:.8rem; line-height:1.45; color:var(--texto-suave); }
+  .trilha-modelos{ list-style:none; margin:12px 0 0; padding:0; display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:12px; }
+  .modelo-passo{ display:flex; gap:12px; width:100%; height:100%; padding:14px; border:1px solid var(--borda); border-radius:14px; background:#fff; font:inherit; text-align:left; color:var(--grafite); cursor:pointer; transition: box-shadow .15s ease, transform .15s ease; }
+  .modelo-passo:hover{ box-shadow:0 6px 16px rgba(20,17,13,.08); transform:translateY(-1px); }
+  .num-modelo{ flex:none; display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%; background:#EFEAF8; color:#6B5BA8; font-size:.78rem; font-weight:700; }
+  .corpo-modelo{ display:flex; flex-direction:column; gap:3px; min-width:0; flex:1; }
+  .topo-modelo{ display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+  .topo-modelo b{ font-size:.88rem; font-weight:600; line-height:1.3; }
+  .canal-modelo{ flex:none; font-size:.66rem; font-weight:600; padding:2px 8px; border-radius:99px; background:var(--creme); color:var(--texto-suave); }
+  .quando-modelo{ font-size:.72rem; font-weight:600; color:#6B5BA8; }
+  .previa-modelo{ margin-top:4px; font-size:.76rem; line-height:1.45; color:var(--texto-suave); display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+  .codigo-modelo{ margin-top:6px; font-size:.62rem; letter-spacing:.04em; color:var(--cinza-claro); }
+
+  /* Janela da oportunidade: a sequência inteira, passo a passo */
+  .barra-acoes-op{ padding:16px 18px; border-radius:16px; background:#F8F6FB; }
+  #jornadaOportunidade .titulo-jornada{ display:block; margin-top:4px; font-size:1rem; font-weight:700; }
+  #jornadaOportunidade .explica-jornada{ margin:4px 0 0; font-size:.78rem; line-height:1.45; color:var(--texto-suave); }
+  .passos-jornada{ list-style:none; margin:14px 0 14px; padding:0; display:grid; gap:2px; }
+  .passos-jornada button{ display:flex; align-items:center; gap:10px; width:100%; padding:7px 8px; border:0; border-radius:10px; background:none; font:inherit; text-align:left; cursor:pointer; color:var(--grafite); }
+  .passos-jornada button:hover{ background:#fff; }
+  .bolinha-passo{ flex:none; display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; border:1.5px solid #CFC5E6; font-size:.68rem; font-weight:700; color:#9A8CC4; background:#fff; }
+  .passos-jornada li.feito .bolinha-passo{ background:#B6A6DE; border-color:#B6A6DE; color:#fff; }
+  .passos-jornada li.atual .bolinha-passo{ background:#6B5BA8; border-color:#6B5BA8; color:#fff; }
+  .passos-jornada li.feito b{ color:var(--texto-suave); font-weight:500; }
+  .texto-passo{ display:flex; flex-direction:column; min-width:0; }
+  .texto-passo b{ font-size:.84rem; font-weight:600; }
+  .texto-passo small{ font-size:.72rem; color:var(--texto-suave); }
+  .texto-passo small.hoje{ color:#B7791F; font-weight:600; }
+  .texto-passo small.atrasado{ color:#C4453C; font-weight:600; }
 
   /* Modal do card do quadro */
   .overlay-modal{
@@ -2566,17 +2652,95 @@
   @media (max-width: 1100px){ .numeros-recentes{ grid-template-columns: repeat(3, minmax(0,1fr)); } }
   @media (max-width: 640px){ .numeros-recentes{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
   /* Janela da oportunidade: mesma linguagem da janela do vídeo (cabeçalho e rodapé fixos, seções, campos suaves) */
-  .modal-op-clean{ padding-top:0; border-radius:24px; }
-  .modal-op-clean .cabecalho-modal-op{ position:sticky; top:0; z-index:6; margin:0 -28px 6px; padding:22px 28px 12px; background:rgba(255,255,255,.96); backdrop-filter:blur(6px); }
-  .modal-op-clean .eyebrow-modal-op{ font-size:.66rem; text-transform:uppercase; letter-spacing:.09em; color:#9A8CC4; }
-  .modal-op-clean .cabecalho-modal-op h3{ margin:2px 0 0; font-size:1.3rem; }
   .secao-modal-op{ margin:20px 0 -4px; font-size:.68rem; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#9A8CC4; }
   .secao-modal-op:first-child{ margin-top:8px; }
-  .modal-op-clean label{ font-size:.78rem; font-weight:500; color:var(--texto-suave); margin:12px 0 5px; }
-  .modal-op-clean input, .modal-op-clean select, .modal-op-clean textarea{ border:1.5px solid transparent; background:#F8F6FB; border-radius:12px; transition: background .15s, border-color .15s; }
-  .modal-op-clean input:hover, .modal-op-clean select:hover, .modal-op-clean textarea:hover{ background:#F3F0F9; }
-  .modal-op-clean input:focus, .modal-op-clean select:focus, .modal-op-clean textarea:focus{ background:#fff; border-color:#CDBDF0; }
-  .modal-op-clean .acoes-modal-quadro{ position:sticky; bottom:0; background:rgba(255,255,255,.96); margin:16px -28px 0; padding:14px 28px 18px; z-index:5; }
+  /* Janelas largas e limpas (oportunidade e mensagem): mesmo padrão da janela de Campanhas,
+     mais largas que altas, cantos pouco arredondados, campos em grade com uma linha fina */
+  .modal-largo-limpo{ max-width:1080px; max-height:88vh; padding:0 28px; border-radius:14px; }
+  .modal-largo-limpo.modal-op{ max-width:1240px; max-height:92vh; padding:0 44px; }
+  .cabecalho-largo-limpo{ position:sticky; top:0; z-index:6; display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin:0 -28px; padding:22px 28px 16px; background:rgba(255,255,255,.96); backdrop-filter:blur(6px); }
+  .modal-op .cabecalho-largo-limpo{ margin:0 -44px; padding:30px 44px 22px; }
+  .modal-op h3{ font-size:1.5rem; }
+  .modal-op .rodape-largo-limpo{ margin:12px -44px 0; padding:16px 44px 22px; }
+  .eyebrow-largo-limpo{ display:block; font-size:.66rem; font-weight:700; text-transform:uppercase; letter-spacing:.09em; color:#9A8CC4; }
+  .modal-largo-limpo h3{ margin:3px 0 0; font-size:1.3rem; }
+  .btn-voltar-largo{ display:block; margin:0 0 8px; padding:0; border:0; background:none; font:inherit; font-size:.78rem; font-weight:600; color:#6B5BA8; cursor:pointer; }
+  .btn-voltar-largo:hover{ text-decoration:underline; text-underline-offset:3px; }
+  .btn-fechar-largo{ border:0; background:none; font-size:1.5rem; line-height:1; color:#6B6B6B; padding:2px 8px; border-radius:8px; cursor:pointer; }
+  .btn-fechar-largo:hover{ background:var(--creme); color:var(--grafite); }
+  .rodape-largo-limpo{ position:sticky; bottom:0; z-index:5; margin:8px -28px 0; padding:14px 28px 18px; background:rgba(255,255,255,.96); border-top:1px solid #F0ECF6; }
+  .modal-largo-limpo .btn-salvar-quadro{ border-radius:999px; padding:10px 22px; }
+  .modal-largo-limpo .rodape-largo-limpo .btn-acao-op{ font-size:.8rem; padding:8px 16px; }
+  .subtitulo-limpo{ margin:22px 0 2px; font-size:.68rem; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#9A8CC4; }
+  .subtitulo-limpo span{ text-transform:none; letter-spacing:0; font-weight:600; color:var(--texto-suave); }
+  .modal-largo-limpo .rotulo-descricao{ display:block; margin:20px 0 4px; font-size:.7rem; font-weight:700; }
+  .modal-largo-limpo textarea.textarea-limpa{ border:1px solid var(--borda); }
+
+  /* Oportunidade: sequência à esquerda, dados à direita */
+  .corpo-op{ display:grid; grid-template-columns:340px minmax(0,1fr); gap:56px; align-items:start; padding:6px 0 10px; }
+  .corpo-op.sem-jornada{ grid-template-columns:minmax(0,1fr); }
+  .corpo-op .barra-acoes-op{ position:sticky; top:100px; margin:0; padding:22px 24px; border-radius:14px; }
+  .grade-op{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px 40px; }
+  .grade-op.grade-quatro{ grid-template-columns:repeat(4, minmax(0,1fr)); gap:14px 32px; }
+  .modal-op .prop-limpa{ padding:12px 0 10px; min-height:62px; }
+  .modal-op .rotulo-limpo{ margin-bottom:5px; }
+  .modal-op .input-limpo{ font-size:.92rem; padding:6px 8px; margin:0 -8px; width:calc(100% + 16px); }
+  #propMarcaOportunidade{ max-width:420px; margin-bottom:14px; }
+  #blocoNovaEmpresaOportunidade{ margin-top:4px; }
+  #blocoMotivoPerdaOportunidade .grade-op{ margin-top:14px; }
+  .modal-op .subtitulo-limpo{ margin:34px 0 4px; }
+  .modal-op .subtitulo-limpo label{ display:inline; margin:0; font:inherit; color:inherit; }
+  .modal-op textarea.notas-op{ min-height:86px; margin-top:8px; padding:12px 14px; border:0; border-radius:10px; background:#FAF8FD; font-size:.9rem; line-height:1.55; }
+  .modal-op textarea.notas-op:hover{ background:#F5F2FA; }
+  .modal-op textarea.notas-op:focus{ background:#fff; box-shadow:0 0 0 2px #E3D9F8; }
+  .mais-detalhes-op{ margin-top:30px; }
+  .mais-detalhes-op summary{ cursor:pointer; list-style:none; display:inline-flex; align-items:baseline; gap:10px; font-size:.82rem; font-weight:600; color:#6B5BA8; }
+  .mais-detalhes-op summary::-webkit-details-marker{ display:none; }
+  .mais-detalhes-op summary::before{ content:"›"; display:inline-block; font-size:1rem; transition:transform .15s; }
+  .mais-detalhes-op[open] summary::before{ transform:rotate(90deg); }
+  .mais-detalhes-op summary span{ font-weight:400; font-size:.76rem; color:var(--cinza-claro); }
+  .mais-detalhes-op .grade-op{ margin-top:10px; }
+  /* painel da sequência: mais respiro e só o essencial */
+  .modal-op #jornadaOportunidade .titulo-jornada{ margin-top:6px; font-size:1.05rem; line-height:1.35; }
+  .modal-op .passos-jornada{ margin:18px 0 20px; gap:4px; }
+  .modal-op .passos-jornada button{ padding:8px 6px; }
+  .modal-op .botoes-acoes-op{ display:flex; flex-direction:column; gap:8px; }
+  .modal-op .botoes-acoes-op .btn-acao-op{ width:100%; padding:10px 14px; font-size:.82rem; }
+  @media (max-width: 1000px){
+    .corpo-op{ grid-template-columns:minmax(0,1fr); gap:28px; }
+    .corpo-op .barra-acoes-op{ position:static; }
+    .grade-op, .grade-op.grade-quatro{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+  }
+
+  /* "O que a marca respondeu?" */
+  .modal-resposta{ max-width:620px; }
+  .opcoes-resposta{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:6px 0 4px; }
+  .opcao-resposta{ position:relative; display:block; margin:0; cursor:pointer; }
+  .opcao-resposta input{ position:absolute; opacity:0; inset:0; margin:0; cursor:pointer; }
+  .opcao-resposta span{ display:flex; flex-direction:column; gap:3px; height:100%; padding:14px 16px; border:1.5px solid #ECE7F4; border-radius:12px; transition:border-color .15s, background .15s; }
+  .opcao-resposta b{ font-size:.88rem; font-weight:600; color:var(--grafite); }
+  .opcao-resposta small{ font-size:.76rem; line-height:1.4; color:var(--texto-suave); }
+  .opcao-resposta:hover span{ border-color:#CFC5E6; }
+  .opcao-resposta input:checked + span{ border-color:#6B5BA8; background:#F8F6FB; }
+  .opcao-resposta input:focus-visible + span{ outline:2px solid #6B5BA8; outline-offset:2px; }
+  #blocoDataRespostaMarca{ max-width:260px; margin-top:10px; }
+  .efeito-resposta{ min-height:1.2em; margin:12px 0 0; font-size:.8rem; color:#6B5BA8; }
+  .modal-resposta .notas-op{ width:100%; min-height:64px; padding:10px 12px; border:0; border-radius:10px; background:#FAF8FD; font-family:inherit; font-size:.88rem; resize:vertical; }
+  .modal-resposta .btn-salvar-quadro:disabled{ opacity:.4; cursor:default; }
+  @media (max-width: 560px){ .opcoes-resposta{ grid-template-columns:1fr; } }
+  /* chip do canal dentro da janela */
+  #seletorCanalOportunidade{ padding:4px 0 2px; }
+
+  /* Mensagem: campos para preencher à esquerda, o texto à direita */
+  .modal-mensagem{ max-width:980px; }
+  .corpo-mensagem{ display:grid; grid-template-columns:280px minmax(0,1fr); gap:32px; align-items:start; padding-top:4px; }
+  .corpo-mensagem.so-texto{ grid-template-columns:minmax(0,1fr); }
+  .corpo-mensagem.so-texto .lado-campos-mensagem{ display:none; }
+  .dica-mensagem{ margin:0 0 6px; font-size:.76rem; line-height:1.45; color:var(--texto-suave); }
+  .lado-texto-mensagem .rotulo-limpo{ margin-bottom:6px; }
+  .modal-mensagem textarea.texto-mensagem{ width:100%; min-height:300px; margin:0; padding:16px 18px; border:0; border-radius:12px; background:#F8F6FB; font-family:inherit; font-size:.92rem; line-height:1.6; color:var(--grafite); resize:vertical; }
+  .modal-mensagem textarea.texto-mensagem:focus{ outline:none; box-shadow:0 0 0 2px #E3D9F8; background:#fff; }
+  @media (max-width: 760px){ .corpo-mensagem{ grid-template-columns:minmax(0,1fr); } }
   .bloco-parcelas-fech{ background:#F8F6FB; border-radius:14px; padding:12px 14px; margin-top:6px; }
   .barra-parcelas-fech{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px; }
   .barra-parcelas-fech label{ display:flex; align-items:center; gap:6px; font-size:.8rem; margin:0; }
@@ -4360,11 +4524,7 @@
       <div class="painel-quadro-secao">
         <div class="cartoes-fluxo" id="cartoesOportunidades" style="grid-template-columns: repeat(5, 1fr); margin-bottom:18px;"></div>
         <div class="topo-quadro">
-          <div>
-            <h2 style="margin-bottom:2px;">Oportunidades</h2>
-          </div>
-          <div class="acoes-topo-quadro">
-            <div class="alternador-visualizacao" id="alternadorOportunidades">
+            <div class="alternador-visualizacao alternador-mini" id="alternadorOportunidades">
               <button type="button" class="btn-alternador ativo" data-vis-oportunidade="kanban">Kanban</button>
               <button type="button" class="btn-alternador" data-vis-oportunidade="lista">Lista</button>
               <button type="button" class="btn-alternador" data-vis-oportunidade="hoje">Follow-up hoje</button>
@@ -4373,7 +4533,10 @@
               <button type="button" class="btn-alternador" data-vis-oportunidade="fechadas">Fechadas</button>
               <button type="button" class="btn-alternador" data-vis-oportunidade="perdidas">Perdidas</button>
             </div>
-            <button type="button" class="btn-fases" id="btnEtapasOportunidade">⚙ Etapas</button>
+          <div class="acoes-topo-quadro">
+            <button type="button" class="btn-ferramenta-tabela" id="btnEtapasOportunidade" title="Etapas do funil" aria-label="Etapas do funil">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h7"/><circle cx="14" cy="6" r="2"/><path d="M18 6h2"/><path d="M4 12h2"/><circle cx="9" cy="12" r="2"/><path d="M13 12h7"/><path d="M4 18h10"/><circle cx="17" cy="18" r="2"/></svg>
+            </button>
             <button type="button" class="btn-novo-card" id="btnNovaOportunidade">+ Nova oportunidade</button>
           </div>
         </div>
@@ -4393,13 +4556,31 @@
         <div class="topo-quadro">
           <div>
             <h2 style="margin-bottom:2px;">Modelos</h2>
-            <p class="texto-pequeno" style="margin:0;">Variáveis: <code>{{marca}}</code> <code>{{contato}}</code> <code>{{nicho}}</code> <code>{{produto}}</code> <code>{{link_portfolio}}</code> <code>{{ideia_video}}</code> <code>{{case}}</code> <code>{{data_sazonal}}</code> <code>{{gancho_casa}}</code> <code>{{link_optout}}</code></p>
+            <p class="texto-pequeno" style="margin:0;">As mensagens prontas de cada sequência, na ordem em que saem. O cartão da oportunidade mostra qual é a próxima.</p>
           </div>
           <div class="acoes-topo-quadro">
             <button type="button" class="btn-novo-card" id="btnNovoModelo">+ Novo modelo</button>
           </div>
         </div>
         <p class="texto-pequeno" id="avisoModelosSql" style="color:var(--vermelho-erro);" hidden>Falta rodar js/crm-funil-3-setup.sql no Supabase.</p>
+        <details class="ajuda-variaveis">
+          <summary>Como funcionam as palavras entre {{ }}</summary>
+          <p>Quando você abre uma mensagem pelo cartão, elas são trocadas sozinhas pelos dados da marca. O que não tiver dado fica como está, para você ver o que falta preencher antes de copiar.</p>
+          <dl>
+            <div><dt>{{marca}}</dt><dd>Nome da marca</dd></div>
+            <div><dt>{{contato}}</dt><dd>Nome da pessoa (ou "time Marca")</dd></div>
+            <div><dt>{{produto}}</dt><dd>Produto da qualificação</dd></div>
+            <div><dt>{{nicho}}</dt><dd>Segmento da marca</dd></div>
+            <div><dt>{{ideia_video}}</dt><dd>Ideia de vídeo que você escreve na hora</dd></div>
+            <div><dt>{{case}}</dt><dd>Uma marca parecida que você já atendeu</dd></div>
+            <div><dt>{{data_sazonal}}</dt><dd>Próxima data comemorativa</dd></div>
+            <div><dt>{{link_portfolio}}</dt><dd>Seu portfólio</dd></div>
+            <div><dt>{{gancho_casa}}</dt><dd>Frase de arquiteta, só para marcas de casa</dd></div>
+            <div><dt>{{video}}</dt><dd>Nome do vídeo (direito de uso)</dd></div>
+            <div><dt>{{vencimento}}</dt><dd>"vence em…" ou "venceu em…"</dd></div>
+            <div><dt>{{link_optout}}</dt><dd>Link para sair da lista (e-mails)</dd></div>
+          </dl>
+        </details>
         <div id="listaModelos"></div>
       </div>
     </section>
@@ -4607,7 +4788,7 @@
           <div class="tabela-cheia-wrap" style="height:auto; max-height:none;">
             <table class="tabela-contratos" id="tabelaTrafegoPago">
               <thead>
-                <tr><th>Vídeo</th><th>Marca</th><th>Início</th><th>Vencimento</th><th>Status</th></tr>
+                <tr><th>Vídeo</th><th>Marca</th><th>Início</th><th>Vencimento</th><th>Status</th><th></th></tr>
               </thead>
               <tbody id="corpoTrafegoPago"></tbody>
             </table>
@@ -5800,148 +5981,125 @@
 </div>
 
 <div class="overlay-modal" id="overlayModalOportunidade" hidden>
-  <div class="modal-quadro modal-quadro-grande modal-op-clean">
-    <div class="cabecalho-modal-op">
-      <span class="eyebrow-modal-op">Oportunidade</span>
-      <h3 id="tituloModalOportunidade">Nova oportunidade</h3>
-    </div>
-    <div class="barra-acoes-op" id="barraAcoesOportunidade" hidden>
-      <p class="texto-status-op" id="textoStatusCadenciaOp"></p>
-      <div class="botoes-acoes-op">
-        <button type="button" class="btn-acao-op principal" data-acao-modal="contato">Registrar contato</button>
-        <button type="button" class="btn-acao-op" data-acao-modal="modelo">Usar modelo sugerido</button>
-        <button type="button" class="btn-acao-op" data-acao-modal="respondeu">Respondeu</button>
-        <button type="button" class="btn-acao-op" data-acao-modal="proposta">Proposta enviada</button>
+  <div class="modal-quadro modal-largo-limpo modal-op">
+    <div class="cabecalho-largo-limpo">
+      <div>
+        <span class="eyebrow-largo-limpo" id="eyebrowModalOportunidade">Oportunidade</span>
+        <h3 id="tituloModalOportunidade">Nova oportunidade</h3>
       </div>
     </div>
-    <form id="formOportunidade">
-      <p class="secao-modal-op">Marca e contato</p>
-      <label for="campoEmpresaOportunidade">Marca</label>
-      <select id="campoEmpresaOportunidade" required></select>
-      <div id="blocoNovaEmpresaOportunidade" hidden style="margin-top:10px;">
-        <label for="campoNovaEmpresaNomeOportunidade">Nome da nova marca</label>
-        <input type="text" id="campoNovaEmpresaNomeOportunidade" autocomplete="off">
-      </div>
-
-      <div class="linha-dupla-modal">
-        <div>
-          <label for="campoContatoOportunidade">Pessoa de contato</label>
-          <input type="text" id="campoContatoOportunidade" autocomplete="off">
+    <div class="corpo-op sem-jornada" id="corpoModalOportunidade">
+      <aside class="barra-acoes-op" id="barraAcoesOportunidade" hidden>
+        <div id="jornadaOportunidade"></div>
+        <div class="botoes-acoes-op">
+          <button type="button" class="btn-acao-op principal" data-acao-modal="modelo">Ver mensagem</button>
+          <button type="button" class="btn-acao-op" data-acao-modal="contato">Já enviei</button>
+          <button type="button" class="btn-acao-op" data-acao-modal="perdido">Mover para Perdido</button>
+          <button type="button" class="btn-acao-op" data-acao-modal="respondeu">A marca respondeu</button>
+          <button type="button" class="btn-acao-op" data-acao-modal="proposta">Proposta enviada</button>
         </div>
-        <div>
-          <label for="campoCanalOportunidade">Canal de contato</label>
-          <input type="text" id="campoCanalOportunidade" autocomplete="off" placeholder="Ex.: WhatsApp, Instagram, e-mail">
-        </div>
-      </div>
-
-      <p class="secao-modal-op">Origem</p>
-      <div id="blocoCaptacaoOportunidade">
-        <label for="campoCaptacaoOportunidade">Captação</label>
-        <select id="campoCaptacaoOportunidade">
-          <option value="">Escolha…</option>
-          <option value="Inbound">Inbound (a marca me procurou)</option>
-          <option value="Outbound">Outbound (eu procurei a marca)</option>
-          <option value="Reativação">Reativação (cliente antigo)</option>
-        </select>
-      </div>
-
-      <div class="linha-dupla-modal">
-        <div>
-          <label for="campoOrigemOportunidade">Origem do lead</label>
-          <select id="campoOrigemOportunidade"></select>
-        </div>
-        <div>
-          <label for="campoServicoOportunidade">Serviço de interesse</label>
-          <input type="text" id="campoServicoOportunidade" autocomplete="off">
-        </div>
-      </div>
-
-      <p class="secao-modal-op">Negociação</p>
-      <div class="linha-dupla-modal">
-        <div>
-          <label for="campoValorOportunidade">Valor estimado (R$)</label>
-          <input type="number" min="0" step="0.01" id="campoValorOportunidade">
-        </div>
-        <div>
-          <label for="campoEtapaOportunidade">Etapa</label>
-          <select id="campoEtapaOportunidade"></select>
-        </div>
-      </div>
-
-      <div class="linha-dupla-modal">
-        <div>
-          <label for="campoTemperaturaOportunidade">Temperatura</label>
-          <select id="campoTemperaturaOportunidade">
-            <option value="">—</option>
-            <option>Quente</option>
-            <option>Morno</option>
-            <option>Frio</option>
-          </select>
-        </div>
-        <div>
-          <label for="campoResponsavelOportunidade">Responsável</label>
-          <input type="text" id="campoResponsavelOportunidade" autocomplete="off">
-        </div>
-      </div>
-
-      <p class="secao-modal-op">Qualificação <span id="contagemQualificacaoOp" class="texto-pequeno"></span></p>
-      <div class="linha-dupla-modal">
-        <div>
-          <label for="campoQualProduto">Produto</label>
-          <input type="text" id="campoQualProduto" autocomplete="off" placeholder="Qual produto divulgar">
-        </div>
-        <div>
-          <label for="campoQualQtd">Quantidade de vídeos</label>
-          <input type="text" id="campoQualQtd" autocomplete="off">
-        </div>
-      </div>
-      <div class="linha-dupla-modal">
-        <div>
-          <label for="campoQualBudget">Budget</label>
-          <input type="text" id="campoQualBudget" autocomplete="off">
-        </div>
-        <div>
-          <label for="campoQualPrazo">Prazo</label>
-          <input type="text" id="campoQualPrazo" autocomplete="off" placeholder="Lançamento, campanha…">
-        </div>
-      </div>
-
-      <p class="secao-modal-op">Datas</p>
-      <div class="linha-dupla-modal">
-        <div>
-          <label for="campoEntradaOportunidade">Data de entrada</label>
-          <input type="date" id="campoEntradaOportunidade">
-        </div>
-        <div>
-          <label for="campoFollowupOportunidade">Próximo follow-up</label>
-          <input type="date" id="campoFollowupOportunidade">
-        </div>
-      </div>
-
-      <div id="blocoMotivoPerdaOportunidade" hidden>
-        <div class="linha-dupla-modal">
-          <div>
-            <label for="campoMotivoPerdaOportunidade">Motivo da perda</label>
-            <select id="campoMotivoPerdaOportunidade"></select>
-          </div>
-          <div>
-            <label for="campoRetornoOportunidade">Voltar a chamar em</label>
-            <input type="date" id="campoRetornoOportunidade">
+      </aside>
+      <form id="formOportunidade">
+        <div class="prop-limpa" id="propMarcaOportunidade">
+          <span class="rotulo-limpo">Marca</span>
+          <select id="campoEmpresaOportunidade" class="input-limpo" required></select>
+          <div id="blocoNovaEmpresaOportunidade" hidden>
+            <input type="text" id="campoNovaEmpresaNomeOportunidade" class="input-limpo" autocomplete="off" placeholder="Nome da nova marca" aria-label="Nome da nova marca">
           </div>
         </div>
-      </div>
 
-      <p class="secao-modal-op">Anotações</p>
-      <label for="campoObservacoesOportunidade">Observações</label>
-      <textarea id="campoObservacoesOportunidade" rows="3"></textarea>
+        <div class="grade-op">
+            <div class="prop-limpa">
+              <span class="rotulo-limpo">Pessoa de contato</span>
+              <input type="text" id="campoContatoOportunidade" class="input-limpo" autocomplete="off" placeholder="Quem fala pela marca">
+            </div>
+            <div class="prop-limpa">
+              <span class="rotulo-limpo">Canal da conversa</span>
+              <div class="seletor-chip-unico" id="seletorCanalOportunidade"></div>
+              <input type="hidden" id="campoCanalOportunidade">
+            </div>
+            <div class="prop-limpa">
+              <span class="rotulo-limpo">Etapa</span>
+              <select id="campoEtapaOportunidade" class="input-limpo"></select>
+            </div>
+            <div class="prop-limpa">
+              <span class="rotulo-limpo">Último contato</span>
+              <input type="date" id="campoUltimoContatoOportunidade" class="input-limpo" title="Se mudar esta data, o próximo contato acompanha">
+            </div>
+            <div class="prop-limpa">
+              <span class="rotulo-limpo">Próximo contato</span>
+              <input type="date" id="campoFollowupOportunidade" class="input-limpo">
+            </div>
+        </div>
+        <input type="hidden" id="campoTemperaturaOportunidade">
+        <input type="hidden" id="campoResponsavelOportunidade">
 
-      <div class="acoes-modal-quadro">
-        <button type="button" id="btnExcluirOportunidade" class="btn-excluir-quadro" hidden>Excluir</button>
-        <span style="flex-grow:1"></span>
-        <button type="button" id="btnCancelarOportunidade" class="btn-cancelar-quadro">Cancelar</button>
-        <button type="submit" class="btn-salvar-quadro">Salvar</button>
-      </div>
-    </form>
+        <div id="blocoMotivoPerdaOportunidade" hidden>
+          <div class="grade-op">
+            <div class="prop-limpa">
+              <span class="rotulo-limpo">Motivo</span>
+              <select id="campoMotivoPerdaOportunidade" class="input-limpo"></select>
+            </div>
+            <div class="prop-limpa">
+              <span class="rotulo-limpo">Voltar a chamar em</span>
+              <input type="date" id="campoRetornoOportunidade" class="input-limpo">
+            </div>
+          </div>
+        </div>
+
+        <p class="subtitulo-limpo">Perguntas do projeto <span id="contagemQualificacaoOp"></span></p>
+        <div class="grade-op grade-quatro">
+            <div class="prop-limpa">
+              <span class="rotulo-limpo">Produto</span>
+              <input type="text" id="campoQualProduto" class="input-limpo" autocomplete="off" placeholder="—">
+            </div>
+            <div class="prop-limpa">
+              <span class="rotulo-limpo">Escopo</span>
+              <input type="text" id="campoServicoOportunidade" class="input-limpo" autocomplete="off" placeholder="Ex.: 3 vídeos + fotos">
+            </div>
+            <div class="prop-limpa">
+              <span class="rotulo-limpo">Valor (R$)</span>
+              <input type="number" min="0" step="0.01" id="campoValorOportunidade" class="input-limpo" placeholder="Budget ou proposta">
+            </div>
+            <div class="prop-limpa">
+              <span class="rotulo-limpo">Prazo</span>
+              <input type="text" id="campoQualPrazo" class="input-limpo" autocomplete="off" placeholder="—">
+            </div>
+        </div>
+
+        <p class="subtitulo-limpo"><label for="campoObservacoesOportunidade">Anotações</label></p>
+        <textarea id="campoObservacoesOportunidade" class="textarea-limpa notas-op" rows="3" placeholder="O que vocês conversaram, combinados, detalhes da marca…"></textarea>
+
+        <details class="mais-detalhes-op" id="maisDetalhesOportunidade">
+          <summary>Mais detalhes <span>como a marca chegou e quando entrou</span></summary>
+          <div class="grade-op">
+            <div class="prop-limpa" id="blocoCaptacaoOportunidade">
+              <span class="rotulo-limpo">Captação</span>
+              <select id="campoCaptacaoOportunidade" class="input-limpo">
+                <option value="">Escolha…</option>
+                <option value="Inbound">Inbound (a marca me procurou)</option>
+                <option value="Outbound">Outbound (eu procurei a marca)</option>
+                <option value="Reativação">Reativação (cliente antigo)</option>
+              </select>
+            </div>
+            <div class="prop-limpa">
+              <span class="rotulo-limpo">Origem do lead</span>
+              <select id="campoOrigemOportunidade" class="input-limpo"></select>
+            </div>
+            <div class="prop-limpa">
+              <span class="rotulo-limpo">Data de entrada</span>
+              <input type="date" id="campoEntradaOportunidade" class="input-limpo">
+            </div>
+          </div>
+        </details>
+      </form>
+    </div>
+    <div class="acoes-modal-quadro rodape-largo-limpo">
+      <button type="button" id="btnExcluirOportunidade" class="btn-excluir-quadro" hidden>Excluir</button>
+      <span style="flex-grow:1"></span>
+      <button type="button" id="btnCancelarOportunidade" class="btn-cancelar-quadro">Cancelar</button>
+      <button type="submit" form="formOportunidade" class="btn-salvar-quadro">Salvar</button>
+    </div>
   </div>
 </div>
 
@@ -5951,36 +6109,36 @@
     <form id="formModelo">
       <div class="linha-dupla-modal">
         <div>
-          <label for="campoCodigoModelo">Código</label>
-          <input type="text" id="campoCodigoModelo" autocomplete="off" required placeholder="Ex.: OUT-P1">
+          <label for="campoNomeModelo">Nome da mensagem</label>
+          <input type="text" id="campoNomeModelo" autocomplete="off" required placeholder="Ex.: Follow-up com uma referência">
         </div>
         <div>
-          <label for="campoNomeModelo">Nome</label>
-          <input type="text" id="campoNomeModelo" autocomplete="off" required>
+          <label for="campoCodigoModelo">Código interno <span class="texto-pequeno">(só para o sistema)</span></label>
+          <input type="text" id="campoCodigoModelo" autocomplete="off" required placeholder="Ex.: OUT-P3">
         </div>
       </div>
       <div class="linha-dupla-modal">
         <div>
-          <label for="campoCanalModelo">Canal</label>
+          <label for="campoCanalModelo">Por onde sai</label>
           <select id="campoCanalModelo">
-            <option value="dm">DM</option>
+            <option value="dm">Direct</option>
             <option value="email">E-mail</option>
             <option value="whatsapp">WhatsApp</option>
             <option value="dm/email">DM ou e-mail</option>
           </select>
         </div>
         <div>
-          <label for="campoCadenciaModelo">Cadência</label>
-          <input type="text" id="campoCadenciaModelo" autocomplete="off" placeholder="Ex.: OUT_PEQUENA">
+          <label for="campoCadenciaModelo">Sequência</label>
+          <select id="campoCadenciaModelo"></select>
         </div>
       </div>
       <div class="linha-dupla-modal">
         <div>
-          <label for="campoToqueModelo">Toque</label>
-          <input type="text" id="campoToqueModelo" autocomplete="off" placeholder="1, 2, 3+">
+          <label for="campoToqueModelo">Posição na sequência</label>
+          <input type="text" id="campoToqueModelo" autocomplete="off" placeholder="1, 2, 3...">
         </div>
         <div>
-          <label for="campoAssuntoModelo">Assunto (e-mail)</label>
+          <label for="campoAssuntoModelo">Assunto <span class="texto-pequeno">(só para e-mail)</span></label>
           <input type="text" id="campoAssuntoModelo" autocomplete="off">
         </div>
       </div>
@@ -5997,20 +6155,64 @@
 </div>
 
 <div class="overlay-modal" id="overlayModalUsarModelo" hidden>
-  <div class="modal-quadro modal-quadro-grande">
-    <h3 id="tituloModalUsarModelo">Usar modelo</h3>
-    <p class="texto-pequeno" id="subtituloModalUsarModelo" style="margin:-8px 0 6px;"></p>
-    <div id="camposUsarModelo" class="linha-dupla-modal" style="flex-wrap:wrap;"></div>
-    <label for="campoAssuntoUsarModelo" id="rotuloAssuntoUsarModelo">Assunto</label>
-    <input type="text" id="campoAssuntoUsarModelo" autocomplete="off">
-    <label for="campoTextoUsarModelo">Texto</label>
-    <textarea id="campoTextoUsarModelo" rows="12"></textarea>
-    <div class="acoes-modal-quadro">
-      <button type="button" id="btnCopiarUsarModelo" class="btn-salvar-quadro">Copiar</button>
-      <button type="button" id="btnWhatsappUsarModelo" class="btn-cancelar-quadro">Abrir no WhatsApp</button>
-      <button type="button" id="btnEmailUsarModelo" class="btn-cancelar-quadro">Abrir no e-mail</button>
+  <div class="modal-quadro modal-largo-limpo modal-mensagem">
+    <div class="cabecalho-largo-limpo">
+      <div>
+        <button type="button" class="btn-voltar-largo" id="btnVoltarUsarModelo" hidden>← Voltar</button>
+        <span class="eyebrow-largo-limpo" id="subtituloModalUsarModelo"></span>
+        <h3 id="tituloModalUsarModelo">Mensagem</h3>
+      </div>
+      <button type="button" id="btnFecharUsarModelo" class="btn-fechar-largo" aria-label="Fechar">×</button>
+    </div>
+    <div class="corpo-mensagem" id="corpoMensagemModelo">
+      <div class="lado-campos-mensagem">
+        <p class="dica-mensagem">Preencha o que estiver em branco: o texto ao lado se ajusta sozinho.</p>
+        <div id="camposUsarModelo"></div>
+        <div class="prop-limpa" id="rotuloAssuntoUsarModelo">
+          <span class="rotulo-limpo">Assunto do e-mail</span>
+          <input type="text" id="campoAssuntoUsarModelo" class="input-limpo" autocomplete="off">
+        </div>
+      </div>
+      <div class="lado-texto-mensagem">
+        <span class="rotulo-limpo">Mensagem</span>
+        <textarea id="campoTextoUsarModelo" class="texto-mensagem" rows="12"></textarea>
+      </div>
+    </div>
+    <div class="acoes-modal-quadro rodape-largo-limpo">
+      <button type="button" id="btnCopiarUsarModelo" class="btn-acao-op">Copiar</button>
+      <button type="button" id="btnWhatsappUsarModelo" class="btn-acao-op" title="Abrir no WhatsApp">WhatsApp</button>
+      <button type="button" id="btnEmailUsarModelo" class="btn-acao-op" title="Abrir no e-mail">E-mail</button>
       <span style="flex-grow:1"></span>
-      <button type="button" id="btnFecharUsarModelo" class="btn-cancelar-quadro">Fechar</button>
+      <button type="button" id="btnEnviadaUsarModelo" class="btn-salvar-quadro" hidden>Marcar como enviada ✓</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay-modal" id="overlayRespostaMarca" hidden>
+  <div class="modal-quadro modal-largo-limpo modal-resposta">
+    <div class="cabecalho-largo-limpo">
+      <div>
+        <span class="eyebrow-largo-limpo" id="eyebrowRespostaMarca"></span>
+        <h3>O que a marca respondeu?</h3>
+      </div>
+    </div>
+    <div class="opcoes-resposta">
+      <label class="opcao-resposta"><input type="radio" name="respostaMarca" value="interesse"><span><b>Tem interesse</b><small>Pediu proposta, valores ou quer saber mais</small></span></label>
+      <label class="opcao-resposta"><input type="radio" name="respostaMarca" value="depois"><span><b>Pediu para chamar mais para frente</b><small>Agora não é o momento, mas tem uma época certa</small></span></label>
+      <label class="opcao-resposta"><input type="radio" name="respostaMarca" value="standby"><span><b>Stand-by</b><small>"Quando surgir uma oportunidade, a gente te chama"</small></span></label>
+      <label class="opcao-resposta"><input type="radio" name="respostaMarca" value="nao"><span><b>Não tem interesse</b><small>Disse que não</small></span></label>
+    </div>
+    <div class="prop-limpa" id="blocoDataRespostaMarca" hidden>
+      <span class="rotulo-limpo">Voltar a chamar em</span>
+      <input type="date" id="campoDataRespostaMarca" class="input-limpo">
+    </div>
+    <p class="efeito-resposta" id="efeitoRespostaMarca"></p>
+    <label for="notaRespostaMarca" class="rotulo-limpo rotulo-descricao">O que ela disse <span class="texto-pequeno">(opcional, vai para as anotações)</span></label>
+    <textarea id="notaRespostaMarca" class="textarea-limpa notas-op" rows="2" placeholder="Ex.: pediu para chamar em março, quando lança a coleção nova"></textarea>
+    <div class="acoes-modal-quadro rodape-largo-limpo">
+      <span style="flex-grow:1"></span>
+      <button type="button" id="btnCancelarRespostaMarca" class="btn-cancelar-quadro">Cancelar</button>
+      <button type="button" id="btnConfirmarRespostaMarca" class="btn-salvar-quadro" disabled>Confirmar</button>
     </div>
   </div>
 </div>
@@ -10109,6 +10311,23 @@
       .sort((a, b) => (a.fim || "9999").localeCompare(b.fim || "9999"));
   }
 
+  // Mensagem pronta de direito de uso vencendo (modelo DIR-USO, editável na aba Modelos)
+  function abrirMensagemDireitoUso(cardId) {
+    const linha = linhasTrafegoPago().find((l) => l.id === cardId);
+    const card = quadroCache.find((c) => c.id === cardId);
+    if (!linha || !card) return;
+    const contrato = card.contrato_id ? contratosCache.find((k) => k.id === card.contrato_id) : null;
+    const empresa =
+      (contrato && contrato.empresa_id && empresasCache.find((e) => e.id === contrato.empresa_id)) ||
+      empresasCache.find((e) => semAcentoOp(e.nome) === semAcentoOp(linha.marca)) ||
+      null;
+    const vencimento = (linha.status === "vencido" ? "venceu em " : "vence em ") + formatarDataBr(linha.fim);
+    abrirUsarModelo("DIR-USO", null, {
+      empresa: empresa || { nome: linha.marca },
+      variaveis: { video: card.titulo || "", vencimento, marca: (empresa && empresa.nome) || linha.marca },
+    });
+  }
+
   function renderizarTrafegoPago() {
     const corpo = document.getElementById("corpoTrafegoPago");
     if (!corpo) return;
@@ -10130,7 +10349,7 @@
     const blocoVerMais = document.getElementById("blocoVerMaisTrafego");
 
     if (!filtradas.length) {
-      corpo.innerHTML = `<tr><td colspan="5" class="texto-vazio">Nenhum registro. Vídeos com campanha (com Direito de uso definido) já concluídos aparecem aqui sozinhos.</td></tr>`;
+      corpo.innerHTML = `<tr><td colspan="6" class="texto-vazio">Nenhum registro. Vídeos com campanha (com Direito de uso definido) já concluídos aparecem aqui sozinhos.</td></tr>`;
       blocoVerMais.hidden = true;
       return;
     }
@@ -10156,6 +10375,11 @@
             </span>
           </td>
           <td><span class="pilula-status ${classe}">${rotulo}</span></td>
+          <td style="text-align:right;">${
+            l.status === "ativo"
+              ? ""
+              : `<button type="button" class="btn-acao-op" data-msg-direito="${l.id}" title="Mensagem pronta para pedir os resultados e oferecer a renovação">Mensagem de renovação</button>`
+          }</td>
         </tr>`;
       })
       .join("");
@@ -10184,6 +10408,12 @@
   const corpoTrafegoPago = document.getElementById("corpoTrafegoPago");
   if (corpoTrafegoPago) {
     corpoTrafegoPago.addEventListener("click", (evento) => {
+      const botaoMensagem = evento.target.closest("[data-msg-direito]");
+      if (botaoMensagem) {
+        evento.stopPropagation();
+        abrirMensagemDireitoUso(botaoMensagem.dataset.msgDireito);
+        return;
+      }
       const botaoRenovar = evento.target.closest("[data-renovar-trafego]");
       if (botaoRenovar) {
         evento.stopPropagation();
@@ -16907,19 +17137,37 @@
   // abre: o 1º toque é a própria abordagem. ancora: a contagem só começa
   // quando ela registra a primeira mensagem (as perguntas de qualificação).
   // ---------------------------------------------------------------
+  // "nome" e "explica" são o que aparece na tela (cartões, janela e aba Modelos);
+  // "marco" completa a frase "X dias úteis depois ___" de cada mensagem.
   const CADENCIAS = {
-    IN_RESPOSTA: { rotulo: "Responder inbound", toques: [0], modelos: ["IN-1"] },
-    QUALIF_DM: { rotulo: "Qualificação (direct)", toques: [1, 5, 10], modelos: ["QF-1", "QF-2", "QF-3"], ancora: true },
-    QUALIF_EMAIL: { rotulo: "Qualificação (e-mail)", toques: [2, 5, 10], modelos: ["QF-1", "QF-2", "QF-3"], ancora: true },
-    OUT_PEQUENA: { rotulo: "Outbound marca pequena", toques: [0, 3, 7, 14], modelos: ["OUT-P1", "OUT-P2", "OUT-P3", "OUT-P4"], abre: true },
-    OUT_GRANDE: { rotulo: "Outbound marca grande", toques: [0, 4], modelos: ["OUT-G1", "OUT-G2"], abre: true },
-    EMAIL_SEQ: { rotulo: "Sequência de e-mail", toques: [0, 4, 9, 16], modelos: ["EM-1", "EM-2", "EM-3", "EM-4"], abre: true },
-    PROPOSTA: { rotulo: "Proposta enviada", toques: [2, 5, 10, 20], modelos: ["PROP-1", "PROP-2", "PROP-3", "PROP-4"] },
+    IN_RESPOSTA: { rotulo: "Responder inbound", nome: "Entender o projeto", explica: "A marca chegou sozinha ou respondeu: agradeço, faço as perguntas (produto, quantidade, budget e prazo) e lembro se ela sumir.", marco: "", toques: [0], modelos: ["IN-1"] },
+    QUALIF_DM: { rotulo: "Qualificação (direct)", nome: "Entender o projeto", explica: "A marca chegou sozinha ou respondeu: agradeço, faço as perguntas (produto, quantidade, budget e prazo) e lembro se ela sumir.", marco: "das perguntas", toques: [1, 5, 10], modelos: ["QF-1", "QF-2", "QF-3"], ancora: true },
+    QUALIF_EMAIL: { rotulo: "Qualificação (e-mail)", nome: "Entender o projeto", explica: "A marca chegou sozinha ou respondeu: agradeço, faço as perguntas (produto, quantidade, budget e prazo) e lembro se ela sumir.", marco: "das perguntas", toques: [2, 5, 10], modelos: ["QF-1", "QF-2", "QF-3"], ancora: true },
+    OUT_PEQUENA: { rotulo: "Outbound marca pequena", nome: "Prospectar marca pequena", explica: "Eu chamo a marca na DM com uma ideia de vídeo e faço até três follow-ups.", marco: "da primeira mensagem", toques: [0, 3, 7, 14], modelos: ["OUT-P1", "OUT-P2", "OUT-P3", "OUT-P4"], abre: true },
+    OUT_GRANDE: { rotulo: "Outbound marca grande", nome: "Prospectar marca grande", explica: "Marca grande não fecha pela DM: peço o e-mail do marketing para mandar a apresentação.", marco: "da primeira mensagem", toques: [0, 4], modelos: ["OUT-G1", "OUT-G2"], abre: true },
+    EMAIL_SEQ: { rotulo: "Sequência de e-mail", nome: "Prospectar por e-mail", explica: "Quatro e-mails espaçados para as marcas da lista de disparo: apresentação, prova, ideia e encerramento.", marco: "do primeiro e-mail", toques: [0, 4, 9, 16], modelos: ["EM-1", "EM-2", "EM-3", "EM-4"], abre: true },
+    PROPOSTA: { rotulo: "Proposta enviada", nome: "Acompanhar a proposta", explica: "Depois que a proposta sai, lembretes para tirar dúvidas, flexibilizar e pedir uma resposta.", marco: "do envio da proposta", toques: [2, 5, 10, 20], modelos: ["PROP-1", "PROP-2", "PROP-3", "PROP-4"] },
     // oportunidade aberta por "Reativar cliente": o 1º modelo (REAT-7/30/CHECK) depende de quantas reativações a marca já teve
-    REATIVACAO: { rotulo: "Reativação de cliente", toques: [0, 5, 12], modelos: ["REAT-CHECK", "OUT-P2", "OUT-P3"], abre: true },
+    REATIVACAO: { rotulo: "Reativação de cliente", nome: "Chamar cliente antigo", explica: "Retomo o contato com quem já fechou comigo: resultado dos vídeos, nova ideia ou data comemorativa.", marco: "da primeira mensagem", toques: [0, 5, 12], modelos: ["REAT-CHECK", "OUT-P2", "OUT-P3"], abre: true },
   };
+  // Grupos da aba Modelos que não são uma sequência automática
+  const GRUPOS_MODELO_EXTRAS = {
+    DIREITO_USO: { nome: "Direito de uso vencendo", explica: "Para quando o direito de uso de um vídeo está perto de vencer: pedir os resultados e oferecer renovação ou um criativo novo. Aparece em Campanhas > Tráfego Pago." },
+  };
+  // Quando cada modelo é usado, para os que não seguem a contagem de dias da sequência
+  const QUANDO_MODELO_FIXO = {
+    "IN-1": "Assim que a marca chega",
+    "REAT-7": "7 dias úteis depois da entrega",
+    "REAT-30": "Uns 30 dias depois da entrega",
+    "REAT-CHECK": "A cada 75 dias (30 se a marca for recorrente)",
+    "REAT-SAZ": "45 dias antes de uma data comemorativa",
+    "DIR-USO": "Quando faltam 30 dias para o direito de uso vencer",
+  };
+  const NOME_CANAL_MODELO = { dm: "Direct", email: "E-mail", whatsapp: "WhatsApp", "dm/email": "Direct ou e-mail" };
   const DIAS_ESPERA_FIM_CADENCIA = 5;
   const MOTIVOS_PERDA = {
+    depois: { rotulo: "Pediu para chamar depois", retornoDias: 60 },
+    standby: { rotulo: "Stand-by (vão me chamar)", retornoDias: 90 },
     sem_resposta: { rotulo: "Sem resposta", retornoDias: 90 },
     preco: { rotulo: "Preço", retornoDias: 120 },
     timing: { rotulo: "Timing (adiado)", retornoDias: null },
@@ -16931,11 +17179,13 @@
     Outbound: ["DM personalizada", "DM pedir e-mail", "Disparo de e-mail"],
     Reativação: ["Cliente antigo"],
   };
+  // As 4 perguntas do projeto. Escopo e valor moram nos campos da própria
+  // oportunidade (servico_interesse e valor_estimado); "valor" lê o que já existe.
   const ITENS_QUALIFICACAO = [
-    { chave: "produto", rotulo: "produto", campo: "campoQualProduto" },
-    { chave: "qtd_videos", rotulo: "quantidade de vídeos", campo: "campoQualQtd" },
-    { chave: "budget", rotulo: "budget", campo: "campoQualBudget" },
-    { chave: "prazo", rotulo: "prazo", campo: "campoQualPrazo" },
+    { chave: "produto", rotulo: "produto", campo: "campoQualProduto", valor: (op, q) => q.produto },
+    { chave: "escopo", rotulo: "escopo", campo: "campoServicoOportunidade", valor: (op, q) => q.escopo || op.servico_interesse || q.qtd_videos },
+    { chave: "budget", rotulo: "valor", campo: "campoValorOportunidade", valor: (op, q) => (op.valor_estimado != null ? String(op.valor_estimado) : q.budget) },
+    { chave: "prazo", rotulo: "prazo", campo: "campoQualPrazo", valor: (op, q) => q.prazo },
   ];
 
   function semAcentoOp(s) {
@@ -16958,7 +17208,7 @@
 
   function qualificacaoFaltando(op) {
     const q = (op && op.qualificacao) || {};
-    return ITENS_QUALIFICACAO.filter((i) => !String(q[i.chave] || "").trim()).map((i) => i.rotulo);
+    return ITENS_QUALIFICACAO.filter((i) => !String(i.valor(op || {}, q) || "").trim()).map((i) => i.rotulo);
   }
 
   function canalPorEmail(op) {
@@ -16989,6 +17239,109 @@
 
   function cadenciaEncerrada(op) {
     return !!CADENCIAS[op.cadencia] && !!op.toque_n && op.toque_n >= toquesTotaisCadencia(op);
+  }
+
+  // ---- Linguagem da tela: os códigos (OUT-P2, QF-1...) ficam só por dentro ----
+  // Mensagens de uma sequência, na ordem em que saem. Na qualificação, a
+  // primeira é a das perguntas (IN-1); na reativação, a primeira varia.
+  function passosDaCadencia(chave, op) {
+    const cad = CADENCIAS[chave];
+    if (!cad) return [];
+    // responder o inbound e qualificar são uma sequência só: perguntas + 3 lembretes
+    if (chave.indexOf("QUALIF") === 0 || chave === "IN_RESPOSTA") return ["IN-1"].concat(CADENCIAS.QUALIF_DM.modelos);
+    if (chave === "REATIVACAO") return [(op && !op.toque_n && op.modelo_sugerido) || cad.modelos[0]].concat(cad.modelos.slice(1));
+    return cad.modelos.slice();
+  }
+
+  // Mensagem do próximo passo. Marca em Lista/Abordado que ainda não recebeu
+  // nada já ganha a primeira mensagem da sequência dela.
+  function modeloDoProximoPasso(op) {
+    if (op.modelo_sugerido) return op.modelo_sugerido;
+    const etapa = etapaOportunidade(op.etapa_id);
+    if (!etapa || etapa.tipo !== "aberta" || cadenciaEncerrada(op) || op.toque_n || op.proximo_followup) return null;
+    const nome = semAcentoOp(etapa.nome);
+    if (!nome.startsWith("lista") && !nome.startsWith("abordado")) return null;
+    return passosDaCadencia(cadenciaDaOportunidade(op), op)[0] || null;
+  }
+
+  function situacaoDaSequencia(op) {
+    const etapa = etapaOportunidade(op.etapa_id);
+    if (!etapa || etapa.tipo !== "aberta") return null;
+    const chave = cadenciaDaOportunidade(op);
+    const cad = CADENCIAS[chave];
+    let passos = passosDaCadencia(chave, op);
+    const encerrada = cadenciaEncerrada(op);
+    const codigo = encerrada ? null : modeloDoProximoPasso(op);
+    let atual = encerrada ? passos.length : codigo ? passos.indexOf(codigo) : -1;
+    if (codigo && atual === -1) {
+      passos = [codigo];
+      atual = 0;
+    }
+    return { chave, cad, passos, atual, codigo, encerrada };
+  }
+
+  function capitalizar(texto) {
+    const t = String(texto || "").trim();
+    return t ? t.charAt(0).toUpperCase() + t.slice(1) : "";
+  }
+
+  // "Marca pequena: follow-up curto" -> "Follow-up curto" (o grupo já diz o resto)
+  function nomeCurtoModelo(codigoOuModelo) {
+    const m = typeof codigoOuModelo === "string" ? modeloPorCodigo(codigoOuModelo) : codigoOuModelo;
+    if (!m) return String(codigoOuModelo || "");
+    const nome = String(m.nome || m.codigo || "");
+    const i = nome.indexOf(":");
+    return capitalizar(i > -1 ? nome.slice(i + 1) : nome);
+  }
+
+  // Chave do grupo de um modelo: "QUALIF_DM / QUALIF_EMAIL" -> "QUALIF_DM"
+  function chaveGrupoModelo(m) {
+    const chave = String((m && m.cadencia) || "").split("/")[0].trim();
+    return chave === "IN_RESPOSTA" ? "QUALIF_DM" : chave; // a resposta ao inbound abre a mesma sequência
+  }
+  function infoGrupoModelo(chave) {
+    if (CADENCIAS[chave]) return { nome: CADENCIAS[chave].nome, explica: CADENCIAS[chave].explica };
+    if (GRUPOS_MODELO_EXTRAS[chave]) return GRUPOS_MODELO_EXTRAS[chave];
+    if (!chave) return { nome: "Avulsos", explica: "Modelos que não entram em nenhuma sequência automática: use quando precisar." };
+    return { nome: capitalizar(chave.replace(/_/g, " ").toLowerCase()), explica: "" };
+  }
+
+  // Quando a mensagem sai, em frase: "3 dias úteis depois da primeira mensagem"
+  function quandoDoModelo(codigo) {
+    if (QUANDO_MODELO_FIXO[codigo]) return QUANDO_MODELO_FIXO[codigo];
+    const m = modeloPorCodigo(codigo);
+    const preferida = m ? chaveGrupoModelo(m) : "";
+    const chaves = [preferida].concat(Object.keys(CADENCIAS));
+    for (const chave of chaves) {
+      const cad = CADENCIAS[chave];
+      if (!cad) continue;
+      const i = cad.modelos.indexOf(codigo);
+      if (i === -1) continue;
+      const dias = cad.toques[i];
+      if (!dias) return cad.abre ? "Primeira mensagem" : "Na hora";
+      return dias + (dias === 1 ? " dia útil" : " dias úteis") + " depois " + cad.marco;
+    }
+    return "";
+  }
+
+  // Prazo do próximo passo: "Hoje", "Atrasado 2 dias", "Amanhã", "Qui, 19/11"
+  function prazoDoPasso(dataIso) {
+    if (!dataIso) return { texto: "", classe: "" };
+    const dias = Math.round((new Date(dataIso + "T00:00:00") - new Date(hojeIso() + "T00:00:00")) / 86400000);
+    if (dias < 0) return { texto: "Atrasado " + -dias + (dias === -1 ? " dia" : " dias"), classe: "atrasado" };
+    if (dias === 0) return { texto: "Hoje", classe: "hoje" };
+    if (dias === 1) return { texto: "Amanhã", classe: "" };
+    const d = new Date(dataIso + "T00:00:00");
+    const semana = d.toLocaleDateString("pt-BR", { weekday: "short" }).replace(".", "");
+    return { texto: capitalizar(semana) + ", " + formatarDataBr(dataIso).slice(0, 5), classe: "" };
+  }
+
+  // Frase curta do próximo passo, para a lista, o Início e as notificações
+  function textoProximoPasso(op) {
+    const s = situacaoDaSequencia(op);
+    if (s && s.encerrada) return "Sem resposta: mover para Perdido?";
+    if (s && s.codigo) return nomeCurtoModelo(s.codigo) + (s.passos.length > 1 ? " (" + (s.atual + 1) + " de " + s.passos.length + ")" : "");
+    return op.proxima_acao || "";
   }
 
   // Campos de cadência para quando já foram feitos "n" toques
@@ -17285,13 +17638,13 @@
       if (acao === "contato") {
         await salvarPatchOportunidade(op, planejarRegistroContato(op));
       } else if (acao === "respondeu") {
-        await salvarPatchOportunidade(op, planejarRespondeu(op));
+        abrirRespostaMarca(op);
       } else if (acao === "proposta") {
         const faltando = qualificacaoFaltando(op);
         if (faltando.length && !confirm("Faltam na qualificação: " + faltando.join(", ") + ".\nMarcar a proposta como enviada mesmo assim?")) return;
         await salvarPatchOportunidade(op, planejarPropostaEnviada(op));
       } else if (acao === "modelo") {
-        abrirUsarModelo(op.modelo_sugerido, op);
+        abrirUsarModelo(modeloDoProximoPasso(op), op);
       } else if (acao === "perdido") {
         abrirModalPerda(op, (etapaPorNomeOportunidade("perdido") || {}).id, "sem_resposta");
       }
@@ -17300,6 +17653,91 @@
       console.error(erro);
     }
   }
+
+  // ---- Modal: o que a marca respondeu ----
+  // Interesse vai para as perguntas do projeto; "depois" e "stand-by" saem do funil
+  // aberto com a data de voltar a chamar (o Início avisa no dia); "não" encerra.
+  const RESPOSTAS_MARCA = {
+    interesse: { motivo: null },
+    depois: { motivo: "depois" },
+    standby: { motivo: "standby" },
+    nao: { motivo: "sem_interesse" },
+  };
+  const overlayRespostaMarca = document.getElementById("overlayRespostaMarca");
+  let respostaEmAndamento = null;
+
+  function abrirRespostaMarca(op) {
+    respostaEmAndamento = op;
+    document.getElementById("eyebrowRespostaMarca").textContent = nomeEmpresa(op.empresa_id);
+    overlayRespostaMarca.querySelectorAll('input[name="respostaMarca"]').forEach((r) => (r.checked = false));
+    document.getElementById("notaRespostaMarca").value = "";
+    atualizarRespostaMarca();
+    overlayRespostaMarca.hidden = false;
+  }
+  function fecharRespostaMarca() {
+    overlayRespostaMarca.hidden = true;
+    respostaEmAndamento = null;
+  }
+  function atualizarRespostaMarca() {
+    const marcada = overlayRespostaMarca.querySelector('input[name="respostaMarca"]:checked');
+    const tipo = marcada ? marcada.value : "";
+    const motivo = tipo && RESPOSTAS_MARCA[tipo].motivo;
+    const precisaData = tipo === "depois" || tipo === "standby";
+    document.getElementById("blocoDataRespostaMarca").hidden = !precisaData;
+    if (precisaData) document.getElementById("campoDataRespostaMarca").value = retornoSugeridoPorMotivo(motivo);
+    document.getElementById("btnConfirmarRespostaMarca").disabled = !tipo;
+    const textos = {
+      interesse: "Vai para Qualificação e a próxima mensagem é a das perguntas do projeto.",
+      depois: "Sai do funil aberto e o Início te avisa no dia de voltar a chamar.",
+      standby: "Sai do funil aberto e o Início te avisa no dia de dar um oi de novo.",
+      nao: "Vai para Perdido como sem interesse. Você ainda pode pôr uma data para tentar de novo pela janela da oportunidade.",
+    };
+    document.getElementById("efeitoRespostaMarca").textContent = textos[tipo] || "";
+  }
+  overlayRespostaMarca.addEventListener("change", atualizarRespostaMarca);
+  overlayRespostaMarca.addEventListener("click", (evento) => {
+    if (evento.target === overlayRespostaMarca) fecharRespostaMarca();
+  });
+  document.getElementById("btnCancelarRespostaMarca").addEventListener("click", fecharRespostaMarca);
+  document.getElementById("btnConfirmarRespostaMarca").addEventListener(
+    "click",
+    comFila("resposta-marca", async () => {
+      const op = respostaEmAndamento;
+      const marcada = overlayRespostaMarca.querySelector('input[name="respostaMarca"]:checked');
+      if (!op || !marcada) return;
+      const tipo = marcada.value;
+      const hoje = hojeIso();
+      const nota = document.getElementById("notaRespostaMarca").value.trim();
+      const rotulo = marcada.closest("label").querySelector("b").textContent;
+      const linha = "Resposta da marca (" + formatarDataBr(hoje) + "): " + rotulo + (nota ? ". " + nota : "");
+      let patch;
+      if (tipo === "interesse") {
+        patch = planejarRespondeu(op);
+      } else {
+        const perdido = etapaPorNomeOportunidade("perdido");
+        const espera = etapaEmEspera();
+        const destino = tipo !== "nao" && espera ? espera : perdido;
+        if (!destino) return alert("Não achei a etapa Perdido no funil.");
+        patch = {
+          etapa_id: destino.id,
+          motivo_perda: RESPOSTAS_MARCA[tipo].motivo,
+          data_retorno: tipo === "nao" ? null : document.getElementById("campoDataRespostaMarca").value || null,
+          ultimo_contato: hoje,
+          proximo_followup: null,
+          proxima_acao: null,
+          modelo_sugerido: null,
+        };
+      }
+      patch.observacoes = op.observacoes ? op.observacoes + "\n\n" + linha : linha;
+      try {
+        await salvarPatchOportunidade(op, patch);
+        fecharRespostaMarca();
+      } catch (erro) {
+        alert("Não foi possível salvar a resposta da marca.");
+        console.error(erro);
+      }
+    })
+  );
 
   // ---- Modal: mover para Perdido (motivo + quando voltar a chamar) ----
   const overlayModalPerda = document.getElementById("overlayModalPerda");
@@ -17386,6 +17824,7 @@
         buscarEtapasOportunidade(),
       ]);
       oportunidadesDisponivel = true;
+      if (await garantirEtapaEmEspera()) etapasOportunidadeCache = await buscarEtapasOportunidade();
     } catch (erro) {
       oportunidadesDisponivel = false;
       console.error(erro);
@@ -17417,6 +17856,45 @@
   function nomeEmpresa(empresaId) {
     const empresa = empresasCache.find((e) => e.id === empresaId);
     return empresa ? empresa.nome : "(empresa não encontrada)";
+  }
+
+  // "Em espera": pediu para chamar depois ou stand-by. É do tipo "perdida" (sai das
+  // abertas e o Início avisa na data de voltar a chamar), mas não conta como perdida.
+  function etapaEmEspera() {
+    return etapasOportunidadeCache.find((e) => /^(em espera|espera|stand)/.test(semAcentoOp(e.nome))) || null;
+  }
+  function ehPerdidaDeVerdade(o) {
+    const etapa = etapaOportunidade(o.etapa_id);
+    const espera = etapaEmEspera();
+    return !!etapa && etapa.tipo === "perdida" && !(espera && espera.id === etapa.id);
+  }
+  const CHAVE_EM_ESPERA_CRIADA = "painel_etapa_em_espera_criada";
+  async function garantirEtapaEmEspera() {
+    let jaCriada = false;
+    try {
+      jaCriada = localStorage.getItem(CHAVE_EM_ESPERA_CRIADA) === "1";
+    } catch (erro) {}
+    if (jaCriada || etapaEmEspera() || !etapasOportunidadeCache.length) return false;
+    const perdido = etapasOportunidadeCache.find((e) => semAcentoOp(e.nome).startsWith("perdido"));
+    const maior = Math.max(...etapasOportunidadeCache.map((e) => Number(e.ordem) || 0));
+    const ordem = perdido ? Number(perdido.ordem) || 0 : maior + 1;
+    try {
+      if (perdido) {
+        // empurra Perdido (e o que vier depois) uma posição para a direita
+        for (const e of etapasOportunidadeCache.filter((x) => (Number(x.ordem) || 0) >= ordem)) {
+          await Auth.sb.from("oportunidades_etapas").update({ ordem: (Number(e.ordem) || 0) + 1 }).eq("id", e.id);
+        }
+      }
+      const { error } = await Auth.sb.from("oportunidades_etapas").insert({ nome: "Em espera", cor: "#8E9BAE", tipo: "perdida", ordem });
+      if (error) throw error;
+      try {
+        localStorage.setItem(CHAVE_EM_ESPERA_CRIADA, "1");
+      } catch (erro) {}
+      return true;
+    } catch (erro) {
+      console.error("Criar etapa Em espera:", erro);
+      return false;
+    }
   }
 
   function etapaOportunidade(etapaId) {
@@ -17463,23 +17941,57 @@
       case "fechadas":
         return todas.filter((o) => tipoDaEtapa(o, "ganha"));
       case "perdidas":
-        return todas.filter((o) => tipoDaEtapa(o, "perdida"));
+        return todas.filter(ehPerdidaDeVerdade);
       default:
         return todas.slice();
     }
   }
 
+  // Botões do cartão: no máximo dois de ação e um atalho de texto embaixo
   function botoesAcaoCardOportunidade(o, etapa) {
     if (!etapa || etapa.tipo !== "aberta") return "";
     const nome = semAcentoOp(etapa.nome);
-    const botao = (acao, texto, principal) =>
-      `<button type="button" class="btn-acao-op${principal ? " principal" : ""}" data-acao-op="${acao}" data-id="${o.id}">${texto}</button>`;
-    if (cadenciaEncerrada(o)) return `<div class="acoes-card-op">${botao("perdido", "Mover para Perdido", true)}${botao("respondeu", "Respondeu")}</div>`;
-    const botoes = [botao("contato", "Registrar contato", true)];
-    if (o.modelo_sugerido) botoes.push(botao("modelo", "Usar modelo · " + o.modelo_sugerido));
-    if (nome.startsWith("lista") || nome.startsWith("abordado") || nome.startsWith("qualifica")) botoes.push(botao("respondeu", "Respondeu"));
-    if (nome.startsWith("qualifica") || nome.startsWith("abordado")) botoes.push(botao("proposta", "Proposta enviada"));
-    return `<div class="acoes-card-op">${botoes.join("")}</div>`;
+    const botao = (acao, texto, classe) =>
+      `<button type="button" class="btn-acao-op${classe ? " " + classe : ""}" data-acao-op="${acao}" data-id="${o.id}">${texto}</button>`;
+    if (cadenciaEncerrada(o)) {
+      return `<div class="acoes-card-op">${botao("perdido", "Mover para Perdido", "principal")}${botao("respondeu", "Respondeu")}</div>`;
+    }
+    const codigo = modeloDoProximoPasso(o);
+    const principal = codigo ? botao("modelo", "Ver mensagem", "principal") : botao("contato", "Já mandei mensagem", "principal");
+    const atalhos = [];
+    if (codigo) atalhos.push(botao("contato", "Já enviei ✓", "link"));
+    if (nome.startsWith("qualifica")) atalhos.push(botao("proposta", "Proposta enviada →", "link"));
+    else if (nome.startsWith("lista") || nome.startsWith("abordado")) atalhos.push(botao("respondeu", "Respondeu →", "link"));
+    return `<div class="acoes-card-op">${principal}</div>${atalhos.length ? `<div class="atalho-card-op">${atalhos.join("")}</div>` : ""}`;
+  }
+
+  // Bloco "Próximo passo" do cartão: o que mandar, quando, e em que ponto da sequência
+  function htmlPassoCardOp(o) {
+    const s = situacaoDaSequencia(o);
+    if (!s) return "";
+    const prazo = prazoDoPasso(o.proximo_followup);
+    if (s.encerrada) {
+      return `<div class="passo-op encerrado">
+        <span class="rotulo-passo">Sem resposta</span>
+        <strong class="nome-passo">${s.passos.length === 1 ? "A mensagem foi enviada" : "As " + s.passos.length + " mensagens foram enviadas"}</strong>
+      </div>`;
+    }
+    if (!s.codigo) {
+      return o.proximo_followup
+        ? `<div class="passo-op ${prazo.classe}"><div class="linha-passo"><span class="rotulo-passo">Próximo contato</span><span class="quando-passo">${prazo.texto}</span></div></div>`
+        : "";
+    }
+    const trilha =
+      s.passos.length > 1
+        ? `<div class="trilha-passo" title="Mensagem ${s.atual + 1} de ${s.passos.length}">${s.passos
+            .map((_, i) => `<i class="${i < s.atual ? "feito" : i === s.atual ? "atual" : ""}"></i>`)
+            .join("")}<span>${s.atual + 1} de ${s.passos.length}</span></div>`
+        : "";
+    return `<div class="passo-op ${prazo.classe}">
+      <div class="linha-passo"><span class="rotulo-passo">Próximo passo</span>${prazo.texto ? `<span class="quando-passo">${prazo.texto}</span>` : ""}</div>
+      <strong class="nome-passo">${esc(nomeCurtoModelo(s.codigo))}</strong>
+      ${trilha}
+    </div>`;
   }
 
   function renderizarKanbanOportunidades() {
@@ -17491,25 +18003,31 @@
         const corpo = cards.length
           ? cards
               .map((o) => {
-                const semaforo = calcularSemaforoFollowup(o);
-                const selo = semaforo ? `<span class="selo-semaforo semaforo-${semaforo}" title="${TEXTO_SEMAFORO_FOLLOWUP[semaforo]}"></span>` : "";
-                const chipValor = o.valor_estimado != null ? `<span class="chip-card-quadro">${formatarMoeda(o.valor_estimado)}</span>` : "";
-                const chipTemp = o.temperatura ? `<span class="chip-card-quadro">${o.temperatura}</span>` : "";
-                const dataFollowup = o.proximo_followup
-                  ? `<span class="data-card-quadro">📅 ${formatarDataBr(o.proximo_followup)}</span>`
-                  : "";
-                const encerrada = cadenciaEncerrada(o);
-                const chipAcao = o.proxima_acao
-                  ? `<span class="chip-card-quadro ${encerrada ? "chip-alerta" : "chip-acao"}">${o.proxima_acao}${o.modelo_sugerido ? " · " + o.modelo_sugerido : ""}</span>`
-                  : "";
-                const chipQualif =
-                  semAcentoOp(etapa.nome).startsWith("qualifica")
-                    ? `<span class="chip-card-quadro">Qualif. ${ITENS_QUALIFICACAO.length - qualificacaoFaltando(o).length}/${ITENS_QUALIFICACAO.length}</span>`
-                    : "";
+                const valor = o.valor_estimado != null ? `<span class="valor-card-op">${formatarMoeda(o.valor_estimado)}</span>` : "";
+                const temp = ""; // temperatura saiu da tela (o dado continua salvo)
+                const s = situacaoDaSequencia(o);
+                const sequencia = s && (s.codigo || s.encerrada) ? `<span class="seq-op">${esc(s.cad.nome)}</span>` : "";
+                let extra = "";
+                if (semAcentoOp(etapa.nome).startsWith("qualifica")) {
+                  const faltando = qualificacaoFaltando(o);
+                  const feitas = ITENS_QUALIFICACAO.length - faltando.length;
+                  extra = `<div class="qualif-op" title="${faltando.length ? "Falta: " + esc(faltando.join(", ")) : "Tudo respondido"}">
+                    <span>Perguntas respondidas</span><b>${feitas} de ${ITENS_QUALIFICACAO.length}</b>
+                    <div class="barra-qualif-op"><i style="width:${(feitas / ITENS_QUALIFICACAO.length) * 100}%"></i></div>
+                  </div>`;
+                } else if (etapa.tipo === "ganha") {
+                  extra = o.data_fechamento ? `<p class="info-card-op">Fechado em ${formatarDataBr(o.data_fechamento)}</p>` : "";
+                } else if (etapa.tipo === "perdida") {
+                  const motivo = MOTIVOS_PERDA[o.motivo_perda] ? MOTIVOS_PERDA[o.motivo_perda].rotulo : o.motivo_perda || "";
+                  const partes = [motivo, o.data_retorno ? "voltar a chamar em " + formatarDataBr(o.data_retorno) : ""].filter(Boolean);
+                  extra = partes.length ? `<p class="info-card-op">${esc(capitalizar(partes.join(" · ")))}</p>` : "";
+                }
                 return `
-                <div class="card-quadro" draggable="true" data-id="${o.id}">
-                  <span class="titulo-card-quadro">${selo}${nomeEmpresa(o.empresa_id)}</span>
-                  <div class="meta-card-quadro">${dataFollowup}${chipValor}${chipTemp}${chipQualif}${chipAcao}</div>
+                <div class="card-quadro card-op" draggable="true" data-id="${o.id}">
+                  <div class="topo-card-op"><span class="nome-card-op">${esc(nomeEmpresa(o.empresa_id))}</span>${valor}</div>
+                  ${temp || sequencia ? `<div class="sub-card-op">${temp}${sequencia}</div>` : ""}
+                  ${htmlPassoCardOp(o)}
+                  ${extra}
                   ${botoesAcaoCardOportunidade(o, etapa)}
                 </div>`;
               })
@@ -17552,7 +18070,8 @@
 
     // Cria a campanha com o que já se sabe e abre a janela para completar (Autentique, pagamento, NF)
     try {
-      const qtd = parseInt(String((op.qualificacao || {}).qtd_videos || "").replace(/\D+/g, ""), 10);
+      const textoQtd = String((op.qualificacao || {}).qtd_videos || op.servico_interesse || "");
+      const qtd = parseInt((textoQtd.match(/\d+/) || [""])[0], 10);
       const novo = {
         marca: empresa ? empresa.nome : nomeEmpresa(op.empresa_id),
         empresa_id: op.empresa_id,
@@ -17648,7 +18167,8 @@
     });
 
     document.querySelectorAll("#quadroOportunidadesWrap .card-quadro").forEach((elCard) => {
-      elCard.addEventListener("click", () => {
+      elCard.addEventListener("click", (evento) => {
+        if (evento.target.closest("button")) return; // botões do cartão têm a própria ação
         const op = oportunidadesCache.find((o) => o.id === elCard.dataset.id);
         if (op) abrirModalOportunidade(op);
       });
@@ -17721,7 +18241,7 @@
           <td>${etapa ? etapa.nome : "—"}</td>
           <td>${o.valor_estimado != null ? formatarMoeda(o.valor_estimado) : "—"}</td>
           <td>${o.temperatura || "—"}</td>
-          <td>${selo}${o.proximo_followup ? formatarDataBr(o.proximo_followup) : "—"}${o.proxima_acao ? `<br><small>${o.proxima_acao}${o.modelo_sugerido ? " · " + o.modelo_sugerido : ""}</small>` : ""}</td>
+          <td>${selo}${o.proximo_followup ? formatarDataBr(o.proximo_followup) : "—"}${textoProximoPasso(o) ? `<br><small>${esc(textoProximoPasso(o))}</small>` : ""}</td>
           <td>${o.responsavel || "—"}</td>
         </tr>`;
       })
@@ -17957,17 +18477,47 @@
   function atualizarBarraAcoesOportunidade(op) {
     const barra = document.getElementById("barraAcoesOportunidade");
     const etapa = op ? etapaOportunidade(op.etapa_id) : null;
+    const corpo = document.getElementById("corpoModalOportunidade");
     if (!op || !etapa || etapa.tipo !== "aberta") {
       barra.hidden = true;
+      corpo.classList.add("sem-jornada");
       return;
     }
-    const chave = cadenciaDaOportunidade(op);
-    const cad = CADENCIAS[chave];
-    const partes = [cad.rotulo + " · toque " + (op.toque_n || 0) + "/" + cad.toques.length];
-    if (op.proxima_acao) partes.push("próximo: " + op.proxima_acao + (op.modelo_sugerido ? " (" + op.modelo_sugerido + ")" : ""));
-    if (op.proximo_followup) partes.push("em " + formatarDataBr(op.proximo_followup));
-    document.getElementById("textoStatusCadenciaOp").textContent = partes.join(" · ");
-    barra.querySelector('[data-acao-modal="modelo"]').hidden = !op.modelo_sugerido;
+    corpo.classList.remove("sem-jornada");
+    const s = situacaoDaSequencia(op);
+    const prazo = prazoDoPasso(op.proximo_followup);
+    const passos = s.passos
+      .map((codigo, i) => {
+        const estado = i < s.atual ? "feito" : i === s.atual ? "atual" : "";
+        const quando = i < s.atual ? "Enviada" : i === s.atual && prazo.texto ? prazo.texto : quandoDoModelo(codigo);
+        return `<li class="${estado}"><button type="button" data-ver-modelo="${esc(codigo)}" title="Ver o texto desta mensagem">
+          <span class="bolinha-passo">${i < s.atual ? "✓" : i + 1}</span>
+          <span class="texto-passo"><b>${esc(nomeCurtoModelo(codigo))}</b><small class="${i === s.atual ? prazo.classe : ""}">${esc(quando)}</small></span>
+        </button></li>`;
+      })
+      .join("");
+    const tituloTexto = s.encerrada
+      ? "Sem resposta depois de todas as mensagens"
+      : s.codigo
+        ? "Próximo passo: " + nomeCurtoModelo(s.codigo).toLowerCase()
+        : "Nenhuma mensagem programada";
+    document.getElementById("jornadaOportunidade").innerHTML = `
+      <span class="rotulo-passo">Sequência · ${esc(s.cad.nome)}</span>
+      <strong class="titulo-jornada" title="${esc(s.cad.explica || "")}">${esc(tituloTexto)}</strong>
+      ${passos ? `<ol class="passos-jornada">${passos}</ol>` : ""}`;
+    document.querySelectorAll("#jornadaOportunidade [data-ver-modelo]").forEach((b) =>
+      b.addEventListener("click", () => abrirUsarModelo(b.dataset.verModelo, op))
+    );
+    const nomeEtapa = semAcentoOp(etapa.nome);
+    const mostrar = (acao, sim) => (barra.querySelector(`[data-acao-modal="${acao}"]`).hidden = !sim);
+    mostrar("modelo", !!s.codigo);
+    mostrar("contato", !s.encerrada);
+    mostrar("perdido", s.encerrada);
+    mostrar("respondeu", s.encerrada || nomeEtapa.startsWith("lista") || nomeEtapa.startsWith("abordado"));
+    mostrar("proposta", nomeEtapa.startsWith("qualifica"));
+    barra.querySelector('[data-acao-modal="contato"]').textContent = s.codigo ? "Já enviei" : "Já mandei mensagem";
+    barra.querySelector('[data-acao-modal="contato"]').classList.toggle("principal", !s.codigo && !s.encerrada);
+    barra.querySelector('[data-acao-modal="perdido"]').classList.toggle("principal", s.encerrada);
     barra.hidden = false;
   }
 
@@ -17977,7 +18527,8 @@
       comFila("acao-oportunidade", async () => {
         const op = oportunidadesCache.find((o) => o.id === idOportunidadeEmEdicao);
         if (!op) return;
-        fecharModalOportunidade();
+        // ver a mensagem abre por cima: ao fechar, volta para esta janela
+        if (botao.dataset.acaoModal !== "modelo") fecharModalOportunidade();
         await executarAcaoOportunidade(op, botao.dataset.acaoModal);
       })
     );
@@ -18002,9 +18553,48 @@
     campoEtapaOportunidade.value = etapaIdSelecionada || (etapasOportunidadeCache[0] && etapasOportunidadeCache[0].id) || "";
   }
 
+  // Canal da conversa: escolhe da lista ou escreve um novo e aperta Enter
+  const CANAIS_PADRAO_OP = ["WhatsApp", "Direct do Instagram", "E-mail", "TikTok", "LinkedIn"];
+  function canaisUnicosOp() {
+    const vistos = new Map();
+    CANAIS_PADRAO_OP.concat(oportunidadesCache.map((o) => o.canal_contato || "")).forEach((c) => {
+      const t = String(c || "").trim();
+      if (t && !vistos.has(t.toLowerCase())) vistos.set(t.toLowerCase(), t);
+    });
+    return [...vistos.values()];
+  }
+  async function trocarCanalGlobalOp(antigo, novo) {
+    const alvo = String(antigo || "").trim().toLowerCase();
+    const ids = oportunidadesCache.filter((o) => String(o.canal_contato || "").trim().toLowerCase() === alvo).map((o) => o.id);
+    for (const id of ids) await Auth.sb.from("oportunidades").update({ canal_contato: novo || null }).eq("id", id);
+    oportunidadesCache.forEach((o) => {
+      if (ids.includes(o.id)) o.canal_contato = novo || null;
+    });
+    if (String(campoCanalOportunidade.value || "").trim().toLowerCase() === alvo) montarChipCanalOp(novo || "");
+  }
+  const sistemaCanalOp = criarSistemaEtiquetaUnica({
+    titulo: "Canal",
+    obterValoresExistentes: canaisUnicosOp,
+    renomearGlobal: async (antigo, novoBruto) => {
+      const novo = String(novoBruto || "").trim();
+      if (novo && novo.toLowerCase() !== antigo.trim().toLowerCase()) await trocarCanalGlobalOp(antigo, novo);
+    },
+    excluirGlobal: async (alvo) => {
+      if (confirm('Tirar o canal "' + alvo + '" de todas as oportunidades?')) await trocarCanalGlobalOp(alvo, "");
+    },
+  });
+  function montarChipCanalOp(valor) {
+    campoCanalOportunidade.value = valor || "";
+    const caixa = document.getElementById("seletorCanalOportunidade");
+    caixa.innerHTML = "";
+    caixa.appendChild(sistemaCanalOp.criarElementoChip(valor || "", (novo) => (campoCanalOportunidade.value = novo)));
+  }
+
   function abrirModalOportunidade(op, etapaIdInicial) {
     idOportunidadeEmEdicao = op ? op.id : null;
-    document.getElementById("tituloModalOportunidade").textContent = op ? "Editar oportunidade" : "Nova oportunidade";
+    document.getElementById("tituloModalOportunidade").textContent = op ? nomeEmpresa(op.empresa_id) : "Nova oportunidade";
+    const etapaAtualOp = op ? etapaOportunidade(op.etapa_id) : null;
+    document.getElementById("eyebrowModalOportunidade").textContent = "Oportunidade" + (etapaAtualOp ? " · " + etapaAtualOp.nome : "");
     popularSelectEmpresaOportunidade(op ? op.empresa_id : "");
     blocoNovaEmpresaOportunidade.hidden = true;
     campoNovaEmpresaNomeOportunidade.value = "";
@@ -18013,12 +18603,16 @@
     campoCaptacaoOportunidade.value = (op && op.captacao) || "";
     popularOrigemOportunidade(campoCaptacaoOportunidade.value, (op && op.origem_lead) || "");
     const qual = (op && op.qualificacao) || {};
-    ITENS_QUALIFICACAO.forEach((i) => (document.getElementById(i.campo).value = qual[i.chave] || ""));
+    document.getElementById("campoQualProduto").value = qual.produto || "";
+    document.getElementById("campoQualPrazo").value = qual.prazo || "";
     atualizarContagemQualificacaoModal();
     atualizarBarraAcoesOportunidade(op);
     document.getElementById("blocoCaptacaoOportunidade").hidden = !captacaoDisponivel;
-    campoServicoOportunidade.value = (op && op.servico_interesse) || "";
-    campoValorOportunidade.value = op && op.valor_estimado != null ? op.valor_estimado : "";
+    campoServicoOportunidade.value = (op && op.servico_interesse) || qual.escopo || qual.qtd_videos || "";
+    const budgetAntigo = parseFloat(String(qual.budget || "").replace(/[^\d,.]/g, "").replace(/\.(?=\d{3})/g, "").replace(",", "."));
+    campoValorOportunidade.value = op && op.valor_estimado != null ? op.valor_estimado : budgetAntigo > 0 ? budgetAntigo : "";
+    document.getElementById("campoUltimoContatoOportunidade").value = (op && op.ultimo_contato) || "";
+    montarChipCanalOp((op && op.canal_contato) || "");
     popularSelectEtapaOportunidade((op && op.etapa_id) || etapaIdInicial);
     campoTemperaturaOportunidade.value = (op && op.temperatura) || "";
     campoResponsavelOportunidade.value = (op && op.responsavel) || "";
@@ -18030,9 +18624,13 @@
     campoObservacoesOportunidade.value = (op && op.observacoes) || "";
     const etapaSelecionada = etapaOportunidade(campoEtapaOportunidade.value);
     blocoMotivoPerdaOportunidade.hidden = !etapaSelecionada || etapaSelecionada.tipo !== "perdida";
+    atualizarContagemQualificacaoModal();
     btnExcluirOportunidade.hidden = !op;
+    // editando: a marca já está no título; criando: precisa escolher marca e captação
+    document.getElementById("propMarcaOportunidade").hidden = !!op;
+    document.getElementById("maisDetalhesOportunidade").open = !op;
     overlayModalOportunidade.hidden = false;
-    campoEmpresaOportunidade.focus();
+    if (!op) campoEmpresaOportunidade.focus();
   }
   function fecharModalOportunidade() {
     overlayModalOportunidade.hidden = true;
@@ -18092,12 +18690,27 @@
       responsavel: campoResponsavelOportunidade.value.trim() || null,
       data_entrada: campoEntradaOportunidade.value || null,
       proximo_followup: campoFollowupOportunidade.value || null,
+      ultimo_contato: document.getElementById("campoUltimoContatoOportunidade").value || null,
       motivo_perda: etapaSelecionada && etapaSelecionada.tipo === "perdida" ? campoMotivoPerdaOportunidade.value || null : null,
       data_retorno: etapaSelecionada && etapaSelecionada.tipo === "perdida" ? campoRetornoOportunidade.value || null : null,
       qualificacao: lerQualificacaoDoModal(),
       observacoes: campoObservacoesOportunidade.value.trim() || null,
       updated_at: new Date().toISOString(),
     };
+    // Mudou a data do último contato (ex.: mandou na sexta e marcou depois) e não mexeu
+    // no próximo contato: o próximo anda junto, mantendo o mesmo intervalo.
+    if (anterior && anterior.ultimo_contato && dados.ultimo_contato && dados.ultimo_contato !== anterior.ultimo_contato &&
+        anterior.proximo_followup && dados.proximo_followup === anterior.proximo_followup) {
+      // quantos dias úteis havia entre os dois, contados de novo a partir da data nova
+      let uteis = 0;
+      const cursor = new Date(anterior.ultimo_contato + "T00:00:00");
+      const alvo = new Date(anterior.proximo_followup + "T00:00:00");
+      while (cursor < alvo) {
+        cursor.setDate(cursor.getDate() + 1);
+        if (cursor.getDay() !== 0 && cursor.getDay() !== 6) uteis++;
+      }
+      dados.proximo_followup = somarDiasUteis(dados.ultimo_contato, Math.max(uteis, 1));
+    }
     if (etapaSelecionada && etapaSelecionada.tipo === "ganha" && !(anterior && anterior.data_fechamento)) {
       dados.data_fechamento = new Date().toISOString().slice(0, 10);
     }
@@ -18155,17 +18768,80 @@
     { chave: "ideia_video", rotulo: "Ideia de vídeo" },
     { chave: "case", rotulo: "Case / marca parecida" },
     { chave: "data_sazonal", rotulo: "Data sazonal" },
+    { chave: "video", rotulo: "Vídeo" },
+    { chave: "vencimento", rotulo: "Vencimento" },
   ];
   const DIAS_SEM_CONTATO_DISPARO = 30;
+
+  // Só troca o nome se ele ainda for o original do SQL: nome que você editou fica como está
+  const NOMES_NOVOS_MODELOS = {
+    "IN-1": ["Primeira resposta a um inbound", "Agradecer e fazer as perguntas"],
+    "QF-1": ["Qualificação: 1º lembrete", "Lembrar das perguntas"],
+    "QF-2": ["Qualificação: 2º lembrete", "Facilitar a resposta"],
+    "QF-3": ["Qualificação: encerramento", "Encerrar com a porta aberta"],
+    "OUT-P1": ["Marca pequena: primeira mensagem", "Primeira mensagem com ideia de vídeo"],
+    "OUT-P2": ["Marca pequena: follow-up curto", "Follow-up curto"],
+    "OUT-P3": ["Marca pequena: follow-up com valor", "Follow-up com uma referência"],
+    "OUT-P4": ["Marca pequena: encerramento", "Encerrar com a porta aberta"],
+    "OUT-G1": ["Marca grande: pedido de e-mail", "Pedir o e-mail do marketing"],
+    "OUT-G2": ["Marca grande: lembrete", "Lembrar do pedido de e-mail"],
+    "EM-1": ["E-mail 1: apresentação", "Apresentação"],
+    "EM-2": ["E-mail 2: prova", "Um case como prova"],
+    "EM-3": ["E-mail 3: ideia específica ou data sazonal", "Ideia de vídeo ou data comemorativa"],
+    "EM-4": ["E-mail 4: encerramento", "Encerrar com a porta aberta"],
+    "PROP-1": ["Proposta: dúvidas", "Perguntar se ficou alguma dúvida"],
+    "PROP-2": ["Proposta: flexibilidade", "Mostrar que dá para ajustar"],
+    "PROP-3": ["Proposta: pergunta direta", "Pedir uma resposta"],
+    "PROP-4": ["Proposta: encerramento", "Encerrar com a porta aberta"],
+    "REAT-7": ["Reativação: pós-entrega (7 dias)", "Como foram os vídeos"],
+    "REAT-30": ["Reativação: performance e nova pauta (30 dias)", "Resultados e uma ideia nova"],
+    "REAT-CHECK": ["Reativação: check-in periódico", "Check-in com ideia nova"],
+    "REAT-SAZ": ["Reativação: data sazonal (45 dias antes)", "Data comemorativa chegando"],
+  };
+  const MODELO_DIREITO_USO = {
+    codigo: "DIR-USO",
+    nome: "Pedir resultados e oferecer renovação",
+    canal: "dm/email",
+    cadencia: "DIREITO_USO",
+    toque: null,
+    assunto: "Direito de uso do vídeo da {{marca}}",
+    ordem: 80,
+    corpo: `Oi, {{contato}}! Tudo bem? 😊
+
+Passando porque o direito de uso do vídeo "{{video}}" {{vencimento}}. Antes de tudo, queria saber: como ele performou? Se puderem compartilhar alguns números (views, CTR, vendas ou custo por resultado), me ajuda muito a entender o que funcionou para a {{marca}}.
+
+E me conta: vocês querem renovar o direito de uso desse vídeo ou preferem testar um criativo novo? Posso montar uma proposta para as duas opções 💛`,
+  };
+  let modelosAjustados = false;
+
+  async function ajustarModelosPadrao() {
+    if (modelosAjustados || !modelosDisponivel) return false;
+    modelosAjustados = true;
+    let mudou = false;
+    for (const m of modelosCache) {
+      const novo = NOMES_NOVOS_MODELOS[m.codigo];
+      if (!novo || m.nome !== novo[0]) continue;
+      const { error } = await Auth.sb.from("crm_modelos").update({ nome: novo[1] }).eq("id", m.id);
+      if (!error) mudou = true;
+    }
+    if (!modeloPorCodigo(MODELO_DIREITO_USO.codigo)) {
+      const { error } = await Auth.sb.from("crm_modelos").insert(MODELO_DIREITO_USO);
+      if (!error) mudou = true;
+      else modelosCache.push({ id: "local-dir-uso", ...MODELO_DIREITO_USO }); // sem permissão de gravar: usa o texto daqui mesmo
+    }
+    return mudou;
+  }
 
   async function recarregarModelos() {
     try {
       modelosCache = await buscarTudo("crm_modelos");
       modelosDisponivel = true;
+      if (await ajustarModelosPadrao()) modelosCache = await buscarTudo("crm_modelos");
     } catch (erro) {
       modelosDisponivel = false;
     }
     renderizarModelos();
+    if (typeof renderizarOportunidades === "function") renderizarOportunidades();
   }
 
   function modeloPorCodigo(codigo) {
@@ -18227,26 +18903,36 @@
       .slice()
       .sort((a, b) => (a.ordem || 0) - (b.ordem || 0) || a.codigo.localeCompare(b.codigo))
       .forEach((m) => {
-        const chave = m.cadencia || "Sem cadência";
+        const chave = chaveGrupoModelo(m);
         if (!grupos.has(chave)) grupos.set(chave, []);
         grupos.get(chave).push(m);
       });
     lista.innerHTML = [...grupos.entries()]
-      .map(
-        ([cadencia, itens]) => `
-        <p class="secao-modal-op">${esc((CADENCIAS[cadencia] && CADENCIAS[cadencia].rotulo) || cadencia)} <span class="texto-pequeno">· ${esc(cadencia)}</span></p>
-        <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:12px; margin:10px 0 18px;">
-          ${itens
-            .map(
-              (m) => `<div class="card-quadro" data-modelo="${esc(m.codigo)}" style="margin:0;">
-                <span class="titulo-card-quadro" style="margin-bottom:6px;">${esc(m.codigo)} · ${esc(m.nome)}</span>
-                <div class="meta-card-quadro" style="margin-bottom:8px;"><span class="chip-card-quadro">${esc(m.canal)}</span>${m.toque ? `<span class="chip-card-quadro">toque ${esc(m.toque)}</span>` : ""}</div>
-                <p class="texto-pequeno" style="margin:0; white-space:pre-line; max-height:4.6em; overflow:hidden;">${esc((m.corpo || "").slice(0, 200))}</p>
-              </div>`
-            )
-            .join("")}
-        </div>`
-      )
+      .map(([chave, itens]) => {
+        const info = infoGrupoModelo(chave);
+        return `
+        <section class="grupo-modelos">
+          <div class="cab-grupo-modelos">
+            <h3>${esc(info.nome)}</h3>
+            ${info.explica ? `<p>${esc(info.explica)}</p>` : ""}
+          </div>
+          <ol class="trilha-modelos">
+            ${itens
+              .map(
+                (m, i) => `<li><button type="button" class="modelo-passo" data-modelo="${esc(m.codigo)}">
+                  <span class="num-modelo">${i + 1}</span>
+                  <span class="corpo-modelo">
+                    <span class="topo-modelo"><b>${esc(nomeCurtoModelo(m))}</b><span class="canal-modelo">${esc(NOME_CANAL_MODELO[m.canal] || m.canal || "")}</span></span>
+                    ${quandoDoModelo(m.codigo) ? `<span class="quando-modelo">${esc(quandoDoModelo(m.codigo))}</span>` : ""}
+                    <span class="previa-modelo">${esc((m.corpo || "").replace(/\s+/g, " ").slice(0, 170))}${(m.corpo || "").length > 170 ? "…" : ""}</span>
+                    <span class="codigo-modelo">${esc(m.codigo)}</span>
+                  </span>
+                </button></li>`
+              )
+              .join("")}
+          </ol>
+        </section>`;
+      })
       .join("");
     lista.querySelectorAll("[data-modelo]").forEach((el) => el.addEventListener("click", () => abrirEditorModelo(modeloPorCodigo(el.dataset.modelo))));
   }
@@ -18255,11 +18941,26 @@
   let idModeloEmEdicao = null;
   function abrirEditorModelo(m) {
     idModeloEmEdicao = m ? m.id : null;
-    document.getElementById("tituloModalModelo").textContent = m ? "Editar modelo " + m.codigo : "Novo modelo";
+    document.getElementById("tituloModalModelo").textContent = m ? nomeCurtoModelo(m) : "Novo modelo";
     document.getElementById("campoCodigoModelo").value = m ? m.codigo : "";
     document.getElementById("campoNomeModelo").value = m ? m.nome : "";
     document.getElementById("campoCanalModelo").value = m ? m.canal : "dm";
-    document.getElementById("campoCadenciaModelo").value = (m && m.cadencia) || "";
+    // Sequências conhecidas pelo nome; um valor antigo diferente continua na lista
+    const opcoesSequencia = [
+      ["", "Avulso (fora de sequência)"],
+      ["IN_RESPOSTA", "Entender o projeto (primeira mensagem)"],
+      ["QUALIF_DM / QUALIF_EMAIL", CADENCIAS.QUALIF_DM.nome],
+      ["OUT_PEQUENA", CADENCIAS.OUT_PEQUENA.nome],
+      ["OUT_GRANDE", CADENCIAS.OUT_GRANDE.nome],
+      ["EMAIL_SEQ", CADENCIAS.EMAIL_SEQ.nome],
+      ["PROPOSTA", CADENCIAS.PROPOSTA.nome],
+      ["REATIVACAO", CADENCIAS.REATIVACAO.nome],
+      ["DIREITO_USO", GRUPOS_MODELO_EXTRAS.DIREITO_USO.nome],
+    ];
+    const atualSequencia = (m && m.cadencia) || "";
+    if (!opcoesSequencia.some((o) => o[0] === atualSequencia)) opcoesSequencia.push([atualSequencia, atualSequencia]);
+    document.getElementById("campoCadenciaModelo").innerHTML = opcoesSequencia.map((o) => `<option value="${esc(o[0])}">${esc(o[1])}</option>`).join("");
+    document.getElementById("campoCadenciaModelo").value = atualSequencia;
     document.getElementById("campoToqueModelo").value = (m && m.toque) || "";
     document.getElementById("campoAssuntoModelo").value = (m && m.assunto) || "";
     document.getElementById("campoCorpoModelo").value = (m && m.corpo) || "";
@@ -18282,7 +18983,7 @@
         codigo: document.getElementById("campoCodigoModelo").value.trim(),
         nome: document.getElementById("campoNomeModelo").value.trim(),
         canal: document.getElementById("campoCanalModelo").value,
-        cadencia: document.getElementById("campoCadenciaModelo").value.trim() || null,
+        cadencia: document.getElementById("campoCadenciaModelo").value || null,
         toque: document.getElementById("campoToqueModelo").value.trim() || null,
         assunto: document.getElementById("campoAssuntoModelo").value.trim() || null,
         corpo: document.getElementById("campoCorpoModelo").value,
@@ -18325,23 +19026,36 @@
     document.getElementById("campoTextoUsarModelo").value = preencherModelo(usoModelo.modelo.corpo, usoModelo.variaveis);
   }
 
-  function abrirUsarModelo(codigo, op) {
+  // opcoes: { empresa, variaveis } para quando não há oportunidade (ex.: direito de uso em Campanhas)
+  function abrirUsarModelo(codigo, op, opcoes) {
+    opcoes = opcoes || {};
     const modelo = modeloPorCodigo(codigo);
     if (!modelo) return alert("Não achei o modelo " + codigo + ". Confira se rodou js/crm-funil-3-setup.sql no Supabase.");
-    const empresa = op ? empresasCache.find((e) => e.id === op.empresa_id) || null : null;
-    usoModelo = { modelo, empresa, op, variaveis: variaveisDoModelo(empresa, op) };
-    document.getElementById("tituloModalUsarModelo").textContent = modelo.codigo + " · " + modelo.nome;
-    document.getElementById("subtituloModalUsarModelo").textContent = empresa ? empresa.nome : "";
+    const empresa = op ? empresasCache.find((e) => e.id === op.empresa_id) || null : opcoes.empresa || null;
+    usoModelo = { modelo, empresa, op, variaveis: { ...variaveisDoModelo(empresa, op), ...(opcoes.variaveis || {}) } };
+    document.getElementById("tituloModalUsarModelo").textContent = nomeCurtoModelo(modelo);
+    const s = op ? situacaoDaSequencia(op) : null;
+    const ehProximo = !!s && s.codigo === modelo.codigo;
+    const posicao = s && s.passos.indexOf(modelo.codigo) > -1 && s.passos.length > 1 ? "mensagem " + (s.passos.indexOf(modelo.codigo) + 1) + " de " + s.passos.length : "";
+    const grupo = infoGrupoModelo(chaveGrupoModelo(modelo)).nome;
+    document.getElementById("subtituloModalUsarModelo").textContent = [empresa ? empresa.nome : "", grupo, posicao].filter(Boolean).join(" · ");
+    document.getElementById("btnEnviadaUsarModelo").hidden = !ehProximo;
+    // aberta por cima da janela da oportunidade: mostra o caminho de volta
+    const veioDaOportunidade = !!op && !overlayModalOportunidade.hidden;
+    const voltar = document.getElementById("btnVoltarUsarModelo");
+    voltar.hidden = !veioDaOportunidade;
+    voltar.textContent = "← Voltar para " + (empresa ? empresa.nome : "a oportunidade");
     const texto = (modelo.assunto || "") + " " + (modelo.corpo || "");
     document.getElementById("camposUsarModelo").innerHTML = EDITAVEIS_MODELO.filter((v) => texto.includes("{{" + v.chave + "}}"))
       .map(
-        (v) => `<div style="flex:1 1 220px;"><label>${v.rotulo}</label><input type="text" data-var-modelo="${v.chave}" value="${esc(usoModelo.variaveis[v.chave] || "")}" autocomplete="off"></div>`
+        (v) => `<div class="prop-limpa"><span class="rotulo-limpo">${v.rotulo}</span><input type="text" class="input-limpo" data-var-modelo="${v.chave}" value="${esc(usoModelo.variaveis[v.chave] || "")}" autocomplete="off" placeholder="—"></div>`
       )
       .join("");
     document.querySelectorAll("#camposUsarModelo [data-var-modelo]").forEach((input) => input.addEventListener("input", atualizarPreviaUsarModelo));
     const ehEmail = !!modelo.assunto;
-    document.getElementById("campoAssuntoUsarModelo").hidden = !ehEmail;
     document.getElementById("rotuloAssuntoUsarModelo").hidden = !ehEmail;
+    const temCampos = ehEmail || !!document.querySelector("#camposUsarModelo [data-var-modelo]");
+    document.getElementById("corpoMensagemModelo").classList.toggle("so-texto", !temCampos);
     atualizarPreviaUsarModelo();
     overlayModalUsarModelo.hidden = false;
   }
@@ -18349,6 +19063,17 @@
     overlayModalUsarModelo.hidden = true;
     usoModelo = null;
   }
+  document.getElementById("btnVoltarUsarModelo").addEventListener("click", fecharUsarModelo);
+  document.getElementById("btnEnviadaUsarModelo").addEventListener(
+    "click",
+    comFila("acao-oportunidade", async () => {
+      const op = usoModelo && usoModelo.op;
+      if (!op) return;
+      fecharUsarModelo();
+      if (!overlayModalOportunidade.hidden) fecharModalOportunidade();
+      await executarAcaoOportunidade(op, "contato");
+    })
+  );
   document.getElementById("btnFecharUsarModelo").addEventListener("click", fecharUsarModelo);
   overlayModalUsarModelo.addEventListener("click", (evento) => {
     if (evento.target === overlayModalUsarModelo) fecharUsarModelo();
@@ -21440,7 +22165,7 @@
       .sort((a, b) => a.proximo_followup.localeCompare(b.proximo_followup));
     devidas.slice(0, MAX_FOLLOWUPS_INDIVIDUAIS).forEach((o) => {
       const atraso = Math.round((new Date(hoje + "T00:00:00") - new Date(o.proximo_followup + "T00:00:00")) / 86400000);
-      const acao = (o.proxima_acao || "Fazer follow-up") + (o.modelo_sugerido ? " · " + o.modelo_sugerido : "");
+      const acao = textoProximoPasso(o) || "Fazer follow-up";
       doDia("followup", "Follow-up: " + nomeEmpresa(o.empresa_id), acao + (atraso > 0 ? " · atrasado há " + atraso + (atraso === 1 ? " dia" : " dias") : ""), o.id, { tipo: "oportunidade", id: o.id });
     });
     if (devidas.length > MAX_FOLLOWUPS_INDIVIDUAIS) {
@@ -22088,7 +22813,7 @@
     const idsNegociacao = new Set(etapasOportunidadeCache.filter((e) => e.tipo === "aberta").slice(-2).map((e) => e.id));
     const negociacao = oportunidadesCache.filter((o) => idsNegociacao.has(o.etapa_id));
     const ganhas = oportunidadesCache.filter((o) => tipoDe(o) === "ganha");
-    const perdidas = oportunidadesCache.filter((o) => tipoDe(o) === "perdida");
+    const perdidas = oportunidadesCache.filter(ehPerdidaDeVerdade);
     const atrasadas = abertas.filter((o) => o.proximo_followup && o.proximo_followup < hoje);
     const valorDe = (o) => (o.valor_estimado != null ? Number(o.valor_estimado) || 0 : undefined);
     const soma = (lista) => lista.reduce((s, o) => s + (valorDe(o) || 0), 0);
