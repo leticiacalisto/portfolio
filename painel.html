@@ -3660,6 +3660,10 @@
   #tabelaEmpresas .col-sel-marca input{ width:16px; height:16px; cursor:pointer; accent-color:var(--coral); }
   #tabelaEmpresas .col-sel-marca input:disabled{ cursor:not-allowed; opacity:.35; }
 
+  /* ---- Aba Portfólio: troca entre o portfólio UGC e o AP da Lê ---- */
+  .grupo-topo-portfolio{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .separador-topo-portfolio{ width:1px; height:22px; background:var(--borda); }
+
   /* ---- Ficha da marca: bloco Prospecção ---- */
   .marca-datas{ margin:16px 0 4px; display:flex; flex-direction:column; gap:4px; }
   .marca-dica{ font-size:.76rem; color:var(--texto-suave); }
@@ -4185,9 +4189,16 @@
     <section id="painel-portfolio" class="painel-aba" hidden>
       <div class="painel-quadro-secao">
         <div class="topo-quadro">
+          <div class="grupo-topo-portfolio">
+          <div class="alternador-visualizacao alternador-mini alternador-qual-portfolio" id="alternadorQualPortfolio" aria-label="Qual portfólio">
+            <button type="button" class="btn-alternador ativo" data-qual-portfolio="principal">Portfólio UGC</button>
+            <button type="button" class="btn-alternador" data-qual-portfolio="ap-da-le">AP da Lê</button>
+          </div>
+          <span class="separador-topo-portfolio" aria-hidden="true"></span>
           <div class="alternador-visualizacao alternador-mini" id="alternadorPortfolio">
             <button type="button" class="btn-alternador ativo" data-vis-portfolio="geral">Análise Geral</button>
             <button type="button" class="btn-alternador" data-vis-portfolio="videos">Vídeos</button>
+          </div>
           </div>
           <div class="acoes-topo-quadro">
             <div class="alternador-visualizacao alternador-mini" id="filtrosPeriodo">
@@ -7142,6 +7153,22 @@
   let leadsCache = [];
   const avisoErro = document.getElementById("avisoErro");
 
+  // Dois portfólios no mesmo rastreamento: o principal (/) e o de reforma (/ap-da-le/).
+  // O js/rastreamento.js manda metadata.pagina; eventos antigos (sem esse campo) são do principal.
+  var portfolioVisivel = "principal";
+  try {
+    if (localStorage.getItem("painelPortfolioVisivel") === "ap-da-le") portfolioVisivel = "ap-da-le";
+  } catch (erro) {}
+  function paginaDoEvento(e) {
+    return e && e.metadata && e.metadata.pagina === "ap-da-le" ? "ap-da-le" : "principal";
+  }
+  function eventosDoPortfolio() {
+    return eventosCache.filter((e) => paginaDoEvento(e) === portfolioVisivel);
+  }
+  function leadsDoPortfolio() {
+    return leadsCache.filter((l) => (l && l.source === "ap-da-le" ? "ap-da-le" : "principal") === portfolioVisivel);
+  }
+
   try {
     [eventosCache, leadsCache] = await Promise.all([
       buscarTudo("portfolio_events"),
@@ -7334,8 +7361,10 @@
   // RENDERIZAÇÃO: ABA MENU PRINCIPAL
   // ---------------------------------------------------------------
   function renderizarPrincipal() {
-    const eventos = filtrarPorPeriodo(eventosCache);
-    const leads = filtrarPorPeriodo(leadsCache);
+    const doPortfolio = eventosDoPortfolio();
+    const leadsDoPf = leadsDoPortfolio();
+    const eventos = filtrarPorPeriodo(doPortfolio);
+    const leads = filtrarPorPeriodo(leadsDoPf);
 
     const cartoes = document.getElementById("cartoesPortfolio");
     if (!cartoes) return;
@@ -7343,12 +7372,12 @@
     const ehContato = (e) => e.event_type === "button_click" && (e.event_name || "").startsWith("contact_");
     // cada cartão: total do período escolhido, "Hoje" em destaque e barrinhas dos últimos 7 dias (hoje em roxo)
     const metricas = [
-      { rotulo: "Visitas", todos: eventosCache.filter((e) => e.event_type === "page_view"), filtrados: deTipo(eventos, "page_view") },
-      { rotulo: "Visitantes únicos", todos: eventosCache.filter((e) => e.event_type === "page_view"), filtrados: deTipo(eventos, "page_view"), unicos: true },
-      { rotulo: "Cliques em botões", todos: eventosCache.filter((e) => e.event_type === "button_click"), filtrados: deTipo(eventos, "button_click") },
-      { rotulo: "Contatos", dica: "Cliques em WhatsApp, e-mail, Instagram ou no envio do formulário", todos: eventosCache.filter(ehContato), filtrados: eventos.filter(ehContato) },
-      { rotulo: "Vídeos vistos", todos: eventosCache.filter((e) => e.event_type === "video_view"), filtrados: deTipo(eventos, "video_view") },
-      { rotulo: "Mensagens", todos: leadsCache, filtrados: leads },
+      { rotulo: "Visitas", todos: doPortfolio.filter((e) => e.event_type === "page_view"), filtrados: deTipo(eventos, "page_view") },
+      { rotulo: "Visitantes únicos", todos: doPortfolio.filter((e) => e.event_type === "page_view"), filtrados: deTipo(eventos, "page_view"), unicos: true },
+      { rotulo: "Cliques em botões", todos: doPortfolio.filter((e) => e.event_type === "button_click"), filtrados: deTipo(eventos, "button_click") },
+      { rotulo: "Contatos", dica: "Cliques em WhatsApp, e-mail, Instagram ou no envio do formulário", todos: doPortfolio.filter(ehContato), filtrados: eventos.filter(ehContato) },
+      { rotulo: "Vídeos vistos", todos: doPortfolio.filter((e) => e.event_type === "video_view"), filtrados: deTipo(eventos, "video_view") },
+      { rotulo: "Mensagens", todos: leadsDoPf, filtrados: leads },
     ];
     const hoje = hojeIso();
     const dias = Array.from({ length: 7 }, (_, i) => somarDiasIso(hoje, i - 6));
@@ -7411,12 +7440,13 @@
   // RENDERIZAÇÃO: ABA PORTFÓLIO
   // ---------------------------------------------------------------
   function renderizarPortfolio() {
-    const eventos = filtrarPorPeriodo(eventosCache);
-    const leads = filtrarPorPeriodo(leadsCache);
+    const doPortfolio = eventosDoPortfolio();
+    const eventos = filtrarPorPeriodo(doPortfolio);
+    const leads = filtrarPorPeriodo(leadsDoPortfolio());
 
     // "Vídeos mais vistos" (aba Vídeos) sempre mostra tudo — o filtro de
     // período no topo só vale pra Análise Geral.
-    renderizarVideos(eventosCache.filter((e) => e.event_type === "video_view"), eventosCache.filter((e) => e.event_type === "video_tempo"));
+    renderizarVideos(doPortfolio.filter((e) => e.event_type === "video_view"), doPortfolio.filter((e) => e.event_type === "video_tempo"));
     renderizarBotoes(eventos.filter((e) => e.event_type === "button_click"));
     renderizarContatos(
       eventos.filter((e) => e.event_type === "button_click" && (e.event_name || "").startsWith("contact_"))
@@ -7434,6 +7464,13 @@
     ["sobre", "Sobre"], ["marcas", "Marcas"], ["case", "Case"], ["portfolio", "Vídeos"], ["fotos", "Fotos"],
     ["servicos", "Serviços"], ["depoimentos", "Depoimentos"], ["contato", "Contato"],
   ];
+  var SECOES_AP_DA_LE = [
+    ["assina", "Quem sou"], ["como-fica", "Como vai ficar"], ["projeto", "Projeto"], ["tour", "Tour 3D"], ["nicho", "Vídeos"],
+    ["marcas", "Marcas"], ["procuro", "O que procuro"], ["parceria", "Parceria"], ["duvidas", "Dúvidas"], ["contato", "Contato"],
+  ];
+  function secoesDoPortfolio() {
+    return portfolioVisivel === "ap-da-le" ? SECOES_AP_DA_LE : SECOES_PORTFOLIO;
+  }
   var POUCAS_VISITAS = 10;
   var canalLeitura = "todos";
   // o mesmo canal chega com nomes diferentes nos links (?origem=ig e ?origem=instagram)
@@ -7478,7 +7515,11 @@
     if (!tabela || !funil || !sel) return;
     const visitas = visitasDeLeitura(eventos);
     if (!visitas.length) {
-      tabela.innerHTML = textoVazio("A medição de tempo e rolagem começou em 10/11/2026. Os números aparecem conforme as visitas chegam.");
+      tabela.innerHTML = textoVazio(
+        portfolioVisivel === "ap-da-le"
+          ? "A medição do AP da Lê começou em 17/11/2026. Os números aparecem conforme as visitas chegam."
+          : "A medição de tempo e rolagem começou em 10/11/2026. Os números aparecem conforme as visitas chegam."
+      );
       funil.innerHTML = "";
       sel.hidden = true;
       return;
@@ -7499,9 +7540,10 @@
     if (canalLeitura !== "todos" && !porCanal.has(canalLeitura)) canalLeitura = "todos";
     sel.innerHTML = `<option value="todos">Todos os canais</option>` + canais.map(([c]) => `<option value="${esc(c)}"${c === canalLeitura ? " selected" : ""}>${esc(nomeDaOrigem(c))}</option>`).join("");
     const lista = canalLeitura === "todos" ? visitas : porCanal.get(canalLeitura);
-    funil.innerHTML = SECOES_PORTFOLIO.map(([id, nome], i) => {
+    const secoes = secoesDoPortfolio();
+    funil.innerHTML = secoes.map(([id, nome], i) => {
       const pct = Math.round((lista.filter((v) => v.secoes.has(id)).length / lista.length) * 100);
-      return `<div class="linha-origem"><span class="nome-origem">${esc(nome)}</span><div class="trilho-origem"><i style="width:${pct}%; background:${degradeBarra(i, SECOES_PORTFOLIO.length)}"></i></div><span class="qtd-origem">${pct}%</span></div>`;
+      return `<div class="linha-origem"><span class="nome-origem">${esc(nome)}</span><div class="trilho-origem"><i style="width:${pct}%; background:${degradeBarra(i, secoes.length)}"></i></div><span class="qtd-origem">${pct}%</span></div>`;
     }).join("") + `<p class="sub-leitura" style="margin-top:8px;">${lista.length} ${lista.length === 1 ? "visita medida" : "visitas medidas"}${lista.length < POUCAS_VISITAS ? " · poucos dados ainda" : ""}.</p>`;
   }
   document.getElementById("selCanalLeitura").addEventListener("change", (evento) => {
@@ -7520,7 +7562,10 @@
   ];
   const nomeDaOrigem = (chave) => NOMES_ORIGEM[chave] || chave;
   function linkDaOrigem(chave) {
-    const base = ((typeof salvosAtuais === "function" && salvosAtuais().portfolio) || "https://leticiacalisto.com").trim();
+    const base =
+      portfolioVisivel === "ap-da-le"
+        ? "https://leticiacalisto.com/ap-da-le/"
+        : ((typeof salvosAtuais === "function" && salvosAtuais().portfolio) || "https://leticiacalisto.com").trim();
     return base + (base.includes("?") ? "&" : "?") + "origem=" + encodeURIComponent(chave);
   }
   function renderizarOrigens(visitas) {
@@ -7549,9 +7594,13 @@
   (function ligarMenuLinksOrigem() {
     const botao = document.getElementById("btnLinksOrigem");
     const pop = document.getElementById("popoverLinksOrigem");
-    pop.innerHTML = `<p>Copiar link do portfólio com origem:</p>` + LINKS_RASTREAVEIS.map(([chave, rotulo]) => `<button type="button" data-copiar-origem="${chave}">${rotulo}</button>`).join("");
+    const desenhar = () => {
+      pop.innerHTML = `<p>Copiar link ${portfolioVisivel === "ap-da-le" ? "do AP da Lê" : "do portfólio"} com origem:</p>` + LINKS_RASTREAVEIS.map(([chave, rotulo]) => `<button type="button" data-copiar-origem="${chave}">${rotulo}</button>`).join("");
+    };
+    desenhar();
     botao.addEventListener("click", (evento) => {
       evento.stopPropagation();
+      if (pop.hidden) desenhar(); // o título acompanha o portfólio escolhido
       pop.hidden = !pop.hidden;
       botao.setAttribute("aria-expanded", String(!pop.hidden));
     });
@@ -7570,6 +7619,27 @@
       prompt("Copie o link:", linkDaOrigem(botao.dataset.copiarOrigem));
     }
   });
+
+  function aplicarPortfolioVisivel() {
+    document.querySelectorAll("[data-qual-portfolio]").forEach((b) => b.classList.toggle("ativo", b.dataset.qualPortfolio === portfolioVisivel));
+  }
+  aplicarPortfolioVisivel();
+  document.querySelectorAll("[data-qual-portfolio]").forEach((b) =>
+    b.addEventListener("click", () => {
+      if (portfolioVisivel === b.dataset.qualPortfolio) return;
+      portfolioVisivel = b.dataset.qualPortfolio;
+      try {
+        localStorage.setItem("painelPortfolioVisivel", portfolioVisivel);
+      } catch (erro) {}
+      aplicarPortfolioVisivel();
+      canalLeitura = "todos";
+      mensagensVisiveis = 5;
+      const pop = document.getElementById("popoverLinksOrigem");
+      if (pop) pop.hidden = true;
+      renderizarPrincipal();
+      renderizarPortfolio();
+    })
+  );
 
   function renderizarVideos(eventosVideo, tempoVideos = []) {
     const container = document.getElementById("listaVideos");
@@ -7748,7 +7818,7 @@
   document.addEventListener("click", (evento) => {
     if (evento.target.closest("#btnMaisMensagens")) {
       mensagensVisiveis += 5;
-      renderizarMensagens(filtrarPorPeriodo(leadsCache));
+      renderizarMensagens(filtrarPorPeriodo(leadsDoPortfolio()));
       return;
     }
     const botao = evento.target.closest("#listaMensagens .btn-acao");
@@ -7763,8 +7833,8 @@
       const op = lead && lead.oportunidade_id ? oportunidadesCache.find((o) => o.id === lead.oportunidade_id) : null;
       if (op && oportunidadeAberta(op) && cadenciaDaOportunidade(op) === "IN_RESPOSTA") executarAcaoOportunidade(op, "contato");
     }
-    if (botao.hasAttribute("data-lead-respondido")) renderizarMensagens(filtrarPorPeriodo(leadsCache));
-    else setTimeout(() => renderizarMensagens(filtrarPorPeriodo(leadsCache)), 300);
+    if (botao.hasAttribute("data-lead-respondido")) renderizarMensagens(filtrarPorPeriodo(leadsDoPortfolio()));
+    else setTimeout(() => renderizarMensagens(filtrarPorPeriodo(leadsDoPortfolio())), 300);
   });
 
   // ---------------------------------------------------------------

@@ -39,12 +39,20 @@
     });
   }
 
+  // Qual portfólio mandou o evento: o principal (/) ou o de reforma (/ap-da-le/).
+  // O painel usa isso para separar as métricas de cada um.
+  var CAMINHO = location.pathname.replace(/\/index\.html$/, "/");
+  var PAGINA = /^\/ap-da-le(\/|$)/.test(CAMINHO) ? "ap-da-le" : "principal";
+
   function evento(tipo, nome, metadata) {
+    var dados = {};
+    if (metadata) for (var k in metadata) if (Object.prototype.hasOwnProperty.call(metadata, k)) dados[k] = metadata[k];
+    dados.pagina = PAGINA;
     enviar("portfolio_events", {
       event_type: tipo,
       event_name: nome || null,
       session_id: idSessao(),
-      metadata: metadata || null,
+      metadata: dados,
     });
   }
 
@@ -52,7 +60,7 @@
     enviar("portfolio_leads", dados);
   }
 
-  window.Rastreamento = { evento: evento, lead: lead };
+  window.Rastreamento = { evento: evento, lead: lead, pagina: PAGINA };
 
   // De onde veio a visita. Prioridade: o parâmetro do link (?origem=instagram,
   // ?utm_source=..., ?ref=...) e só depois o site de referência (document.referrer).
@@ -102,12 +110,11 @@
   window.Rastreamento.origem = origemAtual.origem;
   evento("page_view", null, origemAtual);
 
-  // LEITURA (só no portfólio, a página inicial): quanto tempo a pessoa ficou com
+  // LEITURA (nos dois portfólios: o principal e o AP da Lê): quanto tempo a pessoa ficou com
   // a página na tela, até quantos % rolou e até qual seção chegou. Vai como evento
   // "leitura" toda vez que a página sai da tela (troca de aba, app, fecha); os
   // valores são acumulados e o painel fica com o maior de cada visita.
-  var caminho = location.pathname.replace(/\/index\.html$/, "/");
-  if (caminho === "/") {
+  if (CAMINHO === "/" || PAGINA === "ap-da-le") {
     var visita = "v_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
     var TEMPO_MAXIMO_MS = 30 * 60 * 1000; // aba esquecida aberta não distorce a média
     var tempoAtivo = 0;
@@ -142,7 +149,7 @@
       var resumo = tempoS + "|" + rolagemMaxima + "|" + secaoMaisFunda;
       if (resumo === ultimoEnvio || tempoS < 1) return;
       ultimoEnvio = resumo;
-      evento("leitura", "portfolio", {
+      evento("leitura", PAGINA === "ap-da-le" ? "ap-da-le" : "portfolio", {
         visita: visita,
         origem: origemAtual.origem,
         tempo_s: tempoS,
@@ -198,6 +205,19 @@
     // painel não ficar com "0 cliques" só porque o botão não foi marcado à mão.
     var alvo = evt.target.closest("button, a[href]");
     if (alvo) {
+      // link de WhatsApp, e-mail ou Instagram sem marcação conta como contato
+      var href = alvo.getAttribute("href") || "";
+      var contato = /^https?:\/\/(wa\.me|api\.whatsapp\.com)\//i.test(href)
+        ? "contact_whatsapp"
+        : /^mailto:/i.test(href)
+        ? "contact_email"
+        : /^https?:\/\/(www\.)?instagram\.com\//i.test(href)
+        ? "contact_instagram"
+        : "";
+      if (contato) {
+        evento("button_click", contato);
+        return;
+      }
       var rotulo = (alvo.getAttribute("aria-label") || alvo.textContent || alvo.getAttribute("href") || "").replace(/\s+/g, " ").trim().slice(0, 50);
       if (rotulo) evento("button_click", "botao: " + rotulo);
     }
