@@ -28,6 +28,10 @@ create table if not exists transcricoes (
   segmentos jsonb
 );
 
+-- Capa do vídeo (Instagram pelo images.weserv.nl, YouTube pelo i.ytimg.com,
+-- TikTok pelo oembed). Quem já rodou este arquivo antes só precisa desta linha.
+alter table transcricoes add column if not exists capa_url text;
+
 create index if not exists idx_transcricoes_created on transcricoes (created_at desc);
 
 alter table transcricoes enable row level security;
