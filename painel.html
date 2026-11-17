@@ -20494,7 +20494,7 @@ ${botao}
     document.getElementById("prospPreviaDe").textContent = "Letícia Calisto" + (prospEmailUsuaria ? " <" + prospEmailUsuaria + ">" : "") + " · para você";
     prospEscreverFrame(document.getElementById("prospPreviaFrame"), m.html);
     const overlay = document.getElementById("prospOverlayTelaCheia");
-    if (!overlay.hidden) {
+    if (!overlay.hidden && overlay.dataset.modo !== "historico") {
       document.getElementById("prospTelaCheiaAssunto").textContent = m.assunto || "(sem assunto)";
       document.getElementById("prospTelaCheiaDe").textContent = document.getElementById("prospPreviaDe").textContent;
       prospEscreverFrame(document.getElementById("prospTelaCheiaFrame"), m.html);
@@ -20598,6 +20598,45 @@ ${botao}
     if (restam <= 1) await Auth.sb.from("disparos").update({ status: "concluido" }).eq("id", disparoId);
   }
 
+  // Abre o e-mail como ele saiu para aquela marca: o texto do disparo fica guardado
+  // em "disparos" e é montado de novo com os dados da marca (o mesmo jeito do envio).
+  function prospVerEnvio(idEnvio) {
+    const v = enviosCache.find((x) => x.id === idEnvio);
+    if (!v) return;
+    const d = disparosCache.find((x) => x.id === v.disparo_id) || {};
+    const empresa = empresasCache.find((e) => e.id === v.empresa_id) || { id: "", nome: prospEmpresaNome(v.empresa_id) || "Marca", contato_principal: "" };
+    const op = v.oportunidade_id ? oportunidadesCache.find((o) => o.id === v.oportunidade_id) || null : null;
+    const overlay = document.getElementById("prospOverlayTelaCheia");
+    const frame = document.getElementById("prospTelaCheiaFrame");
+    const quando = v.enviado_em || v.created_at;
+    const canal = d.canal === "resend" ? "pelo Resend" : "pelo Gmail";
+    let html;
+    let assunto = v.assunto || d.assunto || "";
+    if (d.corpo) {
+      const formato = d.formato === "html" ? "html" : "texto";
+      const r = {
+        modelo: d.modelo_codigo || "",
+        assunto: d.assunto || "",
+        texto: formato === "texto" ? d.corpo : "",
+        html: formato === "html" ? d.corpo : "",
+        botaoTexto: d.botao_texto || "",
+        botaoLink: d.botao_link || "",
+        formato,
+      };
+      const m = prospMontarParaMarca(empresa, op, r);
+      html = m.html;
+      if (!assunto) assunto = m.assunto;
+    } else {
+      html = `<div style="font-family:system-ui,Arial,sans-serif;padding:28px;color:#4A443C;font-size:15px;line-height:1.5">O texto deste envio não ficou guardado. Ele saiu antes de o painel começar a guardar o texto de cada disparo.</div>`;
+    }
+    overlay.dataset.modo = "historico";
+    document.getElementById("prospTelaCheiaAssunto").textContent = assunto || "(sem assunto)";
+    document.getElementById("prospTelaCheiaDe").textContent =
+      "Para " + (empresa.nome ? empresa.nome + " <" + v.email + ">" : v.email) + (quando ? " · " + formatarDataBr(diaLocalDe(quando)) : "") + " · " + canal;
+    prospEscreverFrame(frame, html);
+    overlay.hidden = false;
+  }
+
   function renderizarHistoricoProspeccao() {
     const corpo = document.getElementById("prospCorpoHistorico");
     const busca = semAcentoOp(document.getElementById("prospBuscaHistorico").value);
@@ -20620,6 +20659,7 @@ ${botao}
         const canal = d.canal === "resend" ? "Resend" : "Gmail";
         const status = `<span class="prosp-status prosp-status-${esc(v.status)}">${esc(nomeStatus[v.status] || v.status)}</span>` + (v.erro ? `<small class="prosp-erro">${esc(v.erro)}</small>` : "");
         const acoes = [
+          `<button type="button" class="btn-acao-op principal" data-prosp-ver="${v.id}">Ver e-mail</button>`,
           v.status === "enviado" ? `<button type="button" class="btn-acao-op" data-prosp-hist="respondeu" data-envio="${v.id}">Respondeu</button>` : "",
           v.status === "enviado" || v.status === "erro" ? `<button type="button" class="btn-acao-op" data-prosp-hist="optout" data-envio="${v.id}">Descadastrou</button>` : "",
         ].join("");
@@ -20634,6 +20674,7 @@ ${botao}
         </tr>`;
       })
       .join("");
+    corpo.querySelectorAll("[data-prosp-ver]").forEach((botao) => botao.addEventListener("click", () => prospVerEnvio(botao.dataset.prospVer)));
     corpo.querySelectorAll("[data-prosp-hist]").forEach((botao) =>
       botao.addEventListener(
         "click",
@@ -21063,6 +21104,7 @@ ${botao}
     if (ev.target.closest("[data-prosp-ir-marcas]")) prospIrParaMarcas();
   });
   document.getElementById("prospBtnTelaCheia").addEventListener("click", () => {
+    document.getElementById("prospOverlayTelaCheia").dataset.modo = "previa";
     document.getElementById("prospOverlayTelaCheia").hidden = false;
     renderizarPreviaProspeccao();
   });
