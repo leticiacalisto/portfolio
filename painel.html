@@ -1099,6 +1099,8 @@
   .canal-modelo{ flex:none; font-size:.66rem; font-weight:600; padding:2px 8px; border-radius:99px; background:var(--creme); color:var(--texto-suave); }
   .quando-modelo{ font-size:.72rem; font-weight:600; color:#6B5BA8; }
   .previa-modelo{ margin-top:4px; font-size:.76rem; line-height:1.45; color:var(--texto-suave); display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+  .usar-prompt{ align-self:flex-start; margin-top:8px; padding:5px 12px; border-radius:99px; background:#EFEAF8; color:#6B5BA8; font-size:.74rem; font-weight:600; }
+  .modelo-passo:hover .usar-prompt{ background:#E3D9F8; }
   .codigo-modelo{ margin-top:6px; font-size:.62rem; letter-spacing:.04em; color:var(--cinza-claro); }
 
   /* Janela da oportunidade: a sequência inteira, passo a passo */
@@ -6439,6 +6441,7 @@
             <option value="email">E-mail</option>
             <option value="whatsapp">WhatsApp</option>
             <option value="dm/email">DM ou e-mail</option>
+            <option value="ia">Claude no Chrome (prompt)</option>
           </select>
         </div>
         <div>
@@ -6496,6 +6499,7 @@
       <button type="button" id="btnCopiarUsarModelo" class="btn-acao-op">Copiar</button>
       <button type="button" id="btnWhatsappUsarModelo" class="btn-acao-op" title="Abrir no WhatsApp">WhatsApp</button>
       <button type="button" id="btnEmailUsarModelo" class="btn-acao-op" title="Abrir no e-mail">E-mail</button>
+      <button type="button" id="btnEditarUsarModelo" class="btn-acao-op" hidden>Editar o modelo</button>
       <span style="flex-grow:1"></span>
       <button type="button" id="btnEnviadaUsarModelo" class="btn-salvar-quadro" hidden>Marcar como enviada ✓</button>
     </div>
@@ -16780,10 +16784,35 @@
     contato_principal: ["contato", "pessoa de contato", "contato principal", "responsavel"],
     whatsapp: ["whatsapp", "whats", "telefone", "celular"],
     email: ["email", "e-mail"],
-    instagram: ["instagram", "insta", "perfil"],
+    instagram: ["instagram", "insta", "perfil", "@ do perfil"],
     site: ["site", "website", "url"],
     observacoes: ["observacoes", "observacao", "obs", "notas"],
+    email_marketing: ["e-mail marketing", "email marketing", "e-mail do marketing", "email do marketing"],
+    seguidores_instagram: ["seguidores", "seguidores instagram", "quantidade de seguidores"],
+    uf: ["uf", "estado"],
+    porte: ["porte", "tamanho"],
+    usa_ugc: ["usa ugc", "usa video de creator", "video de creator", "ja usa ugc"],
   };
+  // Converte o texto da planilha para o formato de cada coluna
+  function valorImportadoMarca(campo, bruto) {
+    const texto = String(bruto || "").trim();
+    if (!texto || /^(nao encontrado|não encontrado|-|—|n\/a)$/i.test(texto)) return null;
+    if (campo === "seguidores_instagram") {
+      const t = texto.toLowerCase().replace(/\s/g, "");
+      const numero = parseFloat(t.replace(/[^\d,.]/g, "").replace(/\.(?=\d{3}(\D|$))/g, "").replace(",", "."));
+      if (isNaN(numero)) return null;
+      const mult = /mi|m$/.test(t) && !/mil/.test(t) ? 1e6 : /mil|k/.test(t) ? 1e3 : 1;
+      return Math.round(numero * mult);
+    }
+    if (campo === "usa_ugc") {
+      const n = normalizarCabecalhoImportacao(texto);
+      return n.startsWith("sim") ? true : n.startsWith("nao") ? false : null;
+    }
+    if (campo === "porte") return normalizarCabecalhoImportacao(texto).startsWith("grande") ? "grande" : "pequena";
+    if (campo === "uf") return texto.slice(0, 2).toUpperCase();
+    if (campo === "instagram") return texto.replace(/^https?:\/\/(www\.)?instagram\.com\//i, "@").replace(/\/$/, "");
+    return texto;
+  }
   const overlayImportarMarcas = document.getElementById("overlayImportarMarcas");
   const arquivoImportarMarcas = document.getElementById("arquivoImportarMarcas");
   const resumoImportarMarcas = document.getElementById("resumoImportarMarcas");
@@ -16814,7 +16843,9 @@
       return;
     }
     try {
-      const livro = XLSX.read(await arquivo.arrayBuffer(), { type: "array" });
+      // CSV é lido como texto UTF-8 (senão os acentos chegam quebrados: "não" vira "nÃ£o")
+      const ehCsv = /\.csv$/i.test(arquivo.name || "");
+      const livro = ehCsv ? XLSX.read((await arquivo.text()).replace(/^\uFEFF/, ""), { type: "string" }) : XLSX.read(await arquivo.arrayBuffer(), { type: "array" });
       const linhas = XLSX.utils.sheet_to_json(livro.Sheets[livro.SheetNames[0]], { header: 1, defval: "", raw: false });
       if (!linhas.length) throw new Error("vazia");
       const cabecalho = linhas[0].map(normalizarCabecalhoImportacao);
@@ -16840,7 +16871,7 @@
         vistos.add(chave);
         const marca = { nome };
         Object.keys(indice).forEach((campo) => {
-          if (campo !== "nome") marca[campo] = String(linha[indice[campo]] || "").trim() || null;
+          if (campo !== "nome") marca[campo] = valorImportadoMarca(campo, linha[indice[campo]]);
         });
         marcasParaImportar.push(marca);
       });
@@ -16910,8 +16941,8 @@
   function baixarModeloImportacaoMarcas() {
     if (typeof XLSX === "undefined") return;
     const planilha = XLSX.utils.aoa_to_sheet([
-      ["Marca", "Nicho", "Contato", "WhatsApp", "E-mail", "Instagram", "Site", "Observações"],
-      ["Marca Exemplo", "Beleza", "Maria", "11999999999", "contato@exemplo.com", "@marcaexemplo", "https://exemplo.com", ""],
+      ["Marca", "Nicho", "Contato", "Instagram", "Seguidores", "Site", "E-mail", "E-mail marketing", "WhatsApp", "UF", "Porte", "Usa UGC", "Observações"],
+      ["Marca Exemplo", "Beleza", "Maria", "@marcaexemplo", "12500", "https://exemplo.com", "contato@exemplo.com", "marketing@exemplo.com", "11999999999", "SP", "pequena", "sim", ""],
     ]);
     const livro = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(livro, planilha, "Marcas");
@@ -17570,6 +17601,7 @@
   };
   // Grupos da aba Modelos que não são uma sequência automática
   const GRUPOS_MODELO_EXTRAS = {
+    PROSPECCAO_IA: { nome: "Buscar marcas com o Claude no Chrome", explica: "Prompts para encontrar marcas novas. Ajuste os campos, copie, cole no Claude no Chrome e importe a planilha que voltar em Marcas > Importar: as colunas já vêm no formato certo." },
     DIREITO_USO: { nome: "Direito de uso vencendo", explica: "Para quando o direito de uso de um vídeo está perto de vencer: pedir os resultados e oferecer renovação ou um criativo novo. Aparece em Campanhas > Tráfego Pago." },
   };
   // Quando cada modelo é usado, para os que não seguem a contagem de dias da sequência
@@ -17580,8 +17612,12 @@
     "REAT-CHECK": "A cada 75 dias (30 se a marca for recorrente)",
     "REAT-SAZ": "45 dias antes de uma data comemorativa",
     "DIR-USO": "Quando faltam 30 dias para o direito de uso vencer",
+    "BUSCA-PRODUTO": "Quando quiser marcas que vendem um produto específico",
+    "BUSCA-NICHO": "Quando quiser marcas pequenas e novas de um nicho",
+    "BUSCA-LINKEDIN": "Quando quiser falar direto com o marketing da empresa",
+    "BUSCA-LOJA": "Na página de marcas da Shopee, Mercado Livre, Amazon…",
   };
-  const NOME_CANAL_MODELO = { dm: "Direct", email: "E-mail", whatsapp: "WhatsApp", "dm/email": "Direct ou e-mail" };
+  const NOME_CANAL_MODELO = { dm: "Direct", email: "E-mail", whatsapp: "WhatsApp", "dm/email": "Direct ou e-mail", ia: "Claude no Chrome" };
   const DIAS_ESPERA_FIM_CADENCIA = 5;
   const MOTIVOS_PERDA = {
     depois: { rotulo: "Pediu para chamar depois", retornoDias: 60 },
@@ -19250,6 +19286,9 @@
     { chave: "ideia_video", rotulo: "Ideia de vídeo" },
     { chave: "case", rotulo: "Case / marca parecida" },
     { chave: "data_sazonal", rotulo: "Data sazonal" },
+    { chave: "quantidade", rotulo: "Quantas" },
+    { chave: "seguidores_max", rotulo: "Seguidores (no máximo)" },
+    { chave: "ecommerce", rotulo: "Loja ou marketplace" },
     { chave: "video", rotulo: "Vídeo" },
     { chave: "vencimento", rotulo: "Vencimento" },
   ];
@@ -19294,6 +19333,106 @@ Passando porque o direito de uso do vídeo "{{video}}" {{vencimento}}. Antes de 
 
 E me conta: vocês querem renovar o direito de uso desse vídeo ou preferem testar um criativo novo? Posso montar uma proposta para as duas opções 💛`,
   };
+  // Prompts para buscar marcas novas com o Claude no Chrome: a planilha que volta
+  // já vem com as colunas da importação da aba Marcas.
+  const PROMPTS_BUSCA_MARCAS = [
+    { codigo: "BUSCA-PRODUTO", nome: "Marcas de um produto", canal: "ia", cadencia: "PROSPECCAO_IA", toque: null, assunto: null, ordem: 90, corpo: `Quero encontrar empresas pra prospectar como cliente do meu trabalho de UGC, criando vídeo pra marca.
+
+Meu foco: empresas que vendam ou produzam {{produto}}.
+
+Encontre {{quantidade}} empresas diferentes que tenham esse produto.
+
+Monte uma planilha (.xlsx; se não der, CSV) com uma marca por linha e exatamente estas colunas, nesta ordem e com estes nomes no cabeçalho:
+Marca | Nicho | Contato | Instagram | Seguidores | Site | E-mail | E-mail marketing | WhatsApp | UF | Porte | Usa UGC | Observações
+
+Como preencher:
+- Nicho: {{nicho}}
+- Contato: nome da pessoa responsável, se aparecer
+- Instagram: o @ do perfil
+- Seguidores: só o número (ex.: 12500)
+- E-mail: o contato geral da marca; E-mail marketing: o do marketing ou de parcerias, se encontrar
+- WhatsApp: com DDD, se estiver no perfil ou no site
+- UF: a sigla do estado da marca, se aparecer
+- Porte: "pequena" ou "grande" (grande = marca conhecida ou com mais de 500 mil seguidores)
+- Usa UGC: "sim" se a marca já postou ou usa vídeo feito por creator, "não" se não encontrou nenhum
+- Observações: o link do produto e o que você achou da marca (preço, qualidade das fotos e vídeos, se parece estar crescendo)
+
+Se não encontrar uma informação, deixe a célula vazia. Nunca invente contato.
+
+Me mande a planilha pronta pra baixar.` },
+    { codigo: "BUSCA-NICHO", nome: "Marcas pequenas de um nicho", canal: "ia", cadencia: "PROSPECCAO_IA", toque: null, assunto: null, ordem: 91, corpo: `Quero fechar parceria com marcas que vendam {{produto}}.
+
+Encontre marcas brasileiras com até {{seguidores_max}} seguidores no Instagram. Prefiro marcas novas, que estão começando a aparecer. Não repita marca grande e conhecida: o foco é quem está crescendo agora.
+
+Me traga {{quantidade}} marcas.
+
+Monte uma planilha (.xlsx; se não der, CSV) com uma marca por linha e exatamente estas colunas, nesta ordem e com estes nomes no cabeçalho:
+Marca | Nicho | Contato | Instagram | Seguidores | Site | E-mail | E-mail marketing | WhatsApp | UF | Porte | Usa UGC | Observações
+
+Como preencher:
+- Nicho: {{nicho}}
+- Contato: nome da pessoa responsável, se aparecer
+- Instagram: o @ do perfil
+- Seguidores: só o número (ex.: 12500)
+- E-mail: o contato geral da marca; E-mail marketing: o do marketing ou de parcerias, se encontrar
+- WhatsApp: com DDD, se estiver no perfil ou no site
+- UF: a sigla do estado da marca, se aparecer
+- Porte: "pequena" ou "grande" (grande = marca conhecida ou com mais de 500 mil seguidores)
+- Usa UGC: "sim" se a marca já postou ou usa vídeo feito por creator, "não" se não encontrou nenhum
+- Observações: o que a marca vende e por que ela parece estar crescendo
+
+Se não encontrar uma informação, deixe a célula vazia. Nunca invente contato.
+
+Me mande a planilha pronta pra baixar.` },
+    { codigo: "BUSCA-LINKEDIN", nome: "A pessoa certa dentro da empresa", canal: "ia", cadencia: "PROSPECCAO_IA", toque: null, assunto: null, ordem: 92, corpo: `Estou procurando novos clientes pra oferecer meu trabalho como criadora de conteúdo UGC.
+
+Encontre no LinkedIn pessoas responsáveis pelo marketing de empresas brasileiras do nicho de {{nicho}}. Prefiro analista, coordenador ou gerente de marketing, não o dono da empresa.
+
+Me traga {{quantidade}} pessoas, uma por empresa.
+
+Monte uma planilha (.xlsx; se não der, CSV) com uma marca por linha e exatamente estas colunas, nesta ordem e com estes nomes no cabeçalho:
+Marca | Nicho | Contato | Instagram | Seguidores | Site | E-mail | E-mail marketing | WhatsApp | UF | Porte | Usa UGC | Observações
+
+Como preencher:
+- Nicho: {{nicho}}
+- Contato: nome e cargo da pessoa (ex.: Ana Souza, coordenadora de marketing)
+- Instagram: o @ do perfil
+- Seguidores: só o número (ex.: 12500)
+- E-mail: o contato geral da marca; E-mail marketing: o do marketing ou de parcerias, se encontrar
+- WhatsApp: com DDD, se estiver no perfil ou no site
+- UF: a sigla do estado da marca, se aparecer
+- Porte: "pequena" ou "grande" (grande = marca conhecida ou com mais de 500 mil seguidores)
+- Usa UGC: "sim" se a marca já postou ou usa vídeo feito por creator, "não" se não encontrou nenhum
+- Observações: o link do perfil da pessoa no LinkedIn e se a empresa já falou alguma coisa sobre UGC ou creator
+
+Se não encontrar uma informação, deixe a célula vazia. Nunca invente contato.
+
+Me mande a planilha pronta pra baixar.` },
+    { codigo: "BUSCA-LOJA", nome: "Marcas de um e-commerce ou marketplace", canal: "ia", cadencia: "PROSPECCAO_IA", toque: null, assunto: null, ordem: 93, corpo: `Esta página tem a lista de marcas que vendem em {{ecommerce}}.
+
+Separe as marcas do nicho de {{nicho}} e, pra cada uma, procure o Instagram, quantos seguidores tem, o site próprio, o e-mail de contato ou de marketing e se ela já usa vídeo de creator na página do produto.
+
+Me devolva {{quantidade}} marcas, da menor pra maior em seguidores.
+
+Monte uma planilha (.xlsx; se não der, CSV) com uma marca por linha e exatamente estas colunas, nesta ordem e com estes nomes no cabeçalho:
+Marca | Nicho | Contato | Instagram | Seguidores | Site | E-mail | E-mail marketing | WhatsApp | UF | Porte | Usa UGC | Observações
+
+Como preencher:
+- Nicho: {{nicho}}
+- Contato: nome da pessoa responsável, se aparecer
+- Instagram: o @ do perfil
+- Seguidores: só o número (ex.: 12500)
+- E-mail: o contato geral da marca; E-mail marketing: o do marketing ou de parcerias, se encontrar
+- WhatsApp: com DDD, se estiver no perfil ou no site
+- UF: a sigla do estado da marca, se aparecer
+- Porte: "pequena" ou "grande" (grande = marca conhecida ou com mais de 500 mil seguidores)
+- Usa UGC: "sim" se a marca já postou ou usa vídeo feito por creator, "não" se não encontrou nenhum
+- Observações: o link da loja da marca em {{ecommerce}} e se o produto dela tem vídeo de creator na página
+
+Se não encontrar uma informação, deixe a célula vazia. Nunca invente contato.
+
+Me mande a planilha pronta pra baixar.` }
+  ];
   let modelosAjustados = false;
 
   async function ajustarModelosPadrao() {
@@ -19305,6 +19444,12 @@ E me conta: vocês querem renovar o direito de uso desse vídeo ou preferem test
       if (!novo || m.nome !== novo[0]) continue;
       const { error } = await Auth.sb.from("crm_modelos").update({ nome: novo[1] }).eq("id", m.id);
       if (!error) mudou = true;
+    }
+    for (const prompt of PROMPTS_BUSCA_MARCAS) {
+      if (modeloPorCodigo(prompt.codigo)) continue;
+      const { error } = await Auth.sb.from("crm_modelos").insert(prompt);
+      if (!error) mudou = true;
+      else modelosCache.push({ id: "local-" + prompt.codigo, ...prompt });
     }
     if (!modeloPorCodigo(MODELO_DIREITO_USO.codigo)) {
       const { error } = await Auth.sb.from("crm_modelos").insert(MODELO_DIREITO_USO);
@@ -19409,6 +19554,7 @@ E me conta: vocês querem renovar o direito de uso desse vídeo ou preferem test
                     ${quandoDoModelo(m.codigo) ? `<span class="quando-modelo">${esc(quandoDoModelo(m.codigo))}</span>` : ""}
                     <span class="previa-modelo">${esc((m.corpo || "").replace(/\s+/g, " ").slice(0, 170))}${(m.corpo || "").length > 170 ? "…" : ""}</span>
                     <span class="codigo-modelo">${esc(m.codigo)}</span>
+                    ${m.canal === "ia" ? `<span class="usar-prompt" data-usar-prompt="${esc(m.codigo)}" role="button">Usar prompt →</span>` : ""}
                   </span>
                 </button></li>`
               )
@@ -19417,7 +19563,15 @@ E me conta: vocês querem renovar o direito de uso desse vídeo ou preferem test
         </section>`;
       })
       .join("");
-    lista.querySelectorAll("[data-modelo]").forEach((el) => el.addEventListener("click", () => abrirEditorModelo(modeloPorCodigo(el.dataset.modelo))));
+    lista.querySelectorAll("[data-modelo]").forEach((el) =>
+      el.addEventListener("click", (evento) => {
+        const usar = evento.target.closest("[data-usar-prompt]");
+        if (usar) return abrirUsarModelo(usar.dataset.usarPrompt, null, { variaveis: { quantidade: "20", seguidores_max: "50 mil", ecommerce: "", nicho: "", produto: "" } });
+        const m = modeloPorCodigo(el.dataset.modelo);
+        if (m && m.canal === "ia") return abrirUsarModelo(m.codigo, null, { variaveis: { quantidade: "20", seguidores_max: "50 mil", ecommerce: "", nicho: "", produto: "" } });
+        abrirEditorModelo(m);
+      })
+    );
   }
 
   const overlayModalModelo = document.getElementById("overlayModalModelo");
@@ -19439,6 +19593,7 @@ E me conta: vocês querem renovar o direito de uso desse vídeo ou preferem test
       ["PROPOSTA", CADENCIAS.PROPOSTA.nome],
       ["REATIVACAO", CADENCIAS.REATIVACAO.nome],
       ["DIREITO_USO", GRUPOS_MODELO_EXTRAS.DIREITO_USO.nome],
+      ["PROSPECCAO_IA", GRUPOS_MODELO_EXTRAS.PROSPECCAO_IA.nome],
     ];
     const atualSequencia = (m && m.cadencia) || "";
     if (!opcoesSequencia.some((o) => o[0] === atualSequencia)) opcoesSequencia.push([atualSequencia, atualSequencia]);
@@ -19523,6 +19678,10 @@ E me conta: vocês querem renovar o direito de uso desse vídeo ou preferem test
     const grupo = infoGrupoModelo(chaveGrupoModelo(modelo)).nome;
     document.getElementById("subtituloModalUsarModelo").textContent = [empresa ? empresa.nome : "", grupo, posicao].filter(Boolean).join(" · ");
     document.getElementById("btnEnviadaUsarModelo").hidden = !ehProximo;
+    const ehPrompt = modelo.canal === "ia";
+    document.getElementById("btnWhatsappUsarModelo").hidden = ehPrompt;
+    document.getElementById("btnEmailUsarModelo").hidden = ehPrompt;
+    document.getElementById("btnEditarUsarModelo").hidden = !ehPrompt;
     // aberta por cima da janela da oportunidade: mostra o caminho de volta
     const veioDaOportunidade = !!op && !overlayModalOportunidade.hidden;
     const voltar = document.getElementById("btnVoltarUsarModelo");
@@ -19547,6 +19706,11 @@ E me conta: vocês querem renovar o direito de uso desse vídeo ou preferem test
     usoModelo = null;
   }
   document.getElementById("btnVoltarUsarModelo").addEventListener("click", fecharUsarModelo);
+  document.getElementById("btnEditarUsarModelo").addEventListener("click", () => {
+    const m = usoModelo && usoModelo.modelo;
+    fecharUsarModelo();
+    if (m) abrirEditorModelo(m);
+  });
   document.getElementById("btnEnviadaUsarModelo").addEventListener(
     "click",
     comFila("acao-oportunidade", async () => {
