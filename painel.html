@@ -19606,7 +19606,13 @@ E me conta: vocês querem renovar o direito de uso desse vídeo ou preferem test
 
   async function recarregarDisparos() {
     try {
-      [disparosCache, enviosCache] = await Promise.all([buscarTudo("disparos"), buscarTudo("disparo_envios")]);
+      // "disparos" tem criado_em em vez de created_at, então não dá para usar buscarTudo (que ordena por created_at)
+      const buscarDisparos = async () => {
+        const { data, error } = await Auth.sb.from("disparos").select("*").order("criado_em", { ascending: false }).range(0, 4999);
+        if (error) throw error;
+        return data || [];
+      };
+      [disparosCache, enviosCache] = await Promise.all([buscarDisparos(), buscarTudo("disparo_envios")]);
       disparosDisponivel = true;
     } catch (erro) {
       disparosDisponivel = false;
