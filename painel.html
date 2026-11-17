@@ -3763,6 +3763,94 @@
     .prosp-palco{ padding:16px 10px; }
     .prosp-previa-topo{ flex-wrap:wrap; }
   }
+
+  /* ---- Aba Roteiros (transcrição de vídeos) ---- */
+  .rot{ --rot-minha:#2D7A4F; --rot-minha-fundo:#EAF5EE; --rot-outra:#2F6FB0; --rot-outra-fundo:#E7F0FA; }
+  .rot-topo{ margin-bottom:22px; }
+  .rot-aviso-sql{ margin:0 0 16px; }
+  .rot-frase{ margin:0 0 14px; font-size:.92rem; color:var(--texto-suave); }
+  .rot-linha{ display:flex; align-items:center; gap:10px; }
+  .rot-link{ flex:1; min-width:0; }
+  .rot-de-quem{ flex:0 0 auto; }
+  .rot-btn-mao{ font-size:.8rem; padding:9px 14px; white-space:nowrap; }
+  .rot-aviso{ margin-top:14px; padding:12px 14px; border-radius:12px; font-size:.88rem; line-height:1.5; background:var(--creme); }
+  .rot-aviso.ok{ background:#EAF5EE; color:#1F5C3A; }
+  .rot-aviso.alerta{ background:#FBF3E3; color:#7A5212; }
+  .rot-aviso.erro{ background:#FDF1EF; color:#9A3029; }
+  .rot-aviso .rot-aviso-botoes{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+  .rot-aviso .btn-acao-op{ font-size:.78rem; padding:6px 12px; }
+  .rot-aviso a{ color:inherit; font-weight:700; }
+  .rot-andamento{ display:flex; align-items:center; gap:10px; }
+  .rot-config{ margin-top:14px; font-size:.84rem; }
+  .rot-config summary{ cursor:pointer; font-weight:600; color:var(--texto-suave); }
+  .rot-config-corpo{ margin-top:10px; }
+  .rot-config-linha{ display:flex; gap:10px; align-items:center; }
+  .rot-config-linha .prosp-campo{ flex:1; min-width:0; }
+  .rot-config-linha .btn-acao-op{ font-size:.78rem; padding:8px 14px; white-space:nowrap; }
+  .rot-saldo{ margin:8px 0 0; font-size:.82rem; color:var(--texto-suave); }
+
+  .rot-bib-topo{ display:flex; gap:10px; align-items:center; margin-bottom:12px; }
+  .rot-busca{ flex:1; min-width:0; }
+  .rot-btn-estudar{ font-size:.8rem; padding:9px 14px; white-space:nowrap; }
+  .rot-estudar-aviso{ margin:0 0 12px; padding:10px 14px; border-radius:12px; background:#EAF5EE; color:#1F5C3A; font-size:.84rem; }
+  .rot-chips{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  .rot-chip{ font:inherit; font-size:.78rem; font-weight:600; padding:6px 14px; border-radius:999px; border:1.5px solid var(--borda); background:var(--branco); color:var(--texto-suave); cursor:pointer; }
+  .rot-chip:hover{ background:var(--creme); }
+  .rot-chip.ativo{ background:var(--grafite); border-color:var(--grafite); color:#fff; }
+  .rot-chip small{ font-weight:500; opacity:.7; margin-left:3px; }
+
+  .rot-grade{ display:grid; grid-template-columns:repeat(auto-fill, minmax(400px, 1fr)); gap:16px; }
+  .rot-card{ display:flex; gap:16px; padding:14px; border-radius:20px; background:var(--branco); border:1px solid var(--borda); min-width:0; }
+  .rot-capa{ position:relative; flex:0 0 112px; aspect-ratio:9 / 16; border-radius:14px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:linear-gradient(160deg, #3A3A3A, #14110D); color:#fff; background-size:cover; background-position:center; }
+  .rot-capa.instagram{ background-image:linear-gradient(160deg, #F2A65A 0%, #D9467A 50%, #6B3FC4 100%); }
+  .rot-capa.tiktok{ background-image:linear-gradient(160deg, #25F4EE -40%, #14110D 45%, #FE2C55 140%); }
+  .rot-capa.youtube{ background-image:linear-gradient(160deg, #FF4E45, #8F1C16); }
+  .rot-capa.manual{ background-image:linear-gradient(160deg, #B7B2AA, #545454); }
+  .rot-capa .rot-capa-icone{ position:absolute; top:10px; left:10px; width:20px; height:20px; opacity:.9; }
+  .rot-capa-ver{ font:inherit; font-size:.72rem; font-weight:700; padding:7px 10px; border-radius:999px; border:0; background:rgba(255,255,255,.92); color:var(--grafite); cursor:pointer; white-space:nowrap; }
+  .rot-capa-ver:hover{ background:#fff; }
+  .rot-capa-sem{ font-size:.7rem; font-weight:600; opacity:.85; text-align:center; padding:0 8px; }
+  .rot-info{ flex:1; min-width:0; display:flex; flex-direction:column; }
+  .rot-titulo{ margin:0; font-family:var(--fonte-impacto); font-size:.98rem; font-weight:600; line-height:1.3; overflow-wrap:anywhere; }
+  .rot-titulo.vazio{ color:var(--cinza-claro); }
+  .rot-meta{ display:flex; flex-wrap:wrap; align-items:center; gap:6px 8px; margin:6px 0 0; font-size:.76rem; color:var(--texto-suave); }
+  .rot-etiqueta{ display:inline-block; padding:2px 9px; border-radius:999px; font-size:.7rem; font-weight:700; }
+  .rot-etiqueta.minha{ background:var(--rot-minha-fundo); color:var(--rot-minha); }
+  .rot-etiqueta.outra{ background:var(--rot-outra-fundo); color:var(--rot-outra); }
+  .rot-tags{ display:flex; flex-wrap:wrap; gap:5px; margin-top:6px; }
+  .rot-tag{ padding:2px 8px; border-radius:999px; background:var(--creme); font-size:.68rem; font-weight:600; color:var(--texto-suave); }
+  .rot-trecho{ margin:10px 0 0; font-size:.82rem; line-height:1.5; color:var(--grafite); display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; white-space:pre-line; }
+  .rot-trecho.vazio{ color:var(--cinza-claro); font-style:italic; }
+  .rot-status{ display:flex; align-items:center; gap:8px; margin-top:10px; padding:8px 10px; border-radius:10px; font-size:.78rem; line-height:1.4; }
+  .rot-status.processando{ background:var(--creme); color:var(--texto-suave); }
+  .rot-status.falhou{ background:#FDF1EF; color:#9A3029; }
+  .rot-acoes{ display:flex; flex-wrap:wrap; gap:6px; margin-top:auto; padding-top:12px; }
+  .rot-acoes .btn-acao-op{ font-size:.72rem; padding:5px 11px; }
+  .rot-acoes .rot-apagar{ color:#9A3029; }
+  .rot-relogio{ flex:0 0 auto; width:16px; height:16px; border-radius:50%; border:2px solid currentColor; position:relative; }
+  .rot-relogio::before, .rot-relogio::after{ content:""; position:absolute; left:50%; top:50%; width:2px; background:currentColor; border-radius:2px; transform-origin:50% 0; }
+  .rot-relogio::before{ height:5px; margin-left:-1px; animation:rot-gira 1.2s linear infinite; }
+  .rot-relogio::after{ height:3.5px; margin-left:-1px; animation:rot-gira 14s linear infinite; }
+  @keyframes rot-gira{ from{ transform:rotate(180deg); } to{ transform:rotate(540deg); } }
+  .rot-vazio{ grid-column:1 / -1; padding:34px 28px; border-radius:20px; background:var(--creme); text-align:center; color:var(--texto-suave); font-size:.9rem; }
+
+  .modal-quadro.rot-modal{ max-width:620px; }
+  .rot-modal-aviso{ margin:0 0 14px; padding:10px 14px; border-radius:12px; background:#EAF5EE; color:#1F5C3A; font-size:.86rem; }
+  .rot-transcricao{ min-height:220px; line-height:1.55; }
+
+  .rot-video-caixa{ position:relative; width:min(380px, 100%); }
+  .rot-video-caixa iframe{ display:block; width:100%; height:min(680px, calc(100vh - 80px)); border:0; border-radius:16px; background:#000; }
+  .rot-video-fechar{ position:absolute; top:-14px; right:-14px; z-index:2; width:34px; height:34px; border-radius:50%; border:0; background:#fff; color:var(--grafite); font-size:.9rem; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,.25); }
+
+  @media (max-width: 760px){
+    .rot-linha, .rot-bib-topo, .rot-config-linha{ flex-direction:column; align-items:stretch; }
+    .rot-de-quem{ display:flex; }
+    .rot-de-quem .btn-alternador{ flex:1; }
+    .rot-grade{ grid-template-columns:1fr; }
+    .rot-card{ gap:12px; padding:12px; }
+    .rot-capa{ flex-basis:88px; }
+    .rot-video-fechar{ right:4px; top:4px; }
+  }
 </style>
 </head>
 <body class="oculto">
@@ -3881,6 +3969,12 @@
           <path d="M4 20l4-1 11-11-3-3L5 16l-1 4z"/><line x1="14" y1="7" x2="17" y2="10"/>
         </svg>
         <span class="rotulo-item">Calendário</span>
+      </button>
+      <button class="item-nav item-pagina" data-tab="cc-roteiros">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="21"/>
+        </svg>
+        <span class="rotulo-item">Roteiros</span>
       </button>
       <button class="item-nav item-pagina" data-tab="cc-news">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -5120,6 +5214,47 @@
         <div id="semDataCalendario"></div>
       </div>
     </section>
+    <section id="painel-cc-roteiros" class="painel-aba" hidden>
+      <div class="painel-quadro-secao rot">
+        <p class="rot-aviso alerta rot-aviso-sql" id="rotAvisoSql" hidden></p>
+
+        <section class="prosp-bloco rot-topo">
+          <p class="rot-frase">Cole o link de um reel e eu transcrevo. Serve pros seus e pros das outras, com etiqueta pra você separar.</p>
+          <div class="rot-linha">
+            <input type="url" id="rotLink" class="input-limpo prosp-campo rot-link" autocomplete="off" placeholder="Cole aqui: instagram.com/reel/... · tiktok.com/... · youtube.com/...">
+            <div class="alternador-visualizacao alternador-mini rot-de-quem" id="rotDeQuem">
+              <button type="button" class="btn-alternador ativo" data-rot-de-quem="outra">De outra pessoa</button>
+              <button type="button" class="btn-alternador" data-rot-de-quem="minha">Meu</button>
+            </div>
+            <button type="button" class="btn-novo-card" id="btnRotTranscrever">Transcrever</button>
+            <button type="button" class="btn-acao-op rot-btn-mao" id="btnRotManual">+ Escrever na mão</button>
+          </div>
+          <div class="rot-aviso" id="rotAviso" hidden></div>
+
+          <details class="rot-config" id="rotConfig">
+            <summary><span id="rotConfigResumo">Chave da Supadata</span></summary>
+            <div class="rot-config-corpo">
+              <p class="prosp-dica" id="rotConfigDica">Crie uma conta grátis em <a href="https://supadata.ai" target="_blank" rel="noopener">supadata.ai</a> (100 créditos por mês, sem cartão), copie a API key e cole aqui. Cada vídeo gasta uns 2 créditos.</p>
+              <div class="rot-config-linha">
+                <input type="password" id="rotChave" class="input-limpo prosp-campo" autocomplete="off" spellcheck="false" placeholder="Cole a sua API key da Supadata">
+                <button type="button" class="btn-acao-op principal" id="btnRotSalvarChave">Salvar chave</button>
+              </div>
+              <p class="rot-saldo" id="rotSaldo"></p>
+            </div>
+          </details>
+        </section>
+
+        <div class="rot-biblioteca">
+          <div class="rot-bib-topo">
+            <input type="search" id="rotBusca" class="input-limpo prosp-campo rot-busca" autocomplete="off" placeholder="Buscar na transcrição, no perfil, no título e nas notas">
+            <button type="button" class="btn-acao-op rot-btn-estudar" id="btnRotEstudar">Estudar com o Claude</button>
+          </div>
+          <div class="rot-chips" id="rotChips"></div>
+          <p class="rot-estudar-aviso" id="rotEstudarAviso" hidden></p>
+          <div class="rot-grade" id="rotGrade"></div>
+        </div>
+      </div>
+    </section>
     <section id="painel-cc-news" class="painel-aba" hidden>
       <div class="cartao">
         <h2>News</h2>
@@ -6214,6 +6349,68 @@
 </div>
 
 <!-- ===================== MODAL: NOVO/EDITAR AFILIADO ===================== -->
+<!-- ===================== MODAL: ROTEIRO TRANSCRITO ===================== -->
+<div class="overlay-modal" id="overlayRoteiro" hidden>
+  <div class="modal-quadro rot-modal">
+    <h3 id="tituloModalRoteiro">Roteiro</h3>
+    <p class="rot-modal-aviso" id="rotModalAviso" hidden></p>
+
+    <div class="prop-limpa">
+      <span class="rotulo-limpo">Título</span>
+      <input type="text" id="campoRotTitulo" class="input-limpo" autocomplete="off" placeholder="Ex.: Gancho da pergunta antes de comprar">
+    </div>
+    <div class="prop-limpa">
+      <span class="rotulo-limpo">De quem</span>
+      <select id="campoRotDeQuem" class="input-limpo">
+        <option value="outra">De outra pessoa</option>
+        <option value="minha">Meu</option>
+      </select>
+    </div>
+    <div class="prop-limpa">
+      <span class="rotulo-limpo">Perfil</span>
+      <input type="text" id="campoRotPerfil" class="input-limpo" autocomplete="off" placeholder="@perfil">
+    </div>
+    <div class="prop-limpa">
+      <span class="rotulo-limpo">Link</span>
+      <input type="url" id="campoRotUrl" class="input-limpo" autocomplete="off" placeholder="https://...">
+    </div>
+    <div class="prop-limpa">
+      <span class="rotulo-limpo">Postado em</span>
+      <input type="date" id="campoRotPostado" class="input-limpo">
+    </div>
+    <div class="prop-limpa">
+      <span class="rotulo-limpo">Tags</span>
+      <input type="text" id="campoRotTags" class="input-limpo" autocomplete="off" placeholder="gancho, skincare, tutorial (separadas por vírgula)">
+    </div>
+    <div class="prop-limpa">
+      <span class="rotulo-limpo rotulo-descricao">Legenda do post</span>
+      <textarea id="campoRotLegenda" class="textarea-limpa" rows="3"></textarea>
+    </div>
+    <div class="prop-limpa">
+      <span class="rotulo-limpo rotulo-descricao">Transcrição</span>
+      <textarea id="campoRotTranscricao" class="textarea-limpa rot-transcricao" rows="12"></textarea>
+    </div>
+    <div class="prop-limpa">
+      <span class="rotulo-limpo rotulo-descricao">Minhas notas</span>
+      <textarea id="campoRotObs" class="textarea-limpa" rows="3" placeholder="O que chamou atenção, o que dá pra reaproveitar..."></textarea>
+    </div>
+
+    <div class="acoes-modal-quadro">
+      <span style="flex-grow:1"></span>
+      <button type="button" class="btn-cancelar-quadro" id="btnCancelarRoteiro">Cancelar</button>
+      <button type="button" class="btn-salvar-quadro" id="btnSalvarRoteiro">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- vídeo do roteiro: o embed só carrega quando clica -->
+<div class="prosp-overlay" id="overlayRotVideo" hidden>
+  <div class="rot-video-caixa">
+    <button type="button" class="rot-video-fechar" id="btnRotVideoFechar" aria-label="Fechar">✕</button>
+    <div id="rotVideoPalco"></div>
+  </div>
+</div>
+
 <div class="overlay-modal" id="overlayAfiliado" hidden>
   <div class="modal-quadro">
     <h3 id="tituloAfiliado">Novo afiliado</h3>
@@ -6688,6 +6885,7 @@
     "crm-contratos": "Campanhas",
     "cc-insights": "Insights",
     "cc-criacao": "Calendário editorial",
+    "cc-roteiros": "Roteiros",
     "cc-news": "News",
     "cc-afiliados": "Afiliados",
     notificacoes: "Central de notificações",
@@ -25771,6 +25969,758 @@ ${botao}
       console.error(erro);
     }
   });
+
+  // ---------------------------------------------------------------
+  // ROTEIROS: biblioteca de vídeos transcritos (js/transcricoes-setup.sql).
+  // A transcrição é da Supadata, chamada direto do navegador. A chave
+  // dela fica em painel_config ("supadata_chave"), que só a dona do
+  // painel lê: nunca no código e nunca no localStorage.
+  // ---------------------------------------------------------------
+  const ROT_API = "https://api.supadata.ai/v1";
+  const ROT_CHAVE_CFG = "supadata_chave";
+  const ROT_MSG_VAZIO = "Não achei fala nesse vídeo. Costuma ser reel só com música ou só com texto na tela.";
+  const ROT_NOME_FONTE = { instagram: "Instagram", tiktok: "TikTok", youtube: "YouTube", manual: "Escrito na mão" };
+  const ROT_ICONE = {
+    instagram: '<svg class="rot-capa-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="5"/><circle cx="12" cy="12" r="3.6"/></svg>',
+    tiktok: '<svg class="rot-capa-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 4v10.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 4c.4 2.4 2 3.9 4.5 4.1"/></svg>',
+    youtube: '<svg class="rot-capa-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="4"/><path d="M10.5 9.5v5l4-2.5z" fill="currentColor"/></svg>',
+    manual: '<svg class="rot-capa-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4-1 11-11-3-3L5 16l-1 4z"/></svg>',
+  };
+
+  let rotCache = [];
+  let rotDisponivel = true;
+  let rotChave = null; // null = ainda não leu; "" = não tem chave salva
+  let rotSaldoTexto = "";
+  let rotFiltro = "todos"; // todos | minha | outra | tag:<nome normalizado>
+  let rotDeQuemNovo = "outra";
+  let rotOcupado = false;
+  const rotEmAndamento = new Set(); // ids que estão transcrevendo nesta aba agora
+  let rotEmEdicao = null;
+
+  class RotErro extends Error {
+    constructor(mensagem, tipo) {
+      super(mensagem);
+      this.tipo = tipo;
+    }
+  }
+
+  async function recarregarTranscricoes() {
+    try {
+      rotCache = await buscarTudo("transcricoes");
+      rotDisponivel = true;
+    } catch (erro) {
+      rotDisponivel = false;
+      console.error(erro);
+    }
+    const aviso = document.getElementById("rotAvisoSql");
+    aviso.hidden = rotDisponivel;
+    if (!rotDisponivel) aviso.textContent = "Falta rodar no Supabase (SQL Editor): js/transcricoes-setup.sql. Até lá a biblioteca não consegue guardar nada.";
+    renderizarTranscricoes();
+  }
+
+  // ---- links ----
+  function rotLimparLink(bruto) {
+    let s = String(bruto || "").trim();
+    if (!s) return "";
+    if (!/^https?:\/\//i.test(s) && /^(www\.|m\.|vm\.|vt\.)?(instagram\.com|tiktok\.com|youtube\.com|youtu\.be)\//i.test(s)) s = "https://" + s;
+    let u;
+    try {
+      u = new URL(s);
+    } catch (erro) {
+      return s;
+    }
+    u.hash = "";
+    const host = u.hostname.toLowerCase();
+    if (host.endsWith("instagram.com")) {
+      u.pathname = u.pathname.replace(/\/reels\//, "/reel/");
+      u.search = "";
+    } else if (host.endsWith("tiktok.com")) {
+      u.search = "";
+    } else {
+      [...u.searchParams.keys()].forEach((k) => {
+        if (/^utm_/i.test(k) || ["igsh", "si", "feature", "pp"].includes(k)) u.searchParams.delete(k);
+      });
+    }
+    return u.toString();
+  }
+  function rotLinkSeguro(url) {
+    return /^https?:\/\//i.test(String(url || "")) ? url : "";
+  }
+  function rotFonteDoLink(url) {
+    try {
+      const h = new URL(url).hostname.toLowerCase();
+      if (/(^|\.)instagram\.com$/.test(h)) return "instagram";
+      if (/(^|\.)tiktok\.com$/.test(h)) return "tiktok";
+      if (/(^|\.)youtube\.com$/.test(h) || h === "youtu.be") return "youtube";
+    } catch (erro) {}
+    return null;
+  }
+  function rotPerfilDoLink(url) {
+    try {
+      const u = new URL(url);
+      const partes = u.pathname.split("/").filter(Boolean);
+      const fonte = rotFonteDoLink(url);
+      if (fonte === "instagram" && partes.length >= 3 && ["reel", "p", "tv"].includes(partes[1])) return "@" + partes[0];
+      if ((fonte === "tiktok" || fonte === "youtube") && partes[0] && partes[0].startsWith("@")) return partes[0];
+    } catch (erro) {}
+    return "";
+  }
+  function rotEmbedDoLink(url) {
+    try {
+      const u = new URL(url);
+      const fonte = rotFonteDoLink(url);
+      const p = u.pathname;
+      let m;
+      if (fonte === "instagram" && (m = p.match(/\/(reel|p|tv)\/([A-Za-z0-9_-]+)/))) {
+        return { src: `https://www.instagram.com/${m[1] === "p" ? "p" : "reel"}/${m[2]}/embed` };
+      }
+      if (fonte === "tiktok" && (m = p.match(/\/video\/(\d+)/))) return { src: `https://www.tiktok.com/embed/v2/${m[1]}` };
+      if (fonte === "youtube") {
+        let id = "";
+        if (u.hostname.toLowerCase() === "youtu.be") id = p.split("/")[1] || "";
+        else if ((m = p.match(/\/(shorts|embed|live)\/([A-Za-z0-9_-]+)/))) id = m[2];
+        else id = u.searchParams.get("v") || "";
+        if (/^[A-Za-z0-9_-]{6,20}$/.test(id)) return { src: `https://www.youtube.com/embed/${id}`, capa: `https://i.ytimg.com/vi/${id}/hqdefault.jpg` };
+      }
+    } catch (erro) {}
+    return null;
+  }
+
+  // ---- Supadata ----
+  async function rotLerJson(resposta) {
+    try {
+      return await resposta.json();
+    } catch (erro) {
+      return {};
+    }
+  }
+  function rotCodigoErro(corpo) {
+    if (!corpo) return "";
+    if (typeof corpo.error === "string") return corpo.error;
+    if (corpo.error && typeof corpo.error.error === "string") return corpo.error.error;
+    return "";
+  }
+  function rotDetalheErro(corpo) {
+    if (!corpo) return "";
+    const e = corpo.error && typeof corpo.error === "object" ? corpo.error : corpo;
+    return String(e.details || e.message || "");
+  }
+  function rotErroDaResposta(resposta, corpo) {
+    const codigo = rotCodigoErro(corpo);
+    const detalhe = rotDetalheErro(corpo);
+    if (resposta.status === 401 || resposta.status === 403 || codigo === "unauthorized") {
+      return new RotErro("A Supadata não aceitou a sua chave. Confira em \"Chave da Supadata\", aqui embaixo, se ela foi colada inteira.", "chave");
+    }
+    if (codigo === "limit-exceeded" || resposta.status === 429) {
+      if (/plan usage/i.test(detalhe)) return new RotErro("Acabaram os seus créditos da Supadata deste mês. Eles voltam quando o plano renova.", "cota");
+      return new RotErro("Foram muitos pedidos seguidos. Espera 1 minuto e tenta de novo.", "ritmo");
+    }
+    if (codigo === "transcript-unavailable" || resposta.status === 206) return new RotErro(ROT_MSG_VAZIO, "vazio");
+    if (codigo === "not-found" || resposta.status === 404) return new RotErro("Não achei esse vídeo. Ele pode ser privado, ter sido apagado, ou o link pode estar incompleto.", "link");
+    if (codigo === "invalid-request" || resposta.status === 400) return new RotErro("A Supadata não entendeu esse link. Confira se ele abre o vídeo certinho no navegador.", "link");
+    if (codigo === "upgrade-required" || resposta.status === 402) return new RotErro("Esse vídeo precisa de um plano pago da Supadata.", "cota");
+    return new RotErro("A Supadata não conseguiu transcrever agora. Tenta de novo daqui a pouco.", "outro");
+  }
+  function rotConteudoParaTexto(conteudo) {
+    if (Array.isArray(conteudo)) {
+      const texto = conteudo.map((t) => (t && t.text) || "").join(" ").replace(/\s+/g, " ").trim();
+      return { texto, segmentos: conteudo };
+    }
+    return { texto: String(conteudo || "").trim(), segmentos: null };
+  }
+  async function rotChamarSupadata(caminho) {
+    try {
+      return await fetch(ROT_API + caminho, { headers: { "x-api-key": rotChave } });
+    } catch (erro) {
+      throw new RotErro("Não consegui falar com a Supadata. Confira a sua internet e tenta de novo.", "rede");
+    }
+  }
+  async function rotTranscreverNaSupadata(url, aoAndar) {
+    const params = new URLSearchParams({ url, mode: "auto", text: "true", lang: "pt" });
+    const inicio = Date.now();
+    aoAndar(0);
+    const tique = setInterval(() => aoAndar(Math.round((Date.now() - inicio) / 1000)), 5000);
+    try {
+      const resposta = await rotChamarSupadata("/transcript?" + params.toString());
+      let corpo = await rotLerJson(resposta);
+      if (resposta.status === 202 && corpo.jobId) {
+        // vídeo longo: a Supadata trabalha em segundo plano e eu consulto a cada 5 s
+        const limite = inicio + 6 * 60 * 1000;
+        while (true) {
+          await new Promise((ok) => setTimeout(ok, 5000));
+          if (Date.now() > limite) throw new RotErro("Passou de 6 minutos e a Supadata ainda não terminou. Tenta de novo mais tarde.", "tempo");
+          let r2;
+          try {
+            r2 = await rotChamarSupadata("/transcript/" + encodeURIComponent(corpo.jobId));
+          } catch (erro) {
+            continue; // a internet oscilou: tenta na próxima consulta
+          }
+          const c2 = await rotLerJson(r2);
+          if (!r2.ok) {
+            const e = rotErroDaResposta(r2, c2);
+            if (e.tipo === "ritmo") continue;
+            throw e;
+          }
+          if (c2.status === "completed") {
+            corpo = c2.content !== undefined ? c2 : c2.result || c2;
+            break;
+          }
+          if (c2.status === "failed") {
+            if (rotCodigoErro(c2) === "transcript-unavailable") throw new RotErro(ROT_MSG_VAZIO, "vazio");
+            throw new RotErro("A Supadata não conseguiu transcrever esse vídeo. Tenta de novo daqui a pouco.", "outro");
+          }
+        }
+      } else if (!resposta.ok || resposta.status === 206) {
+        throw rotErroDaResposta(resposta, corpo);
+      }
+      const { texto, segmentos } = rotConteudoParaTexto(corpo.content);
+      if (!texto || corpo.lang === "none") throw new RotErro(ROT_MSG_VAZIO, "vazio");
+      return { texto, segmentos };
+    } finally {
+      clearInterval(tique);
+    }
+  }
+
+  // ---- chave e saldo ----
+  async function rotGarantirChave(forcar) {
+    if (rotChave !== null && !forcar) return rotChave;
+    try {
+      const { data, error } = await Auth.sb.from("painel_config").select("valor").eq("chave", ROT_CHAVE_CFG).maybeSingle();
+      if (error) throw error;
+      rotChave = data && typeof data.valor === "string" ? data.valor : "";
+    } catch (erro) {
+      console.error(erro);
+      rotChave = "";
+    }
+    rotRenderConfig();
+    return rotChave;
+  }
+  function rotRenderConfig() {
+    const tem = !!rotChave;
+    document.getElementById("rotConfigResumo").textContent = tem
+      ? `Chave da Supadata: ••••${rotChave.slice(-4)}${rotSaldoTexto ? " · " + rotSaldoTexto : ""}`
+      : "Chave da Supadata: falta colar";
+    document.getElementById("rotConfigDica").hidden = tem;
+    document.getElementById("rotChave").placeholder = tem ? "Cole outra chave para trocar" : "Cole a sua API key da Supadata";
+    document.getElementById("btnRotSalvarChave").textContent = tem ? "Trocar chave" : "Salvar chave";
+    document.getElementById("rotSaldo").textContent = tem ? rotSaldoTexto : "";
+  }
+  async function rotAtualizarSaldo() {
+    if (!rotChave) {
+      rotSaldoTexto = "";
+      rotRenderConfig();
+      return;
+    }
+    try {
+      const resposta = await rotChamarSupadata("/me");
+      const corpo = await rotLerJson(resposta);
+      if (resposta.ok) {
+        const usados = Number(corpo.usedCredits) || 0;
+        const maximo = Number(corpo.maxCredits) || 0;
+        rotSaldoTexto = maximo ? `${usados} de ${maximo} créditos usados` : "";
+      } else {
+        rotSaldoTexto = resposta.status === 401 || resposta.status === 403 ? "a Supadata não aceitou essa chave" : "";
+      }
+    } catch (erro) {
+      rotSaldoTexto = "";
+    }
+    rotRenderConfig();
+  }
+  async function rotSalvarChave() {
+    const campo = document.getElementById("rotChave");
+    const valor = campo.value.trim();
+    if (!valor) {
+      alert("Cola a chave da Supadata no campo antes de salvar.");
+      return;
+    }
+    const { error } = await Auth.sb.from("painel_config").upsert({ chave: ROT_CHAVE_CFG, valor, updated_at: new Date().toISOString() }, { onConflict: "chave" });
+    if (error) {
+      console.error(error);
+      alert("Não consegui salvar a chave. Confira se você está logada com a sua conta de dona do painel.");
+      return;
+    }
+    rotChave = valor;
+    campo.value = "";
+    rotSaldoTexto = "";
+    rotRenderConfig();
+    rotEsconderAviso();
+    await rotAtualizarSaldo();
+  }
+
+  // ---- aviso do topo ----
+  function rotMostrarAviso(tipo, texto, botoes) {
+    const el = document.getElementById("rotAviso");
+    el.className = "rot-aviso" + (tipo && tipo !== "andamento" ? " " + tipo : "");
+    const relogio = tipo === "andamento" ? '<span class="rot-relogio"></span>' : "";
+    el.innerHTML = `<div class="rot-andamento">${relogio}<span>${texto}</span></div>${
+      botoes && botoes.length ? `<div class="rot-aviso-botoes">${botoes.map((b, i) => `<button type="button" class="btn-acao-op${i === 0 ? " principal" : ""}" data-rot-aviso="${i}">${esc(b.rotulo)}</button>`).join("")}</div>` : ""
+    }`;
+    (botoes || []).forEach((b, i) => {
+      el.querySelector(`[data-rot-aviso="${i}"]`).addEventListener("click", b.acao);
+    });
+    el.hidden = false;
+  }
+  function rotEsconderAviso() {
+    document.getElementById("rotAviso").hidden = true;
+  }
+  function rotAbrirConfigChave() {
+    const det = document.getElementById("rotConfig");
+    det.open = true;
+    document.getElementById("rotChave").focus();
+  }
+
+  // ---- transcrever ----
+  function rotAtualizarLocal(linha) {
+    const i = rotCache.findIndex((r) => r.id === linha.id);
+    if (i >= 0) rotCache[i] = linha;
+    else rotCache.unshift(linha);
+  }
+  async function rotTranscrever(urlBruta, deQuem, linhaExistente) {
+    if (rotOcupado) {
+      rotMostrarAviso("alerta", "Espera terminar o vídeo que está transcrevendo agora.");
+      return;
+    }
+    const url = rotLimparLink(urlBruta);
+    if (!url) {
+      rotMostrarAviso("erro", "Cola o link do vídeo no campo antes de transcrever.");
+      return;
+    }
+    if (!/^https?:\/\//i.test(url)) {
+      rotMostrarAviso("erro", "Esse link não parece completo. Ele precisa começar com https://, do jeito que vem quando você copia o link do vídeo.");
+      return;
+    }
+    const fonte = rotFonteDoLink(url);
+    if (!fonte) {
+      rotMostrarAviso("erro", "Por enquanto eu só transcrevo vídeos do Instagram, do TikTok e do YouTube. Confere se o link é de um deles.");
+      return;
+    }
+    if (!rotDisponivel) {
+      rotMostrarAviso("erro", "A biblioteca ainda não existe no seu banco. Rode o js/transcricoes-setup.sql no SQL Editor do Supabase e tente de novo.");
+      return;
+    }
+    await rotGarantirChave();
+    if (!rotChave) {
+      rotMostrarAviso(
+        "alerta",
+        'Falta a sua chave da Supadata, que é quem transcreve os vídeos. Crie uma conta grátis em <a href="https://supadata.ai" target="_blank" rel="noopener">supadata.ai</a> (100 créditos por mês, sem cartão, uns 50 vídeos), copie a API key e cole no campo "Chave da Supadata", logo abaixo.',
+        [{ rotulo: "Colar a chave", acao: rotAbrirConfigChave }]
+      );
+      return;
+    }
+    if (!linhaExistente) {
+      const repetido = rotCache.find((r) => r.url && rotLimparLink(r.url) === url);
+      if (repetido && !confirm(`Esse vídeo já está na sua biblioteca${repetido.titulo ? ` ("${repetido.titulo}")` : ""}. Transcrever de novo? Isso gasta créditos da Supadata.`)) return;
+    }
+
+    rotOcupado = true;
+    const botao = document.getElementById("btnRotTranscrever");
+    botao.disabled = true;
+    let linha = null;
+    try {
+      const agora = new Date().toISOString();
+      const resposta = linhaExistente
+        ? await Auth.sb.from("transcricoes").update({ status: "processando", erro: null, url, fonte, updated_at: agora }).eq("id", linhaExistente.id).select().single()
+        : await Auth.sb.from("transcricoes").insert({ fonte, url, perfil: rotPerfilDoLink(url) || null, de_quem: deQuem === "minha" ? "minha" : "outra", status: "processando" }).select().single();
+      if (resposta.error) throw resposta.error;
+      linha = resposta.data;
+    } catch (erro) {
+      console.error(erro);
+      rotOcupado = false;
+      botao.disabled = false;
+      rotMostrarAviso("erro", "Não consegui guardar o vídeo na biblioteca. Confira a internet e tente de novo.");
+      return;
+    }
+    rotEmAndamento.add(linha.id);
+    rotAtualizarLocal(linha);
+    renderizarTranscricoes();
+    if (!linhaExistente) document.getElementById("rotLink").value = "";
+
+    try {
+      const { texto, segmentos } = await rotTranscreverNaSupadata(url, (s) =>
+        rotMostrarAviso("andamento", `Ouvindo o vídeo… ${s}s. Costuma levar de 3 a 4 minutos, pode deixar a aba aberta.`)
+      );
+      const { data, error } = await Auth.sb
+        .from("transcricoes")
+        .update({ transcricao: texto, segmentos, status: "pronto", erro: null, updated_at: new Date().toISOString() })
+        .eq("id", linha.id)
+        .select()
+        .single();
+      if (error) throw error;
+      rotEmAndamento.delete(linha.id);
+      rotAtualizarLocal(data);
+      rotMostrarAviso("ok", "Pronto. Revisa, dá um nome e salva.");
+      rotAbrirModal(data, "Pronto. Revisa, dá um nome e salva.");
+    } catch (erro) {
+      console.error(erro);
+      const conhecido = erro instanceof RotErro;
+      const mensagem = conhecido ? erro.message : "A transcrição ficou pronta, mas não consegui guardar. Tenta de novo.";
+      rotEmAndamento.delete(linha.id);
+      try {
+        const { data } = await Auth.sb
+          .from("transcricoes")
+          .update({ status: "falhou", erro: mensagem, updated_at: new Date().toISOString() })
+          .eq("id", linha.id)
+          .select()
+          .single();
+        if (data) rotAtualizarLocal(data);
+        else rotAtualizarLocal({ ...linha, status: "falhou", erro: mensagem });
+      } catch (erro2) {
+        rotAtualizarLocal({ ...linha, status: "falhou", erro: mensagem });
+      }
+      const atual = rotCache.find((r) => r.id === linha.id);
+      if (conhecido && erro.tipo === "vazio") {
+        rotMostrarAviso("alerta", esc(mensagem), [{ rotulo: "Guardar assim mesmo", acao: () => rotAbrirModal(atual) }]);
+      } else if (conhecido && erro.tipo === "chave") {
+        rotMostrarAviso("erro", esc(mensagem), [{ rotulo: "Trocar a chave", acao: rotAbrirConfigChave }]);
+      } else {
+        rotMostrarAviso("erro", esc(mensagem));
+      }
+    } finally {
+      rotOcupado = false;
+      botao.disabled = false;
+      renderizarTranscricoes();
+      rotAtualizarSaldo();
+    }
+  }
+
+  // ---- biblioteca ----
+  function rotTags(r) {
+    return Array.isArray(r.tags) ? r.tags.filter(Boolean) : [];
+  }
+  function rotDataTexto(r) {
+    const iso = r.postado_em || diaIso(r.created_at);
+    const m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
+    return m ? `${m[3]}/${m[2]}/${m[1]}` : "";
+  }
+  function rotFiltrados() {
+    const busca = normalizarTexto(document.getElementById("rotBusca").value);
+    return rotCache
+      .filter((r) => {
+        if (rotFiltro === "minha" && r.de_quem !== "minha") return false;
+        if (rotFiltro === "outra" && r.de_quem === "minha") return false;
+        if (rotFiltro.startsWith("tag:") && !rotTags(r).some((t) => normalizarTexto(t) === rotFiltro.slice(4))) return false;
+        if (busca) {
+          const alvo = normalizarTexto([r.transcricao, r.perfil, r.titulo, r.obs, r.legenda, rotTags(r).join(" ")].join(" "));
+          if (!alvo.includes(busca)) return false;
+        }
+        return true;
+      })
+      .sort((a, b) => String(b.created_at || "").localeCompare(String(a.created_at || "")));
+  }
+  function rotRenderChips() {
+    const tags = new Map();
+    rotCache.forEach((r) =>
+      rotTags(r).forEach((t) => {
+        const k = normalizarTexto(t);
+        if (!tags.has(k)) tags.set(k, { nome: t, qtd: 0 });
+        tags.get(k).qtd++;
+      })
+    );
+    if (rotFiltro.startsWith("tag:") && !tags.has(rotFiltro.slice(4))) rotFiltro = "todos";
+    const minhas = rotCache.filter((r) => r.de_quem === "minha").length;
+    const chips = [
+      ["todos", "Todos", rotCache.length],
+      ["minha", "Meus", minhas],
+      ["outra", "De outras", rotCache.length - minhas],
+      ...[...tags.entries()].sort((a, b) => a[1].nome.localeCompare(b[1].nome, "pt-BR")).map(([k, v]) => ["tag:" + k, "#" + v.nome, v.qtd]),
+    ];
+    document.getElementById("rotChips").innerHTML = chips
+      .map(([valor, rotulo, qtd]) => `<button type="button" class="rot-chip${rotFiltro === valor ? " ativo" : ""}" data-rot-filtro="${esc(valor)}">${esc(rotulo)}<small>${qtd}</small></button>`)
+      .join("");
+  }
+  function rotCardHtml(r) {
+    const fonte = ROT_NOME_FONTE[r.fonte] ? r.fonte : "manual";
+    const link = rotLinkSeguro(r.url);
+    const embed = link ? rotEmbedDoLink(link) : null;
+    const estiloCapa = embed && embed.capa ? ` style="background-image:url('${esc(embed.capa)}')"` : "";
+    const meioCapa = embed
+      ? `<button type="button" class="rot-capa-ver" data-rot-ver="${r.id}">▶ ver vídeo</button>`
+      : link
+      ? `<a class="rot-capa-ver" href="${esc(link)}" target="_blank" rel="noopener">abrir link</a>`
+      : `<span class="rot-capa-sem">sem vídeo</span>`;
+    const deQuem = r.de_quem === "minha" ? '<span class="rot-etiqueta minha">Meu</span>' : '<span class="rot-etiqueta outra">De outra</span>';
+    const tags = rotTags(r);
+    const transcricao = String(r.transcricao || "").trim();
+
+    let status = "";
+    let acoes = "";
+    if (r.status === "processando") {
+      status = rotEmAndamento.has(r.id)
+        ? '<div class="rot-status processando"><span class="rot-relogio"></span>Ouvindo o vídeo...</div>'
+        : '<div class="rot-status processando"><span class="rot-relogio"></span>Ficou pela metade: a aba fechou antes de terminar.</div>';
+      acoes = rotEmAndamento.has(r.id)
+        ? ""
+        : `<button type="button" class="btn-acao-op principal" data-rot-retentar="${r.id}">Tentar de novo</button><button type="button" class="btn-acao-op rot-apagar" data-rot-apagar="${r.id}">Apagar</button>`;
+    } else if (r.status === "falhou") {
+      status = `<div class="rot-status falhou">${esc(r.erro || "Não deu certo.")}</div>`;
+      acoes = `<button type="button" class="btn-acao-op principal" data-rot-editar="${r.id}">Abrir mesmo assim</button>${
+        link ? `<button type="button" class="btn-acao-op" data-rot-retentar="${r.id}">Tentar de novo</button>` : ""
+      }<button type="button" class="btn-acao-op rot-apagar" data-rot-apagar="${r.id}">Apagar</button>`;
+    } else {
+      acoes = `${transcricao ? `<button type="button" class="btn-acao-op" data-rot-copiar="${r.id}">Copiar transcrição</button>` : ""}<button type="button" class="btn-acao-op" data-rot-editar="${r.id}">Editar</button><button type="button" class="btn-acao-op rot-apagar" data-rot-apagar="${r.id}">Apagar</button>`;
+    }
+
+    return `
+      <article class="rot-card" data-id="${r.id}">
+        <div class="rot-capa ${fonte}"${estiloCapa}>${ROT_ICONE[fonte]}${meioCapa}</div>
+        <div class="rot-info">
+          <h3 class="rot-titulo${r.titulo ? "" : " vazio"}">${esc(r.titulo || "Sem título")}</h3>
+          <div class="rot-meta">${deQuem}${r.perfil ? `<span>${esc(r.perfil)}</span>` : ""}<span>${ROT_NOME_FONTE[fonte]}</span>${rotDataTexto(r) ? `<span>${rotDataTexto(r)}</span>` : ""}</div>
+          ${tags.length ? `<div class="rot-tags">${tags.map((t) => `<span class="rot-tag">#${esc(t)}</span>`).join("")}</div>` : ""}
+          ${status || (transcricao ? `<p class="rot-trecho">${esc(transcricao)}</p>` : '<p class="rot-trecho vazio">Sem transcrição ainda.</p>')}
+          <div class="rot-acoes">${acoes}</div>
+        </div>
+      </article>`;
+  }
+  function renderizarTranscricoes() {
+    const grade = document.getElementById("rotGrade");
+    if (!grade) return;
+    rotRenderChips();
+    if (!rotDisponivel) {
+      grade.innerHTML = "";
+      return;
+    }
+    const lista = rotFiltrados();
+    if (!rotCache.length) {
+      grade.innerHTML = '<div class="rot-vazio">A sua biblioteca ainda está vazia. Cole o link de um reel lá em cima e clique em Transcrever.</div>';
+      return;
+    }
+    if (!lista.length) {
+      grade.innerHTML = '<div class="rot-vazio">Nenhum roteiro com esse filtro ou essa busca.</div>';
+      return;
+    }
+    grade.innerHTML = lista.map(rotCardHtml).join("");
+  }
+
+  async function rotCopiar(texto) {
+    try {
+      await navigator.clipboard.writeText(texto);
+      return true;
+    } catch (erro) {
+      const area = document.createElement("textarea");
+      area.value = texto;
+      area.style.position = "fixed";
+      area.style.opacity = "0";
+      document.body.appendChild(area);
+      area.select();
+      let ok = false;
+      try {
+        ok = document.execCommand("copy");
+      } catch (erro2) {}
+      area.remove();
+      return ok;
+    }
+  }
+
+  // ---- vídeo (o embed só carrega no clique) ----
+  const overlayRotVideo = document.getElementById("overlayRotVideo");
+  function rotAbrirVideo(r) {
+    const embed = rotEmbedDoLink(rotLinkSeguro(r.url));
+    if (!embed) return;
+    const palco = document.getElementById("rotVideoPalco");
+    palco.innerHTML = "";
+    const frame = document.createElement("iframe");
+    frame.src = embed.src;
+    frame.allow = "autoplay; encrypted-media; picture-in-picture; clipboard-write";
+    frame.allowFullscreen = true;
+    frame.loading = "lazy";
+    palco.appendChild(frame);
+    overlayRotVideo.hidden = false;
+  }
+  function rotFecharVideo() {
+    overlayRotVideo.hidden = true;
+    document.getElementById("rotVideoPalco").innerHTML = ""; // para o vídeo
+  }
+  document.getElementById("btnRotVideoFechar").addEventListener("click", rotFecharVideo);
+  overlayRotVideo.addEventListener("click", (evento) => {
+    if (evento.target === overlayRotVideo) rotFecharVideo();
+  });
+
+  // ---- modal de edição ----
+  const overlayRoteiro = document.getElementById("overlayRoteiro");
+  function rotAbrirModal(r, aviso) {
+    rotEmEdicao = r || {};
+    const e = rotEmEdicao;
+    document.getElementById("tituloModalRoteiro").textContent = e.id ? "Editar roteiro" : "Novo roteiro";
+    const avisoEl = document.getElementById("rotModalAviso");
+    avisoEl.hidden = !aviso;
+    avisoEl.textContent = aviso || "";
+    document.getElementById("campoRotTitulo").value = e.titulo || "";
+    document.getElementById("campoRotDeQuem").value = e.de_quem === "minha" ? "minha" : "outra";
+    document.getElementById("campoRotPerfil").value = e.perfil || "";
+    document.getElementById("campoRotUrl").value = e.url || "";
+    document.getElementById("campoRotPostado").value = e.postado_em || "";
+    document.getElementById("campoRotTags").value = rotTags(e).join(", ");
+    document.getElementById("campoRotLegenda").value = e.legenda || "";
+    document.getElementById("campoRotTranscricao").value = e.transcricao || "";
+    document.getElementById("campoRotObs").value = e.obs || "";
+    overlayRoteiro.hidden = false;
+    document.getElementById("campoRotTitulo").focus();
+  }
+  function rotFecharModal() {
+    overlayRoteiro.hidden = true;
+    rotEmEdicao = null;
+  }
+  async function rotSalvarModal() {
+    if (!rotEmEdicao) return;
+    if (rotEmEdicao.id && rotEmAndamento.has(rotEmEdicao.id)) {
+      alert("Esse vídeo ainda está sendo transcrito. Espera terminar para editar.");
+      return;
+    }
+    const url = rotLimparLink(document.getElementById("campoRotUrl").value);
+    if (url && !/^https?:\/\//i.test(url)) {
+      alert("O link precisa começar com https://.");
+      return;
+    }
+    let perfil = document.getElementById("campoRotPerfil").value.trim();
+    if (perfil && !perfil.startsWith("@") && !/\s|\//.test(perfil)) perfil = "@" + perfil;
+    const vistas = new Set();
+    const tags = document
+      .getElementById("campoRotTags")
+      .value.split(",")
+      .map((t) => t.trim().replace(/^#/, ""))
+      .filter((t) => t && !vistas.has(normalizarTexto(t)) && vistas.add(normalizarTexto(t)));
+    const dados = {
+      titulo: document.getElementById("campoRotTitulo").value.trim() || null,
+      de_quem: document.getElementById("campoRotDeQuem").value === "minha" ? "minha" : "outra",
+      perfil: perfil || null,
+      url: url || null,
+      fonte: url ? rotFonteDoLink(url) || "manual" : "manual",
+      postado_em: document.getElementById("campoRotPostado").value || null,
+      tags,
+      legenda: document.getElementById("campoRotLegenda").value.trim() || null,
+      transcricao: document.getElementById("campoRotTranscricao").value.trim() || null,
+      obs: document.getElementById("campoRotObs").value.trim() || null,
+      status: "pronto",
+      erro: null,
+      updated_at: new Date().toISOString(),
+    };
+    const botao = document.getElementById("btnSalvarRoteiro");
+    botao.disabled = true;
+    try {
+      const resposta = rotEmEdicao.id
+        ? await Auth.sb.from("transcricoes").update(dados).eq("id", rotEmEdicao.id).select().single()
+        : await Auth.sb.from("transcricoes").insert(dados).select().single();
+      if (resposta.error) throw resposta.error;
+      rotAtualizarLocal(resposta.data);
+      rotFecharModal();
+      rotEsconderAviso();
+      renderizarTranscricoes();
+    } catch (erro) {
+      console.error(erro);
+      alert(rotDisponivel ? "Não consegui salvar. Confira a internet e tente de novo." : "Não consegui salvar: falta rodar o js/transcricoes-setup.sql no Supabase.");
+    } finally {
+      botao.disabled = false;
+    }
+  }
+  document.getElementById("btnSalvarRoteiro").addEventListener("click", rotSalvarModal);
+  document.getElementById("btnCancelarRoteiro").addEventListener("click", rotFecharModal);
+  overlayRoteiro.addEventListener("click", (evento) => {
+    if (evento.target === overlayRoteiro) rotFecharModal();
+  });
+
+  async function rotApagar(r) {
+    if (!confirm(`Apagar "${r.titulo || "este roteiro"}" da biblioteca? Não dá para desfazer.`)) return;
+    const { error } = await Auth.sb.from("transcricoes").delete().eq("id", r.id);
+    if (error) {
+      console.error(error);
+      alert("Não consegui apagar. Tente de novo.");
+      return;
+    }
+    rotCache = rotCache.filter((x) => x.id !== r.id);
+    renderizarTranscricoes();
+  }
+
+  // ---- Estudar com o Claude: monta o prompt e copia ----
+  async function rotEstudarComClaude() {
+    const base = rotCache
+      .filter((r) => r.de_quem !== "minha" && String(r.transcricao || "").trim())
+      .sort((a, b) => String(b.created_at || "").localeCompare(String(a.created_at || "")))
+      .slice(0, 10);
+    const aviso = document.getElementById("rotEstudarAviso");
+    if (!base.length) {
+      aviso.textContent = "Ainda não tem nenhum roteiro de outra pessoa com transcrição. Transcreva alguns e volte aqui.";
+      aviso.hidden = false;
+      return;
+    }
+    const videos = base
+      .map((r, i) => `VÍDEO ${i + 1}${r.perfil ? `, ${r.perfil}` : ""}${r.titulo ? ` (${r.titulo})` : ""}\n${String(r.transcricao).trim()}`)
+      .join("\n\n");
+    const prompt = `Sou a Letícia Calisto, criadora de conteúdo UGC: produzo vídeos para marcas e ensino UGC para outras criadoras. Abaixo estão as transcrições de ${base.length} vídeos de outras creators que eu salvei como referência.
+
+Estude esses vídeos e me entregue:
+
+1. Os assuntos que estão em alta entre eles.
+2. As expressões e frases que estão prendendo a atenção, com o trecho exato de onde saíram.
+3. Os padrões de gancho (como os primeiros segundos começam), com um exemplo real de cada padrão tirado das transcrições.
+4. 5 roteiros novos no MEU assunto (UGC: produzir conteúdo para marcas e ensinar outras criadoras), reaproveitando a ESTRUTURA desses vídeos, e não o conteúdo. Em cada roteiro, diga de qual vídeo veio a estrutura.
+
+Regras: português do Brasil, no meu jeito de falar, natural e direto, sem ficar robotizado nem com cara de texto de IA. Não use travessão.
+
+${videos}`;
+    const ok = await rotCopiar(prompt);
+    aviso.textContent = ok
+      ? `Prompt copiado, com os ${base.length} roteiros mais recentes de outras creators. Cole numa conversa nova com o Claude.`
+      : "Não consegui copiar automaticamente. Tente de novo.";
+    aviso.hidden = false;
+    clearTimeout(rotEstudarComClaude.timer);
+    rotEstudarComClaude.timer = setTimeout(() => (aviso.hidden = true), 8000);
+  }
+
+  // ---- eventos ----
+  document.querySelectorAll("[data-rot-de-quem]").forEach((b) =>
+    b.addEventListener("click", () => {
+      rotDeQuemNovo = b.dataset.rotDeQuem;
+      document.querySelectorAll("[data-rot-de-quem]").forEach((x) => x.classList.toggle("ativo", x === b));
+    })
+  );
+  document.getElementById("btnRotTranscrever").addEventListener("click", () => rotTranscrever(document.getElementById("rotLink").value, rotDeQuemNovo));
+  document.getElementById("rotLink").addEventListener("keydown", (evento) => {
+    if (evento.key === "Enter") {
+      evento.preventDefault();
+      rotTranscrever(evento.target.value, rotDeQuemNovo);
+    }
+  });
+  document.getElementById("btnRotManual").addEventListener("click", () => {
+    const url = rotLimparLink(document.getElementById("rotLink").value);
+    rotAbrirModal({ de_quem: rotDeQuemNovo, url: /^https?:\/\//i.test(url) ? url : "", perfil: url ? rotPerfilDoLink(url) : "" });
+  });
+  document.getElementById("btnRotSalvarChave").addEventListener("click", rotSalvarChave);
+  document.getElementById("rotChave").addEventListener("keydown", (evento) => {
+    if (evento.key === "Enter") rotSalvarChave();
+  });
+  document.getElementById("rotBusca").addEventListener("input", renderizarTranscricoes);
+  document.getElementById("btnRotEstudar").addEventListener("click", rotEstudarComClaude);
+  document.getElementById("rotChips").addEventListener("click", (evento) => {
+    const chip = evento.target.closest("[data-rot-filtro]");
+    if (!chip) return;
+    rotFiltro = chip.dataset.rotFiltro;
+    renderizarTranscricoes();
+  });
+  document.getElementById("rotGrade").addEventListener("click", async (evento) => {
+    const alvo = evento.target.closest("button[data-rot-ver], button[data-rot-editar], button[data-rot-apagar], button[data-rot-copiar], button[data-rot-retentar]");
+    if (!alvo) return;
+    const id = alvo.dataset.rotVer || alvo.dataset.rotEditar || alvo.dataset.rotApagar || alvo.dataset.rotCopiar || alvo.dataset.rotRetentar;
+    const r = rotCache.find((x) => x.id === id);
+    if (!r) return;
+    if (alvo.dataset.rotVer) rotAbrirVideo(r);
+    else if (alvo.dataset.rotEditar) rotAbrirModal(r);
+    else if (alvo.dataset.rotApagar) rotApagar(r);
+    else if (alvo.dataset.rotRetentar) rotTranscrever(r.url, r.de_quem, r);
+    else if (alvo.dataset.rotCopiar) {
+      const ok = await rotCopiar(String(r.transcricao || ""));
+      const original = alvo.textContent;
+      alvo.textContent = ok ? "copiado ✓" : "não copiou";
+      setTimeout(() => (alvo.textContent = original), 1600);
+    }
+  });
+  document.querySelector('.item-nav[data-tab="cc-roteiros"]').addEventListener("click", () => {
+    rotGarantirChave().then(() => {
+      if (rotChave && !rotSaldoTexto) rotAtualizarSaldo();
+    });
+  });
+  if ((document.querySelector(".item-nav.ativo") || { dataset: {} }).dataset.tab === "cc-roteiros") rotGarantirChave().then(rotAtualizarSaldo);
+  recarregarTranscricoes();
 
   // vista salva da Produção (Kanban/Timeline...); um erro aqui nunca impede os dados de carregar
   try {
