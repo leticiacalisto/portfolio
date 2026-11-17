@@ -116,48 +116,44 @@ $m$Oi, time {{marca}}! Tudo bem? Sou a Letícia, criadora de conteúdo UGC, com 
 ('OUT-G2', 'Marca grande: lembrete', 'dm', 'OUT_GRANDE', '2', null,
 $m$Oi, time {{marca}}! Passando para relembrar minha mensagem: vocês podem me indicar o e-mail do marketing ou de parcerias? Obrigada! 😊$m$, 41),
 
-('EM-1', 'E-mail 1: apresentação', 'email', 'EMAIL_SEQ', '1', 'Conteúdo UGC para a {{marca}}',
-$m$Olá, {{contato}}!
+('EM-1', 'E-mail 1: apresentação', 'email', 'EMAIL_SEQ', '1', 'Ideia de vídeo pra {{marca}}',
+$m$Oi, {{contato}}! Sou a Letícia, criadora de conteúdo UGC. Eu gravo vídeo caseiro de produto, com cara de cliente real, pra marca usar no perfil e nos anúncios.
 
-Sou a Letícia Calisto, criadora de conteúdo UGC. Produzo vídeos com cara de recomendação real, pensados para anúncios e redes sociais. Já são mais de 400 vídeos para mais de 100 marcas, em mais de 20 nichos, incluindo {{nicho}}.
+{{conexao}}
 
-Acredito que o {{produto}} de vocês renderia ótimos vídeos nesse formato. Você pode ver alguns trabalhos aqui: {{link_portfolio}}
+A ideia: um vídeo curto com o produto de vocês na minha rotina de verdade, do primeiro uso ao resultado. Entrego na vertical, com e sem legenda, pronto pro Instagram, pros anúncios e pra página do produto.
 
-Faz sentido conversarmos sobre conteúdo para os próximos meses?
+Já são mais de 400 vídeos para mais de 100 marcas. Meus trabalhos estão aqui: {{link_portfolio}}
 
-Um abraço,
-Letícia Calisto
-leticiacalisto.com
+Faz sentido pra vocês? Eu mando os valores e os formatos.
 
-Não quer mais receber meus e-mails? Clique aqui: {{link_optout}}$m$, 50),
+Letícia Calisto$m$, 50),
 
-('EM-2', 'E-mail 2: prova', 'email', 'EMAIL_SEQ', '2', 'Re: Conteúdo UGC para a {{marca}}',
-$m$Oi, {{contato}}! Retomando meu último e-mail com um exemplo concreto: {{case}}.
+('EM-2', 'E-mail 2: prova', 'email', 'EMAIL_SEQ', '2', 'Re: Ideia de vídeo pra {{marca}}',
+$m$Oi, {{contato}}! Voltando aqui com um exemplo do que esse formato faz: um vídeo meu para um jogo passou de 1,5 milhão de visualizações, e para uma escola de inglês o meu criativo foi o anúncio com melhor desempenho.
 
-Vídeos UGC funcionam porque o público vê o produto sendo usado por uma pessoa real, e não por uma propaganda. Posso montar uma sugestão de roteiros para a {{marca}}, sem compromisso?
+Vídeo UGC funciona porque o público vê o produto na mão de uma pessoa real, e não numa propaganda. Se quiser, eu monto uma sugestão de roteiro pra {{marca}}, sem compromisso.
 
-Letícia
+Posso te mandar?
 
-Não quer mais receber meus e-mails? Clique aqui: {{link_optout}}$m$, 51),
+Letícia$m$, 51),
 
-('EM-3', 'E-mail 3: ideia específica ou data sazonal', 'email', 'EMAIL_SEQ', '3', 'Uma ideia de vídeo para a {{marca}}',
-$m$Oi, {{contato}}! Pensei numa ideia para vocês: {{ideia_video}}.
+('EM-3', 'E-mail 3: ideia específica ou data sazonal', 'email', 'EMAIL_SEQ', '3', 'Mais uma ideia pra {{marca}}',
+$m$Oi, {{contato}}! Pensei em outro formato que costuma ir bem em anúncio: os primeiros 3 segundos já com o produto em uso e, na tela, a pergunta que a cliente de vocês faria antes de comprar. É rápido de gravar e fácil de testar em versões diferentes.
 
-Com {{data_sazonal}} chegando, esse é o momento em que as marcas mais precisam de criativos novos para anúncio, e eu entrego em 7 a 10 dias úteis. Quer que eu te mande uma proposta?
+Eu entrego em 7 a 10 dias úteis, então dá tempo de chegar com criativo novo na próxima data importante de vocês.
 
-Letícia
+Quer que eu te mande uma proposta?
 
-Não quer mais receber meus e-mails? Clique aqui: {{link_optout}}$m$, 52),
+Letícia$m$, 52),
 
 ('EM-4', 'E-mail 4: encerramento', 'email', 'EMAIL_SEQ', '4', 'Encerrando por aqui',
-$m$Oi, {{contato}}! Vou parar de te escrever por aqui para não lotar sua caixa de entrada 😊
+$m$Oi, {{contato}}! Vou parar de escrever por aqui pra não lotar a sua caixa de entrada.
 
-Se em algum momento a {{marca}} precisar de conteúdo UGC, é só responder este e-mail. Meu portfólio continua aqui: {{link_portfolio}}
+Se em algum momento a {{marca}} precisar de vídeo com cara de cliente real, é só responder este e-mail. Meu portfólio continua aqui: {{link_portfolio}}
 
-Sucesso para vocês!
-Letícia
-
-Não quer mais receber meus e-mails? Clique aqui: {{link_optout}}$m$, 53),
+Sucesso pra vocês!
+Letícia$m$, 53),
 
 ('PROP-1', 'Proposta: dúvidas', 'dm/email', 'PROPOSTA', '1', null,
 $m$Oi, {{contato}}! Conseguiu dar uma olhada na proposta? Se ficou alguma dúvida sobre escopo, prazos ou direitos de uso, me fala que eu explico 😊$m$, 60),
