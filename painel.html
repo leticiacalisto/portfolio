@@ -3773,6 +3773,8 @@
   .prosp-historico-topo h3{ margin:0; }
   .prosp-historico-topo .prosp-campo{ max-width:300px; }
   .prosp-tabela td{ vertical-align:top; }
+  .prosp-linha-envio{ cursor:pointer; }
+  .prosp-linha-envio:hover td{ background:var(--creme); }
   .prosp-status{ display:inline-block; padding:3px 10px; border-radius:999px; font-size:.72rem; font-weight:700; background:var(--creme); }
   .prosp-status-enviado{ background:#EAF5EE; color:#1F5C3A; }
   .prosp-status-respondeu{ background:#E7F0FA; color:#1F4F80; }
@@ -20654,11 +20656,10 @@ ${botao}
         const canal = d.canal === "resend" ? "Resend" : "Gmail";
         const status = `<span class="prosp-status prosp-status-${esc(v.status)}">${esc(nomeStatus[v.status] || v.status)}</span>` + (v.erro ? `<small class="prosp-erro">${esc(v.erro)}</small>` : "");
         const acoes = [
-          `<button type="button" class="btn-acao-op principal" data-prosp-ver="${v.id}">Ver e-mail</button>`,
           v.status === "enviado" ? `<button type="button" class="btn-acao-op" data-prosp-hist="respondeu" data-envio="${v.id}">Respondeu</button>` : "",
           v.status === "enviado" || v.status === "erro" ? `<button type="button" class="btn-acao-op" data-prosp-hist="optout" data-envio="${v.id}">Descadastrou</button>` : "",
         ].join("");
-        return `<tr>
+        return `<tr class="prosp-linha-envio" data-prosp-ver="${v.id}" title="Clique para ver o e-mail">
           <td><b style="font-weight:600">${esc(prospEmpresaNome(v.empresa_id))}</b></td>
           <td>${esc(v.email)}</td>
           <td>${esc(v.assunto || d.assunto || v.passo || "")}</td>
@@ -20669,7 +20670,13 @@ ${botao}
         </tr>`;
       })
       .join("");
-    corpo.querySelectorAll("[data-prosp-ver]").forEach((botao) => botao.addEventListener("click", () => prospVerEnvio(botao.dataset.prospVer)));
+    // clicar em qualquer parte da linha abre o e-mail (menos nos botões da direita)
+    corpo.querySelectorAll("tr[data-prosp-ver]").forEach((linha) =>
+      linha.addEventListener("click", (ev) => {
+        if (ev.target.closest("button, a")) return;
+        prospVerEnvio(linha.dataset.prospVer);
+      })
+    );
     corpo.querySelectorAll("[data-prosp-hist]").forEach((botao) =>
       botao.addEventListener(
         "click",
