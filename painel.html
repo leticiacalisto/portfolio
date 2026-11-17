@@ -3773,6 +3773,19 @@
   .prosp-historico-topo h3{ margin:0; }
   .prosp-historico-topo .prosp-campo{ max-width:300px; }
   .prosp-tabela td{ vertical-align:top; }
+  .prosp-tabela{ table-layout:fixed; white-space:normal; }
+  .prosp-tabela td{ overflow-wrap:anywhere; }
+  .prosp-col-marca{ width:24%; }
+  .prosp-col-quando{ width:104px; }
+  .prosp-col-canal{ width:104px; }
+  .prosp-tabela th{ white-space:nowrap; }
+  .prosp-col-situacao{ width:150px; }
+  .prosp-situacao{ font:inherit; font-size:.76rem; font-weight:700; width:100%; padding:5px 26px 5px 10px; border-radius:999px; border:0; cursor:pointer; background-color:var(--creme); color:var(--grafite);
+    appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234A443C' stroke-width='2.4'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 9px center; background-size:11px; }
+  .prosp-situacao.prosp-status-enviado{ background-color:#EAF5EE; color:#1F5C3A; }
+  .prosp-situacao.prosp-status-respondeu{ background-color:#E7F0FA; color:#1F4F80; }
+  .prosp-situacao.prosp-status-erro{ background-color:#FDF1EF; color:#9A3029; }
+  .prosp-situacao.prosp-status-optout{ background-color:#F3E9E8; color:#7A2E28; }
   .prosp-linha-envio{ cursor:pointer; }
   .prosp-linha-envio:hover td{ background:var(--creme); }
   .prosp-status{ display:inline-block; padding:3px 10px; border-radius:999px; font-size:.72rem; font-weight:700; background:var(--creme); }
@@ -5039,7 +5052,8 @@
           </div>
           <div class="tabela-scroll">
             <table class="tabela-contratos prosp-tabela">
-              <thead><tr><th>Marca</th><th>E-mail</th><th>Assunto</th><th>Quando</th><th>Por onde</th><th>Situação</th><th></th></tr></thead>
+              <colgroup><col class="prosp-col-marca"><col><col class="prosp-col-quando"><col class="prosp-col-canal"><col class="prosp-col-situacao"></colgroup>
+              <thead><tr><th>Marca</th><th>Assunto</th><th>Quando</th><th>Por onde</th><th>Situação</th></tr></thead>
               <tbody id="prospCorpoHistorico"></tbody>
             </table>
           </div>
@@ -20646,7 +20660,7 @@ ${botao}
     const mostrar = lista.slice(0, 300);
     document.getElementById("prospContagemHistorico").textContent = lista.length > mostrar.length ? `Mostrando ${mostrar.length} de ${lista.length}. Use a busca para achar os outros.` : lista.length ? `${lista.length} envio(s)` : "";
     if (!mostrar.length) {
-      corpo.innerHTML = `<tr><td colspan="7" class="texto-vazio">${busca ? "Nada encontrado com essa busca." : "Nenhum e-mail saiu ainda."}</td></tr>`;
+      corpo.innerHTML = `<tr><td colspan="5" class="texto-vazio">${busca ? "Nada encontrado com essa busca." : "Nenhum e-mail saiu ainda."}</td></tr>`;
       return;
     }
     corpo.innerHTML = mostrar
@@ -20654,48 +20668,69 @@ ${botao}
         const d = porDisparo.get(v.disparo_id) || {};
         const quando = v.enviado_em || v.created_at;
         const canal = d.canal === "resend" ? "Resend" : "Gmail";
-        const status = `<span class="prosp-status prosp-status-${esc(v.status)}">${esc(nomeStatus[v.status] || v.status)}</span>` + (v.erro ? `<small class="prosp-erro">${esc(v.erro)}</small>` : "");
-        const acoes = [
-          v.status === "enviado" ? `<button type="button" class="btn-acao-op" data-prosp-hist="respondeu" data-envio="${v.id}">Respondeu</button>` : "",
-          v.status === "enviado" || v.status === "erro" ? `<button type="button" class="btn-acao-op" data-prosp-hist="optout" data-envio="${v.id}">Descadastrou</button>` : "",
-        ].join("");
+        const opcoes = ["enviado", "respondeu", "pulado", "erro", "optout"];
+        if (!opcoes.includes(v.status)) opcoes.unshift(v.status);
+        const situacao =
+          `<select class="prosp-situacao prosp-status-${esc(v.status)}" data-situacao-envio="${v.id}" aria-label="Situação do envio">` +
+          opcoes.map((o) => `<option value="${esc(o)}"${o === v.status ? " selected" : ""}>${esc(nomeStatus[o] || o)}</option>`).join("") +
+          `</select>` +
+          (v.erro && (v.status === "erro" || v.status === "pulado") ? `<small class="prosp-erro">${esc(v.erro)}</small>` : "");
         return `<tr class="prosp-linha-envio" data-prosp-ver="${v.id}" title="Clique para ver o e-mail">
           <td><b style="font-weight:600">${esc(prospEmpresaNome(v.empresa_id))}</b></td>
-          <td>${esc(v.email)}</td>
           <td>${esc(v.assunto || d.assunto || v.passo || "")}</td>
           <td>${quando ? formatarDataBr(diaLocalDe(quando)) : ""}</td>
           <td>${canal}</td>
-          <td>${status}</td>
-          <td class="prosp-acoes-hist">${acoes}</td>
+          <td>${situacao}</td>
         </tr>`;
       })
       .join("");
-    // clicar em qualquer parte da linha abre o e-mail (menos nos botões da direita)
+    // clicar em qualquer parte da linha abre o e-mail (menos na situação)
     corpo.querySelectorAll("tr[data-prosp-ver]").forEach((linha) =>
       linha.addEventListener("click", (ev) => {
-        if (ev.target.closest("button, a")) return;
+        if (ev.target.closest("button, a, select")) return;
         prospVerEnvio(linha.dataset.prospVer);
       })
     );
-    corpo.querySelectorAll("[data-prosp-hist]").forEach((botao) =>
-      botao.addEventListener(
-        "click",
+    corpo.querySelectorAll("[data-situacao-envio]").forEach((seletor) =>
+      seletor.addEventListener(
+        "change",
         comFila("prosp-historico", async () => {
-          const envio = enviosCache.find((v) => v.id === botao.dataset.envio);
-          const empresa = envio && empresasCache.find((e) => e.id === envio.empresa_id);
+          const envio = enviosCache.find((v) => v.id === seletor.dataset.situacaoEnvio);
           if (!envio) return;
+          const anterior = envio.status;
+          const nova = seletor.value;
+          if (nova === anterior) return;
+          const empresa = empresasCache.find((e) => e.id === envio.empresa_id);
           try {
-            if (botao.dataset.prospHist === "respondeu") {
-              await Auth.sb.from("disparo_envios").update({ status: "respondeu" }).eq("id", envio.id);
-              const op = empresa && oportunidadesCache.find((o) => o.empresa_id === empresa.id && oportunidadeAberta(o));
-              if (op) await executarAcaoOportunidade(op, "respondeu");
-            } else {
-              if (!confirm("Descadastrar " + envio.email + "? Todas as marcas com esse e-mail param de receber, inclusive nos próximos disparos.")) return;
+            if (nova === "optout") {
+              if (!confirm("Descadastrar " + envio.email + "? Todas as marcas com esse e-mail param de receber, inclusive nos próximos disparos.")) {
+                seletor.value = anterior;
+                return;
+              }
               await prospDescadastrar(envio.email, envio.id);
+            } else {
+              const dados = { status: nova };
+              if (nova === "enviado" || nova === "respondeu") {
+                dados.erro = null;
+                if (!envio.enviado_em) dados.enviado_em = new Date().toISOString();
+              }
+              const { error } = await Auth.sb.from("disparo_envios").update(dados).eq("id", envio.id);
+              if (error) throw error;
+              // saiu de verdade (por exemplo, enviado à mão): conta no funil como um envio
+              const jaContava = anterior === "enviado" || anterior === "respondeu";
+              if (!jaContava && (nova === "enviado" || nova === "respondeu") && empresa) {
+                const op = envio.oportunidade_id ? oportunidadesCache.find((o) => o.id === envio.oportunidade_id) || null : null;
+                await prospRegistrarNoFunil([{ empresa, op }]);
+              }
+              if (nova === "respondeu" && empresa) {
+                const op = oportunidadesCache.find((o) => o.empresa_id === empresa.id && oportunidadeAberta(o));
+                if (op) await executarAcaoOportunidade(op, "respondeu");
+              }
             }
             await recarregarDisparos();
           } catch (erro) {
-            alert("Não foi possível atualizar o envio.");
+            seletor.value = anterior;
+            alert("Não foi possível mudar a situação.");
             console.error(erro);
           }
         })
