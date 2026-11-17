@@ -3660,6 +3660,25 @@
   #tabelaEmpresas .col-sel-marca input{ width:16px; height:16px; cursor:pointer; accent-color:var(--coral); }
   #tabelaEmpresas .col-sel-marca input:disabled{ cursor:not-allowed; opacity:.35; }
 
+  /* ---- Ficha da marca: bloco Prospecção ---- */
+  .marca-datas{ margin:16px 0 4px; display:flex; flex-direction:column; gap:4px; }
+  .marca-dica{ font-size:.76rem; color:var(--texto-suave); }
+  .marca-chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:6px; }
+  .modal-quadro label.marca-chip{ margin:0; }
+  .marca-chip{ position:relative; display:inline-flex; align-items:center; padding:6px 13px; border-radius:999px; border:1.5px solid var(--borda); background:var(--branco); color:var(--texto-suave); font-size:.78rem; font-weight:600; cursor:pointer; user-select:none; transition:background .15s ease, border-color .15s ease, color .15s ease; }
+  .marca-chip:hover{ border-color:var(--cinza-claro); }
+  .marca-chip input{ position:absolute; opacity:0; pointer-events:none; }
+  .marca-chip:has(input:checked){ background:var(--grafite); border-color:var(--grafite); color:#fff; }
+  .marca-chip:has(input:focus-visible){ outline:2px solid var(--grafite); outline-offset:2px; }
+  .modal-quadro label.marca-opcao{ display:flex; margin:14px 0 0; font-size:inherit; font-weight:inherit; color:inherit; letter-spacing:normal; text-transform:none; }
+  .marca-opcao{ display:flex; align-items:flex-start; gap:10px; margin:14px 0 0; cursor:pointer; }
+  .marca-opcao input{ flex:0 0 auto; width:17px; height:17px; margin:2px 0 0; accent-color:var(--grafite); cursor:pointer; }
+  .marca-opcao span{ display:flex; flex-direction:column; gap:1px; font-size:.86rem; }
+  .marca-opcao b{ font-weight:600; color:var(--grafite); }
+  .marca-opcao small{ font-size:.76rem; color:var(--texto-suave); }
+  .marca-rodape-prosp{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:6px; }
+  .marca-rodape-prosp .btn-acao-op{ margin-top:14px; font-size:.76rem; padding:7px 14px; }
+
   /* ---- Aba Prospecção ---- */
   .prosp{ --prosp-principal:#3A3A3A; --prosp-verde:#2D7A4F; --prosp-ambar:#B7791F; --prosp-azul:#2F6FB0; --prosp-vermelho:#C4453C; }
   .cartoes-fluxo.cartoes-prosp{ grid-template-columns:repeat(5, minmax(0,1fr)); margin:0 0 22px; }
@@ -4929,7 +4948,6 @@
                 <dl>
                   <div><dt>{{contato}}</dt><dd>Nome da pessoa (ou "time Marca")</dd></div>
                   <div><dt>{{marca}}</dt><dd>Nome da marca</dd></div>
-                  <div><dt>{{conexao}}</dt><dd>A linha de conexão da ficha da marca</dd></div>
                   <div><dt>{{produto}}</dt><dd>Produto da oportunidade</dd></div>
                   <div><dt>{{nicho}}</dt><dd>Segmento da marca</dd></div>
                   <div><dt>{{link_portfolio}}</dt><dd>Seu portfólio</dd></div>
@@ -5684,23 +5702,19 @@
         </div>
 
         <div id="blocoCrmEmpresa" hidden>
-          <p class="secao-modal-op">Prospecção <span id="selosPerfilEmpresa" class="texto-pequeno"></span></p>
+          <p class="secao-modal-op">Prospecção</p>
           <div class="grade-propriedades-limpa">
             <div class="prop-limpa">
               <span class="rotulo-limpo">Porte</span>
               <select id="campoPorteEmpresa" class="input-limpo">
-                <option value="">—</option>
+                <option value="">Não sei</option>
                 <option value="pequena">Pequena (DM personalizada)</option>
                 <option value="grande">Grande (pedir e-mail)</option>
               </select>
             </div>
             <div class="prop-limpa">
               <span class="rotulo-limpo">Seguidores no Instagram</span>
-              <input type="number" min="0" step="1" id="campoSeguidoresEmpresa" class="input-limpo">
-            </div>
-            <div class="prop-limpa">
-              <span class="rotulo-limpo">UF</span>
-              <input type="text" id="campoUfEmpresa" class="input-limpo" maxlength="2" autocomplete="off" placeholder="SC">
+              <input type="number" min="0" step="1" id="campoSeguidoresEmpresa" class="input-limpo" placeholder="Ex.: 25000">
             </div>
             <div class="prop-limpa">
               <span class="rotulo-limpo">Já usa UGC?</span>
@@ -5711,32 +5725,32 @@
               </select>
             </div>
             <div class="prop-limpa">
-              <span class="rotulo-limpo">E-mail do marketing</span>
-              <input type="email" id="campoEmailMarketingEmpresa" class="input-limpo" autocomplete="off" placeholder="Se for diferente do principal">
-            </div>
-            <div class="prop-limpa">
               <span class="rotulo-limpo">Próxima reativação</span>
               <input type="date" id="campoProximaReativacaoEmpresa" class="input-limpo">
             </div>
           </div>
-          <label class="rotulo-limpo rotulo-descricao">Datas comemorativas (avisa 45 dias antes)</label>
-          <div id="datasSazonaisEmpresa" style="display:flex; flex-wrap:wrap; gap:6px 14px; margin:6px 0 10px;"></div>
-          <label style="display:flex; align-items:center; gap:8px; margin:6px 0;">
-            <input type="checkbox" id="campoOptoutEmpresa"> Pediu para não receber contato (opt-out: fora de disparos e avisos)
+
+          <div class="marca-datas">
+            <span class="rotulo-limpo">Datas comemorativas</span>
+            <span class="marca-dica">Marque as que combinam com a marca. Eu te aviso 45 dias antes de cada uma.</span>
+            <div class="marca-chips" id="datasSazonaisEmpresa"></div>
+          </div>
+
+          <label class="marca-opcao" id="blocoCriarOportunidadeEmpresa" hidden>
+            <input type="checkbox" id="campoCriarOportunidadeEmpresa" checked>
+            <span><b>Criar também a oportunidade</b><small>A marca já entra na etapa Lista do funil.</small></span>
           </label>
-          <label style="display:flex; align-items:center; gap:8px; margin:6px 0;" id="blocoCriarOportunidadeEmpresa" hidden>
-            <input type="checkbox" id="campoCriarOportunidadeEmpresa" checked> Criar também a oportunidade em Lista
-          </label>
-          <button type="button" class="btn-acao-op" id="btnReativarEmpresa" hidden>Reativar cliente (criar oportunidade)</button>
+          <div class="marca-rodape-prosp">
+            <label class="marca-opcao">
+              <input type="checkbox" id="campoOptoutEmpresa">
+              <span><b>Não quer receber contato</b><small>Fica fora dos disparos e dos avisos.</small></span>
+            </label>
+            <button type="button" class="btn-acao-op" id="btnReativarEmpresa" hidden>Reativar cliente</button>
+          </div>
         </div>
 
         <label for="campoObservacoesEmpresa" class="rotulo-limpo rotulo-descricao">Observações</label>
         <textarea id="campoObservacoesEmpresa" class="textarea-limpa" rows="3"></textarea>
-
-        <div id="propConexaoEmpresa" hidden>
-          <label for="campoConexaoEmpresa" class="rotulo-limpo rotulo-descricao">Linha de conexão <span class="texto-pequeno">(entra no e-mail onde estiver {{conexao}}; até 20 palavras)</span></label>
-          <textarea id="campoConexaoEmpresa" class="textarea-limpa" rows="2" placeholder="Ex.: Estou reformando a cozinha e o fogão de duas bocas de vocês é exatamente o que cabe no meu espaço."></textarea>
-        </div>
 
         <div class="acoes-modal-quadro">
           <button type="button" id="btnExcluirEmpresa" class="btn-excluir-quadro" hidden>Excluir</button>
@@ -16426,13 +16440,11 @@
       .filter((c) => c.visivel);
   }
 
-  // Perfil ideal: 5 mil a 200 mil seguidores, SC ou Sul, já usa UGC e tem e-mail.
-  const UFS_SUL = ["SC", "PR", "RS"];
+  // Perfil ideal: 5 mil a 200 mil seguidores, já usa UGC e tem e-mail.
   function perfilDaMarca(empresa) {
     const seg = Number(empresa.seguidores_instagram) || 0;
     const itens = [
       { rotulo: "5 mil a 200 mil seguidores", ok: seg >= 5000 && seg <= 200000 },
-      { rotulo: "SC ou região Sul", ok: UFS_SUL.includes(String(empresa.uf || "").toUpperCase()) },
       { rotulo: "já usa UGC", ok: empresa.usa_ugc === true },
       { rotulo: "tem e-mail", ok: !!(empresa.email || empresa.email_marketing) },
     ];
@@ -17619,7 +17631,9 @@
     campoContatoEmpresa.value = (empresa && empresa.contato_principal) || "";
     campoRepresentanteEmpresa.value = (empresa && empresa.representante) || "";
     campoWhatsappEmpresa.value = (empresa && empresa.whatsapp) || "";
-    campoEmailEmpresa.value = (empresa && empresa.email) || "";
+    // um campo de e-mail só: se a marca só tem o do marketing, ele aparece aqui
+    campoEmailEmpresa.value = (empresa && (empresa.email || empresa.email_marketing)) || "";
+    emailOriginalEmpresa = (empresa && empresa.email) || "";
     campoSiteEmpresa.value = (empresa && empresa.site) || "";
     campoInstagramEmpresa.value = (empresa && empresa.instagram) || "";
     // TikTok só aparece depois de rodar js/briefing-vinculado-setup.sql (cria a coluna)
@@ -17629,19 +17643,17 @@
     campoCnpjEmpresa.value = (empresa && empresa.cnpj) || "";
     campoEnderecoEmpresa.value = (empresa && empresa.endereco) || "";
     campoObservacoesEmpresa.value = (empresa && empresa.observacoes) || "";
-    // Linha de conexão só aparece depois de rodar js/conexao-setup.sql (cria a coluna)
-    document.getElementById("propConexaoEmpresa").hidden = !colunaConexaoExiste();
-    document.getElementById("campoConexaoEmpresa").value = (empresa && empresa.conexao) || "";
     btnExcluirEmpresa.hidden = !empresa;
     preencherBlocoCrmEmpresa(empresa);
   }
 
-  // ---- Prospecção (porte, seguidores, UF, opt-out, datas comemorativas) ----
+  // ---- Prospecção (porte, seguidores, opt-out, datas comemorativas) ----
+  // UF e "e-mail do marketing" saíram da ficha: os dados antigos ficam no banco.
+  // O e-mail do marketing aparece no campo E-mail quando a marca só tem ele.
   const campoPorteEmpresa = document.getElementById("campoPorteEmpresa");
   const campoSeguidoresEmpresa = document.getElementById("campoSeguidoresEmpresa");
-  const campoUfEmpresa = document.getElementById("campoUfEmpresa");
   const campoUsaUgcEmpresa = document.getElementById("campoUsaUgcEmpresa");
-  const campoEmailMarketingEmpresa = document.getElementById("campoEmailMarketingEmpresa");
+  let emailOriginalEmpresa = "";
   const campoProximaReativacaoEmpresa = document.getElementById("campoProximaReativacaoEmpresa");
   const campoOptoutEmpresa = document.getElementById("campoOptoutEmpresa");
   const campoCriarOportunidadeEmpresa = document.getElementById("campoCriarOportunidadeEmpresa");
@@ -17658,24 +17670,16 @@
     if (bloco.hidden) return;
     campoPorteEmpresa.value = (empresa && empresa.porte) || "";
     campoSeguidoresEmpresa.value = empresa && empresa.seguidores_instagram != null ? empresa.seguidores_instagram : "";
-    campoUfEmpresa.value = (empresa && empresa.uf) || "";
     campoUsaUgcEmpresa.value = !empresa || empresa.usa_ugc == null ? "" : empresa.usa_ugc ? "sim" : "nao";
-    campoEmailMarketingEmpresa.value = (empresa && empresa.email_marketing) || "";
     campoProximaReativacaoEmpresa.value = (empresa && empresa.proxima_reativacao) || "";
     campoOptoutEmpresa.checked = !!(empresa && empresa.optout);
     const marcadas = (empresa && empresa.datas_sazonais) || [];
     document.getElementById("datasSazonaisEmpresa").innerHTML = Object.keys(FESTAS_SAZONAIS)
-      .map((k) => `<label style="display:flex; align-items:center; gap:6px; font-size:.82rem;"><input type="checkbox" data-data-sazonal="${k}"${marcadas.includes(k) ? " checked" : ""}> ${FESTAS_SAZONAIS[k].rotulo}</label>`)
+      .map((k) => `<label class="marca-chip"><input type="checkbox" data-data-sazonal="${k}"${marcadas.includes(k) ? " checked" : ""}>${FESTAS_SAZONAIS[k].rotulo}</label>`)
       .join("");
     document.getElementById("blocoCriarOportunidadeEmpresa").hidden = !!empresa;
     campoCriarOportunidadeEmpresa.checked = true;
     btnReativarEmpresa.hidden = !empresa;
-    const perfil = empresa ? perfilDaMarca(empresa) : null;
-    document.getElementById("selosPerfilEmpresa").textContent = perfil
-      ? perfil.qualificada
-        ? "· ★ cumpre o perfil ideal"
-        : "· perfil " + perfil.ok + "/" + perfil.total + " (falta: " + perfil.itens.filter((i) => !i.ok).map((i) => i.rotulo).join(", ") + ")"
-      : "";
   }
 
   function coletarBlocoCrmEmpresa() {
@@ -17683,9 +17687,9 @@
     return {
       porte: campoPorteEmpresa.value || null,
       seguidores_instagram: campoSeguidoresEmpresa.value ? Math.round(Number(campoSeguidoresEmpresa.value)) : null,
-      uf: campoUfEmpresa.value.trim().toUpperCase() || null,
       usa_ugc: campoUsaUgcEmpresa.value === "sim" ? true : campoUsaUgcEmpresa.value === "nao" ? false : null,
-      email_marketing: campoEmailMarketingEmpresa.value.trim() || null,
+      // mexeu no e-mail: ele passa a ser o e-mail de disparo (o antigo do marketing sai)
+      ...(campoEmailEmpresa.value.trim() !== emailOriginalEmpresa ? { email_marketing: null } : {}),
       proxima_reativacao: campoProximaReativacaoEmpresa.value || null,
       optout: campoOptoutEmpresa.checked,
       datas_sazonais: [...document.querySelectorAll("#datasSazonaisEmpresa [data-data-sazonal]")].filter((c) => c.checked).map((c) => c.dataset.dataSazonal),
@@ -17703,16 +17707,10 @@
     return empresasCache.some((e) => e && "tiktok" in e);
   }
 
-  function colunaConexaoExiste() {
-    return empresasCache.some((e) => e && "conexao" in e);
-  }
-
   function coletarDadosFormEmpresa() {
     const tiktok = colunaTiktokExiste() ? { tiktok: document.getElementById("campoTiktokEmpresa").value.trim() || null } : {};
-    const conexao = colunaConexaoExiste() ? { conexao: document.getElementById("campoConexaoEmpresa").value.trim() || null } : {};
     return {
       ...tiktok,
-      ...conexao,
       ...coletarBlocoCrmEmpresa(),
       nome: campoNomeEmpresa.value.trim(),
       segmento: campoSegmentoEmpresa.value.trim() || null,
@@ -19746,12 +19744,18 @@ Me mande a planilha pronta pra baixar.` }
     };
   }
 
-  // variável sem valor continua aparecendo como {{nome}} (pra você ver o que falta); só o gancho de casa some
+  // variável sem valor continua aparecendo como {{nome}} (pra você ver o que falta);
+  // o gancho de casa e a linha de conexão são opcionais: vazios, somem sem travar o envio
+  const VARIAVEIS_OPCIONAIS = ["gancho_casa", "conexao"];
   function preencherModelo(texto, variaveis) {
-    return String(texto || "").replace(/\{\{(\w+)\}\}/g, (m, chave) => {
-      if (chave === "gancho_casa") return variaveis.gancho_casa || "";
-      return variaveis[chave] ? variaveis[chave] : m;
-    });
+    return String(texto || "")
+      .replace(/\{\{(\w+)\}\}/g, (m, chave) => {
+        if (VARIAVEIS_OPCIONAIS.includes(chave)) return variaveis[chave] || "";
+        return variaveis[chave] ? variaveis[chave] : m;
+      })
+      .replace(/<p>\s*<\/p>/g, "")
+      .replace(/[ \t]+\n/g, "\n")
+      .replace(/\n{3,}/g, "\n\n");
   }
 
   // ---- aba Modelos ----
@@ -20567,7 +20571,6 @@ ${botao}
     const faltas = [];
     if (!disparosDisponivel) faltas.push("js/crm-funil-3-setup.sql");
     if (!prospColunaSelecionada() || !prospColunasNovas()) faltas.push("js/prospeccao-setup.sql");
-    if (!empresasCache.some((e) => e && "conexao" in e)) faltas.push("js/conexao-setup.sql");
     aviso.hidden = !faltas.length || !empresasCache.length;
     aviso.innerHTML = `Falta rodar no Supabase (SQL Editor): ${faltas.map((f) => "<b>" + f + "</b>").join(", ")}. O resto da aba continua funcionando.`;
     renderizarCartoesProspeccao();
