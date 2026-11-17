@@ -3705,6 +3705,8 @@
   .prosp-linha .prosp-rotulo{ margin-top:0; }
   .prosp-linha-dupla{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
   .prosp-alternador{ display:inline-flex; margin:10px 0 2px; }
+  .prosp-uma-marca{ margin-top:8px; }
+  .prosp-destaque{ font-weight:700; }
   .prosp-contagem{ margin:10px 0 4px; font-size:.92rem; }
   .prosp-contagem b{ font-family:var(--fonte-impacto); font-size:1.15rem; }
   .prosp-fora{ font-size:.8rem; color:var(--texto-suave); }
@@ -4904,6 +4906,10 @@
               <h3><span>1</span> Pra quem vai</h3>
               <p class="prosp-lembrete">Os e-mails vêm da sua aba Marcas.</p>
               <select id="prospDestino" class="input-limpo prosp-campo"></select>
+              <div class="prosp-uma-marca" id="prospUmaMarcaBloco" hidden>
+                <input type="text" id="prospUmaMarca" class="input-limpo prosp-campo" list="prospListaMarcas" autocomplete="off" placeholder="Digite o nome da marca">
+                <datalist id="prospListaMarcas"></datalist>
+              </div>
               <p class="prosp-contagem" id="prospContagem"></p>
               <div class="prosp-fora" id="prospFora"></div>
               <label class="prosp-check"><input type="checkbox" id="prospPularRecebidos" checked> Pular quem já recebeu este mesmo assunto</label>
@@ -20198,6 +20204,7 @@ ${botao}
     const opcoes = [];
     if (prospColunaSelecionada()) opcoes.push({ valor: "selecionadas", rotulo: "Só as marcas que eu selecionei" });
     opcoes.push({ valor: "teste", rotulo: "Só pra mim (teste)" });
+    opcoes.push({ valor: "uma", rotulo: "Uma marca específica" });
     opcoes.push({ valor: "todas", rotulo: "Todas as marcas que têm e-mail" });
     const nomes = { Lead: "Só os leads", Ativo: "Só as marcas ativas (campanha em andamento)", Fechado: "Só as marcas fechadas (já trabalhei)" };
     prospStatusExistentes().forEach((s) => opcoes.push({ valor: "status:" + s, rotulo: nomes[s] || "Só as marcas com situação " + s }));
@@ -20206,8 +20213,30 @@ ${botao}
   }
 
   function prospRotuloDestino(valor) {
+    if (valor === "uma") {
+      const empresa = prospMarcaUnica();
+      return empresa ? "Só a marca " + empresa.nome : "Uma marca específica";
+    }
     const o = prospOpcoesDestino().find((x) => x.valor === valor);
     return o ? o.rotulo : valor;
+  }
+
+  // ---------- uma marca específica ----------
+  function prospMarcaUnica() {
+    const alvo = normalizarTexto(document.getElementById("prospUmaMarca").value);
+    if (!alvo) return null;
+    return empresasCache.find((e) => normalizarTexto(e.nome) === alvo) || null;
+  }
+  function renderizarListaUmaMarca() {
+    const bloco = document.getElementById("prospUmaMarcaBloco");
+    bloco.hidden = document.getElementById("prospDestino").value !== "uma";
+    if (bloco.hidden) return;
+    document.getElementById("prospListaMarcas").innerHTML = empresasCache
+      .filter((e) => e.nome)
+      .slice()
+      .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"))
+      .map((e) => `<option value="${esc(e.nome)}">${esc(emailDeDisparo(e) || "sem e-mail")}</option>`)
+      .join("");
   }
 
   // Assuntos (o texto com {{ }}) que cada e-mail já recebeu
@@ -20247,6 +20276,10 @@ ${botao}
     } else {
       let base = empresasCache;
       if (destino === "selecionadas") base = base.filter((e) => e.selecionada);
+      else if (destino === "uma") {
+        const unica = prospMarcaUnica();
+        base = unica ? [unica] : [];
+      }
       else if (destino.indexOf("status:") === 0) base = base.filter((e) => statusEfetivoEmpresa(e) === destino.slice(7));
       base.forEach((empresa) => {
         const motivo = motivoForaDoDisparo(empresa);
@@ -20311,6 +20344,7 @@ ${botao}
     const opcoes = prospOpcoesDestino();
     seletor.innerHTML = opcoes.map((o) => `<option value="${o.valor}">${esc(o.rotulo)}</option>`).join("");
     seletor.value = opcoes.some((o) => o.valor === anterior) ? anterior : opcoes[0].valor;
+    renderizarListaUmaMarca();
   }
 
   function renderizarContagemProspeccao() {
@@ -20329,6 +20363,14 @@ ${botao}
       (semEmail ? ` · ${formatarNumero(semEmail)} sem e-mail ficaram de fora` : "");
     if (destino === "selecionadas" && !empresasCache.some((e) => e.selecionada)) {
       contagem.innerHTML = `Nenhuma marca selecionada ainda. <button type="button" class="prosp-link" data-prosp-ir-marcas>Selecionar na aba Marcas</button>`;
+    }
+    if (destino === "uma") {
+      const unica = prospMarcaUnica();
+      const texto = document.getElementById("prospUmaMarca").value.trim();
+      if (!texto) contagem.innerHTML = "Digite o nome da marca no campo acima e escolha na lista.";
+      else if (!unica) contagem.innerHTML = `Não achei nenhuma marca com o nome <span class="prosp-destaque">${esc(texto)}</span>. Escolha um nome da lista.`;
+      else if (lista.length) contagem.innerHTML = `Vai para <span class="prosp-destaque">${esc(unica.nome)}</span>, no e-mail <span class="prosp-destaque">${esc(lista[0].email)}</span>.`;
+      else contagem.innerHTML = `<span class="prosp-destaque">${esc(unica.nome)}</span> não pode receber este e-mail: ${esc((fora[0] && fora[0].motivo) || "veja o motivo abaixo")}.`;
     }
     if (destino === "followup" && !lista.length && !fora.length) {
       contagem.innerHTML = `Nenhuma marca com o <b>${esc(document.getElementById("prospModelo").value || "modelo escolhido")}</b> vencendo hoje. Escolha em "Começar de um modelo" o e-mail da sequência que você quer mandar (EM-2, EM-3...).`;
@@ -20756,8 +20798,12 @@ ${botao}
       alert("Nenhuma marca selecionada. Vou te levar para a aba Marcas.");
       return prospIrParaMarcas();
     }
+    if (destino === "uma" && !prospMarcaUnica()) {
+      document.getElementById("prospUmaMarca").focus();
+      return alert("Escolha a marca no campo logo abaixo de \"Pra quem vai\".");
+    }
     const { lista, fora } = prospDestinatarios(destino, r);
-    if (!lista.length) return alert("Nenhuma marca desta lista pode receber agora. Veja quem ficou de fora logo abaixo da contagem.");
+    if (!lista.length) return alert(destino === "uma" ? "Essa marca não pode receber este e-mail agora. O motivo aparece logo abaixo da contagem." : "Nenhuma marca desta lista pode receber agora. Veja quem ficou de fora logo abaixo da contagem.");
     if (r.formato === "html" && !/SAIR/i.test(r.html)) {
       const seguir = await prospPerguntar(
         "O seu HTML está sem o rodapé do <b>SAIR</b>.",
@@ -20917,7 +20963,19 @@ ${botao}
     prospAoEditar();
     renderizarMarcaExemploProspeccao();
   });
+  function prospAoEscolherUmaMarca() {
+    renderizarContagemProspeccao();
+    renderizarMarcaExemploProspeccao();
+    renderizarPreviaProspeccao();
+  }
+  document.getElementById("prospUmaMarca").addEventListener("input", prospAoEscolherUmaMarca);
   document.getElementById("prospDestino").addEventListener("change", () => {
+    renderizarListaUmaMarca();
+    if (document.getElementById("prospDestino").value === "uma") {
+      prospAoEscolherUmaMarca();
+      if (!prospMarcaUnica()) document.getElementById("prospUmaMarca").focus();
+      return;
+    }
     if (document.getElementById("prospDestino").value === "selecionadas" && !empresasCache.some((e) => e.selecionada)) {
       renderizarContagemProspeccao();
       return;
