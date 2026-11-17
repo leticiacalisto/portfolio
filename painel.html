@@ -738,12 +738,7 @@
     display:flex; align-items:center; justify-content:space-between;
   }
   .tl-sem-data h3 .contagem-coluna{ font-weight:600; }
-  .tl-lateral-abas{ display:flex; gap:4px; margin:0 0 12px; padding:3px; border-radius:10px; background:var(--creme); }
-  .tl-lateral-aba{ flex:1; display:flex; align-items:center; justify-content:center; gap:6px; padding:6px 8px; border:0; border-radius:8px; background:none; font-family:inherit; font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:var(--texto-suave); cursor:pointer; }
-  .tl-lateral-aba.ativo{ background:var(--branco); color:var(--grafite); box-shadow:0 1px 3px rgba(20,17,13,.1); }
-  .tl-lateral-aba .contagem-coluna{ font-weight:600; }
-  .tl-lateral-aba.atrasadas.tem .contagem-coluna{ color:var(--vermelho-erro); }
-  .tl-lateral-dica{ margin:0 4px 10px; font-size:.72rem; line-height:1.4; color:var(--texto-suave); }
+  .tl-grupo-atrasadas .tl-sem-grupo-cab .contagem-coluna{ color:var(--vermelho-erro); }
   .tl-sem-item .tl-atraso{ display:block; margin-top:3px; font-size:.68rem; font-weight:700; color:var(--vermelho-erro); }
   .tl-sem-item{
     display:block; width:100%; text-align:left; font-family:inherit;
@@ -21605,7 +21600,6 @@ ${botao}
   // Coluna à direita da Timeline: subtarefas (de vídeos não arquivados) sem
   // data de início nem de fim. Clicar abre o vídeo.
   const gruposSemDataAbertos = new Set(); // grupos começam recolhidos
-  let lateralTimelineModo = "sem-data"; // "sem-data" ou "atrasadas"
   // Atrasadas: subtarefas não concluídas cuja entrega (fim) já passou.
   function subtarefasAtrasadasTimeline() {
     const hoje = hojeIso();
@@ -21655,45 +21649,35 @@ ${botao}
                   return outros.length ? " · " + esc(outros.map((et) => et.nome).join(", ")) : "";
                 })()}</small>
               </button>`;
-    const htmlGrupo = (chave, titulo, lista) => {
+    const htmlGrupo = (chave, titulo, lista, desenho, classe) => {
       if (!lista.length) return "";
       const aberto = gruposSemDataAbertos.has(chave);
-      return `<div class="tl-sem-grupo">
+      return `<div class="tl-sem-grupo${classe ? " " + classe : ""}">
         <button type="button" class="tl-sem-grupo-cab" data-sem-data-grupo="${chave}" aria-expanded="${aberto}">
           <span class="tl-sem-seta">${aberto ? "▾" : "▸"}</span><span>${titulo}</span><span class="contagem-coluna">${lista.length}</span>
         </button>
-        ${aberto ? lista.map(htmlItem).join("") : ""}
+        ${aberto ? lista.map(desenho || htmlItem).join("") : ""}
       </div>`;
     };
 
-    const abas = `<div class="tl-lateral-abas" role="tablist">
-        <button type="button" class="tl-lateral-aba${lateralTimelineModo === "sem-data" ? " ativo" : ""}" data-lateral-modo="sem-data" role="tab" aria-selected="${lateralTimelineModo === "sem-data"}">Sem data <span class="contagem-coluna">${itens.length}</span></button>
-        <button type="button" class="tl-lateral-aba atrasadas${atrasadas.length ? " tem" : ""}${lateralTimelineModo === "atrasadas" ? " ativo" : ""}" data-lateral-modo="atrasadas" role="tab" aria-selected="${lateralTimelineModo === "atrasadas"}">Atrasadas <span class="contagem-coluna">${atrasadas.length}</span></button>
-      </div>`;
-
-    if (lateralTimelineModo === "atrasadas") {
-      const hoje = dataDoIso(hojeIso());
-      const htmlAtrasada = (it) => {
-        const dias = Math.round((hoje - dataDoIso(it.fim)) / 86400000);
-        return `<button type="button" class="tl-sem-item" draggable="true" data-sem-data-sub="${it.s.id}" data-sem-data-card="${it.card.id}" title="Clique pra abrir o vídeo ou arraste pra um novo dia da timeline"
+    // Atrasadas: grupo recolhido como os outros, logo acima de "Briefing pendente".
+    // Arrastar para um dia muda a subtarefa de lugar com a mesma duração.
+    const hoje = dataDoIso(hojeIso());
+    const htmlAtrasada = (it) => {
+      const dias = Math.round((hoje - dataDoIso(it.fim)) / 86400000);
+      return `<button type="button" class="tl-sem-item" draggable="true" data-sem-data-sub="${it.s.id}" data-sem-data-card="${it.card.id}" title="Clique pra abrir o vídeo ou arraste pra um novo dia da timeline"
                 style="--cor-fase:${it.cor.ponto}; --cor-fase-bg:${it.cor.bg}; --cor-fase-fg:${it.cor.fg};">
                 <b>${esc(it.s.nome)}</b><small>${esc(it.card.titulo)}</small>
                 <span class="tl-atraso">Era pra ${formatarDataBr(it.fim)} · ${dias} ${dias === 1 ? "dia" : "dias"} de atraso</span>
               </button>`;
-      };
-      lateral.innerHTML =
-        abas +
-        (atrasadas.length
-          ? `<p class="tl-lateral-dica">Arraste para um dia da timeline. A duração continua a mesma.</p>` + atrasadas.map(htmlAtrasada).join("")
-          : `<p class="texto-vazio">Nada atrasado.</p>`);
-      return;
-    }
+    };
 
     lateral.innerHTML =
-      abas +
-      (itens.length
-        ? soltas.map(htmlItem).join("") + htmlGrupo("briefing", "Briefing pendente", briefing) + htmlGrupo("revisao", "Revisão", revisao)
-        : `<p class="texto-vazio">Todas as subtarefas têm data.</p>`);
+      `<h3>Sem data <span class="contagem-coluna">${itens.length}</span></h3>` +
+      (itens.length ? soltas.map(htmlItem).join("") : `<p class="texto-vazio">Todas as subtarefas têm data.</p>`) +
+      htmlGrupo("atrasadas", "Atrasadas", atrasadas, htmlAtrasada, "tl-grupo-atrasadas") +
+      htmlGrupo("briefing", "Briefing pendente", briefing) +
+      htmlGrupo("revisao", "Revisão", revisao);
   }
   // Arrastar uma subtarefa sem data pra um dia da timeline: grava início e
   // fim nesse dia (barra de 1 dia, que dá pra esticar depois).
@@ -21752,12 +21736,6 @@ ${botao}
   });
 
   document.getElementById("linhaTempoSemData").addEventListener("click", (evento) => {
-    const aba = evento.target.closest("[data-lateral-modo]");
-    if (aba) {
-      lateralTimelineModo = aba.dataset.lateralModo;
-      renderizarSubtarefasSemData();
-      return;
-    }
     const cabecalhoGrupo = evento.target.closest("[data-sem-data-grupo]");
     if (cabecalhoGrupo) {
       const chave = cabecalhoGrupo.dataset.semDataGrupo;
