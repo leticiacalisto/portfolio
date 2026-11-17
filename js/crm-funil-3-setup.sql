@@ -129,19 +129,18 @@ Faz sentido pra vocês? Eu mando os valores e os formatos.
 
 Letícia Calisto$m$, 50),
 
-('EM-2', 'E-mail 2: prova', 'email', 'EMAIL_SEQ', '2', 'Re: Ideia de vídeo pra {{marca}}',
-$m$Oi, {{contato}}! Voltando aqui com um exemplo do que esse formato faz: um vídeo meu para um jogo passou de 1,5 milhão de visualizações, e para uma escola de inglês o meu criativo foi o anúncio com melhor desempenho.
+('EM-2', 'Lembrete curto', 'email', 'EMAIL_SEQ', '2', 'Re: Ideia de vídeo pra {{marca}}',
+$m$Oi, {{contato}}! Passando rapidinho pra saber se vocês conseguiram ver o meu último e-mail e se a ideia faz sentido pra vocês.
 
-Vídeo UGC funciona porque o público vê o produto na mão de uma pessoa real, e não numa propaganda. Se quiser, eu monto uma sugestão de roteiro pra {{marca}}, sem compromisso.
+Se não for você quem cuida disso, me indica a pessoa certa? E se ficar mais fácil, me passa um WhatsApp que eu chamo por lá.
 
-Posso te mandar?
-
+Obrigada!
 Letícia$m$, 51),
 
-('EM-3', 'E-mail 3: ideia específica ou data sazonal', 'email', 'EMAIL_SEQ', '3', 'Mais uma ideia pra {{marca}}',
-$m$Oi, {{contato}}! Pensei em outro formato que costuma ir bem em anúncio: os primeiros 3 segundos já com o produto em uso e, na tela, a pergunta que a cliente de vocês faria antes de comprar. É rápido de gravar e fácil de testar em versões diferentes.
+('EM-3', 'Prova e uma ideia nova', 'email', 'EMAIL_SEQ', '3', 'Mais uma ideia pra {{marca}}',
+$m$Oi, {{contato}}! Pra vocês terem uma ideia do que esse formato faz: um vídeo meu para um jogo passou de 1,5 milhão de visualizações, e para uma escola de inglês o meu criativo foi o anúncio com melhor desempenho.
 
-Eu entrego em 7 a 10 dias úteis, então dá tempo de chegar com criativo novo na próxima data importante de vocês.
+Pensando na {{marca}}, um formato que costuma ir bem em anúncio: os primeiros 3 segundos já com o produto em uso e, na tela, a pergunta que a cliente de vocês faria antes de comprar. Entrego em 7 a 10 dias úteis.
 
 Quer que eu te mande uma proposta?
 
