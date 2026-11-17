@@ -2431,6 +2431,8 @@
 
   /* topo: ocultar dados sensíveis + sino */
   .topo-acoes{ display:flex; align-items:center; gap:6px; margin-left:auto; }
+  .btn-chave-supadata{ position:relative; }
+  .btn-chave-supadata.sem-chave::after{ content:""; position:absolute; top:5px; right:5px; width:8px; height:8px; border-radius:50%; background:var(--vermelho-erro); border:2px solid var(--branco); }
   /* o cabeçalho já tem um espaço entre os blocos; este recuo deixa a estrela à mesma distância dos outros botões */
   .barra-salvos:not([hidden]) + .topo-acoes{ margin-left:-10px; }
   .btn-ocultar-dados.ativo{ background: var(--creme); border-color: var(--borda); color: var(--grafite); }
@@ -3800,8 +3802,9 @@
   .rot{ --rot-minha:#2D7A4F; --rot-minha-fundo:#EAF5EE; --rot-outra:#2F6FB0; --rot-outra-fundo:#E7F0FA; }
   .cartoes-fluxo.cartoes-rot{ margin:0 0 22px; }
   @media (max-width: 900px){ .cartoes-fluxo.cartoes-rot{ grid-template-columns:repeat(2, minmax(0,1fr)); } }
-  .rot-topo, .rot-chave-bloco{ margin-bottom:26px; }
-  .rot-chave-bloco{ border:1.5px solid #F5E1A6; background:#FFFDF6; }
+  .rot-topo{ margin-bottom:26px; }
+  .rot-topo .rot-link{ background:var(--creme) !important; border:1.5px solid transparent !important; border-radius:12px !important; padding:12px 16px !important; }
+  .rot-topo .rot-link:focus{ border-color:var(--grafite) !important; background:var(--branco) !important; outline:none; }
   .rot-guia{ list-style:none; counter-reset:passo; margin:0 0 16px; padding:0; display:grid; gap:8px; }
   .rot-guia li{ counter-increment:passo; display:flex; align-items:flex-start; gap:10px; font-size:.86rem; line-height:1.45; color:var(--texto-suave); }
   .rot-guia li::before{ content:counter(passo); flex:0 0 auto; width:20px; height:20px; border-radius:50%; display:grid; place-items:center; background:var(--creme); color:var(--grafite); font-size:.7rem; font-weight:700; }
@@ -3883,6 +3886,8 @@
   .rot-modal-aviso{ margin:0 0 14px; padding:10px 14px; border-radius:12px; background:#EAF5EE; color:#1F5C3A; font-size:.86rem; }
   .rot-transcricao{ min-height:220px; line-height:1.55; }
 
+  .rot-chave-status{ margin:0 0 12px; font-size:.86rem; line-height:1.5; color:var(--texto-suave); }
+  .rot-chave-status a{ color:var(--grafite); font-weight:700; }
   .rot-video-caixa{ position:relative; width:min(380px, 100%); }
   .rot-video-caixa iframe{ display:block; width:100%; height:min(680px, calc(100vh - 80px)); border:0; border-radius:16px; background:#000; }
   .rot-video-fechar{ position:absolute; top:-14px; right:-14px; z-index:2; width:34px; height:34px; border-radius:50%; border:0; background:#fff; color:var(--grafite); font-size:.9rem; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,.25); }
@@ -4079,6 +4084,9 @@
       </div>
       <!-- Ocultar dados sensíveis + notificações: aparecem em todas as telas -->
       <div class="topo-acoes">
+        <button type="button" class="btn-ferramenta-tabela btn-chave-supadata" id="btnChaveSupadata" title="Chave da Supadata" aria-label="Chave da Supadata" hidden>
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2 20 3"/><path d="M17 6l3 3"/><path d="M14.5 8.5l2 2"/></svg>
+        </button>
         <button type="button" class="btn-ferramenta-tabela btn-ocultar-dados" id="btnOcultarDados" title="Ocultar dados sensíveis (valores e e-mails)" aria-label="Ocultar dados sensíveis" aria-pressed="false">
           <svg class="olho-aberto" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
           <svg class="olho-fechado" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A9.9 9.9 0 0 1 12 5c6 0 10 7 10 7a17 17 0 0 1-3.2 4"/><path d="M6.6 6.6A16.6 16.6 0 0 0 2 12s4 7 10 7a9.7 9.7 0 0 0 4.4-1.1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
@@ -5277,27 +5285,7 @@
 
         <div class="cartoes-fluxo cartoes-rot" id="rotCartoes"></div>
 
-        <section class="prosp-bloco rot-chave-bloco" id="rotChaveBloco" hidden>
-          <h3><span>0</span> Antes de começar: conecte a Supadata</h3>
-          <p class="prosp-dica">A Supadata é o serviço que ouve o vídeo e escreve o que foi falado. Você faz isso uma vez só.</p>
-          <ol class="rot-guia">
-            <li><span><b>Crie uma conta grátis</b> em <a href="https://supadata.ai" target="_blank" rel="noopener">supadata.ai</a>. São 100 créditos por mês, sem cartão.</span></li>
-            <li><span><b>Copie a API key</b> que aparece no painel deles.</span></li>
-            <li><span><b>Cole aqui e salve.</b> Cada vídeo gasta uns 2 créditos, então dá uns 50 vídeos por mês.</span></li>
-          </ol>
-          <div class="rot-config-linha">
-            <input type="password" id="rotChave" class="input-limpo prosp-campo" autocomplete="off" spellcheck="false" placeholder="Cole a sua API key da Supadata">
-            <button type="button" class="btn-novo-card" id="btnRotSalvarChave">Salvar chave</button>
-          </div>
-        </section>
-
-        <section class="prosp-bloco rot-topo">
-          <h3><span>1</span> Transcrever um vídeo</h3>
-          <ol class="rot-guia rot-guia-linha">
-            <li><span><b>Cole o link</b> do Reel, do TikTok ou do YouTube.</span></li>
-            <li><span><b>Diga de quem é:</b> seu ou de outra creator.</span></li>
-            <li><span><b>Clique em Transcrever.</b> Leva de 30 segundos a 4 minutos.</span></li>
-          </ol>
+        <div class="rot-topo">
           <div class="rot-linha">
             <input type="url" id="rotLink" class="input-limpo prosp-campo rot-link" autocomplete="off" placeholder="Cole aqui: instagram.com/reel/... · tiktok.com/... · youtube.com/...">
             <div class="alternador-visualizacao alternador-mini rot-de-quem" id="rotDeQuem">
@@ -5306,23 +5294,12 @@
             </div>
             <button type="button" class="btn-novo-card" id="btnRotTranscrever">Transcrever</button>
           </div>
-          <p class="rot-mao">O vídeo não tem fala, ou você já tem o texto? <button type="button" class="prosp-link" id="btnRotManual">Escrever na mão</button></p>
           <div class="rot-aviso" id="rotAviso" hidden></div>
-
-          <details class="rot-config" id="rotConfig" hidden>
-            <summary><span id="rotConfigResumo">Chave da Supadata</span></summary>
-            <div class="rot-config-corpo">
-              <div class="rot-config-linha">
-                <input type="password" id="rotChaveTroca" class="input-limpo prosp-campo" autocomplete="off" spellcheck="false" placeholder="Cole outra chave para trocar">
-                <button type="button" class="btn-acao-op principal" id="btnRotTrocarChave">Trocar chave</button>
-              </div>
-            </div>
-          </details>
-        </section>
+        </div>
 
         <div class="rot-bib-cab">
           <div>
-            <h3 class="rot-secao-titulo"><span>2</span> Sua biblioteca</h3>
+            <h3 class="rot-secao-titulo">Sua biblioteca</h3>
             <p class="prosp-dica">Busque por qualquer palavra dita no vídeo. Use as tags para separar ganchos, assuntos e formatos.</p>
           </div>
           <div class="rot-estudar">
@@ -6426,6 +6403,20 @@
 </div>
 
 <!-- ===================== MODAL: NOVO/EDITAR AFILIADO ===================== -->
+<!-- ===================== MODAL: CHAVE DA SUPADATA ===================== -->
+<div class="overlay-modal" id="overlayChaveSupadata" hidden>
+  <div class="modal-quadro">
+    <h3>Chave da Supadata</h3>
+    <p class="rot-chave-status" id="rotChaveStatus"></p>
+    <input type="password" id="rotChave" class="input-limpo" autocomplete="off" spellcheck="false" placeholder="Cole a sua API key">
+    <div class="acoes-modal-quadro">
+      <span style="flex-grow:1"></span>
+      <button type="button" class="btn-cancelar-quadro" id="btnCancelarChaveSupadata">Cancelar</button>
+      <button type="button" class="btn-salvar-quadro" id="btnRotSalvarChave">Salvar</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===================== MODAL: TRANSCRIÇÃO ===================== -->
 <div class="overlay-modal" id="overlayRoteiro" hidden>
   <div class="modal-quadro rot-modal">
@@ -7037,7 +7028,9 @@
     titulo.classList.toggle("titulo-saudacao", ehPrincipal);
     subtitulo.textContent = ehPrincipal ? dataPorExtenso() : "";
     subtitulo.hidden = !ehPrincipal;
-    document.getElementById("barraSalvos").hidden = !ehPrincipal;
+    document.getElementById("barraSalvos").hidden = false; // favoritos em todas as páginas
+    const btnChave = document.getElementById("btnChaveSupadata");
+    if (btnChave) btnChave.hidden = aba !== "cc-roteiros";
     if (typeof atualizarInsightTopo === "function") atualizarInsightTopo(ehPrincipal);
   }
   atualizarTopo((document.querySelector(".item-nav.ativo") || { dataset: {} }).dataset.tab || "principal");
@@ -26459,7 +26452,7 @@ ${botao}
     const codigo = rotCodigoErro(corpo);
     const detalhe = rotDetalheErro(corpo);
     if (resposta.status === 401 || resposta.status === 403 || codigo === "unauthorized") {
-      return new RotErro("A Supadata não aceitou a sua chave. Confira em \"Chave da Supadata\", aqui embaixo, se ela foi colada inteira, ou troque por outra.", "chave");
+      return new RotErro("A Supadata não aceitou a sua chave. Confira no botão de chave, lá no topo, se ela foi colada inteira, ou troque por outra.", "chave");
     }
     if (codigo === "limit-exceeded" || resposta.status === 429) {
       if (/plan usage/i.test(detalhe)) return new RotErro("Acabaram os seus créditos da Supadata deste mês. Eles voltam quando o plano renova.", "cota");
@@ -26547,12 +26540,12 @@ ${botao}
   }
   function rotRenderConfig() {
     const tem = !!rotChave;
-    const leu = rotChave !== null;
-    document.getElementById("rotChaveBloco").hidden = !leu || tem;
-    document.getElementById("rotConfig").hidden = !tem;
-    document.getElementById("rotConfigResumo").textContent = tem
-      ? `Chave da Supadata conectada: ••••${rotChave.slice(-4)}${rotSaldoTexto ? " · " + rotSaldoTexto : ""}`
-      : "Chave da Supadata";
+    const botao = document.getElementById("btnChaveSupadata");
+    botao.classList.toggle("sem-chave", rotChave !== null && !tem);
+    botao.title = tem ? "Chave da Supadata conectada" : "Conectar a chave da Supadata";
+    document.getElementById("rotChaveStatus").innerHTML = tem
+      ? `Conectada: ••••${esc(rotChave.slice(-4))}. Para trocar, cole a chave nova abaixo.`
+      : 'Crie uma conta grátis em <a href="https://supadata.ai" target="_blank" rel="noopener">supadata.ai</a> (100 créditos por mês, sem cartão), copie a API key e cole abaixo.';
     rotRenderCartoes();
   }
   async function rotAtualizarSaldo() {
@@ -26579,8 +26572,8 @@ ${botao}
     }
     rotRenderConfig();
   }
-  async function rotSalvarChave(idCampo) {
-    const campo = document.getElementById(idCampo || "rotChave");
+  async function rotSalvarChave() {
+    const campo = document.getElementById("rotChave");
     const valor = campo.value.trim();
     if (!valor) {
       alert("Cola a chave da Supadata no campo antes de salvar.");
@@ -26596,7 +26589,7 @@ ${botao}
     campo.value = "";
     rotSaldoTexto = "";
     rotSaldo = null;
-    document.getElementById("rotConfig").open = false;
+    document.getElementById("overlayChaveSupadata").hidden = true;
     rotRenderConfig();
     rotEsconderAviso();
     await rotAtualizarSaldo();
@@ -26619,16 +26612,10 @@ ${botao}
     document.getElementById("rotAviso").hidden = true;
   }
   function rotAbrirConfigChave() {
-    if (rotChave) {
-      const det = document.getElementById("rotConfig");
-      det.open = true;
-      document.getElementById("rotChaveTroca").focus();
-    } else {
-      const bloco = document.getElementById("rotChaveBloco");
-      bloco.hidden = false;
-      bloco.scrollIntoView({ behavior: "smooth", block: "center" });
-      document.getElementById("rotChave").focus();
-    }
+    rotRenderConfig();
+    document.getElementById("rotChave").value = "";
+    document.getElementById("overlayChaveSupadata").hidden = false;
+    document.getElementById("rotChave").focus();
   }
 
   // ---- transcrever ----
@@ -26664,7 +26651,7 @@ ${botao}
     if (!rotChave) {
       rotMostrarAviso(
         "alerta",
-        'Falta a sua chave da Supadata, que é quem transcreve os vídeos. Crie uma conta grátis em <a href="https://supadata.ai" target="_blank" rel="noopener">supadata.ai</a> (100 créditos por mês, sem cartão, uns 50 vídeos), copie a API key e cole no quadro "Antes de começar", aqui em cima.',
+        'Falta a sua chave da Supadata, que é quem transcreve os vídeos. Crie uma conta grátis em <a href="https://supadata.ai" target="_blank" rel="noopener">supadata.ai</a> (100 créditos por mês, sem cartão, uns 50 vídeos), copie a API key e cole no botão de chave, lá no topo da página.',
         [{ rotulo: "Colar a chave", acao: rotAbrirConfigChave }]
       );
       return;
@@ -27084,17 +27071,14 @@ ${videos}`;
       rotTranscrever(evento.target.value, rotDeQuemNovo);
     }
   });
-  document.getElementById("btnRotManual").addEventListener("click", () => {
-    const url = rotLimparLink(document.getElementById("rotLink").value);
-    rotAbrirModal({ de_quem: rotDeQuemNovo, url: /^https?:\/\//i.test(url) ? url : "", perfil: url ? rotPerfilDoLink(url) : "" });
-  });
-  document.getElementById("btnRotSalvarChave").addEventListener("click", () => rotSalvarChave("rotChave"));
+  document.getElementById("btnRotSalvarChave").addEventListener("click", rotSalvarChave);
   document.getElementById("rotChave").addEventListener("keydown", (evento) => {
-    if (evento.key === "Enter") rotSalvarChave("rotChave");
+    if (evento.key === "Enter") rotSalvarChave();
   });
-  document.getElementById("btnRotTrocarChave").addEventListener("click", () => rotSalvarChave("rotChaveTroca"));
-  document.getElementById("rotChaveTroca").addEventListener("keydown", (evento) => {
-    if (evento.key === "Enter") rotSalvarChave("rotChaveTroca");
+  document.getElementById("btnChaveSupadata").addEventListener("click", () => rotGarantirChave().then(rotAbrirConfigChave));
+  document.getElementById("btnCancelarChaveSupadata").addEventListener("click", () => (document.getElementById("overlayChaveSupadata").hidden = true));
+  document.getElementById("overlayChaveSupadata").addEventListener("click", (evento) => {
+    if (evento.target.id === "overlayChaveSupadata") evento.target.hidden = true;
   });
   document.getElementById("rotGrade").addEventListener(
     "error",
