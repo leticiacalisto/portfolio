@@ -1869,6 +1869,7 @@
     cursor:pointer;
   }
   .btn-copiar-link:hover{ opacity:.88; }
+  .btn-abrir-roteiro{ text-decoration:none; background: var(--branco); color: var(--grafite); border: 1.5px solid var(--borda); }
 
   .lista-signatarios{ list-style:none; margin:10px 0 0; padding:0; display:flex; flex-direction:column; gap:4px; }
   .lista-signatarios li{ display:flex; align-items:center; gap:6px; font-size:.82rem; color: var(--grafite); }
@@ -5471,6 +5472,7 @@
           <div class="linha-link-autentique" id="linhaLinkRoteiroCard" hidden>
             <input type="text" id="linkRoteiroCard" class="input-limpo" readonly>
             <button type="button" class="btn-copiar-link" id="btnCopiarLinkRoteiro">Copiar link</button>
+            <a class="btn-copiar-link btn-abrir-roteiro" id="btnAbrirRoteiro" href="#" target="_blank" rel="noopener">Abrir roteiro</a>
           </div>
           <div id="comentariosRoteiroCard" class="comentarios-roteiro" hidden></div>
           <button type="button" class="btn-verificar-assinatura" id="btnEnviarRoteiro">Enviar roteiro</button>
@@ -24011,6 +24013,7 @@ ${botao}
       return;
     }
     document.getElementById("linkRoteiroCard").value = URL_ROTEIRO + "?r=" + r.token;
+    document.getElementById("btnAbrirRoteiro").href = URL_ROTEIRO + "?r=" + r.token;
     const versao = r.versao > 1 ? ` (versão ${r.versao})` : "";
     if (proprio) {
       status.textContent = `Salvo em ${dataHoraBr(r.enviado_em)}${versao}. Abra o link no celular para ler enquanto grava.`;
