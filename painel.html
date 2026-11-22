@@ -9577,6 +9577,7 @@
   }
 
   function abrirModalCard(card, colunaPadrao, abaInicial) {
+    limparAlteracoesModal(overlayModalQuadro); // troca de vídeo/campanha/marca na mesma janela
     idCardEmEdicao = card ? card.id : null;
     cardEmEdicaoObjeto = card || null;
     idContratoEmEdicao = null;
@@ -12436,6 +12437,7 @@
   // Abre a janela compartilhada direto na aba Campanha (chamado a partir
   // da lista de Campanhas, ou depois que uma oportunidade fecha).
   function abrirModalContrato(contrato, prefill) {
+    limparAlteracoesModal(overlayModalQuadro); // troca de vídeo/campanha/marca na mesma janela
     avisoAssinaturaAutomatica.hidden = true;
     idCardEmEdicao = null;
     cardEmEdicaoObjeto = null;
@@ -17840,6 +17842,7 @@
 
   // Abre a janela compartilhada direto na aba Marca.
   function abrirModalEmpresa(empresa) {
+    limparAlteracoesModal(overlayModalQuadro); // troca de vídeo/campanha/marca na mesma janela
     idCardEmEdicao = null;
     cardEmEdicaoObjeto = null;
     idContratoEmEdicao = null;
@@ -17878,6 +17881,85 @@
       console.error(erro);
     }
   }));
+
+  // ---------------------------------------------------------------
+  // SALVAR AO CLICAR FORA: clicar no fundo escuro de uma janela em que
+  // algo foi mexido salva (igual a apertar "Salvar") em vez de só fechar.
+  // Sem nada mexido, fecha como sempre. "Cancelar" continua descartando.
+  // Só conta o que a pessoa digitou/escolheu (evento isTrusted), nunca o
+  // preenchimento automático ao abrir.
+  // ---------------------------------------------------------------
+  const alteracoesModal = new WeakMap(); // overlay -> Set de ids de form mexidos
+  function limparAlteracoesModal(overlay) {
+    alteracoesModal.delete(overlay);
+  }
+  function marcarAlteracaoModal(evento) {
+    if (!evento.isTrusted) return;
+    const alvo = evento.target;
+    if (!alvo || !alvo.closest) return;
+    const overlay = alvo.closest(".overlay-modal");
+    if (!overlay || overlay.hidden) return;
+    const form = alvo.form || alvo.closest("form");
+    if (!alteracoesModal.has(overlay)) alteracoesModal.set(overlay, new Set());
+    // Título do vídeo fica fora do formCardQuadro (no cabeçalho da janela)
+    alteracoesModal.get(overlay).add(form ? form.id || "form" : overlay === overlayModalQuadro ? "formCardQuadro" : "geral");
+  }
+  document.addEventListener("input", marcarAlteracaoModal, true);
+  document.addEventListener("change", marcarAlteracaoModal, true);
+  // Abriu ou fechou: começa do zero
+  const observadorOverlays = new MutationObserver((mudancas) => mudancas.forEach((m) => limparAlteracoesModal(m.target)));
+  document.querySelectorAll(".overlay-modal").forEach((o) => observadorOverlays.observe(o, { attributes: true, attributeFilter: ["hidden"] }));
+
+  function visivel(el) {
+    return !!el && !el.hidden && el.offsetParent !== null;
+  }
+  function enviarForm(form) {
+    if (typeof form.requestSubmit === "function") form.requestSubmit();
+    else form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+  }
+  // Janela compartilhada vídeo / campanha / marca: escolhe qual "Salvar" apertar
+  function salvarJanelaQuadroAoSair(mexidos) {
+    const mexeuCampanhaOuMarca = mexidos.has("formContrato") || mexidos.has("formEmpresa");
+    if (contextoRaizModal === "marca") {
+      if (mexidos.has("formEmpresa") && !formEmpresa.hidden) return enviarForm(formEmpresa), true;
+      return false;
+    }
+    // Salvar da Campanha já salva a marca junto (e o vídeo, quando a janela é de vídeo)
+    if (mexeuCampanhaOuMarca && !formContrato.hidden && campoMarcaContrato.value.trim()) return enviarForm(formContrato), true;
+    if (contextoRaizModal === "video") {
+      if (!campoTituloCard.value.trim()) {
+        alteracoesModal.delete(overlayModalQuadro);
+        return false; // vídeo novo sem título: não tem o que salvar
+      }
+      return enviarForm(formCardQuadro), true;
+    }
+    return false;
+  }
+  document.addEventListener(
+    "click",
+    (evento) => {
+      const overlay = evento.target;
+      if (!overlay.classList || !overlay.classList.contains("overlay-modal") || overlay.hidden) return;
+      const mexidos = alteracoesModal.get(overlay);
+      if (!mexidos || !mexidos.size) return; // nada mexido: fecha normal
+      let salvou = false;
+      if (overlay === overlayModalQuadro) {
+        salvou = salvarJanelaQuadroAoSair(mexidos);
+      } else {
+        const botao = [...overlay.querySelectorAll(".btn-salvar-quadro")].find((b) => visivel(b) && !b.disabled);
+        if (botao) {
+          botao.click();
+          salvou = true;
+        }
+      }
+      if (salvou) {
+        // o próprio "Salvar" fecha a janela quando dá certo; se faltar algo, ela fica aberta
+        evento.stopImmediatePropagation();
+        evento.preventDefault();
+      }
+    },
+    true
+  );
 
   btnExcluirEmpresa.addEventListener("click", async () => {
     if (!idEmpresaEmEdicao) return;
