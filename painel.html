@@ -24119,6 +24119,9 @@ ${botao}
       const g = comentarios.gancho;
       itens.unshift(`<div class="comentario-roteiro"><b>Gancho trocado pela marca${g.tipo ? " · " + esc(g.tipo) : ""}</b><span class="fala-roteiro">"${esc(g.fala)}"</span>${g.visual ? "Visual: " + esc(g.visual) : ""}${g.tela ? (g.visual ? "\n" : "") + "Texto na tela: " + esc(g.tela) : ""}</div>`);
     }
+    (comentarios.escolhas || []).forEach((s) => {
+      if (s && s.nome) itens.unshift(`<div class="comentario-roteiro"><b>Escolha da marca${s.titulo ? " · " + esc(s.titulo) : ""}</b><span class="fala-roteiro">${esc(s.nome)}</span></div>`);
+    });
     if (comentarios.geral) itens.push(`<div class="comentario-roteiro"><b>Comentário geral</b>${esc(comentarios.geral)}</div>`);
     caixaComentarios.innerHTML = itens.join("");
     caixaComentarios.hidden = !itens.length || r.status === "aprovacao";

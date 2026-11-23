@@ -154,6 +154,10 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
 .btn-trocar:hover{background:var(--marca-escura);}
 .btn-trocar:active{transform:scale(.98);}
 .selo-uso{font-size:.86rem;font-weight:600;color:var(--marca-texto);}
+/* ---------- Escolhas da marca (ex.: figurino) ---------- */
+.opcao-foto{margin:0 0 14px;border-radius:16px;overflow:hidden;background:#fff;aspect-ratio:4/5;}
+.opcao-foto img{display:block;width:100%;height:100%;object-fit:contain;}
+.gancho .desc-op{margin:0 0 6px;font-size:.9rem;color:var(--tinta-suave);}
 .btn-link{background:none;border:0;padding:4px 0;font-size:.86rem;font-weight:500;color:var(--tinta-suave);cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
 
 /* ---------- Detalhes ---------- */
@@ -223,6 +227,8 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
   // Troca de gancho: índice da variação escolhida (null = gancho original)
   var escolhaGancho = null;
   var idxGancho = 0;
+  // Escolhas da marca (ex.: figurino): índice da escolha -> índice da opção
+  var escolhasFeitas = {};
 
   function rpc(nome, corpo) {
     return fetch(SUPABASE_URL + "/rest/v1/rpc/" + nome, {
@@ -328,6 +334,54 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
     if (ref) ref.textContent = '"' + ganchoAtual().fala + '"';
   }
 
+  // ---------- Escolhas da marca (ex.: figurino) ----------
+  function listaEscolhas() {
+    return ((dados.conteudo || {}).escolhas || []).filter(function (e) { return e && (e.opcoes || []).some(function (o) { return o && o.nome; }); });
+  }
+  function opcoesDe(e) {
+    return (e.opcoes || []).filter(function (o) { return o && o.nome; });
+  }
+  function obrigatoria(e) { return e.obrigatoria !== false; }
+  function escolhasFaltando() {
+    return listaEscolhas().filter(function (e, i) { return obrigatoria(e) && escolhasFeitas[i] == null; });
+  }
+  function htmlOpcoes(ie, emAprovacao) {
+    var e = listaEscolhas()[ie];
+    return opcoesDe(e).map(function (o, io) {
+      var escolhida = escolhasFeitas[ie] === io;
+      var foto = /^(data:image\/(jpeg|png|webp);base64,|https:\/\/)/.test(o.src || "")
+        ? '<div class="opcao-foto"><img src="' + esc(o.src) + '" alt="' + esc(o.nome) + '" loading="lazy"></div>' : "";
+      var acoes = "";
+      if (emAprovacao) {
+        acoes = '<div class="acoes">' + (escolhida
+          ? '<span class="selo-uso">Escolhida</span><button type="button" class="btn-link" data-desfazer="' + ie + '">Desfazer</button>'
+          : '<button type="button" class="btn-trocar" data-escolher="' + ie + ":" + io + '">Escolher essa</button>') + "</div>";
+      } else if (escolhida) {
+        acoes = '<div class="acoes"><span class="selo-uso">Escolhida por você</span></div>';
+      }
+      return '<div class="gancho' + (escolhida ? " em-uso" : "") + '">' + foto +
+        '<span class="tipo">Opção ' + (io + 1) + "</span>" +
+        '<span class="fala-g">' + esc(o.nome) + "</span>" +
+        (o.descricao ? '<p class="desc-op">' + esc(o.descricao) + "</p>" : "") +
+        acoes + "</div>";
+    }).join("");
+  }
+  function htmlEscolhas(emAprovacao) {
+    return listaEscolhas().map(function (e, ie) {
+      var intro = emAprovacao
+        ? '<p class="intro">' + esc(e.texto || "Toque em Escolher essa na opção que você prefere.") + (obrigatoria(e) ? " <b>A escolha é necessária para aprovar o roteiro.</b>" : "") + "</p>"
+        : (escolhasFeitas[ie] == null ? '<p class="intro">Nenhuma opção escolhida.</p>' : "");
+      return '<section class="secao" id="escolha' + ie + '"><span class="eyebrow">Sua escolha' + (e.titulo ? " · " + esc(e.titulo) : "") + "</span>" +
+        "<h2>" + esc(e.pergunta || e.titulo || "Escolha uma opção") + "</h2>" + intro +
+        '<div class="ganchos" id="opcoes' + ie + '">' + htmlOpcoes(ie, emAprovacao) + "</div></section>";
+    }).join("");
+  }
+  function escolher(ie, io) {
+    if (io == null) delete escolhasFeitas[ie]; else escolhasFeitas[ie] = io;
+    var lista = document.getElementById("opcoes" + ie);
+    if (lista) lista.innerHTML = htmlOpcoes(ie, dados.status === "aprovacao");
+  }
+
   // ---------- Cores da marca (mesma conta do montar_roteiro.py) ----------
   function corValida(c) { return typeof c === "string" && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(c); }
   function rgb(c) {
@@ -388,7 +442,12 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
     if (!emAprovacao) {
       var salvo = dados.comentarios && dados.comentarios.gancho;
       escolhaGancho = salvo && typeof salvo.indice === "number" && listaGanchos()[salvo.indice] ? salvo.indice : null;
+      escolhasFeitas = {};
+      ((dados.comentarios && dados.comentarios.escolhas) || []).forEach(function (s) {
+        if (s && typeof s.escolha === "number" && typeof s.indice === "number") escolhasFeitas[s.escolha] = s.indice;
+      });
     }
+    var temEscolhas = listaEscolhas().length > 0;
     var temGanchos = listaGanchos().length > 0;
     aplicarTema(r);
     desenharTopo(r);
@@ -403,7 +462,8 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
       aviso = '<div class="aviso ajuste"><b>Ajustes enviados</b>Recebi os seus comentários em ' + esc(dataHora(dados.respondido_em)) + ". Vou ajustar e te mando a nova versão neste mesmo link.</div>";
     } else {
       aviso = '<p class="instrucao">Leia com calma. Para mudar alguma coisa, toque em <b>Comentar esta cena</b>' +
-        (temGanchos ? " ou troque o gancho por uma das variações" : "") + ". No final, é só aprovar ou pedir os ajustes.</p>";
+        (temGanchos ? " ou troque o gancho por uma das variações" : "") +
+        (temEscolhas ? ". Antes de aprovar, escolha " + listaEscolhas().map(function (e) { return esc((e.titulo || "a opção").toLowerCase()); }).join(" e ") + " logo abaixo do mood board" : "") + ". No final, é só aprovar ou pedir os ajustes.</p>";
     }
 
     // Capa: título, a ideia e a ficha à esquerda; a foto do produto à direita
@@ -500,7 +560,7 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
     }
 
     areaRoteiro.innerHTML =
-      hero + aviso + blocoGancho + mood +
+      hero + aviso + blocoGancho + mood + htmlEscolhas(emAprovacao) +
       '<section class="secao"><span class="eyebrow">Roteiro</span><h2>Cena a cena</h2><div class="cenas">' + cenas + "</div></section>" +
       blocoGanchos + secoes + resposta +
       '<footer class="rodape"><span>Roteiro ' + esc(r.marca) + " " + esc(r.numero) + " · " + esc(r.titulo) + "</span><b>Letícia Calisto</b></footer>";
@@ -521,6 +581,14 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
     // A troca de gancho vai junto, com a variação completa (o painel mostra qual foi)
     var g = escolhaGancho == null ? null : listaGanchos()[escolhaGancho];
     if (g) saida.gancho = { indice: escolhaGancho, tipo: g.tipo || "", fala: g.fala, visual: g.visual || "", tela: g.tela || "" };
+    // As escolhas da marca (ex.: figurino) vão com o nome da opção (o painel mostra qual foi)
+    var escolhas = [];
+    listaEscolhas().forEach(function (e, ie) {
+      var io = escolhasFeitas[ie];
+      var o = io == null ? null : opcoesDe(e)[io];
+      if (o) escolhas.push({ escolha: ie, titulo: e.titulo || e.pergunta || "", indice: io, nome: o.nome });
+    });
+    if (escolhas.length) saida.escolhas = escolhas;
     return saida;
   }
   function totalComentarios(c) {
@@ -532,6 +600,7 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
     var partes = [];
     if (n) partes.push(n + (n === 1 ? " cena comentada" : " cenas comentadas"));
     if (c.gancho) partes.push("gancho trocado");
+    (c.escolhas || []).forEach(function (s) { partes.push((s.titulo || "opção") + ": " + s.nome); });
     document.getElementById("contador").textContent = partes.length ? partes.join(" · ") + "." : "";
   }
 
@@ -539,6 +608,20 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
     // Abre a caixa de comentário da cena
     areaRoteiro.addEventListener("click", function (e) {
       // Trocar o gancho (ou voltar ao original)
+      var escolha = e.target.closest("[data-escolher]");
+      var desfazer = e.target.closest("[data-desfazer]");
+      if (escolha || desfazer) {
+        if (escolha) {
+          var partes = escolha.getAttribute("data-escolher").split(":");
+          escolher(Number(partes[0]), Number(partes[1]));
+        } else {
+          escolher(Number(desfazer.getAttribute("data-desfazer")), null);
+        }
+        document.getElementById("erro").hidden = true;
+        salvarRascunho();
+        atualizarContador();
+        return;
+      }
       var trocar = e.target.closest("[data-trocar]");
       var original = e.target.closest("[data-original]");
       if (trocar || original) {
@@ -578,6 +661,10 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
       if (rascunho.gancho && typeof rascunho.gancho.indice === "number" && listaGanchos()[rascunho.gancho.indice]) {
         trocarGancho(rascunho.gancho.indice);
       }
+      (rascunho.escolhas || []).forEach(function (s) {
+        var e = listaEscolhas()[s.escolha];
+        if (e && opcoesDe(e)[s.indice]) escolher(s.escolha, s.indice);
+      });
       atualizarContador();
     }
 
@@ -597,8 +684,17 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
     }
 
     document.getElementById("btnAprovar").addEventListener("click", function () {
+      var faltando = escolhasFaltando();
+      if (faltando.length) {
+        erro.textContent = "Antes de aprovar, escolha " + faltando.map(function (e) { return (e.titulo || "uma opção").toLowerCase(); }).join(" e ") + ".";
+        erro.hidden = false;
+        var alvo = document.getElementById("escolha" + listaEscolhas().indexOf(faltando[0]));
+        if (alvo) alvo.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
       var c = coletarComentarios();
       var aviso = (c.gancho ? " O gancho que você escolheu entra no lugar do original." : "") +
+        (c.escolhas || []).map(function (s) { return " " + (s.titulo || "Escolha") + ": " + esc(s.nome) + "."; }).join("") +
         (Object.keys(c.cenas).length || c.geral ? " Os comentários que você escreveu vão junto, só como observação." : "");
       perguntar("<b>Aprovar o roteiro?</b><br>Depois de aprovado, eu sigo para a gravação." + aviso, "Sim, aprovar", "aprovar");
     });
