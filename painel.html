@@ -3914,6 +3914,63 @@
     .rot-capa{ flex-basis:96px; }
     .rot-video-fechar{ right:4px; top:4px; }
   }
+
+  /* ---- Insights (Central de Conteúdo): dados em central_conteudo (js/central-conteudo-setup.sql) ---- */
+  #painel-cc-insights .ins-atualizado{ margin:0 0 16px; font-size:.78rem; color:var(--texto-suave); }
+  #painel-cc-insights .ins-atualizado b{ color:var(--grafite); }
+  #painel-cc-insights .cartoes-fluxo{ margin-bottom:16px; }
+  #painel-cc-insights .valor-cartao-fluxo{ font-size:1.6rem; }
+  .ins-meta{ border:none; border-radius:20px; background: linear-gradient(135deg, #FFF8FB, #F8F5FE); padding:20px 22px; margin-bottom:28px; }
+  .ins-meta .preenchido-meta{ background: linear-gradient(90deg, #F8A9CB, #9B83E2); }
+  .ins-meta .rotulo{ color:#6B46C1; }
+  .ins-meta-num{ font-family:var(--fonte-impacto); font-weight:700; font-size:1.05rem; color:var(--grafite); }
+  .ins-meta-num small{ font-family:var(--fonte-sans); font-weight:500; font-size:.78rem; color:var(--texto-suave); }
+  .ins-serie{ margin-top:14px; }
+  .ins-serie svg{ display:block; width:100%; height:70px; }
+  .ins-serie .leg{ display:flex; justify-content:space-between; font-size:.7rem; color:var(--texto-suave); margin-top:4px; }
+  .ins-cartao-tabela{ padding:8px 10px; }
+  #painel-cc-insights .tabela-contratos td{ vertical-align:middle; }
+  .ins-titulo-post{ white-space:normal; min-width:220px; font-weight:600; }
+  .ins-titulo-post a{ display:block; margin-top:2px; font-size:.72rem; font-weight:600; color:var(--texto-suave); }
+  .ins-sub{ display:block; font-size:.74rem; font-weight:400; color:var(--texto-suave); white-space:normal; }
+  .ins-rede{ display:inline-block; padding:2px 8px; margin-right:4px; border-radius:99px; font-size:.68rem; font-weight:700; background:#F3EFFB; color:#6B46C1; }
+  .ins-rede.tk{ background:#E3F0FD; color:#1F6CB0; }
+  .ins-rede.yt{ background:#FFEADF; color:#C2491D; }
+  .ins-status{ display:inline-block; padding:3px 10px; border-radius:99px; font-size:.72rem; font-weight:700; }
+  .ins-status.ok{ background:#E4F7EC; color:#1B7A45; }
+  .ins-status.wait{ background:#FFF4D2; color:#9A6B00; }
+  .ins-status.draft{ background:#F3F1EF; color:var(--cinza-menu); }
+  .ins-vs{ display:inline-block; padding:3px 9px; border-radius:99px; font-size:.74rem; font-weight:700; }
+  .ins-vs.mais{ background:#E4F7EC; color:#1B7A45; }
+  .ins-vs.menos{ background:#FDEBEA; color:var(--vermelho-erro); }
+  .ins-destaque td{ background:#FFF8FB; }
+  .ins-barras{ display:flex; align-items:flex-end; gap:14px; height:190px; padding-top:22px; position:relative; }
+  .ins-barra{ flex:1; min-width:0; height:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:6px; }
+  .ins-barra i{ display:block; width:100%; max-width:64px; border-radius:10px 10px 4px 4px; background: linear-gradient(180deg, #C9B8F0, #9B83E2); transform-origin:bottom center; animation: crescerY .8s var(--ease-mov) backwards; }
+  .ins-barra.top i{ background: linear-gradient(180deg, #F8A9CB, #E07AA8); }
+  .ins-barra b{ font-size:.78rem; color:var(--grafite); }
+  .ins-barra span{ font-size:.68rem; color:var(--texto-suave); text-align:center; }
+  .ins-linha-media{ position:absolute; left:0; right:0; border-top:1.5px dashed #D9CFF2; pointer-events:none; }
+  .ins-linha-media em{ position:absolute; right:0; top:-18px; font-style:normal; font-size:.66rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#9A8CC4; }
+  .ins-dica{ margin:-4px 0 14px; font-size:.84rem; color:var(--texto-suave); }
+  .ins-radar{ display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:start; }
+  .ins-coluna-titulo{ margin:0 0 10px; font-size:.72rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--grafite); }
+  .ins-coluna-titulo span{ display:block; margin-top:2px; font-size:.74rem; font-weight:400; letter-spacing:0; text-transform:none; color:var(--texto-suave); }
+  .ins-pautas{ display:flex; flex-direction:column; gap:14px; }
+  .ins-pauta h4{ margin:2px 0 8px; font-family:var(--fonte-impacto); font-size:1rem; font-weight:600; line-height:1.3; color:var(--grafite); }
+  .ins-pauta p{ margin:0 0 8px; font-size:.84rem; line-height:1.5; color:var(--texto-suave); }
+  .ins-pauta p b{ color:var(--grafite); }
+  .ins-pauta .ins-origem{ display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-bottom:8px; font-size:.72rem; color:var(--texto-suave); }
+  .ins-pauta .ins-perf{ padding:2px 8px; border-radius:99px; background:rgba(255,255,255,.75); font-weight:700; color:var(--a-forte); }
+  .ins-acoes{ display:flex; gap:8px; margin-top:12px; }
+  .ins-acoes .btn-novo-card{ padding:8px 14px; font-size:.78rem; }
+  .ins-acoes .btn-hoje-cal{ margin:0; background:rgba(255,255,255,.7); }
+  .ins-restaurar{ margin:16px 0 0; }
+  .ins-vazio{ margin:0; font-size:.85rem; font-style:italic; color:var(--cinza-claro); }
+  @media (max-width: 900px){
+    .ins-radar{ grid-template-columns:1fr; }
+    #painel-cc-insights .cartoes-fluxo{ grid-template-columns:repeat(2, 1fr); }
+  }
 </style>
 </head>
 <body class="oculto">
@@ -5259,10 +5316,57 @@
 
     <!-- ===================== SEÇÃO: CRIAÇÃO DE CONTEÚDO ===================== -->
     <section id="painel-cc-insights" class="painel-aba" hidden>
-      <div class="cartao">
-        <h2>Insights</h2>
-        <p class="texto-vazio">Em construção.</p>
+      <p class="ins-atualizado" id="insAtualizado"></p>
+      <p class="rot-aviso alerta" id="insAviso" hidden></p>
+
+      <div class="cartoes-fluxo" id="insCartoes"></div>
+
+      <div class="cartao-meta-receita ins-meta" id="insMeta" hidden>
+        <div class="topo-meta-receita">
+          <span class="rotulo" id="insMetaRotulo">Rumo à meta</span>
+          <span class="ins-meta-num" id="insMetaNum"></span>
+        </div>
+        <div class="trilho-meta"><div class="preenchido-meta" id="insMetaBarra" style="width:0%"></div></div>
+        <div class="rodape-meta-receita"><span id="insMetaTexto"></span><span id="insMetaPct"></span></div>
+        <div class="ins-serie" id="insSerie"></div>
       </div>
+
+      <h3 class="subtitulo-dash subtitulo-dash-secao">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><line x1="3.5" y1="10" x2="20.5" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>
+        Fila de publicação
+      </h3>
+      <div class="cartao ins-cartao-tabela">
+        <div class="tabela-scroll"><table class="tabela-contratos" id="insFila"></table></div>
+      </div>
+
+      <h3 class="subtitulo-dash subtitulo-dash-secao">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,17 10,11 14,15 20,7"/><polyline points="14,7 20,7 20,13"/></svg>
+        Resultados
+      </h3>
+      <div class="cartao">
+        <h2>Views por publicação</h2>
+        <div class="ins-barras" id="insGrafico"></div>
+      </div>
+      <div class="cartao ins-cartao-tabela">
+        <div class="tabela-scroll"><table class="tabela-contratos" id="insResultados"></table></div>
+      </div>
+
+      <h3 class="subtitulo-dash subtitulo-dash-secao">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>
+        Radar de pautas
+      </h3>
+      <p class="ins-dica">Cada pauta já vem com o ângulo. <b>Rodar o motor</b> copia o pedido pronto: é só colar no Claude.</p>
+      <div class="ins-radar">
+        <div>
+          <div class="ins-coluna-titulo">Continuidade <span>o que já funcionou nos seus números</span></div>
+          <div class="ins-pautas" id="insContinuidade"></div>
+        </div>
+        <div>
+          <div class="ins-coluna-titulo">Radar externo <span>novidades do nicho e das criadoras que você acompanha</span></div>
+          <div class="ins-pautas" id="insRadarExterno"></div>
+        </div>
+      </div>
+      <button type="button" class="btn-hoje-cal ins-restaurar" id="insRestaurar" hidden>Mostrar pautas descartadas</button>
     </section>
     <section id="painel-cc-criacao" class="painel-aba" hidden>
       <div class="painel-quadro-secao">
@@ -27269,6 +27373,214 @@ ${videos}`;
     const botaoSalvo = abaSalva && abaSalva !== "principal" && [...botoesNav].find((b) => b.dataset.tab === abaSalva);
     if (botaoSalvo) botaoSalvo.click();
   } catch (erro) {}
+})();
+</script>
+<script>
+// =====================================================================
+// INSIGHTS (Central de Conteúdo). Lê central_conteudo (uma linha por bloco:
+// meta, seguidores, resultados, fila, pautas). Quem grava é o radar diário,
+// no computador, pela função central_gravar (js/central-conteudo-setup.sql).
+// =====================================================================
+(function () {
+  const botao = document.querySelector('.item-nav[data-tab="cc-insights"]');
+  const aba = document.getElementById("painel-cc-insights");
+  if (!botao || !aba) return;
+
+  const CHAVE_DESCARTE = "insPautasDescartadas";
+  const nBR = (n) => Number(n || 0).toLocaleString("pt-BR");
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+  const DIAS = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
+  const dataCurta = (iso) => { const d = new Date(iso + "T12:00:00"); return isNaN(d) ? esc(iso) : d.getDate() + " " + MESES[d.getMonth()]; };
+  const NOME_REDE = { ig: "Instagram", tk: "TikTok", yt: "YouTube", li: "LinkedIn", fb: "Facebook", th: "Threads" };
+  const STATUS = { ok: "Agendado", wait: "Aguardando ok", draft: "Rascunho" };
+
+  let dados = null;
+  let carregando = false;
+
+  function descartadas() { try { return JSON.parse(localStorage.getItem(CHAVE_DESCARTE) || "[]"); } catch (e) { return []; } }
+  function salvarDescartadas(lista) { try { localStorage.setItem(CHAVE_DESCARTE, JSON.stringify(lista)); } catch (e) {} }
+
+  async function carregar() {
+    if (carregando) return;
+    carregando = true;
+    const aviso = document.getElementById("insAviso");
+    try {
+      const { data, error } = await sb.from("central_conteudo").select("chave, dados, updated_at");
+      if (error) throw error;
+      dados = {};
+      (data || []).forEach((l) => { dados[l.chave] = l.dados; });
+      aviso.hidden = true;
+      if (!data || !data.length) {
+        aviso.textContent = "A Central ainda não recebeu dados. Peça ao Claude: atualiza meu dashboard.";
+        aviso.hidden = false;
+      }
+      desenhar();
+    } catch (erro) {
+      console.warn("central_conteudo indisponível:", erro);
+      aviso.textContent = "Não consegui ler a Central de Conteúdo. Se é a primeira vez, rode o js/central-conteudo-setup.sql no Supabase.";
+      aviso.hidden = false;
+    } finally {
+      carregando = false;
+    }
+  }
+
+  function desenhar() {
+    const meta = dados.meta || {};
+    const seg = dados.seguidores || { serie: [] };
+    const res = (dados.resultados || []).slice().sort((a, b) => String(a.data).localeCompare(String(b.data)));
+    const fila = dados.fila || [];
+    const pautas = dados.pautas || { continuidade: [], radarExterno: [] };
+
+    // Atualizado em
+    const quando = meta.atualizadoEm ? new Date(meta.atualizadoEm) : null;
+    document.getElementById("insAtualizado").innerHTML = quando && !isNaN(quando)
+      ? "Atualizado " + DIAS[quando.getDay()] + ", " + quando.getDate() + " " + MESES[quando.getMonth()] + " às " + String(quando.getHours()).padStart(2, "0") + "h" + String(quando.getMinutes()).padStart(2, "0") + (meta.geradoPor ? " · <b>" + esc(meta.geradoPor) + "</b>" : "")
+      : "";
+
+    // Cartões
+    const serie = (seg.serie || []).slice().sort((a, b) => String(a.data).localeCompare(String(b.data)));
+    const atual = serie.length ? serie[serie.length - 1].seguidores : null;
+    const saldo = serie.length > 1 ? atual - serie[0].seguidores : null;
+    const totalViews = res.reduce((s, p) => s + (+p.views || 0), 0);
+    const media = res.length ? totalViews / res.length : 0;
+    const salvos = res.reduce((s, p) => s + (+p.salvos || 0), 0);
+    const cartoes = [
+      ["Seguidores no Instagram", atual != null ? nBR(atual) : "–", saldo != null ? (saldo > 0 ? "+" : "") + nBR(saldo) + " desde " + dataCurta(serie[0].data) : "sem série ainda"],
+      ["Reels no período", nBR(res.length), "média de " + nBR(Math.round(media)) + " views"],
+      ["Views somadas", nBR(totalViews), nBR(salvos) + " salvamentos"],
+      ["Na fila", nBR(fila.length), fila.length ? "próximo: " + esc(fila[0].quandoData) + " às " + esc(fila[0].quandoHora) : "nada agendado"],
+    ];
+    document.getElementById("insCartoes").innerHTML = cartoes.map((c, i) =>
+      '<div class="cartao-fluxo" style="--i:' + i + '"><span class="rotulo-cartao-fluxo">' + c[0] + '</span><span class="valor-cartao-fluxo">' + c[1] + '</span><span class="nota-cartao-fluxo">' + c[2] + "</span></div>"
+    ).join("");
+
+    // Rumo à meta
+    const cartaoMeta = document.getElementById("insMeta");
+    if (atual != null && seg.meta) {
+      cartaoMeta.hidden = false;
+      const pct = Math.min(100, (atual / seg.meta) * 100);
+      document.getElementById("insMetaRotulo").textContent = "Rumo à meta · " + nBR(seg.meta) + " seguidores" + (seg.metaAte ? " até " + dataCurta(seg.metaAte) : "");
+      document.getElementById("insMetaNum").innerHTML = nBR(atual) + " <small>de " + nBR(seg.meta) + "</small>";
+      document.getElementById("insMetaBarra").style.width = pct.toFixed(1) + "%";
+      document.getElementById("insMetaPct").textContent = pct.toFixed(0) + "%";
+      const marco = seg.marco && seg.marco.valor > atual ? seg.marco : null;
+      document.getElementById("insMetaTexto").textContent = marco
+        ? "Próxima parada: " + nBR(marco.valor) + (marco.ate ? " até " + dataCurta(marco.ate) : "") + " (faltam " + nBR(marco.valor - atual) + ")"
+        : "Faltam " + nBR(Math.max(0, seg.meta - atual)) + " pra meta";
+      document.getElementById("insSerie").innerHTML = serie.length > 1 ? linhaSerie(serie) : "";
+    } else {
+      cartaoMeta.hidden = true;
+    }
+
+    // Fila
+    const tFila = document.getElementById("insFila");
+    tFila.innerHTML = fila.length
+      ? "<thead><tr><th>Quando</th><th>Rede</th><th>Formato</th><th>Título</th><th>Status</th></tr></thead><tbody>" +
+        fila.map((f) => "<tr><td><b>" + esc(f.quandoData) + "</b><span class=\"ins-sub\">" + esc(f.quandoHora) + "</span></td><td>" +
+          (f.redes || []).map((r) => '<span class="ins-rede ' + esc(r) + '">' + esc(NOME_REDE[r] || r) + "</span>").join("") + "</td><td>" + esc(f.formato) +
+          '</td><td class="ins-titulo-post">' + esc(f.titulo) + (f.subtitulo ? '<span class="ins-sub">' + esc(f.subtitulo) + "</span>" : "") +
+          '</td><td><span class="ins-status ' + esc(f.status) + '">' + esc(STATUS[f.status] || f.status) + "</span></td></tr>").join("") + "</tbody>"
+      : '<tbody><tr><td><p class="ins-vazio">Nada na fila do Metricool agora.</p></td></tr></tbody>';
+
+    // Gráfico de barras
+    const grafico = document.getElementById("insGrafico");
+    if (res.length) {
+      const max = Math.max.apply(null, res.map((p) => +p.views || 0)) || 1;
+      const topo = res.reduce((m, p) => ((+p.views || 0) > (+m.views || 0) ? p : m), res[0]);
+      grafico.innerHTML = res.map((p) => {
+        const h = Math.max(2, ((+p.views || 0) / max) * 82);
+        return '<div class="ins-barra' + (p === topo ? " top" : "") + '" title="' + esc(p.titulo) + '"><b>' + nBR(p.views) + '</b><i style="height:' + h.toFixed(1) + '%"></i><span>' + dataCurta(p.data) + "</span></div>";
+      }).join("") + '<div class="ins-linha-media" style="bottom:calc(' + ((media / max) * 82).toFixed(1) + '% + 24px)"><em>média ' + nBR(Math.round(media)) + "</em></div>";
+    } else {
+      grafico.innerHTML = '<p class="ins-vazio">Sem publicações no período.</p>';
+    }
+
+    // Tabela de resultados (mais recente primeiro)
+    const tRes = document.getElementById("insResultados");
+    const topoViews = res.length ? Math.max.apply(null, res.map((p) => +p.views || 0)) : 0;
+    tRes.innerHTML = res.length
+      ? "<thead><tr><th>Data</th><th>Conteúdo</th><th>Views</th><th>Salvos</th><th>Coment.</th><th>Compart.</th><th>vs. média</th></tr></thead><tbody>" +
+        res.slice().reverse().map((p) => {
+          const vs = media ? Math.round(((+p.views || 0) / media - 1) * 100) : 0;
+          return "<tr" + ((+p.views || 0) === topoViews ? ' class="ins-destaque"' : "") + "><td>" + dataCurta(p.data) + '</td><td class="ins-titulo-post">' + esc(p.titulo) +
+            (p.url ? '<a href="' + esc(p.url) + '" target="_blank" rel="noopener">Abrir o Reel</a>' : "") + "</td><td><b>" + nBR(p.views) + "</b></td><td>" + nBR(p.salvos) +
+            "</td><td>" + nBR(p.comentarios) + "</td><td>" + nBR(p.compartilhamentos) + '</td><td><span class="ins-vs ' + (vs >= 0 ? "mais" : "menos") + '">' + (vs > 0 ? "+" : "") + vs + "%</span></td></tr>";
+        }).join("") + "</tbody>"
+      : "";
+
+    desenharPautas(pautas);
+  }
+
+  function linhaSerie(serie) {
+    const W = 600, H = 70, p = 4;
+    const vals = serie.map((s) => +s.seguidores || 0);
+    const min = Math.min.apply(null, vals), max = Math.max.apply(null, vals);
+    const faixa = max - min || 1;
+    const pts = vals.map((v, i) => [p + (i / (vals.length - 1)) * (W - 2 * p), H - p - ((v - min) / faixa) * (H - 2 * p)]);
+    const d = pts.map((q, i) => (i ? "L" : "M") + q[0].toFixed(1) + " " + q[1].toFixed(1)).join(" ");
+    return '<svg viewBox="0 0 ' + W + " " + H + '" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="insGradSerie" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#9B83E2" stop-opacity=".25"/><stop offset="1" stop-color="#9B83E2" stop-opacity="0"/></linearGradient></defs>' +
+      '<path d="' + d + " L" + (W - p) + " " + H + " L" + p + " " + H + ' Z" fill="url(#insGradSerie)"/><path d="' + d + '" fill="none" stroke="#9B83E2" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>' +
+      '<div class="leg"><span>' + dataCurta(serie[0].data) + " · " + nBR(vals[0]) + "</span><span>" + dataCurta(serie[serie.length - 1].data) + " · " + nBR(vals[vals.length - 1]) + "</span></div>";
+  }
+
+  function desenharPautas(pautas) {
+    const fora = descartadas();
+    let escondidas = 0;
+    const card = (p, tipo, i) => {
+      if (fora.indexOf(p.id) !== -1) { escondidas++; return ""; }
+      const o = p.origem || {};
+      return '<div class="cartao-alerta ins-pauta ' + (tipo === "continuidade" ? "alerta-rosa" : "alerta-lilas") + '" style="--i:' + i + '">' +
+        "<h3>" + (tipo === "continuidade" ? "Continuidade" : "Radar externo") + "</h3>" +
+        '<div class="ins-origem"><span>' + esc(o.fonte) + (o.referencia ? " · " + esc(o.referencia) : "") + "</span>" + (o.performance ? '<span class="ins-perf">' + esc(o.performance) + "</span>" : "") + "</div>" +
+        "<h4>" + esc(p.titulo) + "</h4>" +
+        "<p>" + esc(p.angulo) + "</p>" +
+        (p.porqueAgora ? "<p><b>Por que agora:</b> " + esc(p.porqueAgora) + "</p>" : "") +
+        '<div class="ins-acoes"><button type="button" class="btn-novo-card" data-ins-copiar="' + esc(p.id) + '">Rodar o motor</button>' +
+        '<button type="button" class="btn-hoje-cal" data-ins-descartar="' + esc(p.id) + '">Descartar</button></div></div>';
+    };
+    const cont = (pautas.continuidade || []).map((p, i) => card(p, "continuidade", i)).join("");
+    const rad = (pautas.radarExterno || []).map((p, i) => card(p, "radar", i)).join("");
+    document.getElementById("insContinuidade").innerHTML = cont || '<p class="ins-vazio">Nenhuma pauta de continuidade agora.</p>';
+    document.getElementById("insRadarExterno").innerHTML = rad || '<p class="ins-vazio">Nenhuma pauta do radar agora.</p>';
+    document.getElementById("insRestaurar").hidden = !escondidas;
+  }
+
+  function acharPauta(id) {
+    const p = (dados && dados.pautas) || {};
+    return [].concat(p.continuidade || [], p.radarExterno || []).find((x) => x.id === id);
+  }
+
+  aba.addEventListener("click", async (ev) => {
+    const copiar = ev.target.closest("[data-ins-copiar]");
+    if (copiar) {
+      const p = acharPauta(copiar.dataset.insCopiar);
+      if (!p) return;
+      try {
+        await navigator.clipboard.writeText(p.inputPronto || p.titulo);
+        copiar.textContent = "Copiado! Cola no Claude";
+      } catch (e) {
+        window.prompt("Copie o pedido:", p.inputPronto || p.titulo);
+      }
+      setTimeout(() => { copiar.textContent = "Rodar o motor"; }, 2200);
+      return;
+    }
+    const descartar = ev.target.closest("[data-ins-descartar]");
+    if (descartar) {
+      const lista = descartadas();
+      lista.push(descartar.dataset.insDescartar);
+      salvarDescartadas(lista);
+      desenharPautas(dados.pautas || {});
+      return;
+    }
+    if (ev.target.id === "insRestaurar") {
+      salvarDescartadas([]);
+      desenharPautas(dados.pautas || {});
+    }
+  });
+
+  botao.addEventListener("click", carregar);
+  try { if (localStorage.getItem("painelAbaAtiva") === "cc-insights") carregar(); } catch (e) {}
 })();
 </script>
 </body>
