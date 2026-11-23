@@ -14526,11 +14526,16 @@
   // Custo que conta em Resultados = mãe (nunca a parcela filha), fora o que é só caixa,
   // fora a frente Empresa e fora transferência entre contas.
   const entraNoResultado = (d) => !d.parent_id && !d.so_fluxo && d.frente !== "Empresa" && d.categoria !== CAT_TRANSFERENCIA;
+  // Data que vale em Resultados: a de assinatura (campanha) ou de contratação
+  // (receita avulsa); sem ela, a data da entrada (vencimento ou o dia em que foi
+  // lançada). Assim nada lançado fica de fora da lista nem da meta.
+  const dataResultadoContrato = (k) => (k && (k.data_assinatura || diaDe(k.created_at))) || null;
+  const dataResultadoReceita = (r) => (r && (r.contratacao || r.vencimento || diaDe(r.created_at))) || null;
   // Custo de campanha acompanha a data de fechamento da campanha; o resto, a competência.
   function competenciaResultado(d) {
     if (d.contrato_id) {
       const k = contratosCache.find((c) => c.id === d.contrato_id);
-      return (k && k.data_assinatura) || null;
+      return dataResultadoContrato(k);
     }
     return competenciaDespesa(d) || null;
   }
@@ -14542,20 +14547,22 @@
   function linhasResultadoContratos(prefixo) {
     const alvo = prefixo || prefixoResultados();
     const automaticas = contratosCache
-      .filter((k) => k.data_assinatura && noPeriodoResultados(k.data_assinatura, alvo))
+      .filter((k) => dataResultadoContrato(k) && noPeriodoResultados(dataResultadoContrato(k), alvo))
       .map((k) => {
+        const dataK = dataResultadoContrato(k);
         const cache = Number(k.valor) || 0;
-        const impostos = impostoReceita(k, cache, k.data_assinatura);
+        const impostos = impostoReceita(k, cache, dataK);
         const custos = despesasFinCache.filter((d) => d.contrato_id === k.id && entraNoResultado(d));
         const descontos = -custos.reduce((soma, d) => soma + (Number(d.valor) || 0), 0);
-        return { automatico: true, id: k.id, nome: k.marca || "—", data: k.data_assinatura, cache, impostos, descontos, custos, pf: ehPF(k), semClasse: !faturamentoDe(k), aliquota: aliquotaEfetiva(k, k.data_assinatura), reg: k };
+        return { automatico: true, id: k.id, nome: k.marca || "—", data: dataK, semData: !k.data_assinatura, cache, impostos, descontos, custos, pf: ehPF(k), semClasse: !faturamentoDe(k), aliquota: aliquotaEfetiva(k, dataK), reg: k };
       });
     const manuais = receitasCache
-      .filter((r) => !r.contrato_id && !r.parent_id && r.contratacao && r.categoria !== CAT_TRANSFERENCIA && noPeriodoResultados(r.contratacao, alvo))
+      .filter((r) => !r.contrato_id && !r.parent_id && dataResultadoReceita(r) && r.categoria !== CAT_TRANSFERENCIA && noPeriodoResultados(dataResultadoReceita(r), alvo))
       .map((r) => {
+        const dataR = dataResultadoReceita(r);
         const cache = Number(r.cache) || 0;
-        const impostos = impostoReceita(r, cache, r.contratacao);
-        return { automatico: false, id: r.id, nome: r.marca || r.descricao || "—", data: r.contratacao, cache, impostos, descontos: 0, custos: [], pf: ehPF(r), semClasse: !faturamentoDe(r), aliquota: aliquotaEfetiva(r, r.contratacao), reg: r };
+        const impostos = impostoReceita(r, cache, dataR);
+        return { automatico: false, id: r.id, nome: r.marca || r.descricao || "—", data: dataR, semData: !r.contratacao, cache, impostos, descontos: 0, custos: [], pf: ehPF(r), semClasse: !faturamentoDe(r), aliquota: aliquotaEfetiva(r, dataR), reg: r };
       });
     return [...automaticas, ...manuais]
       .map((l) => ({ ...l, liquido: l.cache + l.impostos + l.descontos }))
@@ -14583,7 +14590,7 @@
       .filter((d) => d.contrato_id && entraNoResultado(d))
       .map((d) => {
         const k = contratosCache.find((c) => c.id === d.contrato_id);
-        return { d, k, competencia: (k && k.data_assinatura) || null };
+        return { d, k, competencia: dataResultadoContrato(k) };
       })
       .filter((x) => x.k && x.competencia && noPeriodoResultados(x.competencia, alvo))
       .sort((a, b) => a.competencia.localeCompare(b.competencia));
@@ -14705,7 +14712,7 @@
         return `
         <tr ${l.automatico ? `data-campanha-id="${l.id}"` : `data-manual-id="${l.id}"`} class="linha-clicavel-lista">
           <td><span class="pilula-status ${l.automatico ? "fechado-automatico" : "fechado-manual"}">${l.automatico ? "Campanha" : "Manual"}</span> ${esc(l.nome)}${selo}</td>
-          <td>${formatarDataBr(l.data)}</td>
+          <td>${formatarDataBr(l.data)}${l.semData ? ` <span class="texto-pequeno" title="Sem data de ${l.automatico ? "assinatura" : "contratação"}: entrou pela data do lançamento">(data da entrada)</span>` : ""}</td>
           <td>${formatarMoeda(l.cache)}</td>
           <td class="${l.impostos < 0 ? "valor-negativo-resultado" : ""}">${formatarMoeda(l.impostos)}</td>
           <td class="${l.descontos < 0 ? "valor-negativo-resultado" : ""}">${formatarMoeda(l.descontos)}</td>
@@ -14813,8 +14820,8 @@
     const anotar = (d) => {
       if (d) anos.add(Number(d.slice(0, 4)));
     };
-    contratosCache.forEach((k) => anotar(k.data_assinatura));
-    receitasCache.forEach((r) => anotar(r.contratacao));
+    contratosCache.forEach((k) => anotar(dataResultadoContrato(k)));
+    receitasCache.forEach((r) => anotar(dataResultadoReceita(r)));
     despesasFinCache.forEach((d) => anotar(competenciaDespesa(d)));
     const htmlAnos = [...anos].filter(Boolean).sort((a, b) => b - a).map((a) => `<option value="${a}">${a}</option>`).join("");
     const htmlMeses = `<option value="0">Todos os meses</option>` + MESES_PT.map((m, i) => `<option value="${i + 1}">${m}</option>`).join("");
@@ -14890,14 +14897,14 @@
     campo.disabled = !resultadosMes;
     campo.title = resultadosMes ? "" : "Escolha um mês para definir a meta";
     if (document.activeElement !== campo) campo.value = alvo || "";
-    const convertido = seriesDaJornada()
-      .faturamento.filter((f) => f.data.startsWith(prefixo))
-      .reduce((s, f) => s + f.valor, 0);
+    const convertido = resultadosMes
+      ? faturadoDoMes(prefixo)
+      : Array.from({ length: 12 }, (_, i) => faturadoDoMes(`${resultadosAno}-${String(i + 1).padStart(2, "0")}`)).reduce((s, v) => s + v, 0);
     const pct = alvo > 0 ? Math.min(100, Math.round((convertido / alvo) * 100)) : 0;
     document.getElementById("preenchidoMetaResultados").style.width = pct + "%";
     const rotuloMeta = resultadosMes ? `Meta de ${MESES_PT[resultadosMes - 1].toLowerCase()}/${resultadosAno}` : `Meta de ${resultadosAno}`;
     document.querySelector("#painel-fin-resultados .topo-meta-receita .rotulo").textContent = rotuloMeta;
-    document.getElementById("resultadosMetaConvertido").textContent = `${formatarMoeda(convertido)} convertidos no período`;
+    document.getElementById("resultadosMetaConvertido").textContent = `${formatarMoeda(convertido)} faturados (soma das receitas listadas abaixo)`;
     document.getElementById("resultadosMetaPct").textContent = pct + "%";
   }
   document.getElementById("campoMetaFaturamentoResultados").addEventListener("change", async (evento) => {
@@ -22894,6 +22901,12 @@ ${botao}
   // A meta de receita é POR MÊS (cfg "metas_receita": { "2026-10": 6000 }): cada
   // mês mostra a meta que foi definida pra ele. A meta única antiga ("meta_receita")
   // vale só pro mês corrente, até o primeiro salvamento no formato novo.
+  // O que conta pra meta de receita é exatamente a lista "Receitas do período"
+  // da aba Resultados (cachê de cada linha, igual ao cartão FATURADO). Nada
+  // entra na meta sem aparecer naquela lista.
+  function faturadoDoMes(mes) {
+    return typeof calcularResultado === "function" ? calcularResultado(mes).bruto : 0;
+  }
   function metaReceitaDoMes(mes) {
     const mapa = cfgLer("metas_receita", null);
     if (mapa && typeof mapa === "object") return Number(mapa[mes]) || 0;
@@ -22915,7 +22928,7 @@ ${botao}
     const container = document.getElementById("jornadaMetas");
     const series = seriesDaJornada();
     const alvoReceita = metaReceitaDoMes(mesMetas);
-    const convertido = series.faturamento.filter((f) => f.data.startsWith(mesMetas)).reduce((s, f) => s + f.valor, 0);
+    const convertido = faturadoDoMes(mesMetas);
     const pct = alvoReceita > 0 ? Math.min(100, Math.round((convertido / alvoReceita) * 100)) : 0;
     const metas = (cfgLer("metas", []) || []).filter((m) => m.mes === mesMetas);
 
@@ -23156,7 +23169,7 @@ ${botao}
     const somaMes = (lista, m) => lista.filter((x) => x.data.startsWith(m)).reduce((s, x) => s + (x.valor || 0), 0);
     const contaMes = (lista, m) => lista.filter((x) => x.data.startsWith(m)).length;
 
-    const faturado = somaMes(series.faturamento, mes);
+    const faturado = faturadoDoMes(mes);
     const alvo = metaReceitaDoMes(mes);
     if (alvo > 0) {
       const falta = alvo - faturado;
@@ -23454,7 +23467,7 @@ ${botao}
       novas.push({ chave: `c:${c.cat.id}:${c.marco}`, texto: `🎉 Nova conquista: ${c.cat.nome(c.marco)}!` });
     });
     const alvo = metaReceitaDoMes(mes);
-    const faturado = series.faturamento.filter((f) => f.data.startsWith(mes)).reduce((s, f) => s + f.valor, 0);
+    const faturado = faturadoDoMes(mes);
     if (alvo > 0 && faturado >= alvo) novas.push({ chave: `m:receita:${mes}`, texto: "🎉 Meta de receita do mês batida!" });
     (cfgLer("metas", []) || []).filter((m) => m.mes === mes).forEach((m) => {
       if (metaConcluida(m, progressoMeta(m, mes, series))) novas.push({ chave: `m:${m.id}`, texto: "🎉 Meta concluída!" });
@@ -24312,7 +24325,7 @@ ${botao}
     });
     const alvoReceita = metaReceitaDoMes(mesAtualChave);
     if (alvoReceita > 0) {
-      const convertido = series.faturamento.filter((f) => f.data.startsWith(mesAtualChave)).reduce((s, f) => s + f.valor, 0);
+      const convertido = faturadoDoMes(mesAtualChave);
       const chave = "receita:" + mesAtualChave;
       if (convertido >= alvoReceita && !jaVisto.metas.has(chave)) {
         jaVisto.metas.add(chave);
