@@ -54,6 +54,12 @@ button,input,select,textarea{font:inherit;color:inherit;}
 .marca-logo img{display:block;height:100%;width:auto;max-width:180px;object-fit:contain;}
 .marca-logo.escuro{height:52px;padding:8px 14px;border-radius:12px;background:var(--marca-escura);}
 .marca-nome{font-size:1.05rem;font-weight:700;letter-spacing:-.01em;}
+.topo-dir{display:flex;align-items:center;gap:14px;}
+/* Chave de idioma (só aparece quando o roteiro tem tradução) */
+.idioma{display:inline-flex;padding:3px;border-radius:99px;background:var(--cinza);border:1px solid var(--linha);}
+.idioma button{border:0;background:none;padding:6px 12px;border-radius:99px;font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--tinta-suave);cursor:pointer;}
+.idioma button[aria-pressed="true"]{background:var(--tinta);color:#fff;}
+@media (max-width:520px){.topo-dir{flex-direction:column-reverse;align-items:flex-end;gap:8px;}}
 
 /* ---------- Capa ---------- */
 .hero{display:grid;grid-template-columns:1.15fr .85fr;gap:44px;align-items:center;padding:52px 0 44px;}
@@ -229,6 +235,141 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
   var idxGancho = 0;
   // Escolhas da marca (ex.: figurino): índice da escolha -> índice da opção
   var escolhasFeitas = {};
+  // Idioma: o roteiro pode trazer "traducoes": {"en": {...}} (marca de fora).
+  // A tradução tem só os textos; o resto (imagens, cores, destaque) vem do original.
+  var idioma = "pt";
+  var cacheConteudo = { chave: "", valor: null };
+  var ouvintesLigados = false;
+
+  var TEXTOS = {
+    pt: {
+      carregando: "Carregando o roteiro…",
+      versao: "versão", por: "por Letícia Calisto",
+      aprovadoT: "Roteiro aprovado", aprovadoEm: "Aprovado em ", aprovadoFim: ". Obrigada! Agora é comigo: vou gravar.",
+      ajusteT: "Ajustes enviados", ajusteEm: "Recebi os seus comentários em ", ajusteFim: ". Vou ajustar e te mando a nova versão neste mesmo link.",
+      instr1: "Leia com calma. Para mudar alguma coisa, toque em <b>Comentar esta cena</b>",
+      instrGancho: " ou troque o gancho por uma das variações",
+      instrEscolha1: ". Antes de aprovar, escolha ", instrEscolha2: " logo abaixo do mood board",
+      instrFim: ". No final, é só aprovar ou pedir os ajustes.",
+      oGancho: "O gancho", moodEy: "Mood board", moodH: "O clima do vídeo", clima: "Clima", paleta: "Paleta", referencia: "referência",
+      roteiroEy: "Roteiro", roteiroH: "Cena a cena", visual: "Visual", tela: "Texto na tela",
+      comentarCena: "Comentar esta cena", phCena: "O que você gostaria de mudar nesta cena?", ariaCena: "Comentário da cena ",
+      seuComentario: "Seu comentário",
+      testarEy: "Para testar", testarH: "Variações de gancho",
+      testarIntro: "Prefere outro começo? Toque em <b>Trocar por esse</b> e a cena 01 muda na hora. Dá para voltar ao original quando quiser.",
+      trocarPorEsse: "Trocar por esse", emUso: "Em uso no roteiro", voltarOriginal: "Voltar ao original", escolhidoPorVoce: "Escolhido por você",
+      ganchoTrocado: "Gancho trocado", ganchoEscolhido: "Gancho escolhido por você", variacao: "Variação: ",
+      detalhesEy: "Detalhes", detalhesH: "Gravação e cuidados",
+      suaResposta: "Sua resposta", comentarioGeral: "Comentário geral", geralP: "Algum comentário geral sobre o roteiro? (opcional)",
+      geralPh: "Ex: o tom está ótimo, só quero trocar a frase final.",
+      solicitarAjuste: "Solicitar ajuste", aprovarRoteiro: "Aprovar roteiro",
+      suaEscolha: "Sua escolha", escolhaUma: "Escolha uma opção", escolhaIntro: "Toque em Escolher essa na opção que você prefere.",
+      escolhaNecessaria: " <b>A escolha é necessária para aprovar o roteiro.</b>", nenhumaOpcao: "Nenhuma opção escolhida.",
+      opcao: "Opção ", escolherEssa: "Escolher essa", escolhida: "Escolhida", escolhidaPorVoce: "Escolhida por você", desfazer: "Desfazer",
+      cenaComentada: " cena comentada", cenasComentadas: " cenas comentadas", ganchoTrocadoMin: "gancho trocado", comentarioGeralMin: "comentário geral",
+      opcaoMin: "opção", aOpcao: "a opção", umaOpcao: "uma opção", escolha: "Escolha",
+      antesEscolha: "Antes de aprovar, escolha ", e: " e ",
+      aprovarP: "<b>Aprovar o roteiro?</b><br>Depois de aprovado, eu sigo para a gravação.",
+      aprovarGancho: " O gancho que você escolheu entra no lugar do original.",
+      aprovarComent: " Os comentários que você escreveu vão junto, só como observação.",
+      simAprovar: "Sim, aprovar", voltar: "Voltar",
+      semComentario: "Escreva pelo menos um comentário (numa cena ou no comentário geral) para eu saber o que ajustar.",
+      ajusteP: "<b>Enviar os ajustes?</b><br>", ajusteP2: ". Eu ajusto e te mando a nova versão neste mesmo link.", enviarAjustes: "Enviar ajustes",
+      enviando: "Enviando…", erroEnvio: "Não consegui enviar agora. Confira a internet e tente de novo; seus comentários continuam aqui.",
+      linkIncompleto: "Este link de roteiro está incompleto. Confira o link que a Letícia te enviou.",
+      naoEncontrei: "Não encontrei este roteiro. Confira o link que a Letícia te enviou.",
+      tituloPagina: "Roteiro", local: "pt-BR", produto: "produto"
+    },
+    en: {
+      carregando: "Loading the script…",
+      versao: "version", por: "by Letícia Calisto",
+      aprovadoT: "Script approved", aprovadoEm: "Approved on ", aprovadoFim: ". Thank you! I'll take it from here and start filming.",
+      ajusteT: "Changes sent", ajusteEm: "I got your comments on ", ajusteFim: ". I'll make the changes and send you the new version on this same link.",
+      instr1: "Take your time. To change anything, tap <b>Comment on this scene</b>",
+      instrGancho: " or swap the hook for one of the variations",
+      instrEscolha1: ". Before approving, choose ", instrEscolha2: " right below the mood board",
+      instrFim: ". At the end, just approve or request changes.",
+      oGancho: "The hook", moodEy: "Mood board", moodH: "The video's vibe", clima: "Vibe", paleta: "Palette", referencia: "reference",
+      roteiroEy: "Script", roteiroH: "Scene by scene", visual: "Visual", tela: "On-screen text",
+      comentarCena: "Comment on this scene", phCena: "What would you like to change in this scene?", ariaCena: "Comment on scene ",
+      seuComentario: "Your comment",
+      testarEy: "To test", testarH: "Hook variations",
+      testarIntro: "Prefer a different opening? Tap <b>Use this one</b> and scene 01 changes right away. You can go back to the original anytime.",
+      trocarPorEsse: "Use this one", emUso: "In use in the script", voltarOriginal: "Back to original", escolhidoPorVoce: "Chosen by you",
+      ganchoTrocado: "Hook swapped", ganchoEscolhido: "Hook chosen by you", variacao: "Variation: ",
+      detalhesEy: "Details", detalhesH: "Filming and guidelines",
+      suaResposta: "Your response", comentarioGeral: "General comment", geralP: "Any general comments on the script? (optional)",
+      geralPh: "E.g. the tone is great, I'd just like to change the last line.",
+      solicitarAjuste: "Request changes", aprovarRoteiro: "Approve script",
+      suaEscolha: "Your choice", escolhaUma: "Choose an option", escolhaIntro: "Tap Choose this one on the option you prefer.",
+      escolhaNecessaria: " <b>A choice is required to approve the script.</b>", nenhumaOpcao: "No option chosen.",
+      opcao: "Option ", escolherEssa: "Choose this one", escolhida: "Chosen", escolhidaPorVoce: "Chosen by you", desfazer: "Undo",
+      cenaComentada: " scene commented", cenasComentadas: " scenes commented", ganchoTrocadoMin: "hook swapped", comentarioGeralMin: "general comment",
+      opcaoMin: "option", aOpcao: "the option", umaOpcao: "an option", escolha: "Choice",
+      antesEscolha: "Before approving, choose ", e: " and ",
+      aprovarP: "<b>Approve the script?</b><br>Once it's approved, I'll move on to filming.",
+      aprovarGancho: " The hook you chose replaces the original.",
+      aprovarComent: " The comments you wrote go along as notes only.",
+      simAprovar: "Yes, approve", voltar: "Back",
+      semComentario: "Write at least one comment (on a scene or in the general comment) so I know what to change.",
+      ajusteP: "<b>Send the changes?</b><br>", ajusteP2: ". I'll make the changes and send you the new version on this same link.", enviarAjustes: "Send changes",
+      enviando: "Sending…", erroEnvio: "I couldn't send it right now. Check your connection and try again; your comments are still here.",
+      linkIncompleto: "This script link is incomplete. Please check the link Letícia sent you.",
+      naoEncontrei: "I couldn't find this script. Please check the link Letícia sent you.",
+      tituloPagina: "Script", local: "en-US", produto: "product"
+    }
+  };
+  function t(chave) { return (TEXTOS[idioma] || TEXTOS.pt)[chave]; }
+
+  // Junta a tradução por cima do original: objetos campo a campo,
+  // listas item a item (assim a cena traduzida mantém "destaque" e a imagem mantém "src")
+  function mesclar(base, extra) {
+    if (extra == null) return base;
+    if (Array.isArray(base) && Array.isArray(extra)) {
+      var n = Math.max(base.length, extra.length), saida = [];
+      for (var i = 0; i < n; i++) saida.push(i < extra.length ? mesclar(base[i], extra[i]) : base[i]);
+      return saida;
+    }
+    if (base && extra && typeof base === "object" && typeof extra === "object" && !Array.isArray(base) && !Array.isArray(extra)) {
+      var obj = {};
+      Object.keys(base).forEach(function (k) { obj[k] = base[k]; });
+      Object.keys(extra).forEach(function (k) { obj[k] = mesclar(base[k], extra[k]); });
+      return obj;
+    }
+    return extra;
+  }
+  function temTraducao() {
+    var tr = ((dados && dados.conteudo) || {}).traducoes;
+    return !!(tr && tr.en && typeof tr.en === "object");
+  }
+  // O roteiro no idioma escolhido
+  function conteudo() {
+    var base = (dados && dados.conteudo) || {};
+    if (idioma === "pt" || !temTraducao()) return base;
+    if (cacheConteudo.chave !== idioma || !cacheConteudo.valor) {
+      cacheConteudo = { chave: idioma, valor: mesclar(base, base.traducoes[idioma]) };
+    }
+    return cacheConteudo.valor;
+  }
+  function chaveIdioma() { return "roteiro_idioma_" + token.slice(0, 12); }
+  function idiomaInicial() {
+    if (!temTraducao()) return "pt";
+    try {
+      var salvo = localStorage.getItem(chaveIdioma());
+      if (salvo === "pt" || salvo === "en") return salvo;
+    } catch (erro) {}
+    var nav = (navigator.language || "pt").toLowerCase();
+    return nav.indexOf("pt") === 0 ? "pt" : "en";
+  }
+  function trocarIdioma(novo) {
+    if (novo === idioma) return;
+    if (dados.status === "aprovacao") salvarRascunho(); // os comentários voltam depois do redesenho
+    idioma = novo;
+    try { localStorage.setItem(chaveIdioma(), novo); } catch (erro) {}
+    var y = window.scrollY;
+    desenhar();
+    window.scrollTo(0, y);
+  }
 
   function rpc(nome, corpo) {
     return fetch(SUPABASE_URL + "/rest/v1/rpc/" + nome, {
@@ -251,7 +392,7 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
     return esc(valor).replace(/&lt;(\/?)(i|b)&gt;/g, "<$1$2>");
   }
   function dataHora(iso) {
-    try { return new Date(iso).toLocaleString("pt-BR", { day: "2-digit", month: "long", hour: "2-digit", minute: "2-digit" }); } catch (erro) { return ""; }
+    try { return new Date(iso).toLocaleString(t("local"), { day: "2-digit", month: "long", hour: "2-digit", minute: "2-digit" }); } catch (erro) { return ""; }
   }
 
   // Rascunho dos comentários neste navegador, pra não perder se a página fechar
@@ -273,7 +414,7 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
 
   // ---------- Variações de gancho ----------
   function listaGanchos() {
-    return ((dados.conteudo || {}).ganchos || []).filter(function (g) { return g && g.fala; });
+    return (conteudo().ganchos || []).filter(function (g) { return g && g.fala; });
   }
   // A cena do gancho é a primeira com "gancho" no nome (ou a primeira cena)
   function acharCenaGancho(cenas) {
@@ -282,7 +423,7 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
   }
   // O que a cena do gancho mostra agora: o original ou a variação escolhida
   function ganchoAtual() {
-    var original = ((dados.conteudo || {}).cenas || [])[idxGancho] || {};
+    var original = (conteudo().cenas || [])[idxGancho] || {};
     var g = escolhaGancho == null ? null : listaGanchos()[escolhaGancho];
     if (!g) return { visual: original.visual, fala: original.fala, tela: original.tela, trocado: false };
     return { visual: g.visual || original.visual, fala: g.fala, tela: g.tela || "", tipo: g.tipo || "", trocado: true };
@@ -291,9 +432,9 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
     var a = ganchoAtual();
     var aviso = "";
     if (a.trocado) {
-      aviso = '<div class="trocado"><b>' + (emAprovacao ? "Gancho trocado" : "Gancho escolhido por você") + "</b>" +
-        (a.tipo ? "<span>Variação: " + esc(a.tipo) + "</span>" : "") +
-        (emAprovacao ? '<button type="button" class="btn-link" data-original>Voltar ao original</button>' : "") + "</div>";
+      aviso = '<div class="trocado"><b>' + (emAprovacao ? t("ganchoTrocado") : t("ganchoEscolhido")) + "</b>" +
+        (a.tipo ? "<span>" + t("variacao") + esc(a.tipo) + "</span>" : "") +
+        (emAprovacao ? '<button type="button" class="btn-link" data-original>' + t("voltarOriginal") + "</button>" : "") + "</div>";
     }
     return aviso +
       htmlCampos(a);
@@ -301,8 +442,8 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
   // Fala em destaque; o visual e o texto na tela logo abaixo
   function htmlCampos(c) {
     return '<div class="campo"><span class="fala">"' + esc(c.fala) + '"</span></div>' +
-      '<p class="campo visual"><b>Visual</b>' + esc(c.visual) + "</p>" +
-      (c.tela ? '<p class="campo"><b>Texto na tela</b><span class="tela">' + esc(c.tela) + "</span></p>" : "");
+      '<p class="campo visual"><b>' + t("visual") + "</b>" + esc(c.visual) + "</p>" +
+      (c.tela ? '<p class="campo"><b>' + t("tela") + '</b><span class="tela">' + esc(c.tela) + "</span></p>" : "");
   }
   function htmlListaGanchos(emAprovacao) {
     return listaGanchos().map(function (g, i) {
@@ -310,10 +451,10 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
       var acoes = "";
       if (emAprovacao) {
         acoes = '<div class="acoes">' + (emUso
-          ? '<span class="selo-uso">Em uso no roteiro</span><button type="button" class="btn-link" data-original>Voltar ao original</button>'
-          : '<button type="button" class="btn-trocar" data-trocar="' + i + '">Trocar por esse</button>') + "</div>";
+          ? '<span class="selo-uso">' + t("emUso") + '</span><button type="button" class="btn-link" data-original>' + t("voltarOriginal") + "</button>"
+          : '<button type="button" class="btn-trocar" data-trocar="' + i + '">' + t("trocarPorEsse") + "</button>") + "</div>";
       } else if (emUso) {
-        acoes = '<div class="acoes"><span class="selo-uso">Escolhido por você</span></div>';
+        acoes = '<div class="acoes"><span class="selo-uso">' + t("escolhidoPorVoce") + "</span></div>";
       }
       return '<div class="gancho' + (emUso ? " em-uso" : "") + '">' +
         (g.tipo ? '<span class="tipo">' + esc(g.tipo) + "</span>" : "") +
@@ -336,7 +477,7 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
 
   // ---------- Escolhas da marca (ex.: figurino) ----------
   function listaEscolhas() {
-    return ((dados.conteudo || {}).escolhas || []).filter(function (e) { return e && (e.opcoes || []).some(function (o) { return o && o.nome; }); });
+    return (conteudo().escolhas || []).filter(function (e) { return e && (e.opcoes || []).some(function (o) { return o && o.nome; }); });
   }
   function opcoesDe(e) {
     return (e.opcoes || []).filter(function (o) { return o && o.nome; });
@@ -354,13 +495,13 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
       var acoes = "";
       if (emAprovacao) {
         acoes = '<div class="acoes">' + (escolhida
-          ? '<span class="selo-uso">Escolhida</span><button type="button" class="btn-link" data-desfazer="' + ie + '">Desfazer</button>'
-          : '<button type="button" class="btn-trocar" data-escolher="' + ie + ":" + io + '">Escolher essa</button>') + "</div>";
+          ? '<span class="selo-uso">' + t("escolhida") + '</span><button type="button" class="btn-link" data-desfazer="' + ie + '">' + t("desfazer") + "</button>"
+          : '<button type="button" class="btn-trocar" data-escolher="' + ie + ":" + io + '">' + t("escolherEssa") + "</button>") + "</div>";
       } else if (escolhida) {
-        acoes = '<div class="acoes"><span class="selo-uso">Escolhida por você</span></div>';
+        acoes = '<div class="acoes"><span class="selo-uso">' + t("escolhidaPorVoce") + "</span></div>";
       }
       return '<div class="gancho' + (escolhida ? " em-uso" : "") + '">' + foto +
-        '<span class="tipo">Opção ' + (io + 1) + "</span>" +
+        '<span class="tipo">' + t("opcao") + (io + 1) + "</span>" +
         '<span class="fala-g">' + esc(o.nome) + "</span>" +
         (o.descricao ? '<p class="desc-op">' + esc(o.descricao) + "</p>" : "") +
         acoes + "</div>";
@@ -369,10 +510,10 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
   function htmlEscolhas(emAprovacao) {
     return listaEscolhas().map(function (e, ie) {
       var intro = emAprovacao
-        ? '<p class="intro">' + esc(e.texto || "Toque em Escolher essa na opção que você prefere.") + (obrigatoria(e) ? " <b>A escolha é necessária para aprovar o roteiro.</b>" : "") + "</p>"
-        : (escolhasFeitas[ie] == null ? '<p class="intro">Nenhuma opção escolhida.</p>' : "");
-      return '<section class="secao" id="escolha' + ie + '"><span class="eyebrow">Sua escolha' + (e.titulo ? " · " + esc(e.titulo) : "") + "</span>" +
-        "<h2>" + esc(e.pergunta || e.titulo || "Escolha uma opção") + "</h2>" + intro +
+        ? '<p class="intro">' + esc(e.texto || t("escolhaIntro")) + (obrigatoria(e) ? t("escolhaNecessaria") : "") + "</p>"
+        : (escolhasFeitas[ie] == null ? '<p class="intro">' + t("nenhumaOpcao") + "</p>" : "");
+      return '<section class="secao" id="escolha' + ie + '"><span class="eyebrow">' + t("suaEscolha") + (e.titulo ? " · " + esc(e.titulo) : "") + "</span>" +
+        "<h2>" + esc(e.pergunta || e.titulo || t("escolhaUma")) + "</h2>" + intro +
         '<div class="ganchos" id="opcoes' + ie + '">' + htmlOpcoes(ie, emAprovacao) + "</div></section>";
     }).join("");
   }
@@ -425,16 +566,22 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
   function desenharTopo(r) {
     var logo = (r.moodboard || {}).logo;
     var temLogo = logo && /^(data:image\/(jpeg|png|webp|svg\+xml);base64,|https:\/\/)/.test(logo.src || "");
+    var chave = temTraducao()
+      ? '<div class="idioma" role="group" aria-label="Idioma / Language">' +
+        '<button type="button" data-idioma="pt" aria-pressed="' + (idioma === "pt") + '">PT</button>' +
+        '<button type="button" data-idioma="en" aria-pressed="' + (idioma === "en") + '">EN</button></div>'
+      : "";
     document.getElementById("topo").innerHTML =
       (temLogo
         ? '<span class="marca-logo' + (logo.fundo === "escuro" ? " escuro" : "") + '"><img src="' + esc(logo.src) + '" alt="' + esc(r.marca) + '"></span>'
         : '<span class="marca-nome">' + esc(r.marca) + "</span>") +
-      '<span class="assina"><b>Roteiro UGC ' + esc(r.numero) + (dados.versao > 1 ? " · versão " + dados.versao : "") + "</b>por Letícia Calisto</span>";
+      '<div class="topo-dir">' + chave + '<span class="assina"><b>' + (idioma === "en" ? "UGC Script " : "Roteiro UGC ") + esc(r.numero) + (dados.versao > 1 ? " · " + t("versao") + " " + dados.versao : "") + "</b>" + t("por") + "</span></div>";
   }
 
   function desenhar() {
-    var r = dados.conteudo || {};
+    var r = conteudo();
     var status = dados.status;
+    document.documentElement.lang = idioma === "en" ? "en" : "pt-BR";
     var emAprovacao = status === "aprovacao";
     var lidos = (dados.comentarios && dados.comentarios.cenas) || {};
     idxGancho = acharCenaGancho(r.cenas || []);
@@ -451,19 +598,19 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
     var temGanchos = listaGanchos().length > 0;
     aplicarTema(r);
     desenharTopo(r);
-    document.title = "Roteiro " + (r.marca || "") + " " + (r.numero || "") + " · " + (r.titulo || "") + " | Letícia Calisto";
+    document.title = t("tituloPagina") + " " + (r.marca || "") + " " + (r.numero || "") + " · " + (r.titulo || "") + " | Letícia Calisto";
 
     var aviso = "";
     if (status === "aprovado" && !dados.respondido_em) {
       aviso = ""; // roteiro dos meus próprios posts: não passa por aprovação
     } else if (status === "aprovado") {
-      aviso = '<div class="aviso aprovado"><b>Roteiro aprovado</b>Aprovado em ' + esc(dataHora(dados.respondido_em)) + ". Obrigada! Agora é comigo: vou gravar.</div>";
+      aviso = '<div class="aviso aprovado"><b>' + t("aprovadoT") + "</b>" + t("aprovadoEm") + esc(dataHora(dados.respondido_em)) + t("aprovadoFim") + "</div>";
     } else if (status === "ajuste") {
-      aviso = '<div class="aviso ajuste"><b>Ajustes enviados</b>Recebi os seus comentários em ' + esc(dataHora(dados.respondido_em)) + ". Vou ajustar e te mando a nova versão neste mesmo link.</div>";
+      aviso = '<div class="aviso ajuste"><b>' + t("ajusteT") + "</b>" + t("ajusteEm") + esc(dataHora(dados.respondido_em)) + t("ajusteFim") + "</div>";
     } else {
-      aviso = '<p class="instrucao">Leia com calma. Para mudar alguma coisa, toque em <b>Comentar esta cena</b>' +
-        (temGanchos ? " ou troque o gancho por uma das variações" : "") +
-        (temEscolhas ? ". Antes de aprovar, escolha " + listaEscolhas().map(function (e) { return esc((e.titulo || "a opção").toLowerCase()); }).join(" e ") + " logo abaixo do mood board" : "") + ". No final, é só aprovar ou pedir os ajustes.</p>";
+      aviso = '<p class="instrucao">' + t("instr1") +
+        (temGanchos ? t("instrGancho") : "") +
+        (temEscolhas ? t("instrEscolha1") + listaEscolhas().map(function (e) { return esc((e.titulo || t("aOpcao")).toLowerCase()); }).join(t("e")) + t("instrEscolha2") : "") + t("instrFim") + "</p>";
     }
 
     // Capa: título, a ideia e a ficha à esquerda; a foto do produto à direita
@@ -479,22 +626,22 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
       (r.angulo ? '<p class="ideia">' + esc(r.angulo) + "</p>" : "") +
       (ficha ? '<dl class="ficha">' + ficha + "</dl>" : "") +
       "</div>" +
-      (fotoCapa ? '<div class="hero-foto"><img src="' + esc(fotoCapa.src) + '" alt="' + esc(fotoCapa.legenda || r.produto || "produto") + '"></div>' : "") +
+      (fotoCapa ? '<div class="hero-foto"><img src="' + esc(fotoCapa.src) + '" alt="' + esc(fotoCapa.legenda || r.produto || t("produto")) + '"></div>' : "") +
       "</section>";
 
     // O gancho em destaque, no bloco escuro da marca
     var blocoGancho = (r.cenas || []).length
-      ? '<section class="bloco-gancho"><span class="eyebrow">O gancho</span><p id="ganchoRef">"' + esc(ganchoAtual().fala) + '"</p></section>'
+      ? '<section class="bloco-gancho"><span class="eyebrow">' + t("oGancho") + '</span><p id="ganchoRef">"' + esc(ganchoAtual().fala) + '"</p></section>'
       : "";
 
     var cenas = (r.cenas || []).map(function (c, i) {
       var num = String(i + 1).padStart(2, "0");
       var comentario = "";
       if (emAprovacao) {
-        comentario = '<div class="comentar"><button type="button" class="btn-comentar" data-abrir="' + i + '">Comentar esta cena</button>' +
-          '<textarea class="caixa-comentario" data-cena="' + i + '" placeholder="O que você gostaria de mudar nesta cena?" hidden aria-label="Comentário da cena ' + num + '"></textarea></div>';
+        comentario = '<div class="comentar"><button type="button" class="btn-comentar" data-abrir="' + i + '">' + t("comentarCena") + "</button>" +
+          '<textarea class="caixa-comentario" data-cena="' + i + '" placeholder="' + esc(t("phCena")) + '" hidden aria-label="' + esc(t("ariaCena")) + num + '"></textarea></div>';
       } else if (lidos[i]) {
-        comentario = '<div class="comentario-lido"><b>Seu comentário</b>' + esc(lidos[i]) + "</div>";
+        comentario = '<div class="comentario-lido"><b>' + t("seuComentario") + "</b>" + esc(lidos[i]) + "</div>";
       }
       return '<article class="cena' + (c.destaque ? " destaque" : "") + '">' +
         '<div class="cena-lado"><span class="num">' + num + '</span><span class="nome">' + esc(c.nome) + "</span>" + (c.tempo ? '<span class="tempo">' + esc(c.tempo) + "</span>" : "") + "</div>" +
@@ -509,19 +656,19 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
     var m = r.moodboard || {};
     var cores = (m.paleta || []).filter(function (p) { return p && corValida(p.cor); });
     var figs = outras.map(function (im) {
-      return '<figure' + (im.largo ? ' class="largo"' : "") + '><div class="moldura"><img src="' + esc(im.src) + '" alt="' + esc(im.legenda || "referência") + '" loading="lazy"></div>' +
+      return '<figure' + (im.largo ? ' class="largo"' : "") + '><div class="moldura"><img src="' + esc(im.src) + '" alt="' + esc(im.legenda || t("referencia")) + '" loading="lazy"></div>' +
         (im.legenda ? "<figcaption>" + esc(im.legenda) + "</figcaption>" : "") + "</figure>";
     }).join("");
     if (cores.length || m.clima || figs) {
       var clima = (m.clima || (m.tags || []).length)
-        ? "<div><span class=\"sub\">Clima</span>" + (m.clima ? '<p class="clima">' + esc(m.clima) + "</p>" : "") +
+        ? '<div><span class="sub">' + t("clima") + "</span>" + (m.clima ? '<p class="clima">' + esc(m.clima) + "</p>" : "") +
           ((m.tags || []).length ? '<p class="tags">' + m.tags.map(esc).join(" · ") + "</p>" : "") + "</div>"
         : "";
       var paleta = cores.length
-        ? '<div><span class="sub">Paleta</span><div class="faixa">' + cores.map(function (p) { return '<i style="background:' + p.cor + '"></i>'; }).join("") + "</div>" +
+        ? '<div><span class="sub">' + t("paleta") + '</span><div class="faixa">' + cores.map(function (p) { return '<i style="background:' + p.cor + '"></i>'; }).join("") + "</div>" +
           '<div class="nomes">' + cores.map(function (p) { return "<span><b>" + esc(p.nome || "") + "</b>" + esc(p.cor.toUpperCase()) + "</span>"; }).join("") + "</div></div>"
         : "";
-      mood = '<section class="secao"><span class="eyebrow">Mood board</span><h2>O clima do vídeo</h2>' +
+      mood = '<section class="secao"><span class="eyebrow">' + t("moodEy") + "</span><h2>" + t("moodH") + "</h2>" +
         '<div class="mood">' + clima + paleta + "</div>" +
         (figs ? '<div class="imagens" style="--colunas:' + Math.min(outras.length, 3) + '">' + figs + "</div>" : "") +
         "</section>";
@@ -529,8 +676,8 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
 
     var blocoGanchos = "";
     if (temGanchos) {
-      blocoGanchos = '<section class="secao"><span class="eyebrow">Para testar</span><h2>Variações de gancho</h2>' +
-        (emAprovacao ? '<p class="intro">Prefere outro começo? Toque em <b>Trocar por esse</b> e a cena 01 muda na hora. Dá para voltar ao original quando quiser.</p>' : "") +
+      blocoGanchos = '<section class="secao"><span class="eyebrow">' + t("testarEy") + "</span><h2>" + t("testarH") + "</h2>" +
+        (emAprovacao ? '<p class="intro">' + t("testarIntro") + "</p>" : "") +
         '<div class="ganchos" id="listaGanchos">' + htmlListaGanchos(emAprovacao) + "</div></section>";
     }
 
@@ -538,32 +685,32 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
       var tag = s.numerada ? "ol" : "ul";
       return "<div><h3>" + esc(s.titulo) + "</h3><" + tag + ">" + (s.itens || []).map(function (x) { return "<li>" + rico(x) + "</li>"; }).join("") + "</" + tag + "></div>";
     }).join("");
-    var secoes = listas ? '<section class="secao"><span class="eyebrow">Detalhes</span><h2>Gravação e cuidados</h2><div class="colunas">' + listas + "</div></section>" : "";
+    var secoes = listas ? '<section class="secao"><span class="eyebrow">' + t("detalhesEy") + "</span><h2>" + t("detalhesH") + '</h2><div class="colunas">' + listas + "</div></section>" : "";
 
     var geralLido = dados.comentarios && dados.comentarios.geral;
     var resposta = "";
     if (emAprovacao) {
       resposta = '<section class="resposta" id="resposta">' +
-        "<h2>Sua resposta</h2>" +
-        "<p>Algum comentário geral sobre o roteiro? (opcional)</p>" +
-        '<textarea class="caixa-comentario" id="comentarioGeral" placeholder="Ex: o tom está ótimo, só quero trocar a frase final."></textarea>' +
+        "<h2>" + t("suaResposta") + "</h2>" +
+        "<p>" + t("geralP") + "</p>" +
+        '<textarea class="caixa-comentario" id="comentarioGeral" placeholder="' + esc(t("geralPh")) + '"></textarea>' +
         '<p class="contador" id="contador"></p>' +
         '<div class="botoes" id="botoes">' +
-        '<button type="button" class="btn btn-ajuste" id="btnAjuste">Solicitar ajuste</button>' +
-        '<button type="button" class="btn btn-aprovar" id="btnAprovar">Aprovar roteiro</button>' +
+        '<button type="button" class="btn btn-ajuste" id="btnAjuste">' + t("solicitarAjuste") + "</button>" +
+        '<button type="button" class="btn btn-aprovar" id="btnAprovar">' + t("aprovarRoteiro") + "</button>" +
         "</div>" +
         '<div class="confirmar" id="confirmar" hidden></div>' +
         '<p class="erro" id="erro" hidden></p>' +
         "</section>";
     } else if (geralLido) {
-      resposta = '<section class="secao"><span class="eyebrow">Sua resposta</span><h2>Comentário geral</h2><div class="comentario-lido"><b>Seu comentário</b>' + esc(geralLido) + "</div></section>";
+      resposta = '<section class="secao"><span class="eyebrow">' + t("suaResposta") + "</span><h2>" + t("comentarioGeral") + '</h2><div class="comentario-lido"><b>' + t("seuComentario") + "</b>" + esc(geralLido) + "</div></section>";
     }
 
     areaRoteiro.innerHTML =
       hero + aviso + blocoGancho + mood + htmlEscolhas(emAprovacao) +
-      '<section class="secao"><span class="eyebrow">Roteiro</span><h2>Cena a cena</h2><div class="cenas">' + cenas + "</div></section>" +
+      '<section class="secao"><span class="eyebrow">' + t("roteiroEy") + "</span><h2>" + t("roteiroH") + '</h2><div class="cenas">' + cenas + "</div></section>" +
       blocoGanchos + secoes + resposta +
-      '<footer class="rodape"><span>Roteiro ' + esc(r.marca) + " " + esc(r.numero) + " · " + esc(r.titulo) + "</span><b>Letícia Calisto</b></footer>";
+      '<footer class="rodape"><span>' + t("tituloPagina") + " " + esc(r.marca) + " " + esc(r.numero) + " · " + esc(r.titulo) + "</span><b>Letícia Calisto</b></footer>";
 
     carregando.hidden = true;
     areaRoteiro.hidden = false;
@@ -579,11 +726,14 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
     var geral = document.getElementById("comentarioGeral");
     var saida = { cenas: cenas, geral: geral ? geral.value.trim() : "" };
     // A troca de gancho vai junto, com a variação completa (o painel mostra qual foi)
-    var g = escolhaGancho == null ? null : listaGanchos()[escolhaGancho];
+    // (sempre no texto original, em português, que é o que eu gravo, mesmo se a marca leu em inglês)
+    var originais = (((dados && dados.conteudo) || {}).ganchos || []).filter(function (x) { return x && x.fala; });
+    var g = escolhaGancho == null ? null : originais[escolhaGancho];
     if (g) saida.gancho = { indice: escolhaGancho, tipo: g.tipo || "", fala: g.fala, visual: g.visual || "", tela: g.tela || "" };
     // As escolhas da marca (ex.: figurino) vão com o nome da opção (o painel mostra qual foi)
     var escolhas = [];
-    listaEscolhas().forEach(function (e, ie) {
+    var escolhasOriginais = (((dados && dados.conteudo) || {}).escolhas || []).filter(function (x) { return x && (x.opcoes || []).some(function (o) { return o && o.nome; }); });
+    escolhasOriginais.forEach(function (e, ie) {
       var io = escolhasFeitas[ie];
       var o = io == null ? null : opcoesDe(e)[io];
       if (o) escolhas.push({ escolha: ie, titulo: e.titulo || e.pergunta || "", indice: io, nome: o.nome });
@@ -598,15 +748,21 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
     var c = coletarComentarios();
     var n = Object.keys(c.cenas).length;
     var partes = [];
-    if (n) partes.push(n + (n === 1 ? " cena comentada" : " cenas comentadas"));
-    if (c.gancho) partes.push("gancho trocado");
-    (c.escolhas || []).forEach(function (s) { partes.push((s.titulo || "opção") + ": " + s.nome); });
+    if (n) partes.push(n + (n === 1 ? t("cenaComentada") : t("cenasComentadas")));
+    if (c.gancho) partes.push(t("ganchoTrocadoMin"));
+    (c.escolhas || []).forEach(function (s) { partes.push((s.titulo || t("opcaoMin")) + ": " + s.nome); });
     document.getElementById("contador").textContent = partes.length ? partes.join(" · ") + "." : "";
   }
 
   function ligarResposta() {
+    if (!ouvintesLigados) { ouvintesLigados = true; ligarOuvintes(); }
+    restaurarERespostas();
+  }
+  // Os ouvintes da área do roteiro ficam ligados uma vez só (a área é redesenhada ao trocar de idioma)
+  function ligarOuvintes() {
     // Abre a caixa de comentário da cena
     areaRoteiro.addEventListener("click", function (e) {
+      if (dados.status !== "aprovacao") return;
       // Trocar o gancho (ou voltar ao original)
       var escolha = e.target.closest("[data-escolher]");
       var desfazer = e.target.closest("[data-desfazer]");
@@ -646,7 +802,9 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
       salvarRascunho();
       atualizarContador();
     });
+  }
 
+  function restaurarERespostas() {
     // Rascunho salvo neste aparelho volta pro lugar
     var rascunho = lerRascunho();
     if (rascunho) {
@@ -673,7 +831,7 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
 
     function perguntar(html, rotuloSim, acao) {
       erro.hidden = true;
-      confirmar.innerHTML = html + '<div class="botoes"><button type="button" class="btn btn-ajuste" id="btnNao">Voltar</button><button type="button" class="btn btn-aprovar" id="btnSim">' + rotuloSim + "</button></div>";
+      confirmar.innerHTML = html + '<div class="botoes"><button type="button" class="btn btn-ajuste" id="btnNao">' + t("voltar") + '</button><button type="button" class="btn btn-aprovar" id="btnSim">' + rotuloSim + "</button></div>";
       confirmar.hidden = false;
       document.getElementById("botoes").hidden = true;
       document.getElementById("btnNao").onclick = function () {
@@ -686,38 +844,38 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
     document.getElementById("btnAprovar").addEventListener("click", function () {
       var faltando = escolhasFaltando();
       if (faltando.length) {
-        erro.textContent = "Antes de aprovar, escolha " + faltando.map(function (e) { return (e.titulo || "uma opção").toLowerCase(); }).join(" e ") + ".";
+        erro.textContent = t("antesEscolha") + faltando.map(function (e) { return (e.titulo || t("umaOpcao")).toLowerCase(); }).join(t("e")) + ".";
         erro.hidden = false;
         var alvo = document.getElementById("escolha" + listaEscolhas().indexOf(faltando[0]));
         if (alvo) alvo.scrollIntoView({ behavior: "smooth", block: "start" });
         return;
       }
       var c = coletarComentarios();
-      var aviso = (c.gancho ? " O gancho que você escolheu entra no lugar do original." : "") +
-        (c.escolhas || []).map(function (s) { return " " + (s.titulo || "Escolha") + ": " + esc(s.nome) + "."; }).join("") +
-        (Object.keys(c.cenas).length || c.geral ? " Os comentários que você escreveu vão junto, só como observação." : "");
-      perguntar("<b>Aprovar o roteiro?</b><br>Depois de aprovado, eu sigo para a gravação." + aviso, "Sim, aprovar", "aprovar");
+      var aviso = (c.gancho ? t("aprovarGancho") : "") +
+        (c.escolhas || []).map(function (s) { return " " + (s.titulo || t("escolha")) + ": " + esc(s.nome) + "."; }).join("") +
+        (Object.keys(c.cenas).length || c.geral ? t("aprovarComent") : "");
+      perguntar(t("aprovarP") + aviso, t("simAprovar"), "aprovar");
     });
     document.getElementById("btnAjuste").addEventListener("click", function () {
       var c = coletarComentarios();
       if (!totalComentarios(c)) {
-        erro.textContent = "Escreva pelo menos um comentário (numa cena ou no comentário geral) para eu saber o que ajustar.";
+        erro.textContent = t("semComentario");
         erro.hidden = false;
         return;
       }
       var n = Object.keys(c.cenas).length;
       var resumo = [];
-      if (n) resumo.push(n + (n === 1 ? " cena comentada" : " cenas comentadas"));
-      if (c.gancho) resumo.push("gancho trocado");
-      if (c.geral) resumo.push("comentário geral");
-      perguntar("<b>Enviar os ajustes?</b><br>" + resumo.join(", ").replace(/^./, function (l) { return l.toUpperCase(); }) + ". Eu ajusto e te mando a nova versão neste mesmo link.", "Enviar ajustes", "ajuste");
+      if (n) resumo.push(n + (n === 1 ? t("cenaComentada") : t("cenasComentadas")));
+      if (c.gancho) resumo.push(t("ganchoTrocadoMin"));
+      if (c.geral) resumo.push(t("comentarioGeralMin"));
+      perguntar(t("ajusteP") + esc(resumo.join(", ").replace(/^./, function (l) { return l.toUpperCase(); })) + t("ajusteP2"), t("enviarAjustes"), "ajuste");
     });
   }
 
   function enviar(acao, botao) {
     var erro = document.getElementById("erro");
     botao.disabled = true;
-    botao.textContent = "Enviando…";
+    botao.textContent = t("enviando");
     var comentarios = coletarComentarios();
     rpc("roteiro_responder", { p_token: token, p_acao: acao, p_comentarios: comentarios })
       .then(function (ok) {
@@ -731,14 +889,20 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
       })
       .catch(function () {
         botao.disabled = false;
-        botao.textContent = acao === "aprovar" ? "Sim, aprovar" : "Enviar ajustes";
-        erro.textContent = "Não consegui enviar agora. Confira a internet e tente de novo; seus comentários continuam aqui.";
+        botao.textContent = acao === "aprovar" ? t("simAprovar") : t("enviarAjustes");
+        erro.textContent = t("erroEnvio");
         erro.hidden = false;
       });
   }
 
+  // Chave PT/EN no topo
+  document.getElementById("topo").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-idioma]");
+    if (b && dados) trocarIdioma(b.getAttribute("data-idioma"));
+  });
+
   if (!token) {
-    mostrarErro("Este link de roteiro está incompleto. Confira o link que a Letícia te enviou.");
+    mostrarErro(t("linkIncompleto"));
     return;
   }
   chaveRascunho = "roteiro_rascunho_" + token.slice(0, 12);
@@ -746,10 +910,11 @@ h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:700;letter-spacing:-.03em;li
     .then(function (resposta) {
       if (!resposta || !resposta.conteudo) throw new Error("sem roteiro");
       dados = resposta;
+      idioma = idiomaInicial();
       desenhar();
     })
     .catch(function () {
-      mostrarErro("Não encontrei este roteiro. Confira o link que a Letícia te enviou.");
+      mostrarErro(t("naoEncontrei"));
     });
 })();
 </script>
