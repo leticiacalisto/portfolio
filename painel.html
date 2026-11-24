@@ -3971,6 +3971,101 @@
     .ins-radar{ grid-template-columns:1fr; }
     #painel-cc-insights .cartoes-fluxo{ grid-template-columns:repeat(2, 1fr); }
   }
+
+  /* ---- Insights por rede (cores: Instagram lilás, TikTok azul, Shorts coral) ---- */
+  #painel-cc-insights{ --cor-ig:#A78BEA; --cor-tk:#6FAEE8; --cor-yt:#F19A74; }
+  .ins-topo{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+  .ins-topo .ins-atualizado{ margin:0; }
+  .ins-cartao-rede{ border-left-color:var(--cor-ig); }
+  .ins-cartao-rede.tk{ border-left-color:var(--cor-tk); }
+  .ins-cartao-rede.yt{ border-left-color:var(--cor-yt); }
+  .ins-cartao-rede.todas{ border-left-color:#C9B8F0; }
+  .ins-mini-redes{ display:flex; flex-wrap:wrap; gap:4px 10px; font-size:.72rem; color:var(--texto-suave); }
+  .ins-mini-redes i{ display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:4px; vertical-align:1px; background:var(--cor-ig); }
+  .ins-mini-redes i.tk{ background:var(--cor-tk); }
+  .ins-mini-redes i.yt{ background:var(--cor-yt); }
+  .ins-meta .topo-meta-receita{ align-items:baseline; }
+  .ins-meta-fonte{ font-size:.74rem; color:var(--texto-suave); }
+  .ins-metas{ display:flex; flex-direction:column; gap:16px; margin-top:12px; }
+  .ins-meta-linha{ display:grid; grid-template-columns:110px 1fr 170px; gap:6px 18px; align-items:center; }
+  .ins-meta-rede{ font-family:var(--fonte-impacto); font-weight:600; font-size:.9rem; color:var(--grafite); display:flex; align-items:center; gap:7px; }
+  .ins-meta-rede i{ width:9px; height:9px; border-radius:50%; background:var(--cor-ig); flex:none; }
+  .ins-meta-rede i.tk{ background:var(--cor-tk); }
+  .ins-meta-rede i.yt{ background:var(--cor-yt); }
+  .ins-meta-corpo .trilho-meta{ position:relative; margin:0; }
+  .ins-meta-corpo .preenchido-meta.tk{ background:linear-gradient(90deg, #A9D0F5, #4B95DD); }
+  .ins-meta-corpo .preenchido-meta.yt{ background:linear-gradient(90deg, #F8C3AA, #E8784C); }
+  .ins-marco-pino{ position:absolute; top:-3px; bottom:-3px; width:2px; border-radius:2px; background:var(--grafite); opacity:.35; }
+  .ins-meta-sub{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:4px 12px; margin-top:6px; font-size:.74rem; color:var(--texto-suave); }
+  .ins-meta-sub b{ color:var(--grafite); }
+  .ins-ritmo{ padding:1px 8px; border-radius:99px; font-weight:700; font-size:.7rem; }
+  .ins-ritmo.ok{ background:#E4F7EC; color:#1B7A45; }
+  .ins-ritmo.atras{ background:#FFF4D2; color:#9A6B00; }
+  .ins-meta-num2{ text-align:right; font-family:var(--fonte-impacto); font-weight:700; font-size:1rem; color:var(--grafite); }
+  .ins-meta-num2 small{ display:block; font-family:var(--fonte-sans); font-weight:500; font-size:.72rem; color:var(--texto-suave); }
+  .ins-meta-vazia{ font-size:.8rem; color:var(--texto-suave); font-style:italic; }
+  .ins-cab-cartao{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .ins-cab-cartao h2{ margin-bottom:0; }
+  .ins-legenda{ display:flex; gap:14px; font-size:.76rem; font-weight:600; color:var(--texto-suave); }
+  .ins-legenda span{ display:inline-flex; align-items:center; gap:6px; }
+  .ins-legenda i{ width:10px; height:10px; border-radius:3px; background:var(--cor-ig); }
+  .ins-legenda i.tk{ background:var(--cor-tk); }
+  .ins-legenda i.yt{ background:var(--cor-yt); }
+  .ins-dica-grafico{ margin:6px 0 0; font-size:.78rem; color:var(--texto-suave); }
+  .ins-pilha{ width:100%; max-width:64px; display:flex; flex-direction:column-reverse; border-radius:10px 10px 4px 4px; overflow:hidden; transform-origin:bottom center; animation: crescerY .8s var(--ease-mov) backwards; }
+  .ins-pilha span{ display:block; width:100%; background:var(--cor-ig); }
+  .ins-pilha span.tk{ background:var(--cor-tk); }
+  .ins-pilha span.yt{ background:var(--cor-yt); }
+  .ins-pilha span + span{ border-bottom:2px solid #fff; }
+  .ins-barra.top b{ color:#C2367F; }
+  .ins-cab-tabela{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; padding:10px 8px 6px; }
+  .ins-cab-titulo{ font-family:var(--fonte-impacto); font-weight:600; font-size:1rem; color:var(--grafite); }
+  .ins-num-rede{ white-space:nowrap; }
+  .ins-num-rede.zero{ color:var(--cinza-claro); }
+  .ins-links{ display:flex; gap:8px; }
+  .ins-links a{ display:inline !important; }
+  .ins-acoes .ins-salvar.salva{ background:#FDEBF4; border-color:#F6D0E2; color:#C2367F; }
+  @media (max-width: 700px){
+    .ins-meta-linha{ grid-template-columns:1fr auto; }
+    .ins-meta-corpo{ grid-column:1 / -1; order:3; }
+  }
+
+  /* ---- Brainstorm (banco de ideias; dados em painel_config "brainstorm_ideias") ---- */
+  .bs-cartoes{ grid-template-columns:repeat(4, 1fr); margin-bottom:18px; }
+  .bs-cartoes .cartao-fluxo{ border:none; border-radius:16px; background:linear-gradient(135deg, var(--a-fundo-1), var(--a-fundo-2)); }
+  .bs-cartoes .rotulo-cartao-fluxo{ color:var(--a-forte); }
+  .bs-campo{ width:100%; box-sizing:border-box; padding:10px 12px; border:1px solid var(--borda); border-radius:12px; background:#fff; font:inherit; font-size:.9rem; color:var(--grafite); resize:vertical; }
+  .bs-campo:focus{ outline:none; border-color:#B7A3EC; box-shadow:0 0 0 3px rgba(155,131,226,.15); }
+  .bs-nova{ border:none; box-shadow:0 6px 28px rgba(90,70,140,.07); background:linear-gradient(135deg, #FFFCFE, #FAF7FF); }
+  .bs-nova h2{ margin-bottom:12px; }
+  .bs-campo-titulo{ font-size:1rem; font-weight:600; margin-bottom:8px; }
+  .bs-nova-rodape{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:12px; flex-wrap:wrap; }
+  .bs-nova-rodape small{ font-size:.76rem; color:var(--texto-suave); }
+  .bs-etiquetas-editor{ display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; align-items:center; }
+  .bs-et{ font:inherit; font-size:.74rem; font-weight:600; padding:4px 11px; border-radius:999px; border:1.5px solid transparent; cursor:pointer; background:var(--et-fundo, #F3EFFB); color:var(--et-forte, #6B46C1); opacity:.55; }
+  .bs-et.ligada{ opacity:1; border-color:var(--et-forte, #6B46C1); }
+  .bs-et:hover{ opacity:1; }
+  .bs-et-nova{ font:inherit; font-size:.74rem; padding:4px 10px; border-radius:999px; border:1.5px dashed var(--borda); background:#fff; width:130px; color:var(--grafite); }
+  .bs-et-nova:focus{ outline:none; border-color:#B7A3EC; }
+  .bs-barra{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin:28px 0 12px; }
+  .bs-busca{ max-width:320px; padding:7px 12px; font-size:.84rem; }
+  .bs-grade{ display:grid; grid-template-columns:repeat(auto-fill, minmax(290px, 1fr)); gap:16px; align-items:start; }
+  .bs-ideia{ padding-top:20px; }
+  .bs-ideia h4{ margin:4px 0 6px; font-family:var(--fonte-impacto); font-size:1rem; font-weight:600; line-height:1.3; color:var(--grafite); }
+  .bs-ideia p{ margin:0 0 8px; font-size:.83rem; line-height:1.5; color:var(--texto-suave); white-space:pre-line; display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical; overflow:hidden; }
+  .bs-ideia .bs-topo{ display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:.7rem; color:var(--texto-suave); }
+  .bs-origem{ padding:2px 8px; border-radius:99px; background:rgba(255,255,255,.8); font-weight:700; color:var(--a-forte); }
+  .bs-tags{ display:flex; flex-wrap:wrap; gap:5px; margin:6px 0 2px; }
+  .bs-tag{ padding:2px 9px; border-radius:999px; font-size:.68rem; font-weight:700; background:var(--et-fundo, #F3EFFB); color:var(--et-forte, #6B46C1); }
+  .bs-acoes{ display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+  .bs-acoes .btn-novo-card{ padding:7px 12px; font-size:.76rem; }
+  .bs-acoes .btn-hoje-cal{ margin:0; padding:6px 10px; background:rgba(255,255,255,.75); }
+  .bs-check{ display:inline-flex; align-items:center; gap:6px; }
+  .bs-check::before{ content:""; width:13px; height:13px; border-radius:4px; border:1.5px solid currentColor; box-sizing:border-box; }
+  .bs-video-ok{ display:flex; align-items:center; gap:6px; margin-top:8px; font-size:.76rem; font-weight:700; color:#1B7A45; }
+  .bs-video-ok::before{ content:"✓"; display:inline-grid; place-items:center; width:16px; height:16px; border-radius:50%; background:#E4F7EC; }
+  .bs-vazio{ grid-column:1 / -1; padding:30px 0; text-align:center; font-size:.9rem; font-style:italic; color:var(--cinza-claro); }
+  @media (max-width: 900px){ .bs-cartoes{ grid-template-columns:repeat(2, 1fr); } }
 </style>
 </head>
 <body class="oculto">
@@ -4096,11 +4191,11 @@
         </svg>
         <span class="rotulo-item">Transcrições</span>
       </button>
-      <button class="item-nav item-pagina" data-tab="cc-news">
+      <button class="item-nav item-pagina" data-tab="cc-brainstorm">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="4" y="5" width="16" height="15" rx="2"/><line x1="7" y1="9" x2="17" y2="9"/><line x1="7" y1="13" x2="17" y2="13"/><line x1="7" y1="17" x2="12" y2="17"/>
+          <path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1.1 2V16h5v-.2c.1-.8.5-1.5 1.1-2A6 6 0 0 0 12 3z"/>
         </svg>
-        <span class="rotulo-item">News</span>
+        <span class="rotulo-item">Brainstorm</span>
       </button>
       <button class="item-nav item-pagina" data-tab="cc-afiliados">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -5316,19 +5411,25 @@
 
     <!-- ===================== SEÇÃO: CRIAÇÃO DE CONTEÚDO ===================== -->
     <section id="painel-cc-insights" class="painel-aba" hidden>
-      <p class="ins-atualizado" id="insAtualizado"></p>
+      <div class="ins-topo">
+        <p class="ins-atualizado" id="insAtualizado"></p>
+        <div class="alternador-visualizacao alternador-mini" id="insRedeCartoes">
+          <button type="button" class="btn-alternador ativo" data-ins-rede="todas">Visão geral</button>
+          <button type="button" class="btn-alternador" data-ins-rede="ig">Instagram</button>
+          <button type="button" class="btn-alternador" data-ins-rede="tk">TikTok</button>
+          <button type="button" class="btn-alternador" data-ins-rede="yt">Shorts</button>
+        </div>
+      </div>
       <p class="rot-aviso alerta" id="insAviso" hidden></p>
 
       <div class="cartoes-fluxo" id="insCartoes"></div>
 
       <div class="cartao-meta-receita ins-meta" id="insMeta" hidden>
         <div class="topo-meta-receita">
-          <span class="rotulo" id="insMetaRotulo">Rumo à meta</span>
-          <span class="ins-meta-num" id="insMetaNum"></span>
+          <span class="rotulo">Rumo às metas de seguidores</span>
+          <span class="ins-meta-fonte" id="insMetaFonte"></span>
         </div>
-        <div class="trilho-meta"><div class="preenchido-meta" id="insMetaBarra" style="width:0%"></div></div>
-        <div class="rodape-meta-receita"><span id="insMetaTexto"></span><span id="insMetaPct"></span></div>
-        <div class="ins-serie" id="insSerie"></div>
+        <div class="ins-metas" id="insMetas"></div>
       </div>
 
       <h3 class="subtitulo-dash subtitulo-dash-secao">
@@ -5344,10 +5445,23 @@
         Resultados
       </h3>
       <div class="cartao">
-        <h2>Views por publicação</h2>
+        <div class="ins-cab-cartao">
+          <h2>Views por conteúdo</h2>
+          <div class="ins-legenda" id="insLegenda"></div>
+        </div>
+        <p class="ins-dica-grafico">Cada barra é um conteúdo, empilhado pelas redes em que ele saiu. Passe o mouse para ver os números.</p>
         <div class="ins-barras" id="insGrafico"></div>
       </div>
       <div class="cartao ins-cartao-tabela">
+        <div class="ins-cab-tabela">
+          <span class="ins-cab-titulo">Últimos conteúdos</span>
+          <div class="alternador-visualizacao alternador-mini" id="insRedeTabela">
+            <button type="button" class="btn-alternador ativo" data-ins-rede-tabela="todas">Todas</button>
+            <button type="button" class="btn-alternador" data-ins-rede-tabela="ig">Instagram</button>
+            <button type="button" class="btn-alternador" data-ins-rede-tabela="tk">TikTok</button>
+            <button type="button" class="btn-alternador" data-ins-rede-tabela="yt">Shorts</button>
+          </div>
+        </div>
         <div class="tabela-scroll"><table class="tabela-contratos" id="insResultados"></table></div>
       </div>
 
@@ -5355,7 +5469,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>
         Radar de pautas
       </h3>
-      <p class="ins-dica">Cada pauta já vem com o ângulo. <b>Rodar o motor</b> copia o pedido pronto: é só colar no Claude.</p>
+      <p class="ins-dica">Cada pauta já vem com o ângulo. <b>Rodar o motor</b> copia o pedido pronto: é só colar no Claude. <b>Salvar</b> guarda a ideia no Brainstorm pra depois.</p>
       <div class="ins-radar">
         <div>
           <div class="ins-coluna-titulo">Continuidade <span>o que já funcionou nos seus números</span></div>
@@ -5429,10 +5543,50 @@
         <div class="rot-grade" id="rotGrade"></div>
       </div>
     </section>
-    <section id="painel-cc-news" class="painel-aba" hidden>
-      <div class="cartao">
-        <h2>News</h2>
-        <p class="texto-vazio">Em construção.</p>
+    <section id="painel-cc-brainstorm" class="painel-aba" hidden>
+      <p class="rot-aviso alerta" id="bsAviso" hidden></p>
+      <div class="cartoes-fluxo bs-cartoes" id="bsCartoes"></div>
+
+      <div class="cartao bs-nova">
+        <h2>Nova ideia</h2>
+        <input type="text" id="bsTitulo" class="bs-campo bs-campo-titulo" autocomplete="off" maxlength="200" placeholder="Qual é a ideia? Ex.: o dia em que a marca pediu 14 refações">
+        <textarea id="bsNotas" class="bs-campo" rows="2" placeholder="Detalhes (opcional): o gancho, a referência, a história, por que agora"></textarea>
+        <div class="bs-etiquetas-editor" id="bsEtiquetasNova"></div>
+        <div class="bs-nova-rodape">
+          <small>Enter no título guarda direto. As etiquetas ajudam a filtrar depois.</small>
+          <button type="button" class="btn-novo-card" id="bsGuardar">Guardar ideia</button>
+        </div>
+      </div>
+
+      <div class="bs-barra">
+        <div class="alternador-visualizacao alternador-mini" id="bsVisao">
+          <button type="button" class="btn-alternador ativo" data-bs-visao="ideia">Ideias</button>
+          <button type="button" class="btn-alternador" data-bs-visao="video">Viraram vídeo</button>
+          <button type="button" class="btn-alternador" data-bs-visao="lixeira">Lixeira</button>
+        </div>
+        <input type="search" id="bsBusca" class="bs-campo bs-busca" autocomplete="off" placeholder="Buscar nas ideias">
+      </div>
+      <div class="rot-chips" id="bsFiltros"></div>
+      <p class="ins-dica" id="bsDicaLixeira" hidden>O que está na lixeira some sozinho 30 dias depois de descartado. Até lá, dá pra restaurar.</p>
+      <div class="bs-grade" id="bsGrade"></div>
+
+      <div class="overlay-modal" id="bsModal" hidden>
+        <div class="modal-quadro modal-quadro-grande">
+          <h3>Editar ideia</h3>
+          <label for="bsEdTitulo">Ideia</label>
+          <input type="text" id="bsEdTitulo" maxlength="200" autocomplete="off">
+          <label for="bsEdNotas">Detalhes</label>
+          <textarea id="bsEdNotas" rows="4"></textarea>
+          <label>Etiquetas</label>
+          <div class="bs-etiquetas-editor" id="bsEdEtiquetas"></div>
+          <label for="bsEdPrompt">Prompt para o motor</label>
+          <textarea id="bsEdPrompt" rows="5" placeholder="Deixe vazio para o painel montar sozinho a partir da ideia e dos detalhes."></textarea>
+          <div class="acoes-modal-quadro">
+            <span style="flex-grow:1"></span>
+            <button type="button" class="btn-cancelar-quadro" id="bsEdCancelar">Cancelar</button>
+            <button type="button" class="btn-salvar-quadro" id="bsEdSalvar">Salvar</button>
+          </div>
+        </div>
       </div>
     </section>
     <section id="painel-cc-afiliados" class="painel-aba" hidden>
@@ -6951,7 +7105,8 @@
     <textarea id="campoSalvoDados" rows="6"></textarea>
 
     <h4 class="subtitulo-modal-salvos">Números para metas e conquistas</h4>
-    <p class="texto-pequeno" style="margin:0 0 4px;">Não vêm do painel, então atualize aqui quando mudarem.</p>
+    <p class="texto-pequeno" style="margin:0 0 4px;">Seguidores vêm sozinhos do Metricool (aba Insights, atualizada pelo radar diário). Só preencha se o número automático ainda não chegou.</p>
+    <p class="texto-pequeno" id="notaSegAuto" style="margin:0 0 4px; color:var(--verde-sucesso);" hidden></p>
     <div class="linha-dupla-modal">
       <div>
         <label for="campoSegIg">Seguidores no Instagram</label>
@@ -6961,6 +7116,13 @@
         <label for="campoSegTiktok">Seguidores no TikTok</label>
         <input type="number" min="0" step="1" id="campoSegTiktok">
       </div>
+    </div>
+    <div class="linha-dupla-modal">
+      <div>
+        <label for="campoSegYt">Inscritos no YouTube</label>
+        <input type="number" min="0" step="1" id="campoSegYt">
+      </div>
+      <div></div>
     </div>
     <div class="linha-dupla-modal">
       <div>
@@ -7071,7 +7233,7 @@
     "cc-insights": "Insights",
     "cc-criacao": "Calendário editorial",
     "cc-roteiros": "Transcrições",
-    "cc-news": "News",
+    "cc-brainstorm": "Brainstorm",
     "cc-afiliados": "Afiliados",
     notificacoes: "Central de notificações",
   };
@@ -22806,7 +22968,40 @@ ${botao}
       "• Razão social:\n• CNPJ:\n• Endereço completo (com CEP):\n• Nome e e-mail de quem assina o contrato:\n• E-mail para envio da nota fiscal:\n\nObrigada!",
   };
   const salvosAtuais = () => ({ ...SALVOS_PADRAO, ...(cfgLer("salvos", {}) || {}) });
-  const numerosManuais = () => ({ seg_ig: 0, seg_tiktok: 0, alunas_metora: 0, infoprodutora: false, ...(cfgLer("numeros", {}) || {}) });
+  // Seguidores automáticos: o radar diário grava a série de cada rede (Metricool) em
+  // central_conteudo "seguidores" (aba Insights). O último número de cada rede vale mais
+  // que o digitado em estrela > Customizar, então metas e conquistas andam sozinhas.
+  let seguidoresAuto = {};
+  let seguidoresAutoDatas = {};
+  function aplicarSeguidoresAuto(seg) {
+    const ultimo = (serie) => {
+      const l = (serie || []).filter((p) => p && Number(p.seguidores) > 0).sort((a, b) => String(a.data).localeCompare(String(b.data)));
+      return l.length ? l[l.length - 1] : null;
+    };
+    const fontes = { seg_ig: seg && seg.serie, seg_tiktok: seg && seg.tk && seg.tk.serie, seg_yt: seg && seg.yt && seg.yt.serie };
+    const novo = {};
+    const datas = {};
+    Object.entries(fontes).forEach(([chave, serie]) => {
+      const u = ultimo(serie);
+      if (u) {
+        novo[chave] = Number(u.seguidores);
+        datas[chave] = String(u.data);
+      }
+    });
+    seguidoresAuto = novo;
+    seguidoresAutoDatas = datas;
+    if (cfgPronta && typeof atualizarMenuPrincipal === "function") atualizarMenuPrincipal();
+  }
+  (async () => {
+    try {
+      const { data, error } = await Auth.sb.from("central_conteudo").select("dados").eq("chave", "seguidores").maybeSingle();
+      if (error) throw error;
+      if (data) aplicarSeguidoresAuto(data.dados);
+    } catch (erro) {
+      console.warn("seguidores automáticos indisponíveis:", erro);
+    }
+  })();
+  const numerosManuais = () => ({ seg_ig: 0, seg_tiktok: 0, seg_yt: 0, alunas_metora: 0, infoprodutora: false, ...(cfgLer("numeros", {}) || {}), ...seguidoresAuto });
 
   const barraSalvos = document.getElementById("barraSalvos");
   document.getElementById("btnEstrelaSalvos").addEventListener("click", (evento) => {
@@ -22837,6 +23032,14 @@ ${botao}
     document.getElementById("campoSalvoDados").value = s.dados;
     document.getElementById("campoSegIg").value = n.seg_ig || "";
     document.getElementById("campoSegTiktok").value = n.seg_tiktok || "";
+    document.getElementById("campoSegYt").value = n.seg_yt || "";
+    const NOMES_SEG_AUTO = { seg_ig: "Instagram", seg_tiktok: "TikTok", seg_yt: "YouTube" };
+    const autoTxt = Object.keys(seguidoresAuto).map((k) => NOMES_SEG_AUTO[k] + " " + formatarNumero(seguidoresAuto[k]) + " (" + seguidoresAutoDatas[k].split("-").reverse().slice(0, 2).join("/") + ")").join(" · ");
+    document.getElementById("notaSegAuto").hidden = !autoTxt;
+    document.getElementById("notaSegAuto").textContent = autoTxt ? "Automático agora: " + autoTxt + ". Esses valem mais que o digitado." : "";
+    ["campoSegIg", "campoSegTiktok", "campoSegYt"].forEach((id, i) => {
+      document.getElementById(id).readOnly = ["seg_ig", "seg_tiktok", "seg_yt"][i] in seguidoresAuto;
+    });
     document.getElementById("campoAlunasMetora").value = n.alunas_metora || "";
     document.getElementById("campoInfoprodutora").checked = !!n.infoprodutora;
     document.getElementById("notaCfgSalvos").hidden = cfgRemotoOk;
@@ -22854,6 +23057,7 @@ ${botao}
     await cfgGravar("numeros", {
       seg_ig: Number(document.getElementById("campoSegIg").value) || 0,
       seg_tiktok: Number(document.getElementById("campoSegTiktok").value) || 0,
+      seg_yt: Number(document.getElementById("campoSegYt").value) || 0,
       alunas_metora: Number(document.getElementById("campoAlunasMetora").value) || 0,
       infoprodutora: document.getElementById("campoInfoprodutora").checked,
     });
@@ -22974,8 +23178,9 @@ ${botao}
     marcas: { rotulo: "Marcas trabalhadas", dica: "Marcas com contrato fechado no mês. Mais de um contrato com a mesma marca conta uma vez só." },
     videos: { rotulo: "Vídeos produzidos", dica: "Vídeos que chegaram em Concluído no mês." },
     campanhas: { rotulo: "Novas campanhas", dica: "Campanhas com assinatura no mês." },
-    seg_ig: { rotulo: "Seguidores no Instagram", dica: "Compara com o número atual (atualize em estrela > Customizar).", absoluta: true },
-    seg_tiktok: { rotulo: "Seguidores no TikTok", dica: "Compara com o número atual (atualize em estrela > Customizar).", absoluta: true },
+    seg_ig: { rotulo: "Seguidores no Instagram", dica: "Atualiza sozinho com o Metricool (aba Insights). É a mesma meta que aparece lá.", absoluta: true },
+    seg_tiktok: { rotulo: "Seguidores no TikTok", dica: "Atualiza sozinho com o Metricool (aba Insights). É a mesma meta que aparece lá.", absoluta: true },
+    seg_yt: { rotulo: "Inscritos no YouTube", dica: "Atualiza sozinho com o Metricool (aba Insights). É a mesma meta que aparece lá.", absoluta: true },
     intl: { rotulo: "Campanhas internacionais", dica: "Campanhas do mês com pagamento em moeda diferente de BRL." },
     outra: { rotulo: "Outra (escrever e marcar na mão)", manual: true },
   };
@@ -22996,6 +23201,8 @@ ${botao}
         return Number(numerosManuais().seg_ig) || 0;
       case "seg_tiktok":
         return Number(numerosManuais().seg_tiktok) || 0;
+      case "seg_yt":
+        return Number(numerosManuais().seg_yt) || 0;
       default:
         return 0;
     }
@@ -23197,7 +23404,12 @@ ${botao}
     {
       id: "tiktok", titulo: "Seguidores no TikTok", manual: "seg_tiktok", marcos: [1000, 5000, 10000, 30000, 50000, 100000],
       nome: (n) => `${nf(n)} seguidores`, apelido: { 1000: "Nanoinfluenciadora", 10000: "Microinfluenciadora", 100000: "Influencer" },
-      dica: "Atualize o número em estrela > Customizar.",
+      dica: "Atualiza sozinho com o Metricool.",
+    },
+    {
+      id: "youtube", titulo: "Inscritos no YouTube", manual: "seg_yt", marcos: [100, 1000, 5000, 10000, 50000, 100000],
+      nome: (n) => `${nf(n)} inscritos`,
+      dica: "Atualiza sozinho com o Metricool.",
     },
     { id: "seuinfluencer", titulo: "Campanhas Seu Influêncer", fonte: "seuInfluencer", marcos: [20, 50, 100, 200], nome: (n) => `${n} campanhas Seu Influêncer` },
     { id: "metora", titulo: "Metora", manual: "alunas_metora", marcos: [1, 5, 10, 50, 100, 300, 500, 1000], nome: (n) => (n === 1 ? "1 aluna" : `${nf(n)} alunas`), dica: "Conta as receitas da categoria Alunas; ou atualize o número em estrela > Customizar." },
@@ -27365,6 +27577,38 @@ ${videos}`;
   recarregarModelos();
   recarregarVideosPortfolio();
   recarregarAfiliados();
+
+  // Ponte para os scripts de Insights e Brainstorm (ficam fora deste bloco):
+  // criar o vídeo de uma ideia na Produção (aparece também no Calendário, por ser
+  // formato Post), abrir esse vídeo e repassar os seguidores automáticos.
+  window.painelPonte = {
+    async criarPostDeIdeia({ titulo, descricao }) {
+      await cargaQuadro;
+      const coluna = colunasCache[0];
+      if (!coluna) throw new Error("Produção sem colunas");
+      const { data, error } = await Auth.sb
+        .from("quadro_cards")
+        .insert({ titulo, coluna_id: coluna.id, formato: "post", descricao: descricao || null, updated_at: new Date().toISOString() })
+        .select()
+        .single();
+      if (error) throw error;
+      await criarEtapasPadrao(data.id, "post");
+      await recarregarQuadro();
+      return data.id;
+    },
+    videoExiste(id) {
+      return quadroDisponivel ? quadroCache.some((c) => c.id === id) : null;
+    },
+    abrirVideo(id) {
+      const card = quadroCache.find((c) => c.id === id);
+      if (card) abrirModalCard(card);
+      return !!card;
+    },
+    aplicarSeguidoresAuto,
+    aviso: mostrarAviso,
+  };
+  document.dispatchEvent(new Event("painel-ponte-pronta"));
+
   // Ao atualizar a página, volta para a aba em que você estava (não para o Início)
   try {
     // ?aba=gp-tarefas (ex.: o widget do iPhone) abre direto naquela aba
@@ -27380,6 +27624,10 @@ ${videos}`;
 // INSIGHTS (Central de Conteúdo). Lê central_conteudo (uma linha por bloco:
 // meta, seguidores, resultados, fila, pautas). Quem grava é o radar diário,
 // no computador, pela função central_gravar (js/central-conteudo-setup.sql).
+// Por rede: resultados trazem rede ("ig" | "tk" | "yt") e conteudo (apelido que
+// junta o mesmo vídeo em várias redes); seguidores trazem a série do Instagram no
+// topo e tk / yt dentro. As metas de seguidores do Início (painel_config "metas")
+// valem primeiro; sem elas, vale o plano de 90 dias do radar.
 // =====================================================================
 (function () {
   const botao = document.querySelector('.item-nav[data-tab="cc-insights"]');
@@ -27387,16 +27635,27 @@ ${videos}`;
   if (!botao || !aba) return;
 
   const CHAVE_DESCARTE = "insPautasDescartadas";
+  const REDES = ["ig", "tk", "yt"];
+  const NOME_REDE = { ig: "Instagram", tk: "TikTok", yt: "Shorts", li: "LinkedIn", fb: "Facebook", th: "Threads" };
+  const NOME_SEG = { ig: "Instagram", tk: "TikTok", yt: "YouTube" };
+  const TIPO_META = { ig: "seg_ig", tk: "seg_tiktok", yt: "seg_yt" };
   const nBR = (n) => Number(n || 0).toLocaleString("pt-BR");
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+  const MESES_LONGOS = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
   const DIAS = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
-  const dataCurta = (iso) => { const d = new Date(iso + "T12:00:00"); return isNaN(d) ? esc(iso) : d.getDate() + " " + MESES[d.getMonth()]; };
-  const NOME_REDE = { ig: "Instagram", tk: "TikTok", yt: "YouTube", li: "LinkedIn", fb: "Facebook", th: "Threads" };
+  const dataCurta = (iso) => { const d = new Date(String(iso).slice(0, 10) + "T12:00:00"); return isNaN(d) ? esc(iso) : d.getDate() + " " + MESES[d.getMonth()]; };
   const STATUS = { ok: "Agendado", wait: "Aguardando ok", draft: "Rascunho" };
+  const hojeIso = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+  const diasEntre = (a, b) => Math.round((new Date(b + "T12:00:00") - new Date(a + "T12:00:00")) / 864e5);
+  const fmt1 = (n) => (Math.abs(n) >= 10 ? Math.round(n) : Math.round(n * 10) / 10).toLocaleString("pt-BR");
+  const curto = (s, n) => (String(s).length > n ? String(s).slice(0, n - 1) + "…" : String(s));
 
   let dados = null;
+  let metasPainel = [];
   let carregando = false;
+  let redeCartoes = "todas";
+  let redeTabela = "todas";
 
   function descartadas() { try { return JSON.parse(localStorage.getItem(CHAVE_DESCARTE) || "[]"); } catch (e) { return []; } }
   function salvarDescartadas(lista) { try { localStorage.setItem(CHAVE_DESCARTE, JSON.stringify(lista)); } catch (e) {} }
@@ -27406,16 +27665,22 @@ ${videos}`;
     carregando = true;
     const aviso = document.getElementById("insAviso");
     try {
-      const { data, error } = await sb.from("central_conteudo").select("chave, dados, updated_at");
-      if (error) throw error;
+      const [central, metas] = await Promise.all([
+        sb.from("central_conteudo").select("chave, dados, updated_at"),
+        sb.from("painel_config").select("valor").eq("chave", "metas").maybeSingle(),
+      ]);
+      if (central.error) throw central.error;
+      metasPainel = !metas.error && metas.data && Array.isArray(metas.data.valor) ? metas.data.valor : [];
       dados = {};
-      (data || []).forEach((l) => { dados[l.chave] = l.dados; });
+      (central.data || []).forEach((l) => { dados[l.chave] = l.dados; });
       aviso.hidden = true;
-      if (!data || !data.length) {
+      if (!central.data || !central.data.length) {
         aviso.textContent = "A Central ainda não recebeu dados. Peça ao Claude: atualiza meu dashboard.";
         aviso.hidden = false;
       }
+      if (window.painelPonte && dados.seguidores) window.painelPonte.aplicarSeguidoresAuto(dados.seguidores);
       desenhar();
+      if (window.brainstorm) window.brainstorm.carregar().then(() => desenharPautas(dados.pautas || {})).catch(() => {});
     } catch (erro) {
       console.warn("central_conteudo indisponível:", erro);
       aviso.textContent = "Não consegui ler a Central de Conteúdo. Se é a primeira vez, rode o js/central-conteudo-setup.sql no Supabase.";
@@ -27425,111 +27690,231 @@ ${videos}`;
     }
   }
 
+  // ---------- dados derivados ----------
+  function posts() {
+    return (dados.resultados || [])
+      .map((p) => ({ ...p, rede: REDES.includes(p.rede) ? p.rede : "ig" }))
+      .sort((a, b) => String(a.data).localeCompare(String(b.data)));
+  }
+  function grupos(lista) {
+    const mapa = new Map();
+    lista.forEach((p) => {
+      const chave = p.conteudo || p.data + "|" + p.titulo;
+      if (!mapa.has(chave)) mapa.set(chave, { chave, data: p.data, titulo: p.titulo, redes: {} });
+      const g = mapa.get(chave);
+      if (String(p.data) < String(g.data)) g.data = p.data;
+      g.redes[p.rede] = p;
+    });
+    return [...mapa.values()]
+      .map((g) => ({ ...g, total: REDES.reduce((s, r) => s + (g.redes[r] ? +g.redes[r].views || 0 : 0), 0) }))
+      .sort((a, b) => String(a.data).localeCompare(String(b.data)));
+  }
+  function seg() { return dados.seguidores || {}; }
+  function serieDe(rede) {
+    const s = seg();
+    const bruta = rede === "ig" ? s.serie : (s[rede] || {}).serie;
+    return (bruta || []).filter((p) => p && +p.seguidores > 0).slice().sort((a, b) => String(a.data).localeCompare(String(b.data)));
+  }
+  function atualDe(rede) { const s = serieDe(rede); return s.length ? +s[s.length - 1].seguidores : null; }
+  function planoDe(rede) {
+    const s = seg();
+    const p = rede === "ig" ? { meta: s.meta, ate: s.metaAte, marco: s.marco } : { meta: (s[rede] || {}).meta, ate: (s[rede] || {}).metaAte, marco: (s[rede] || {}).marco };
+    return p.meta ? p : null;
+  }
+  function metaDe(rede) {
+    const mes = hojeIso().slice(0, 7);
+    const doMes = metasPainel.find((m) => m.tipo === TIPO_META[rede] && m.mes === mes && +m.alvo > 0);
+    const plano = planoDe(rede);
+    if (doMes) {
+      const [a, mm] = mes.split("-").map(Number);
+      const fim = new Date(a, mm, 0);
+      const ate = a + "-" + String(mm).padStart(2, "0") + "-" + String(fim.getDate()).padStart(2, "0");
+      const marco = plano && plano.marco && +plano.marco.valor < +doMes.alvo ? plano.marco : null;
+      return { alvo: +doMes.alvo, ate, marco, fonte: "meta de " + MESES_LONGOS[mm - 1] + " no Início" };
+    }
+    if (plano) return { alvo: +plano.meta, ate: plano.ate, marco: plano.marco, fonte: "plano de 90 dias" };
+    return null;
+  }
+  // ganho médio por dia nos últimos 7 dias da série (ou no que tiver)
+  function ritmo(serie) {
+    if (serie.length < 2) return null;
+    const ultimo = serie[serie.length - 1];
+    const corte = new Date(ultimo.data + "T12:00:00");
+    corte.setDate(corte.getDate() - 7);
+    const corteIso = corte.toISOString().slice(0, 10);
+    const base = serie.find((p) => p.data >= corteIso) || serie[0];
+    const dias = diasEntre(base.data, ultimo.data);
+    return dias > 0 ? (+ultimo.seguidores - +base.seguidores) / dias : null;
+  }
+
+  // ---------- desenho ----------
   function desenhar() {
     const meta = dados.meta || {};
-    const seg = dados.seguidores || { serie: [] };
-    const res = (dados.resultados || []).slice().sort((a, b) => String(a.data).localeCompare(String(b.data)));
-    const fila = dados.fila || [];
-    const pautas = dados.pautas || { continuidade: [], radarExterno: [] };
-
-    // Atualizado em
     const quando = meta.atualizadoEm ? new Date(meta.atualizadoEm) : null;
     document.getElementById("insAtualizado").innerHTML = quando && !isNaN(quando)
-      ? "Atualizado " + DIAS[quando.getDay()] + ", " + quando.getDate() + " " + MESES[quando.getMonth()] + " às " + String(quando.getHours()).padStart(2, "0") + "h" + String(quando.getMinutes()).padStart(2, "0") + (meta.geradoPor ? " · <b>" + esc(meta.geradoPor) + "</b>" : "")
+      ? "Atualizado " + DIAS[quando.getDay()] + ", " + quando.getDate() + " " + MESES[quando.getMonth()] + " às " + String(quando.getHours()).padStart(2, "0") + "h" + String(quando.getMinutes()).padStart(2, "0") + (meta.geradoPor ? " · <b>" + esc(meta.geradoPor) + "</b>" : "") + " · últimos " + (meta.periodoDias || 30) + " dias"
       : "";
+    desenharCartoes();
+    desenharMetas();
+    desenharFila();
+    desenharGrafico();
+    desenharTabela();
+    desenharPautas(dados.pautas || {});
+  }
 
-    // Cartões
-    const serie = (seg.serie || []).slice().sort((a, b) => String(a.data).localeCompare(String(b.data)));
-    const atual = serie.length ? serie[serie.length - 1].seguidores : null;
-    const saldo = serie.length > 1 ? atual - serie[0].seguidores : null;
-    const totalViews = res.reduce((s, p) => s + (+p.views || 0), 0);
-    const media = res.length ? totalViews / res.length : 0;
-    const salvos = res.reduce((s, p) => s + (+p.salvos || 0), 0);
-    const cartoes = [
-      ["Seguidores no Instagram", atual != null ? nBR(atual) : "–", saldo != null ? (saldo > 0 ? "+" : "") + nBR(saldo) + " desde " + dataCurta(serie[0].data) : "sem série ainda"],
-      ["Reels no período", nBR(res.length), "média de " + nBR(Math.round(media)) + " views"],
-      ["Views somadas", nBR(totalViews), nBR(salvos) + " salvamentos"],
-      ["Na fila", nBR(fila.length), fila.length ? "próximo: " + esc(fila[0].quandoData) + " às " + esc(fila[0].quandoHora) : "nada agendado"],
-    ];
-    document.getElementById("insCartoes").innerHTML = cartoes.map((c, i) =>
-      '<div class="cartao-fluxo" style="--i:' + i + '"><span class="rotulo-cartao-fluxo">' + c[0] + '</span><span class="valor-cartao-fluxo">' + c[1] + '</span><span class="nota-cartao-fluxo">' + c[2] + "</span></div>"
-    ).join("");
+  function balao(classe, rotulo, valor, nota, i) {
+    return '<div class="cartao-fluxo ins-cartao-rede ' + classe + '" style="--i:' + i + '"><span class="rotulo-cartao-fluxo">' + rotulo + '</span><span class="valor-cartao-fluxo">' + valor + '</span><span class="nota-cartao-fluxo">' + nota + "</span></div>";
+  }
+  function miniRedes(valores, nomes) {
+    return '<span class="ins-mini-redes">' + REDES.filter((r) => valores[r] != null).map((r) => '<span><i class="' + r + '"></i>' + (nomes || NOME_REDE)[r] + " " + nBR(valores[r]) + "</span>").join("") + "</span>";
+  }
 
-    // Rumo à meta
-    const cartaoMeta = document.getElementById("insMeta");
-    if (atual != null && seg.meta) {
-      cartaoMeta.hidden = false;
-      const pct = Math.min(100, (atual / seg.meta) * 100);
-      document.getElementById("insMetaRotulo").textContent = "Rumo à meta · " + nBR(seg.meta) + " seguidores" + (seg.metaAte ? " até " + dataCurta(seg.metaAte) : "");
-      document.getElementById("insMetaNum").innerHTML = nBR(atual) + " <small>de " + nBR(seg.meta) + "</small>";
-      document.getElementById("insMetaBarra").style.width = pct.toFixed(1) + "%";
-      document.getElementById("insMetaPct").textContent = pct.toFixed(0) + "%";
-      const marco = seg.marco && seg.marco.valor > atual ? seg.marco : null;
-      document.getElementById("insMetaTexto").textContent = marco
-        ? "Próxima parada: " + nBR(marco.valor) + (marco.ate ? " até " + dataCurta(marco.ate) : "") + " (faltam " + nBR(marco.valor - atual) + ")"
-        : "Faltam " + nBR(Math.max(0, seg.meta - atual)) + " pra meta";
-      document.getElementById("insSerie").innerHTML = serie.length > 1 ? linhaSerie(serie) : "";
+  function desenharCartoes() {
+    document.querySelectorAll("[data-ins-rede]").forEach((b) => b.classList.toggle("ativo", b.dataset.insRede === redeCartoes));
+    const todos = posts();
+    const fila = dados.fila || [];
+    const naFila = balao("todas", "Na fila", nBR(fila.length), fila.length ? "próximo: " + esc(fila[0].quandoData) + " às " + esc(fila[0].quandoHora) : "nada agendado", 3);
+    let html;
+    if (redeCartoes === "todas") {
+      const segs = {};
+      REDES.forEach((r) => { const a = atualDe(r); if (a != null) segs[r] = a; });
+      const totalSeg = Object.values(segs).reduce((s, v) => s + v, 0);
+      const views = {};
+      REDES.forEach((r) => { const l = todos.filter((p) => p.rede === r); if (l.length) views[r] = l.reduce((s, p) => s + (+p.views || 0), 0); });
+      const totalViews = Object.values(views).reduce((s, v) => s + v, 0);
+      const g = grupos(todos);
+      html =
+        balao("todas", "Seguidores somados", Object.keys(segs).length ? nBR(totalSeg) : "–", miniRedes(segs, NOME_SEG), 0) +
+        balao("todas", "Conteúdos no período", nBR(g.length), nBR(todos.length) + " posts somando as redes", 1) +
+        balao("todas", "Views somadas", nBR(totalViews), miniRedes(views), 2) +
+        naFila;
     } else {
-      cartaoMeta.hidden = true;
+      const r = redeCartoes;
+      const serie = serieDe(r);
+      const atual = serie.length ? +serie[serie.length - 1].seguidores : null;
+      const saldo = serie.length > 1 ? atual - +serie[0].seguidores : null;
+      const lista = todos.filter((p) => p.rede === r);
+      const views = lista.reduce((s, p) => s + (+p.views || 0), 0);
+      const media = lista.length ? views / lista.length : 0;
+      const soma = (campo) => lista.reduce((s, p) => s + (+p[campo] || 0), 0);
+      const melhor = lista.reduce((m, p) => (!m || (+p.views || 0) > (+m.views || 0) ? p : m), null);
+      const interacoes = (r === "ig" ? nBR(soma("salvos")) + " salvos · " : nBR(soma("curtidas")) + " curtidas · ") + nBR(soma("comentarios")) + " coment. · " + nBR(soma("compartilhamentos")) + " compart.";
+      html =
+        balao(r, (r === "yt" ? "Inscritos no YouTube" : "Seguidores no " + NOME_SEG[r]), atual != null ? nBR(atual) : "–", saldo != null ? (saldo > 0 ? "+" : "") + nBR(saldo) + " desde " + dataCurta(serie[0].data) : "sem série ainda", 0) +
+        balao(r, "Posts no período", nBR(lista.length), lista.length ? "média de " + nBR(Math.round(media)) + " views" : "nenhum post no " + NOME_REDE[r], 1) +
+        balao(r, "Views somadas", nBR(views), lista.length ? interacoes : "–", 2) +
+        balao(r, "Melhor post", melhor ? nBR(melhor.views) : "–", melhor ? esc(curto(melhor.titulo, 46)) : "–", 3);
     }
+    document.getElementById("insCartoes").innerHTML = html;
+  }
 
-    // Fila
-    const tFila = document.getElementById("insFila");
-    tFila.innerHTML = fila.length
+  function desenharMetas() {
+    const cartao = document.getElementById("insMeta");
+    const linhas = REDES.map((r) => {
+      const serie = serieDe(r);
+      if (!serie.length) return "";
+      const atual = +serie[serie.length - 1].seguidores;
+      const m = metaDe(r);
+      const nome = '<div class="ins-meta-rede"><i class="' + r + '"></i>' + NOME_SEG[r] + "</div>";
+      if (!m) {
+        return '<div class="ins-meta-linha">' + nome + '<div class="ins-meta-corpo"><span class="ins-meta-vazia">Sem meta ainda. Crie em Início › Minha jornada › + Nova meta › ' + (r === "yt" ? "Inscritos no YouTube" : "Seguidores no " + NOME_SEG[r]) + ".</span></div>" +
+          '<div class="ins-meta-num2">' + nBR(atual) + "<small>" + (r === "yt" ? "inscritos" : "seguidores") + "</small></div></div>";
+      }
+      const pct = Math.min(100, (atual / m.alvo) * 100);
+      const marco = m.marco && +m.marco.valor > atual && +m.marco.valor < m.alvo ? m.marco : null;
+      const parada = marco ? { valor: +marco.valor, ate: marco.ate } : { valor: m.alvo, ate: m.ate };
+      const faltam = Math.max(0, parada.valor - atual);
+      const diasRest = parada.ate ? diasEntre(hojeIso(), parada.ate) : null;
+      const precisa = diasRest && diasRest > 0 ? faltam / diasRest : null;
+      const rit = ritmo(serie);
+      let chip = "";
+      if (rit != null && precisa != null && faltam > 0) {
+        chip = '<span class="ins-ritmo ' + (rit >= precisa ? "ok" : "atras") + '">' + (rit >= 0 ? "+" : "") + fmt1(rit) + "/dia agora · precisa de +" + fmt1(precisa) + "/dia</span>";
+      } else if (faltam === 0) {
+        chip = '<span class="ins-ritmo ok">Parada batida 🎉</span>';
+      }
+      const texto = (marco ? "Próxima parada <b>" + nBR(parada.valor) + "</b>" : "Meta <b>" + nBR(parada.valor) + "</b>") + (parada.ate ? " até " + dataCurta(parada.ate) : "") + (faltam ? " · faltam " + nBR(faltam) : "");
+      const pino = marco ? '<span class="ins-marco-pino" style="left:' + Math.min(100, (+marco.valor / m.alvo) * 100).toFixed(1) + '%" title="Parada: ' + nBR(marco.valor) + '"></span>' : "";
+      return '<div class="ins-meta-linha">' + nome +
+        '<div class="ins-meta-corpo"><div class="trilho-meta"><div class="preenchido-meta ' + r + '" style="width:' + pct.toFixed(1) + '%"></div>' + pino + "</div>" +
+        '<div class="ins-meta-sub"><span>' + texto + "</span>" + chip + "</div></div>" +
+        '<div class="ins-meta-num2">' + nBR(atual) + " <small>de " + nBR(m.alvo) + " · " + pct.toFixed(0) + "% · " + esc(m.fonte) + "</small></div></div>";
+    }).join("");
+    cartao.hidden = !linhas;
+    document.getElementById("insMetas").innerHTML = linhas;
+    document.getElementById("insMetaFonte").textContent = "a meta do Início vale primeiro; sem ela, o plano de 90 dias";
+  }
+
+  function desenharFila() {
+    const fila = dados.fila || [];
+    document.getElementById("insFila").innerHTML = fila.length
       ? "<thead><tr><th>Quando</th><th>Rede</th><th>Formato</th><th>Título</th><th>Status</th></tr></thead><tbody>" +
-        fila.map((f) => "<tr><td><b>" + esc(f.quandoData) + "</b><span class=\"ins-sub\">" + esc(f.quandoHora) + "</span></td><td>" +
+        fila.map((f) => "<tr><td><b>" + esc(f.quandoData) + '</b><span class="ins-sub">' + esc(f.quandoHora) + "</span></td><td>" +
           (f.redes || []).map((r) => '<span class="ins-rede ' + esc(r) + '">' + esc(NOME_REDE[r] || r) + "</span>").join("") + "</td><td>" + esc(f.formato) +
           '</td><td class="ins-titulo-post">' + esc(f.titulo) + (f.subtitulo ? '<span class="ins-sub">' + esc(f.subtitulo) + "</span>" : "") +
           '</td><td><span class="ins-status ' + esc(f.status) + '">' + esc(STATUS[f.status] || f.status) + "</span></td></tr>").join("") + "</tbody>"
       : '<tbody><tr><td><p class="ins-vazio">Nada na fila do Metricool agora.</p></td></tr></tbody>';
-
-    // Gráfico de barras
-    const grafico = document.getElementById("insGrafico");
-    if (res.length) {
-      const max = Math.max.apply(null, res.map((p) => +p.views || 0)) || 1;
-      const topo = res.reduce((m, p) => ((+p.views || 0) > (+m.views || 0) ? p : m), res[0]);
-      grafico.innerHTML = res.map((p) => {
-        const h = Math.max(2, ((+p.views || 0) / max) * 82);
-        return '<div class="ins-barra' + (p === topo ? " top" : "") + '" title="' + esc(p.titulo) + '"><b>' + nBR(p.views) + '</b><i style="height:' + h.toFixed(1) + '%"></i><span>' + dataCurta(p.data) + "</span></div>";
-      }).join("") + '<div class="ins-linha-media" style="bottom:calc(' + ((media / max) * 82).toFixed(1) + '% + 24px)"><em>média ' + nBR(Math.round(media)) + "</em></div>";
-    } else {
-      grafico.innerHTML = '<p class="ins-vazio">Sem publicações no período.</p>';
-    }
-
-    // Tabela de resultados (mais recente primeiro)
-    const tRes = document.getElementById("insResultados");
-    const topoViews = res.length ? Math.max.apply(null, res.map((p) => +p.views || 0)) : 0;
-    tRes.innerHTML = res.length
-      ? "<thead><tr><th>Data</th><th>Conteúdo</th><th>Views</th><th>Salvos</th><th>Coment.</th><th>Compart.</th><th>vs. média</th></tr></thead><tbody>" +
-        res.slice().reverse().map((p) => {
-          const vs = media ? Math.round(((+p.views || 0) / media - 1) * 100) : 0;
-          return "<tr" + ((+p.views || 0) === topoViews ? ' class="ins-destaque"' : "") + "><td>" + dataCurta(p.data) + '</td><td class="ins-titulo-post">' + esc(p.titulo) +
-            (p.url ? '<a href="' + esc(p.url) + '" target="_blank" rel="noopener">Abrir o Reel</a>' : "") + "</td><td><b>" + nBR(p.views) + "</b></td><td>" + nBR(p.salvos) +
-            "</td><td>" + nBR(p.comentarios) + "</td><td>" + nBR(p.compartilhamentos) + '</td><td><span class="ins-vs ' + (vs >= 0 ? "mais" : "menos") + '">' + (vs > 0 ? "+" : "") + vs + "%</span></td></tr>";
-        }).join("") + "</tbody>"
-      : "";
-
-    desenharPautas(pautas);
   }
 
-  function linhaSerie(serie) {
-    const W = 600, H = 70, p = 4;
-    const vals = serie.map((s) => +s.seguidores || 0);
-    const min = Math.min.apply(null, vals), max = Math.max.apply(null, vals);
-    const faixa = max - min || 1;
-    const pts = vals.map((v, i) => [p + (i / (vals.length - 1)) * (W - 2 * p), H - p - ((v - min) / faixa) * (H - 2 * p)]);
-    const d = pts.map((q, i) => (i ? "L" : "M") + q[0].toFixed(1) + " " + q[1].toFixed(1)).join(" ");
-    return '<svg viewBox="0 0 ' + W + " " + H + '" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="insGradSerie" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#9B83E2" stop-opacity=".25"/><stop offset="1" stop-color="#9B83E2" stop-opacity="0"/></linearGradient></defs>' +
-      '<path d="' + d + " L" + (W - p) + " " + H + " L" + p + " " + H + ' Z" fill="url(#insGradSerie)"/><path d="' + d + '" fill="none" stroke="#9B83E2" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>' +
-      '<div class="leg"><span>' + dataCurta(serie[0].data) + " · " + nBR(vals[0]) + "</span><span>" + dataCurta(serie[serie.length - 1].data) + " · " + nBR(vals[vals.length - 1]) + "</span></div>";
+  function desenharGrafico() {
+    const g = grupos(posts());
+    const grafico = document.getElementById("insGrafico");
+    const presentes = REDES.filter((r) => g.some((x) => x.redes[r]));
+    document.getElementById("insLegenda").innerHTML = presentes.map((r) => '<span><i class="' + r + '"></i>' + NOME_REDE[r] + "</span>").join("");
+    if (!g.length) { grafico.innerHTML = '<p class="ins-vazio">Sem publicações no período.</p>'; return; }
+    const max = Math.max.apply(null, g.map((x) => x.total)) || 1;
+    const media = g.reduce((s, x) => s + x.total, 0) / g.length;
+    const topo = g.reduce((m, x) => (x.total > m.total ? x : m), g[0]);
+    grafico.innerHTML = g.map((x) => {
+      const h = Math.max(2, (x.total / max) * 82);
+      const dica = x.titulo + "\n" + REDES.filter((r) => x.redes[r]).map((r) => NOME_REDE[r] + ": " + nBR(x.redes[r].views)).join("\n");
+      const segs = REDES.filter((r) => x.redes[r] && +x.redes[r].views > 0).map((r) => '<span class="' + r + '" style="height:' + ((+x.redes[r].views / (x.total || 1)) * 100).toFixed(1) + '%"></span>').join("");
+      return '<div class="ins-barra' + (x === topo ? " top" : "") + '" title="' + esc(dica) + '"><b>' + nBR(x.total) + '</b><div class="ins-pilha" style="height:' + h.toFixed(1) + '%">' + segs + "</div><span>" + dataCurta(x.data) + "</span></div>";
+    }).join("") + '<div class="ins-linha-media" style="bottom:calc(' + ((media / max) * 82).toFixed(1) + '% + 24px)"><em>média ' + nBR(Math.round(media)) + "</em></div>";
+  }
+
+  function vsMedia(valor, media) {
+    const vs = media ? Math.round((valor / media - 1) * 100) : 0;
+    return '<span class="ins-vs ' + (vs >= 0 ? "mais" : "menos") + '">' + (vs > 0 ? "+" : "") + vs + "%</span>";
+  }
+  function desenharTabela() {
+    document.querySelectorAll("[data-ins-rede-tabela]").forEach((b) => b.classList.toggle("ativo", b.dataset.insRedeTabela === redeTabela));
+    const t = document.getElementById("insResultados");
+    const todos = posts();
+    if (redeTabela === "todas") {
+      const g = grupos(todos);
+      if (!g.length) { t.innerHTML = '<tbody><tr><td><p class="ins-vazio">Sem publicações no período.</p></td></tr></tbody>'; return; }
+      const media = g.reduce((s, x) => s + x.total, 0) / g.length;
+      const topo = Math.max.apply(null, g.map((x) => x.total));
+      t.innerHTML = "<thead><tr><th>Data</th><th>Conteúdo</th><th>Instagram</th><th>TikTok</th><th>Shorts</th><th>Total</th><th>vs. média</th></tr></thead><tbody>" +
+        g.slice().reverse().map((x) => {
+          const links = REDES.filter((r) => x.redes[r] && x.redes[r].url).map((r) => '<a href="' + esc(x.redes[r].url) + '" target="_blank" rel="noopener">' + NOME_REDE[r] + " ↗</a>").join("");
+          const cel = (r) => x.redes[r] ? '<td class="ins-num-rede">' + nBR(x.redes[r].views) + "</td>" : '<td class="ins-num-rede zero">–</td>';
+          return "<tr" + (x.total === topo ? ' class="ins-destaque"' : "") + "><td>" + dataCurta(x.data) + '</td><td class="ins-titulo-post">' + esc(x.titulo) + (links ? '<span class="ins-links">' + links + "</span>" : "") + "</td>" +
+            cel("ig") + cel("tk") + cel("yt") + "<td><b>" + nBR(x.total) + "</b></td><td>" + vsMedia(x.total, media) + "</td></tr>";
+        }).join("") + "</tbody>";
+      return;
+    }
+    const r = redeTabela;
+    const lista = todos.filter((p) => p.rede === r);
+    if (!lista.length) { t.innerHTML = '<tbody><tr><td><p class="ins-vazio">Nenhum post no ' + NOME_REDE[r] + " nos últimos 30 dias.</p></td></tr></tbody>"; return; }
+    const media = lista.reduce((s, p) => s + (+p.views || 0), 0) / lista.length;
+    const topo = Math.max.apply(null, lista.map((p) => +p.views || 0));
+    const col2 = r === "ig" ? ["Salvos", "salvos"] : ["Curtidas", "curtidas"];
+    t.innerHTML = "<thead><tr><th>Data</th><th>Conteúdo</th><th>Views</th><th>" + col2[0] + "</th><th>Coment.</th><th>Compart.</th><th>vs. média</th></tr></thead><tbody>" +
+      lista.slice().reverse().map((p) => "<tr" + ((+p.views || 0) === topo ? ' class="ins-destaque"' : "") + "><td>" + dataCurta(p.data) + '</td><td class="ins-titulo-post">' + esc(p.titulo) +
+        (p.url ? '<a href="' + esc(p.url) + '" target="_blank" rel="noopener">Abrir no ' + NOME_REDE[r] + "</a>" : "") + "</td><td><b>" + nBR(p.views) + "</b></td><td>" + nBR(p[col2[1]]) +
+        "</td><td>" + nBR(p.comentarios) + "</td><td>" + nBR(p.compartilhamentos) + "</td><td>" + vsMedia(+p.views || 0, media) + "</td></tr>").join("") + "</tbody>";
   }
 
   function desenharPautas(pautas) {
     const fora = descartadas();
     let escondidas = 0;
+    const bs = window.brainstorm;
     const card = (p, tipo, i) => {
       if (fora.indexOf(p.id) !== -1) { escondidas++; return ""; }
       const o = p.origem || {};
+      const salva = bs && bs.temPauta(p.id);
       return '<div class="cartao-alerta ins-pauta ' + (tipo === "continuidade" ? "alerta-rosa" : "alerta-lilas") + '" style="--i:' + i + '">' +
         "<h3>" + (tipo === "continuidade" ? "Continuidade" : "Radar externo") + "</h3>" +
         '<div class="ins-origem"><span>' + esc(o.fonte) + (o.referencia ? " · " + esc(o.referencia) : "") + "</span>" + (o.performance ? '<span class="ins-perf">' + esc(o.performance) + "</span>" : "") + "</div>" +
@@ -27537,6 +27922,7 @@ ${videos}`;
         "<p>" + esc(p.angulo) + "</p>" +
         (p.porqueAgora ? "<p><b>Por que agora:</b> " + esc(p.porqueAgora) + "</p>" : "") +
         '<div class="ins-acoes"><button type="button" class="btn-novo-card" data-ins-copiar="' + esc(p.id) + '">Rodar o motor</button>' +
+        '<button type="button" class="btn-hoje-cal ins-salvar' + (salva ? " salva" : "") + '" data-ins-salvar="' + esc(p.id) + '" data-tipo="' + tipo + '" title="' + (salva ? "Já está no Brainstorm: clique para abrir" : "Guardar no Brainstorm para depois") + '">' + (salva ? "★ No Brainstorm" : "☆ Salvar") + "</button>" +
         '<button type="button" class="btn-hoje-cal" data-ins-descartar="' + esc(p.id) + '">Descartar</button></div></div>';
     };
     const cont = (pautas.continuidade || []).map((p, i) => card(p, "continuidade", i)).join("");
@@ -27552,6 +27938,10 @@ ${videos}`;
   }
 
   aba.addEventListener("click", async (ev) => {
+    const rc = ev.target.closest("[data-ins-rede]");
+    if (rc && dados) { redeCartoes = rc.dataset.insRede; desenharCartoes(); return; }
+    const rt = ev.target.closest("[data-ins-rede-tabela]");
+    if (rt && dados) { redeTabela = rt.dataset.insRedeTabela; desenharTabela(); return; }
     const copiar = ev.target.closest("[data-ins-copiar]");
     if (copiar) {
       const p = acharPauta(copiar.dataset.insCopiar);
@@ -27563,6 +27953,25 @@ ${videos}`;
         window.prompt("Copie o pedido:", p.inputPronto || p.titulo);
       }
       setTimeout(() => { copiar.textContent = "Rodar o motor"; }, 2200);
+      return;
+    }
+    const salvar = ev.target.closest("[data-ins-salvar]");
+    if (salvar) {
+      const p = acharPauta(salvar.dataset.insSalvar);
+      if (!p || !window.brainstorm) return;
+      if (window.brainstorm.temPauta(p.id)) {
+        const nav = document.querySelector('.item-nav[data-tab="cc-brainstorm"]');
+        if (nav) nav.click();
+        return;
+      }
+      salvar.disabled = true;
+      salvar.textContent = "Salvando...";
+      try {
+        await window.brainstorm.salvarPauta(p, salvar.dataset.tipo);
+      } catch (e) {
+        alert("Não consegui salvar no Brainstorm. Tente de novo.");
+      }
+      desenharPautas(dados.pautas || {});
       return;
     }
     const descartar = ev.target.closest("[data-ins-descartar]");
@@ -27581,6 +27990,344 @@ ${videos}`;
 
   botao.addEventListener("click", carregar);
   try { if (localStorage.getItem("painelAbaAtiva") === "cc-insights") carregar(); } catch (e) {}
+})();
+</script>
+<script>
+// =====================================================================
+// BRAINSTORM (banco de ideias). Guarda tudo em painel_config, chave
+// "brainstorm_ideias" (uma lista JSON; não precisa de SQL novo). Cada ideia:
+// { id, titulo, notas, etiquetas[], origem:"minha"|"radar", tipoRadar, pautaId,
+//   fonte, prompt, status:"ideia"|"video", cardId, viraVideoEm, criadaEm,
+//   atualizadoEm, deletadaEm }. Lixeira: some sozinha 30 dias depois de
+// deletadaEm. "Virar vídeo" cria um vídeo formato Post na Produção (que por
+// isso aparece também no Calendário), pela ponte window.painelPonte.
+// =====================================================================
+(function () {
+  const botao = document.querySelector('.item-nav[data-tab="cc-brainstorm"]');
+  const aba = document.getElementById("painel-cc-brainstorm");
+  if (!botao || !aba) return;
+
+  const CHAVE = "brainstorm_ideias";
+  const CHAVE_LOCAL = "painelBrainstormIdeias";
+  const DIAS_LIXEIRA = 30;
+  const ETIQUETAS_BASE = ["Ensinar UGC", "Bastidor pra marcas", "AP da Lê", "Humor de bastidor", "Publi", "Reel", "Carrossel"];
+  const PALETA = [["#EFE8FC", "#6B46C1"], ["#FDEBF4", "#C2367F"], ["#E3F0FD", "#1F6CB0"], ["#E4F7EC", "#1B7A45"], ["#FFEADF", "#C2491D"], ["#FFF4D2", "#9A6B00"]];
+  const MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const dataCurta = (iso) => { const d = new Date(iso); return isNaN(d) ? "" : d.getDate() + " " + MESES[d.getMonth()]; };
+  const novoId = () => (window.crypto && crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
+  const agora = () => new Date().toISOString();
+  const norm = (s) => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+
+  let ideias = [];
+  let carregando = null;
+  let remotoOk = true;
+  let visao = "ideia";
+  let filtroEt = "";
+  let busca = "";
+  const etNova = new Set();
+  let etEd = new Set();
+  let edId = null;
+
+  function corEt(nome) {
+    let h = 0;
+    for (const c of norm(nome)) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+    const [f, t] = PALETA[h % PALETA.length];
+    return "--et-fundo:" + f + ";--et-forte:" + t;
+  }
+  function lerLocal() { try { return JSON.parse(localStorage.getItem(CHAVE_LOCAL) || "[]"); } catch (e) { return []; } }
+  function gravarLocal() { try { localStorage.setItem(CHAVE_LOCAL, JSON.stringify(ideias)); } catch (e) {} }
+
+  function carregar(forcar) {
+    if (carregando && !forcar) return carregando;
+    carregando = (async () => {
+      const aviso = document.getElementById("bsAviso");
+      try {
+        const { data, error } = await sb.from("painel_config").select("valor").eq("chave", CHAVE).maybeSingle();
+        if (error) throw error;
+        ideias = data && Array.isArray(data.valor) ? data.valor : [];
+        remotoOk = true;
+        aviso.hidden = true;
+      } catch (erro) {
+        console.warn("brainstorm: painel_config indisponível, usando só este navegador", erro);
+        remotoOk = false;
+        ideias = lerLocal();
+        aviso.textContent = "Não consegui falar com o banco agora: as ideias ficam só neste navegador até a conexão voltar.";
+        aviso.hidden = false;
+      }
+      const limite = Date.now() - DIAS_LIXEIRA * 864e5;
+      const antes = ideias.length;
+      ideias = ideias.filter((i) => !i.deletadaEm || new Date(i.deletadaEm).getTime() > limite);
+      if (ideias.length !== antes) await gravar();
+    })();
+    return carregando;
+  }
+  async function gravar() {
+    gravarLocal();
+    if (!remotoOk) return;
+    const { error } = await sb.from("painel_config").upsert({ chave: CHAVE, valor: ideias, updated_at: agora() }, { onConflict: "chave" });
+    if (error) {
+      console.error(error);
+      alert("Não consegui salvar no banco. A ideia ficou guardada neste navegador; tente de novo daqui a pouco.");
+    }
+  }
+
+  const ativas = () => ideias.filter((i) => !i.deletadaEm);
+  // etiquetas criadas agora e ainda sem nenhuma ideia (pra continuarem na lista enquanto edita)
+  const ETIQUETAS_EXTRAS = new Set();
+  function todasEtiquetas() {
+    const set = new Set(ETIQUETAS_BASE);
+    ideias.forEach((i) => (i.etiquetas || []).forEach((e) => set.add(e)));
+    ETIQUETAS_EXTRAS.forEach((e) => set.add(e));
+    return [...set];
+  }
+  function promptDe(i) {
+    if (i.prompt && String(i.prompt).trim()) return String(i.prompt).trim();
+    const titulo = String(i.titulo).trim().replace(/[.!?]+$/, "");
+    let t = "Roda o motor: " + titulo + ".";
+    if (i.notas && i.notas.trim()) t += "\n\nO que eu já pensei: " + i.notas.trim();
+    if ((i.etiquetas || []).length) t += "\n\nEtiquetas: " + i.etiquetas.join(", ") + ".";
+    return t;
+  }
+
+  // ---------- editor de etiquetas (nova ideia e janela de edição) ----------
+  function desenharEditorEt(alvoId, conjunto) {
+    const el = document.getElementById(alvoId);
+    el.innerHTML = todasEtiquetas().map((e) => '<button type="button" class="bs-et' + (conjunto.has(e) ? " ligada" : "") + '" style="' + corEt(e) + '" data-bs-et="' + esc(e) + '">' + (conjunto.has(e) ? "✓ " : "") + esc(e) + "</button>").join("") +
+      '<input type="text" class="bs-et-nova" maxlength="30" placeholder="+ nova etiqueta" data-bs-et-nova>';
+  }
+  function ligarEditorEt(alvoId, obterConjunto) {
+    const el = document.getElementById(alvoId);
+    el.addEventListener("click", (ev) => {
+      const b = ev.target.closest("[data-bs-et]");
+      if (!b) return;
+      const c = obterConjunto();
+      const e = b.dataset.bsEt;
+      c.has(e) ? c.delete(e) : c.add(e);
+      desenharEditorEt(alvoId, c);
+    });
+    el.addEventListener("keydown", (ev) => {
+      if (!ev.target.matches("[data-bs-et-nova]") || ev.key !== "Enter") return;
+      ev.preventDefault();
+      const nome = ev.target.value.trim().replace(/^#/, "");
+      if (!nome) return;
+      const c = obterConjunto();
+      const existente = todasEtiquetas().find((x) => norm(x) === norm(nome));
+      c.add(existente || nome);
+      if (!existente) ETIQUETAS_EXTRAS.add(nome);
+      desenharEditorEt(alvoId, c);
+      el.querySelector("[data-bs-et-nova]").focus();
+    });
+  }
+
+  // ---------- desenho ----------
+  function desenhar() {
+    const at = ativas();
+    const n = {
+      ideia: at.filter((i) => i.status !== "video").length,
+      radar: at.filter((i) => i.status !== "video" && i.origem === "radar").length,
+      video: at.filter((i) => i.status === "video").length,
+      lixo: ideias.length - at.length,
+    };
+    const b = (classe, rotulo, valor, nota) => '<div class="cartao-fluxo ' + classe + '"><span class="rotulo-cartao-fluxo">' + rotulo + '</span><span class="valor-cartao-fluxo">' + valor + '</span><span class="nota-cartao-fluxo">' + nota + "</span></div>";
+    document.getElementById("bsCartoes").innerHTML =
+      b("alerta-amarelo", "Ideias no banco", n.ideia, n.ideia ? "esperando a vez delas" : "o banco está vazio") +
+      b("alerta-lilas", "Salvas do radar", n.radar, "vieram da aba Insights") +
+      b("alerta-verde", "Viraram vídeo", n.video, "estão na Produção") +
+      b("alerta-coral", "Na lixeira", n.lixo, "somem em " + DIAS_LIXEIRA + " dias");
+
+    document.querySelectorAll("[data-bs-visao]").forEach((x) => x.classList.toggle("ativo", x.dataset.bsVisao === visao));
+    document.getElementById("bsDicaLixeira").hidden = visao !== "lixeira";
+
+    let lista = visao === "lixeira" ? ideias.filter((i) => i.deletadaEm) : at.filter((i) => (visao === "video" ? i.status === "video" : i.status !== "video"));
+    // chips de filtro por etiqueta (contando dentro da visão atual)
+    const contagem = new Map();
+    lista.forEach((i) => (i.etiquetas || []).forEach((e) => contagem.set(e, (contagem.get(e) || 0) + 1)));
+    if (filtroEt && !contagem.has(filtroEt)) filtroEt = "";
+    document.getElementById("bsFiltros").innerHTML = contagem.size
+      ? '<button type="button" class="rot-chip' + (!filtroEt ? " ativo" : "") + '" data-bs-filtro="">Todas<small>' + lista.length + "</small></button>" +
+        [...contagem.entries()].sort((a, c) => c[1] - a[1]).map(([e, q]) => '<button type="button" class="rot-chip' + (filtroEt === e ? " ativo" : "") + '" data-bs-filtro="' + esc(e) + '">#' + esc(e) + "<small>" + q + "</small></button>").join("")
+      : "";
+    if (filtroEt) lista = lista.filter((i) => (i.etiquetas || []).includes(filtroEt));
+    if (busca) {
+      const q = norm(busca);
+      lista = lista.filter((i) => norm([i.titulo, i.notas, (i.etiquetas || []).join(" "), i.fonte].join(" ")).includes(q));
+    }
+    lista = lista.slice().sort((a, c) => String(c[visao === "lixeira" ? "deletadaEm" : visao === "video" ? "viraVideoEm" : "criadaEm"] || "").localeCompare(String(a[visao === "lixeira" ? "deletadaEm" : visao === "video" ? "viraVideoEm" : "criadaEm"] || "")));
+
+    const vazio = visao === "lixeira" ? "Lixeira vazia." : visao === "video" ? "Nenhuma ideia virou vídeo ainda. Use o ✓ Virar vídeo numa ideia." : busca || filtroEt ? "Nada encontrado com esse filtro." : "Nenhuma ideia ainda. Escreva a primeira ali em cima ou salve uma pauta do Radar, na aba Insights.";
+    document.getElementById("bsGrade").innerHTML = lista.length ? lista.map(cartao).join("") : '<p class="bs-vazio">' + vazio + "</p>";
+  }
+
+  function cartao(i, n) {
+    const naLixeira = !!i.deletadaEm;
+    const cor = naLixeira ? "" : i.status === "video" ? "alerta-verde" : i.origem === "radar" ? (i.tipoRadar === "continuidade" ? "alerta-rosa" : "alerta-lilas") : "alerta-amarelo";
+    const origem = i.origem === "radar" ? "Radar · " + (i.tipoRadar === "continuidade" ? "Continuidade" : "Externo") : "Minha ideia";
+    const tags = (i.etiquetas || []).length ? '<div class="bs-tags">' + i.etiquetas.map((e) => '<span class="bs-tag" style="' + corEt(e) + '">#' + esc(e) + "</span>").join("") + "</div>" : "";
+    let acoes;
+    if (naLixeira) {
+      const resta = Math.max(0, DIAS_LIXEIRA - Math.floor((Date.now() - new Date(i.deletadaEm).getTime()) / 864e5));
+      acoes = '<p style="margin:8px 0 0;font-size:.74rem;">Descartada em ' + dataCurta(i.deletadaEm) + " · some em " + resta + (resta === 1 ? " dia" : " dias") + "</p>" +
+        '<div class="bs-acoes"><button type="button" class="btn-novo-card" data-bs-restaurar="' + i.id + '">Restaurar</button><button type="button" class="btn-hoje-cal" data-bs-excluir="' + i.id + '">Excluir agora</button></div>';
+    } else if (i.status === "video") {
+      acoes = '<div class="bs-video-ok">Virou vídeo em ' + dataCurta(i.viraVideoEm) + "</div>" +
+        '<div class="bs-acoes"><button type="button" class="btn-novo-card" data-bs-copiar="' + i.id + '">Copiar prompt</button><button type="button" class="btn-hoje-cal" data-bs-abrir="' + i.id + '">Abrir o vídeo</button><button type="button" class="btn-hoje-cal" data-bs-desfazer="' + i.id + '">Voltar pra ideias</button></div>';
+    } else {
+      acoes = '<div class="bs-acoes"><button type="button" class="btn-novo-card" data-bs-copiar="' + i.id + '">Copiar prompt</button>' +
+        '<button type="button" class="btn-hoje-cal bs-check" data-bs-video="' + i.id + '" title="Cria o vídeo na Produção e no Calendário">Virar vídeo</button>' +
+        '<button type="button" class="btn-hoje-cal" data-bs-editar="' + i.id + '">Editar</button>' +
+        '<button type="button" class="btn-hoje-cal" data-bs-descartar="' + i.id + '">Descartar</button></div>';
+    }
+    return '<div class="cartao-alerta bs-ideia ' + cor + '" style="--i:' + (n % 8) + (naLixeira ? ";opacity:.75" : "") + '">' +
+      '<div class="bs-topo"><span class="bs-origem">' + origem + "</span><span>" + dataCurta(i.criadaEm) + "</span></div>" +
+      "<h4>" + esc(i.titulo) + "</h4>" + (i.notas ? "<p>" + esc(i.notas) + "</p>" : "") + tags + acoes + "</div>";
+  }
+
+  // ---------- ações ----------
+  async function guardarNova() {
+    const campoT = document.getElementById("bsTitulo");
+    const campoN = document.getElementById("bsNotas");
+    const titulo = campoT.value.trim();
+    if (!titulo) { campoT.focus(); return; }
+    await carregar();
+    ideias.unshift({ id: novoId(), titulo, notas: campoN.value.trim(), etiquetas: [...etNova], origem: "minha", status: "ideia", criadaEm: agora(), atualizadoEm: agora() });
+    campoT.value = "";
+    campoN.value = "";
+    etNova.clear();
+    desenharEditorEt("bsEtiquetasNova", etNova);
+    visao = "ideia";
+    filtroEt = "";
+    desenhar();
+    await gravar();
+    campoT.focus();
+  }
+
+  function acharIdeia(id) { return ideias.find((i) => i.id === id); }
+  function tocar(i, mudancas) { Object.assign(i, mudancas, { atualizadoEm: agora() }); }
+
+  async function virarVideo(i, botaoEl) {
+    if (!window.painelPonte) return alert("O painel ainda está carregando. Tente de novo em alguns segundos.");
+    botaoEl.disabled = true;
+    botaoEl.textContent = "Criando o vídeo...";
+    try {
+      const descricao = [i.notas, "Prompt do motor:\n" + promptDe(i), i.fonte ? "Origem: " + i.fonte : ""].filter(Boolean).join("\n\n");
+      const cardId = await window.painelPonte.criarPostDeIdeia({ titulo: i.titulo, descricao });
+      tocar(i, { status: "video", cardId, viraVideoEm: agora() });
+      await gravar();
+      desenhar();
+      window.painelPonte.aviso("Virou vídeo: já está na Produção e no Calendário (sem data; arraste pra um dia)");
+    } catch (erro) {
+      console.error(erro);
+      alert("Não consegui criar o vídeo na Produção. Tente de novo.");
+      botaoEl.disabled = false;
+      botaoEl.textContent = "Virar vídeo";
+    }
+  }
+
+  function abrirEdicao(i) {
+    edId = i.id;
+    etEd = new Set(i.etiquetas || []);
+    document.getElementById("bsEdTitulo").value = i.titulo;
+    document.getElementById("bsEdNotas").value = i.notas || "";
+    document.getElementById("bsEdPrompt").value = i.prompt || "";
+    desenharEditorEt("bsEdEtiquetas", etEd);
+    document.getElementById("bsModal").hidden = false;
+    document.getElementById("bsEdTitulo").focus();
+  }
+  function fecharEdicao() { document.getElementById("bsModal").hidden = true; edId = null; }
+
+  aba.addEventListener("click", async (ev) => {
+    const alvo = ev.target.closest("[data-bs-visao], [data-bs-filtro], [data-bs-copiar], [data-bs-video], [data-bs-abrir], [data-bs-desfazer], [data-bs-editar], [data-bs-descartar], [data-bs-restaurar], [data-bs-excluir]");
+    if (!alvo) return;
+    const d = alvo.dataset;
+    if (d.bsVisao) { visao = d.bsVisao; filtroEt = ""; return desenhar(); }
+    if (d.bsFiltro !== undefined) { filtroEt = d.bsFiltro; return desenhar(); }
+    const i = acharIdeia(d.bsCopiar || d.bsVideo || d.bsAbrir || d.bsDesfazer || d.bsEditar || d.bsDescartar || d.bsRestaurar || d.bsExcluir);
+    if (!i) return;
+    if (d.bsCopiar) {
+      const texto = promptDe(i);
+      try {
+        await navigator.clipboard.writeText(texto);
+        alvo.textContent = "Copiado! Cola no Claude";
+      } catch (e) {
+        window.prompt("Copie o prompt:", texto);
+      }
+      setTimeout(() => { alvo.textContent = "Copiar prompt"; }, 2200);
+      return;
+    }
+    if (d.bsVideo) return virarVideo(i, alvo);
+    if (d.bsAbrir) {
+      const ok = window.painelPonte && window.painelPonte.abrirVideo(i.cardId);
+      if (!ok) alert("Não achei esse vídeo na Produção. Ele pode ter sido apagado de lá.");
+      return;
+    }
+    if (d.bsDesfazer) {
+      if (!confirm("Voltar esta ideia pro banco? O vídeo continua na Produção; se não quiser mais ele, apague por lá.")) return;
+      tocar(i, { status: "ideia", cardId: null, viraVideoEm: null });
+    } else if (d.bsEditar) {
+      return abrirEdicao(i);
+    } else if (d.bsDescartar) {
+      tocar(i, { deletadaEm: agora() });
+      if (window.painelPonte) window.painelPonte.aviso("Foi pra lixeira. Dá pra restaurar por " + DIAS_LIXEIRA + " dias.");
+    } else if (d.bsRestaurar) {
+      tocar(i, { deletadaEm: null });
+    } else if (d.bsExcluir) {
+      if (!confirm("Excluir esta ideia de vez? Não dá pra desfazer.")) return;
+      ideias = ideias.filter((x) => x.id !== i.id);
+    }
+    desenhar();
+    await gravar();
+  });
+
+  document.getElementById("bsGuardar").addEventListener("click", guardarNova);
+  document.getElementById("bsTitulo").addEventListener("keydown", (ev) => {
+    if (ev.key === "Enter") { ev.preventDefault(); guardarNova(); }
+  });
+  document.getElementById("bsBusca").addEventListener("input", (ev) => { busca = ev.target.value.trim(); desenhar(); });
+  ligarEditorEt("bsEtiquetasNova", () => etNova);
+  ligarEditorEt("bsEdEtiquetas", () => etEd);
+  document.getElementById("bsEdCancelar").addEventListener("click", fecharEdicao);
+  document.getElementById("bsModal").addEventListener("click", (ev) => { if (ev.target.id === "bsModal") fecharEdicao(); });
+  document.addEventListener("keydown", (ev) => { if (ev.key === "Escape" && !document.getElementById("bsModal").hidden) fecharEdicao(); });
+  document.getElementById("bsEdSalvar").addEventListener("click", async () => {
+    const i = acharIdeia(edId);
+    const titulo = document.getElementById("bsEdTitulo").value.trim();
+    if (!i || !titulo) return;
+    tocar(i, { titulo, notas: document.getElementById("bsEdNotas").value.trim(), etiquetas: [...etEd], prompt: document.getElementById("bsEdPrompt").value.trim() });
+    fecharEdicao();
+    desenhar();
+    await gravar();
+  });
+
+  async function abrir() {
+    desenharEditorEt("bsEtiquetasNova", etNova);
+    await carregar(true);
+    desenhar();
+  }
+  botao.addEventListener("click", abrir);
+  try { if (localStorage.getItem("painelAbaAtiva") === "cc-brainstorm") abrir(); } catch (e) {}
+
+  // usado pela aba Insights (botão Salvar das pautas do radar)
+  window.brainstorm = {
+    carregar: () => carregar(),
+    temPauta: (pautaId) => ideias.some((i) => i.pautaId === pautaId && !i.deletadaEm),
+    async salvarPauta(p, tipo) {
+      await carregar();
+      const existente = ideias.find((i) => i.pautaId === p.id);
+      if (existente) {
+        tocar(existente, { deletadaEm: null });
+      } else {
+        const o = p.origem || {};
+        ideias.unshift({
+          id: novoId(), titulo: p.titulo, notas: [p.angulo, p.porqueAgora ? "Por que agora: " + p.porqueAgora : ""].filter(Boolean).join("\n\n"),
+          etiquetas: [], origem: "radar", tipoRadar: tipo === "continuidade" ? "continuidade" : "radar", pautaId: p.id,
+          fonte: [o.fonte, o.referencia].filter(Boolean).join(" · "), prompt: p.inputPronto || "", status: "ideia", criadaEm: agora(), atualizadoEm: agora(),
+        });
+      }
+      await gravar();
+      if (!aba.hidden) desenhar();
+    },
+  };
 })();
 </script>
 </body>
