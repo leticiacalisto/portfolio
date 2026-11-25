@@ -631,12 +631,17 @@ ul.canais--cel{display:none;}
 /* Os nichos em balões. Eles quebram sozinhos em duas linhas quando não cabem
    numa só. Passando o mouse aparece só o contorno; o nicho aberto fica cheio. */
 .nichos{
-  display:flex;flex-wrap:wrap;justify-content:center;gap:7px;
+  display:flex;flex-wrap:wrap;justify-content:center;gap:6px;
   margin:clamp(24px,3vw,36px) auto clamp(28px,3.4vw,44px);
+}
+/* No computador a fileira de balões usa um pouco da margem lateral, para
+   todos os nichos caberem em duas linhas */
+@media (min-width:901px){
+  .nichos{margin-inline:calc(clamp(22px,5vw,76px) * -.6);}
 }
 .nicho{
   border:1px solid rgba(20,17,13,.09);border-radius:100px;background:#f3f1ec;
-  padding:6px 14px;cursor:pointer;font:inherit;font-size:.8rem;font-weight:500;
+  padding:6px 11px;cursor:pointer;font:inherit;font-size:.78rem;font-weight:500;
   color:var(--tinta);box-shadow:0 1px 2px rgba(20,17,13,.04);
   transition:background-color .25s ease, border-color .25s ease, color .25s ease, box-shadow .25s ease;
 }
@@ -1390,6 +1395,187 @@ a.video:hover,button.video:hover{transform:translateY(-6px);box-shadow:var(--som
   *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;}
   .revelar{opacity:1;transform:none;}
 }
+
+/* =========================================================
+   DECORAÇÃO DE NATAL
+   Só um enfeite por cima do site: tudo aqui depende da classe "natal" no
+   <html>, que o código liga sozinho no período de CONFIG.natal. Fora dele,
+   nada disto aparece. Cores da paleta: verde-pinheiro #354037, sálvia
+   #767154, creme #F4EBE3, vinho #6F171F e dourado #C9A36A.
+   ========================================================= */
+/* Onde era cinza, um cinza puxado para o verde */
+html.natal{--azul:#4b574c;}
+html.natal .faixa{background:#36423a;}
+html.natal .btn--principal{box-shadow:0 10px 26px rgba(75,87,76,.26);}
+html.natal .btn--principal:hover,
+html.natal .topo .btn--topo:hover,
+html.natal .ideia__balao:hover{background:#3a463c;}
+
+/* A guirlanda pendurada no alto da capa (só na capa: ela rola junto) */
+html.natal #inicio{position:relative;}
+.natal-guirlanda{
+  position:absolute;left:0;right:0;top:var(--altura-topo);height:54px;pointer-events:none;z-index:3;
+  background-repeat:repeat-x;background-size:260px 54px;background-position:center top;
+  filter:drop-shadow(0 3px 3px rgba(20,17,13,.12));
+}
+/* Bolinhas penduradas na guirlanda, balançando de leve */
+.natal-enfeites{position:absolute;inset:0;pointer-events:none;z-index:2;overflow:hidden;}
+.natal-bola{
+  position:absolute;top:calc(var(--altura-topo) + 16px);display:flex;flex-direction:column;align-items:center;
+  transform-origin:top center;animation:natalBalanco 5.5s ease-in-out infinite;
+}
+.natal-bola::before{content:"";width:1px;height:var(--fio,60px);background:linear-gradient(#c9a36a,#a8844c);}
+.natal-bola svg{display:block;width:var(--tam,32px);height:auto;margin-top:-1px;filter:drop-shadow(0 6px 8px rgba(20,17,13,.18));}
+@keyframes natalBalanco{0%,100%{transform:rotate(-3.5deg);}50%{transform:rotate(3.5deg);}}
+
+/* O lacinho vinho no canto do botão "Fale comigo" */
+html.natal .topo .btn--topo{position:relative;overflow:visible;}
+html.natal .topo .btn--topo::after{
+  content:"";position:absolute;top:-13px;right:-11px;width:34px;height:26px;pointer-events:none;
+  background:var(--natal-laco) center/contain no-repeat;transform:rotate(14deg);
+}
+
+/* A neve: uma tela transparente por cima de tudo, que não pega clique */
+.natal-neve{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:95;}
+
+/* Tarja de serviços: no lugar do losango, um enfeite de Natal por item,
+   repetindo a sequência de 8 */
+html.natal .faixa .marquise__grupo li::after{
+  content:"";width:20px;height:20px;flex:none;
+  background:var(--natal-ic-1) center/contain no-repeat;
+}
+html.natal .faixa .marquise__grupo li:nth-child(8n+2)::after{background-image:var(--natal-ic-2);}
+html.natal .faixa .marquise__grupo li:nth-child(8n+3)::after{background-image:var(--natal-ic-3);}
+html.natal .faixa .marquise__grupo li:nth-child(8n+4)::after{background-image:var(--natal-ic-4);}
+html.natal .faixa .marquise__grupo li:nth-child(8n+5)::after{background-image:var(--natal-ic-5);}
+html.natal .faixa .marquise__grupo li:nth-child(8n+6)::after{background-image:var(--natal-ic-6);}
+html.natal .faixa .marquise__grupo li:nth-child(8n+7)::after{background-image:var(--natal-ic-7);}
+html.natal .faixa .marquise__grupo li:nth-child(8n+8)::after{background-image:var(--natal-ic-8);}
+
+/* Conteúdos Produzidos: o fundo creme de sempre com desenhinhos espalhados
+   (arvorezinhas, brilhos e coraçõezinhos), bem clarinhos */
+html.natal #portfolio{position:relative;isolation:isolate;}
+html.natal #portfolio::before{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:var(--natal-padrao) center top/440px 440px;
+  /* Some no topo e vai aparecendo até o começo dos nichos, onde chega na
+     transparência normal da estampa */
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,rgba(0,0,0,.18) 70px,rgba(0,0,0,.55) 150px,#000 230px);
+  mask-image:linear-gradient(to bottom,transparent 0,rgba(0,0,0,.18) 70px,rgba(0,0,0,.55) 150px,#000 230px);
+}
+
+/* Fotos que correm: no lugar da moldura preta de filme, um xadrezinho vinho.
+   Tom sobre tom e com a moldura um pouco mais estreita que a do filme. */
+html.natal .foto-ugc{
+  padding:17px 5px;
+  background-color:#963340;
+  background-image:
+    repeating-linear-gradient(90deg,rgba(45,4,12,.45) 0 4px,transparent 4px 8px),
+    repeating-linear-gradient(0deg,rgba(45,4,12,.45) 0 4px,transparent 4px 8px);
+}
+html.natal .marquise--fotos .foto-ugc::before,
+html.natal .marquise--fotos .foto-ugc::after{display:none;}
+
+/* Sobre: foto e texto vão para a esquerda e a árvore com presentes "sai"
+   da lateral direita */
+html.natal #sobre{position:relative;overflow:hidden;}
+/* A foto fica com a mesma largura de sempre (a conta abaixo é a mesma que o
+   grid original faz); quem cede espaço para a árvore é a coluna do texto */
+html.natal .sobre__grade{
+  position:relative;z-index:1;
+  --foto-sobre:calc((min(1320px,100vw) - clamp(22px,14vw,200px) - clamp(22px,4vw,56px) - clamp(34px,5vw,72px)) * .9 / 2.1);
+  grid-template-columns:var(--foto-sobre) minmax(0,1fr);
+  padding-left:clamp(22px,6vw,96px);
+  padding-right:clamp(22px,26vw,400px);
+}
+html.natal .sobre__grade{align-items:start;}
+html.natal #titulo-sobre{white-space:nowrap;}
+/* Os dois selos embaixo do texto continuam lado a lado */
+@media (min-width:901px){
+  html.natal .sobre__selos{flex-wrap:nowrap;gap:10px;}
+  html.natal .sobre__selos li{white-space:nowrap;padding:10px 18px;}
+}
+.natal-arvore{
+  position:absolute;right:0;bottom:0;z-index:0;pointer-events:none;
+  height:min(92%,640px);width:auto;
+}
+/* A moldura de bengala doce em volta da foto do Sobre */
+html.natal .sobre__visual{position:relative;}
+.natal-moldura{
+  position:absolute;inset:-13px;border-radius:calc(var(--raio-g) + 13px);padding:4px;pointer-events:none;z-index:2;
+  background:repeating-linear-gradient(-45deg,#b3262f 0 8px,#fffdf8 8px 19px);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  box-shadow:0 0 0 1px rgba(20,17,13,.04);
+}
+.natal-canto{position:absolute;left:-58px;bottom:-40px;width:clamp(130px,13vw,190px);z-index:3;pointer-events:none;}
+.natal-laco-foto{position:absolute;left:50%;top:-34px;width:clamp(64px,6vw,90px);transform:translateX(-50%) rotate(-4deg);z-index:3;pointer-events:none;
+  filter:drop-shadow(0 6px 8px rgba(20,17,13,.18));}
+
+/* Marcas parceiras: cada bolinha ganha o ganchinho dourado de bolinha de
+   Natal. A tarja ganha uma folga em cima para o gancho não ser cortado. */
+/* margin-top menor que o padding: abre um respiro entre o título e os ganchos */
+html.natal .marquise--logos{padding-top:26px;margin-top:-8px;}
+html.natal .marquise--logos .marquise__grupo li{position:relative;overflow:visible;}
+/* Sem o corte da bolinha (que esconderia o gancho), quem fica redonda é a
+   própria logo que preenche a bolinha toda */
+html.natal .marquise--logos .marca--preenchida img{border-radius:50%;}
+html.natal .marquise--logos .marquise__grupo li::before{
+  content:"";position:absolute;left:50%;top:0;z-index:2;pointer-events:none;
+  width:clamp(16px,1.7vw,22px);aspect-ratio:30/26;
+  transform:translate(-50%,-78%);
+  background:var(--natal-gancho) center/contain no-repeat;
+  transition:transform .28s ease;
+}
+html.natal .marquise--logos .marquise__grupo li:hover::before{transform:translate(-50%,calc(-78% - 3px)) scale(1.07);}
+
+/* A faixa vinho com laço na divisória antes do Contato, como a fita de um
+   presente. Ela tem altura zero: fica por cima da linha, sem empurrar nada. */
+.natal-faixa{position:relative;height:0;z-index:5;pointer-events:none;}
+.natal-faixa__fita{
+  position:absolute;left:0;right:0;top:-11px;height:22px;
+  background:linear-gradient(#7a1d28,#62141d 55%,#6c1822);
+  box-shadow:0 2px 6px rgba(20,17,13,.18);
+}
+.natal-faixa__laco{
+  position:absolute;left:50%;top:-37px;height:86px;width:auto;transform:translateX(-50%);
+  filter:drop-shadow(0 5px 7px rgba(20,17,13,.22));
+}
+
+/* Os enfeites soltos pelas seções (lista em CONFIG.natal.enfeites) */
+.natal-solto{position:absolute;z-index:1;pointer-events:none;height:auto;filter:drop-shadow(0 8px 12px rgba(20,17,13,.14));}
+.natal-galho{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;overflow:visible;}
+
+/* Nichos: o "Destaques" em vinho com estrelinha, e o "Natal" no clima */
+.nicho--destaque{background:#f6ecdf;border-color:#e2cfb6;color:#6f171f;}
+.nicho--destaque::before{content:"✦";margin-right:7px;font-size:.8em;color:#c9a36a;}
+.nicho--destaque:hover{background:#fbf3e9;border-color:#c9a36a;}
+.nicho--destaque[aria-pressed="true"]{background:#6f171f;border-color:#6f171f;color:#f4ebe3;}
+.nicho--destaque[aria-pressed="true"]::before{color:#e9c98f;}
+.nicho--natal{background:#f3e1df;border-color:#e2c1bd;}
+.nicho--natal::before{content:"❄";margin-right:6px;font-size:.85em;color:#6f171f;opacity:.7;}
+.nicho--natal:hover{background:#f8eceb;border-color:#c98f89;}
+.nicho--natal[aria-pressed="true"]{background:#354037;border-color:#354037;color:#f4ebe3;}
+.nicho--natal[aria-pressed="true"]::before{color:#f4ebe3;}
+
+@media (max-width:900px){
+  html.natal .sobre__grade{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);}
+  .natal-guirlanda{height:38px;background-size:184px 38px;}
+  .natal-bola{top:calc(var(--altura-topo) + 10px);}
+  .natal-bola--extra,.natal-bola--left{display:none;}
+  .natal-arvore{display:none;}
+  html.natal .sobre__grade{padding-left:clamp(16px,4vw,40px);padding-right:clamp(16px,4vw,40px);}
+  .natal-canto{left:-30px;bottom:-26px;width:96px;}
+  .natal-laco-foto{top:-22px;width:52px;}
+  .natal-moldura{inset:-8px;padding:3px;border-radius:calc(var(--raio-g) + 8px);}
+  .natal-solto--pc{display:none;}
+  html.natal .faixa .marquise__grupo li::after{width:16px;height:16px;}
+  .natal-faixa__fita{top:-8px;height:16px;}
+  .natal-faixa__laco{top:-27px;height:62px;}
+}
+@media (prefers-reduced-motion:reduce){
+  .natal-bola{animation:none;}
+}
 </style>
 </head>
 <body>
@@ -2123,19 +2309,57 @@ const CONFIG = {
     ]
   },
 
-  /* EDITE AQUI: a tarja de cima, com a contagem regressiva da Black Friday.
-     mes e dia são a data da Black Friday (27/11). A tarja aparece quando faltam
-     até "alcanceDias" dias e some sozinha depois da data. */
+  /* EDITE AQUI: a tarja de cima, com a contagem regressiva do Natal.
+     mes e dia são a data do Natal (25/12). Até a data, a tarja conta os dias;
+     do dia 25 até o fim da decoração (natal.ate) ela troca para "festa".
+     Fora desse período ela some sozinha. */
   blackFriday: {
-    tag: "Black Friday",
+    tag: "Natal",
     faltam: "Faltam",
     dias: "dias",
-    depois: "pra Black Friday",
-    texto: "conteúdo UGC que vende no dia",
+    depois: "pro Natal",
+    texto: "conteúdo UGC pra campanha de fim de ano",
+    festa: "Feliz Natal e boas festas!",
     link: "reservar agenda",
-    mes: 11,
-    dia: 27,
-    alcanceDias: 100
+    rastreio: "cta_natal",
+    mes: 12,
+    dia: 25,
+    alcanceDias: 40
+  },
+
+  /* EDITE AQUI: a decoração de Natal (guirlanda, bolinhas, laço, neve e as
+     cores da tarja). É só um enfeite por cima do site: nada do site muda.
+     Ela liga sozinha a partir de "de" e desliga sozinha depois de "ate"
+     (Dia de Reis). Para tirar antes, troque ativo para false. */
+  natal: {
+    ativo: true,
+    de: { mes: 11, dia: 20 },
+    ate: { mes: 1, dia: 6 },
+    neve: true,
+    /* A foto do Sobre durante o Natal (depois volta sozinha para a de sempre) */
+    fotoSobre: {
+      imagem: "imagens/natal/sobre-natal.jpg",
+      alt: "Letícia rindo, com um olho coberto pelo tubo de creme Color Glam e o pote de máscara na outra mão, em frente a uma árvore de Natal",
+      posicaoFoto: "50% 45%"
+    },
+    /* Os enfeites soltos pelas seções. Para mudar de lugar, mexa no
+       "estilo": left/right e top/bottom são a posição dentro da seção,
+       width é o tamanho e rotate gira. "secao" é o id da seção (inicio,
+       sobre, marcas, case, portfolio, fotos, servicos, depoimentos,
+       contato). soComputador: true esconde no celular. */
+    enfeites: [
+      /* "galho" continua o galhinho da imagem até as bordas: as duas pontas
+         dele na imagem (em fração da largura e da altura) */
+      { arquivo: "imagens/natal/meias.webp", secao: "case", soComputador: true,
+        estilo: "right:4%;top:58px;width:clamp(170px,17vw,250px);transform:rotate(9deg)",
+        galho: { esquerda: [0.004, 0.083], direita: [0.996, 0.108] } },
+      { arquivo: "imagens/natal/presentes.webp", secao: "case", soComputador: true,
+        estilo: "left:2%;bottom:18px;width:clamp(150px,14vw,220px)" },
+      /* "dentro" põe o enfeite dentro de um elemento da seção: aqui, na foto
+         do Contato, em pé na cadeira */
+      { arquivo: "imagens/natal/boneco-neve.webp", secao: "contato", dentro: ".contato__foto", soComputador: true,
+        estilo: "right:-3%;bottom:34.6%;width:clamp(57px,5.2vw,74px);z-index:2" }
+    ]
   },
 
   /* EDITE AQUI: o popup "ideia grátis". Abre depois de "atraso" segundos; se a
@@ -2215,7 +2439,7 @@ const TERMOS = {
   "Educação e Negócios": "Education & Business", "Grupo de Promoções": "Deals Group",
   "Fitness e Alimentação Saudável": "Fitness & Healthy Eating", "Saúde": "Health",
   "Viagem e Turismo": "Travel & Tourism", "Entretenimento e Presentes": "Entertainment & Gifts",
-  "Limpeza": "Cleaning", "Natal": "Christmas",
+  "Limpeza": "Cleaning", "Natal": "Christmas", "Destaques": "Highlights",
   "Reforma": "Renovation", "Cozinha": "Kitchen", "Cama e Banho": "Bed & bath", "Decoração": "Decor",
   "Iluminação": "Lighting", "Cama": "Bed", "Hidratante": "Moisturizer", "Desodorante": "Deodorant",
   "Dentes": "Teeth", "Cuidado Geral": "General care", "Bolsa": "Bag", "Sapato": "Shoes",
@@ -2267,8 +2491,9 @@ const CONFIG_EN = {
   ],
   botaoMenu: "Let's talk",
   blackFriday: {
-    faltam: "", dias: "days", depois: "until Black Friday",
-    texto: "UGC content that sells on the day", link: "book my calendar"
+    tag: "Christmas", faltam: "", dias: "days", depois: "until Christmas",
+    texto: "UGC content for your holiday campaign", festa: "Merry Christmas and happy holidays!",
+    link: "book my calendar"
   },
   hero: {
     rotuloLocal: "Florianópolis, Brazil",
@@ -2593,42 +2818,442 @@ if(IDIOMA === "en"){
   });
   document.querySelector(".pular").textContent = T.pular;
 
-  /* A tarja de cima, com a contagem regressiva da Black Friday. Ela só aparece
-     quando faltam poucos dias e some sozinha depois da data. */
+  /* ---------- Decoração de Natal ----------
+     Liga sozinha entre natal.de e natal.ate (o período passa da virada do
+     ano). Não muda nada do site: só pendura enfeites por cima. */
+  const natalAtivo = (function(){
+    const n = CONFIG.natal;
+    if(!n || !n.ativo) return false;
+    const hoje = new Date();
+    const valor = function(d){ return d.mes * 100 + d.dia; };
+    const agoraMD = (hoje.getMonth() + 1) * 100 + hoje.getDate();
+    const de = valor(n.de), ate = valor(n.ate);
+    return de <= ate ? (agoraMD >= de && agoraMD <= ate) : (agoraMD >= de || agoraMD <= ate);
+  })();
+
+  if(natalAtivo){
+    document.documentElement.classList.add("natal");
+    const semMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const raiz = document.documentElement.style;
+
+    /* A foto de Natal no Sobre, só enquanto a decoração estiver ligada */
+    if(CONFIG.natal.fotoSobre) Object.assign(CONFIG.sobre, CONFIG.natal.fotoSobre);
+
+    /* Sorteio com semente: os desenhos saem sempre iguais, sem "pular" a cada visita */
+    let semente = 7;
+    const sorte = function(){ semente = (semente * 16807) % 2147483647; return (semente - 1) / 2147483646; };
+    const svgUrl = function(svg){ return 'url("data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg) + '")'; };
+    const svg = function(viewBox, miolo){ return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="' + viewBox + '">' + miolo + '</svg>'; };
+
+    /* O laço vinho, usado na guirlanda e no botão */
+    const laco = function(cx, cy, s){
+      return '<g transform="translate(' + cx + ' ' + cy + ') scale(' + s + ')">' +
+        '<path d="M-2 4 L-9 22 L-5 20 L-3 24 Z" fill="#5c1219"/>' +
+        '<path d="M2 4 L9 22 L5 20 L3 24 Z" fill="#5c1219"/>' +
+        '<path d="M-1 0 C-8 -10 -20 -9 -19 -1 C-18 7 -7 5 -1 1 Z" fill="#7d1a23" stroke="#5c1219" stroke-width=".8"/>' +
+        '<path d="M1 0 C8 -10 20 -9 19 -1 C18 7 7 5 1 1 Z" fill="#7d1a23" stroke="#5c1219" stroke-width=".8"/>' +
+        '<path d="M-14 -3 C-11 -5 -7 -4 -4 -1" stroke="#a3343c" stroke-width="1.2" fill="none" stroke-linecap="round"/>' +
+        '<path d="M14 -3 C11 -5 7 -4 4 -1" stroke="#a3343c" stroke-width="1.2" fill="none" stroke-linecap="round"/>' +
+        '<ellipse cx="0" cy="1" rx="3.6" ry="4.2" fill="#8f1d25" stroke="#5c1219" stroke-width=".8"/>' +
+      '</g>';
+    };
+    raiz.setProperty("--natal-laco", svgUrl(svg("-21 -11 42 36", laco(0, 0, 1))));
+    /* O ganchinho dourado das bolinhas das marcas */
+    raiz.setProperty("--natal-gancho", svgUrl(svg("0 0 30 26",
+      '<defs><linearGradient id="o" x1="0" x2="1"><stop offset="0" stop-color="#b8883a"/><stop offset=".45" stop-color="#f4dc93"/><stop offset="1" stop-color="#a87a2e"/></linearGradient></defs>' +
+      '<ellipse cx="15" cy="6.2" rx="4.3" ry="4.6" fill="none" stroke="#b8883a" stroke-width="2.4"/>' +
+      '<ellipse cx="15" cy="6.2" rx="4.3" ry="4.6" fill="none" stroke="#f1d78c" stroke-width="1" transform="translate(-.4 -.3)"/>' +
+      '<rect x="12.6" y="9.6" width="4.8" height="3.6" rx="1" fill="url(#o)"/>' +
+      '<path d="M6.5 13h17l1.2 7.4c-1.4 2-2.8 2-4.1 0-1.3 2-2.8 2-4.1 0-1.4 2-2.8 2-4.2 0-1.3 2-2.8 2-4.1 0z" fill="url(#o)" stroke="#9a6d27" stroke-width=".6"/>' +
+      '<path d="M9 14.5v4.5M12.4 14.5v4.5M15.8 14.5v4.5M19.2 14.5v4.5M22 14.5v4" stroke="#a97c33" stroke-width=".7" opacity=".7"/>')));
+
+    /* Os 8 enfeites que separam os serviços na tarja escura */
+    const icones = [
+      /* arvorezinha */
+      '<path d="M12 1.5l5.5 7h-3l4.5 6.2h-3.2L21 21H3l5.2-6.3H5l4.5-6.2h-3z" fill="#7f9b74"/><rect x="11" y="20.5" width="2" height="2.6" fill="#a07a55"/>' +
+        '<circle cx="12" cy="2" r="1.7" fill="#e9c98f"/><circle cx="10" cy="12" r="1" fill="#d9534f"/><circle cx="14.4" cy="16.6" r="1" fill="#e9c98f"/><circle cx="9" cy="18" r="1" fill="#d9534f"/>',
+      /* biscoito de gengibre */
+      '<path d="M12 1.8a3.6 3.6 0 0 1 2.6 6.1l4.6 1.3a1.9 1.9 0 0 1-.9 3.6l-2.9-.5.6 4.3 2.4 3.3a1.9 1.9 0 0 1-3 2.3L12 18.6l-3.4 3.6a1.9 1.9 0 0 1-3-2.3l2.4-3.3.6-4.3-2.9.5a1.9 1.9 0 0 1-.9-3.6l4.6-1.3A3.6 3.6 0 0 1 12 1.8z" fill="#c08a5a"/>' +
+        '<circle cx="10.8" cy="5" r=".7" fill="#fff"/><circle cx="13.2" cy="5" r=".7" fill="#fff"/><path d="M10.6 6.8q1.4 1 2.8 0" stroke="#fff" stroke-width=".8" fill="none" stroke-linecap="round"/>' +
+        '<circle cx="12" cy="11" r=".8" fill="#fff"/><circle cx="12" cy="13.6" r=".8" fill="#fff"/>',
+      /* bengala doce */
+      '<path d="M9 22.5V8a4.2 4.2 0 0 1 8.4 0v1.2" stroke="#fff" stroke-width="3.4" fill="none" stroke-linecap="round"/>' +
+        '<path d="M9 22.5V8a4.2 4.2 0 0 1 8.4 0v1.2" stroke="#d9474c" stroke-width="3.4" fill="none" stroke-dasharray="2.4 2.6"/>',
+      /* laço */
+      '<path d="M11 11C7 5 2 5 2.5 9.5S8 14 11 12z" fill="#d9474c"/><path d="M13 11c4-6 9-6 8.5-1.5S16 14 13 12z" fill="#d9474c"/>' +
+        '<path d="M11 12.5L7 21l2.6-1 1.4 2.4 1-9.5zM13 12.5l4 8.5-2.6-1-1.4 2.4-1-9.5z" fill="#b8323c"/><circle cx="12" cy="11.6" r="2.3" fill="#e05a5f"/>',
+      /* presente */
+      '<rect x="3.5" y="10" width="17" height="11.5" rx="1" fill="#f4ebe3"/><rect x="2.5" y="7" width="19" height="4" rx="1" fill="#fffaf2"/>' +
+        '<rect x="10.8" y="7" width="2.4" height="14.5" fill="#d9474c"/><path d="M12 7C9 2 5.5 4 8 6.6zM12 7c3-5 6.5-3 4-.4z" fill="none" stroke="#d9474c" stroke-width="1.6"/>',
+      /* floco de neve */
+      '<g stroke="#f4ebe3" stroke-width="1.5" stroke-linecap="round" fill="none"><path d="M12 2v20M3.3 7l17.4 10M3.3 17l17.4-10"/>' +
+        '<path d="M9.6 3.8L12 6l2.4-2.2M9.6 20.2L12 18l2.4 2.2M3.6 10.4l3.2-.6-1-3.1M20.4 13.6l-3.2.6 1 3.1M3.6 13.6l3.2.6-1 3.1M20.4 10.4l-3.2-.6 1-3.1"/></g>',
+      /* bolinha */
+      '<path d="M12 1.5v3" stroke="#e9c98f" stroke-width="1.2"/><rect x="9.6" y="4.2" width="4.8" height="3" rx=".8" fill="#e9c98f"/>' +
+        '<circle cx="12" cy="14.5" r="7.8" fill="#d9474c"/><path d="M4.6 12.6q7.4 3.4 14.8 0M4.6 16.6q7.4 3.4 14.8 0" stroke="#f4ebe3" stroke-width="1.1" fill="none" opacity=".85"/>' +
+        '<ellipse cx="9" cy="11.5" rx="1.6" ry="2.4" fill="#fff" opacity=".35" transform="rotate(30 9 11.5)"/>',
+      /* caneca de chocolate quente */
+      '<path d="M4 9.5h13v7.5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z" fill="#d9474c"/><path d="M17 11.2h1.6a2.7 2.7 0 0 1 0 5.4H17" stroke="#d9474c" stroke-width="1.8" fill="none"/>' +
+        '<path d="M3.4 9.8c0-2.4 2-2.8 3-2.2.4-2.6 4-3.4 5.4-1 1.6-1.6 4.6-.6 4.6 1.8 1.4.2 1.4 1.4 1 1.6z" fill="#fffaf2"/><path d="M10.5 13.8c-1.6-1.6-3.2 0-1.6 1.6l1.6 1.4 1.6-1.4c1.6-1.6 0-3.2-1.6-1.6z" fill="#fffaf2"/>'
+    ];
+    icones.forEach(function(miolo, i){ raiz.setProperty("--natal-ic-" + (i + 1), svgUrl(svg("0 0 24 24", miolo))); });
+
+    /* O fundinho do Conteúdos Produzidos: arvorezinhas, brilhos e corações,
+       espalhados numa grade com um tanto de sorteio para não parecer grade */
+    (function(){
+      const L = 440, celula = 88;
+      const arvore = function(x, y, s){
+        return '<g transform="translate(' + x + ' ' + y + ') scale(' + s + ')" stroke="#8f9c88" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".85">' +
+          '<path d="M0 -12V12M-4.5 -5L0 -11 4.5 -5M-6.5 1L0 -5.5 6.5 1M-8 7.5L0 0 8 7.5"/></g>';
+      };
+      const brilho = function(x, y, s){
+        return '<path transform="translate(' + x + ' ' + y + ') scale(' + s + ')" d="M0 -10Q.8 -.8 10 0Q.8 .8 0 10Q-.8 .8 -10 0Q-.8 -.8 0 -10z" fill="#d3a85d" opacity=".85"/>';
+      };
+      const cruz = function(x, y, s){
+        return '<path transform="translate(' + x + ' ' + y + ') scale(' + s + ')" d="M0 -7V7M-7 0H7" stroke="#d3a85d" stroke-width="1.3" stroke-linecap="round" opacity=".8"/>';
+      };
+      const coracao = function(x, y, s){
+        return '<path transform="translate(' + x + ' ' + y + ') scale(' + s + ')" d="M0 5C-7 0-6-6-2.6-6-1.2-6 0-4.8 0-3.6 0-4.8 1.2-6 2.6-6 6-6 7 0 0 5z" fill="#b8323c" opacity=".7"/>';
+      };
+      const ponto = function(x, y){ return '<circle cx="' + x + '" cy="' + y + '" r="1.6" fill="#d3a85d" opacity=".7"/>'; };
+      const tipos = [arvore, brilho, coracao, cruz, ponto, brilho, arvore, ponto, coracao, cruz];
+      let miolo = "", k = 0;
+      for(let lin = 0; lin < 5; lin++){
+        for(let col = 0; col < 5; col++){
+          const x = (col * celula + 14 + sorte() * (celula - 28)).toFixed(1);
+          const y = (lin * celula + 14 + sorte() * (celula - 28)).toFixed(1);
+          const tipo = tipos[(k++ * 3 + lin) % tipos.length];
+          miolo += tipo(x, y, ((tipo === brilho ? .55 + sorte() * .6 : .8 + sorte() * .4) * .72).toFixed(2));
+        }
+      }
+      raiz.setProperty("--natal-padrao", svgUrl('<svg xmlns="http://www.w3.org/2000/svg" width="' + L + '" height="' + L + '" viewBox="0 0 ' + L + ' ' + L + '"><g opacity=".3">' + miolo + '</g></svg>'));
+    })();
+
+    /* A guirlanda da capa: um galho de pinheiro que cai em curva entre dois
+       laços, com frutinhas vermelhas e luzinhas piscando */
+    (function(){
+      const L = 260, A = 54;
+      const ponto = function(t){ return { x: L * t, y: 8 + 84 * t * (1 - t) }; };
+      let galho = "", agulhas = "", frutas = "", luzes = "";
+      for(let t = 0; t <= 1.0001; t += 0.02){
+        const p = ponto(t);
+        galho += (t === 0 ? "M" : "L") + p.x.toFixed(1) + " " + p.y.toFixed(1);
+      }
+      const verdes = ["#26302a", "#2f3d31", "#3b4c3e", "#4b6150", "#5d755c", "#6c7d5c"];
+      for(let i = 0; i < 300; i++){
+        const t = sorte(), p = ponto(t);
+        const ox = (sorte() - .5) * 10, oy = (sorte() - .5) * 12;
+        const ang = sorte() * Math.PI * 2, comp = 5 + sorte() * 6;
+        const x1 = p.x + ox, y1 = p.y + oy;
+        agulhas += '<line x1="' + x1.toFixed(1) + '" y1="' + y1.toFixed(1) + '" x2="' + (x1 + Math.cos(ang) * comp).toFixed(1) +
+          '" y2="' + (y1 + Math.sin(ang) * comp).toFixed(1) + '" stroke="' + verdes[Math.floor(sorte() * verdes.length)] + '"/>';
+      }
+      [0.27, 0.5, 0.73].forEach(function(t){
+        const p = ponto(t);
+        [[-3, 2], [2.6, 3.4], [0, -1.6]].forEach(function(d){
+          frutas += '<circle cx="' + (p.x + d[0]).toFixed(1) + '" cy="' + (p.y + 5 + d[1]).toFixed(1) + '" r="2.7" fill="#8f1d25"/>' +
+            '<circle cx="' + (p.x + d[0] - .8).toFixed(1) + '" cy="' + (p.y + 4.2 + d[1]).toFixed(1) + '" r=".8" fill="#e8a3a3" opacity=".8"/>';
+        });
+      });
+      [0.13, 0.38, 0.62, 0.87].forEach(function(t, i){
+        const p = ponto(t);
+        const pisca = semMovimento ? "" :
+          '<animate attributeName="opacity" values=".35;1;.35" dur="' + (2.6 + i * .5) + 's" begin="' + (i * .7) + 's" repeatCount="indefinite"/>';
+        luzes += '<g><circle cx="' + p.x.toFixed(1) + '" cy="' + (p.y + 7).toFixed(1) + '" r="6" fill="#f6d58a" opacity=".28"/>' +
+          '<circle cx="' + p.x.toFixed(1) + '" cy="' + (p.y + 7).toFixed(1) + '" r="2.4" fill="#fbe6b0"/>' + pisca + '</g>';
+      });
+      const desenho = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + L + ' ' + A + '" width="' + L + '" height="' + A + '">' +
+        /* Só o verde do galho fica 10% transparente; frutinhas, luzes e laços não */
+        '<g opacity=".9"><path d="' + galho + '" stroke="#26302a" stroke-width="7" fill="none" stroke-linecap="round"/>' +
+        '<g stroke-width="1.5" stroke-linecap="round">' + agulhas + '</g></g>' + frutas + luzes +
+        laco(0, 9, .85) + laco(L, 9, .85) + '</svg>';
+      const guirlanda = document.createElement("div");
+      guirlanda.className = "natal-guirlanda";
+      guirlanda.setAttribute("aria-hidden", "true");
+      guirlanda.style.backgroundImage = svgUrl(desenho);
+      $("inicio").appendChild(guirlanda);
+    })();
+
+    /* As bolinhas penduradas nas laterais da capa */
+    const bola = function(cor, escura, detalhe){
+      return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 50" aria-hidden="true">' +
+        '<path d="M17 2 h6 v5 h-6z" fill="#c9a36a"/><rect x="14" y="6" width="12" height="6" rx="1.5" fill="#b28c50"/>' +
+        '<defs><radialGradient id="g' + cor.slice(1) + '" cx=".35" cy=".35" r=".75"><stop offset="0" stop-color="' + cor + '"/>' +
+        '<stop offset="1" stop-color="' + escura + '"/></radialGradient></defs>' +
+        '<circle cx="20" cy="30" r="18" fill="url(#g' + cor.slice(1) + ')"/>' + detalhe +
+        '<ellipse cx="13" cy="23" rx="4" ry="6" fill="#fff" opacity=".22" transform="rotate(30 13 23)"/></svg>';
+    };
+    (function(){
+      const faixas = '<path d="M3.5 26 Q20 33 36.5 26" stroke="#e1c48a" stroke-width="2" fill="none"/>' +
+                     '<path d="M3.5 34 Q20 41 36.5 34" stroke="#e1c48a" stroke-width="2" fill="none"/>';
+      const pontos = '<g fill="#f4ebe3" opacity=".75"><circle cx="12" cy="31" r="1.3"/><circle cx="20" cy="36" r="1.3"/><circle cx="28" cy="31" r="1.3"/><circle cx="20" cy="26" r="1.3"/></g>';
+      const enfeites = [
+        { lado: "left",  pos: "clamp(4px,1.4vw,28px)", fio: 78, tam: 30, svg: bola("#9b2630", "#5c1219", pontos), atraso: 0 },
+        { lado: "left",  pos: "clamp(30px,3.6vw,64px)", fio: 34, tam: 22, svg: bola("#c9a36a", "#8a6a33", ""), atraso: -1.6, extra: true },
+        { lado: "right", pos: "clamp(4px,1.4vw,28px)", fio: 52, tam: 30, svg: bola("#3f5243", "#1f2a22", faixas), atraso: -.8 },
+        { lado: "right", pos: "clamp(30px,3.6vw,64px)", fio: 96, tam: 22, svg: bola("#b8323c", "#6f171f", ""), atraso: -2.4, extra: true }
+      ];
+      const caixa = document.createElement("div");
+      caixa.className = "natal-enfeites";
+      caixa.setAttribute("aria-hidden", "true");
+      caixa.innerHTML = enfeites.map(function(e){
+        return '<span class="natal-bola natal-bola--' + e.lado + (e.extra ? ' natal-bola--extra' : '') + '" style="' + e.lado + ':' + e.pos +
+          ';--fio:' + e.fio + 'px;--tam:' + e.tam + 'px;animation-delay:' + e.atraso + 's">' + e.svg + '</span>';
+      }).join("");
+      $("inicio").appendChild(caixa);
+    })();
+
+    /* O raminho do canto da moldura do Sobre: galhinhos finos de pinheiro,
+       dois presentinhos e duas bolinhas listradas */
+    const cantoSobre = (function(){
+      const raminho = function(x, y, ang, comp){
+        const a = ang * Math.PI / 180;
+        const dx = Math.cos(a), dy = Math.sin(a);
+        let s = '<path d="M' + x + ' ' + y + 'l' + (dx * comp).toFixed(1) + ' ' + (dy * comp).toFixed(1) + '" stroke="#6b5a45" stroke-width="1.1"/>';
+        for(let d = 4; d < comp; d += 2.6){
+          const px = x + dx * d, py = y + dy * d;
+          const tam = 7 * Math.min(1, (comp - d) / 14 + .35);
+          [-1, 1].forEach(function(lado){
+            const b = a + lado * 0.75;
+            s += '<path d="M' + px.toFixed(1) + ' ' + py.toFixed(1) + 'l' + (Math.cos(b) * tam).toFixed(1) + ' ' + (Math.sin(b) * tam).toFixed(1) +
+              '" stroke="' + (sorte() < .5 ? "#3f5a3f" : sorte() < .5 ? "#557455" : "#6d8a66") + '" stroke-width="1.05" stroke-linecap="round"/>';
+          });
+        }
+        return s;
+      };
+      const presente = function(x, y, w, h){
+        return '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="2" fill="#f7efe4" stroke="#e5d9c8" stroke-width=".8"/>' +
+          '<rect x="' + (x + w / 2 - 2.5) + '" y="' + y + '" width="5" height="' + h + '" fill="#c0303a"/>' +
+          '<rect x="' + x + '" y="' + (y + h / 2 - 2.5) + '" width="' + w + '" height="5" fill="#c0303a"/>' +
+          '<path d="M' + (x + w / 2) + ' ' + y + 'c-10 -9 -16 -2 -8 2zM' + (x + w / 2) + ' ' + y + 'c10 -9 16 -2 8 2z" fill="#d23c45" stroke="#9e2630" stroke-width=".8"/>';
+      };
+      const listrada = function(x, y, r, id){
+        return '<defs><clipPath id="' + id + '"><circle cx="' + x + '" cy="' + y + '" r="' + r + '"/></clipPath></defs>' +
+          '<path d="M' + x + ' ' + (y - r - 4) + 'v4" stroke="#c9a36a" stroke-width="1"/><rect x="' + (x - 2.4) + '" y="' + (y - r - 2) + '" width="4.8" height="3" fill="#c9a36a"/>' +
+          '<circle cx="' + x + '" cy="' + y + '" r="' + r + '" fill="#fffaf3"/>' +
+          '<g clip-path="url(#' + id + ')" stroke="#c0303a" stroke-width="2.2">' +
+            [-8, -3, 2, 7, 12].map(function(d){ return '<path d="M' + (x - r - 4 + d) + ' ' + (y + r + 2) + 'l' + (r * 1.6) + ' ' + (-r * 2.4) + '"/>'; }).join("") + '</g>' +
+          '<circle cx="' + (x - r * .35) + '" cy="' + (y - r * .35) + '" r="' + (r * .25) + '" fill="#fff" opacity=".6"/>';
+      };
+      let ramos = "";
+      [[90, 120, -150, 70], [90, 120, -115, 64], [90, 120, -70, 52], [90, 120, 10, 78], [90, 120, -20, 60], [90, 120, 160, 52], [90, 120, 60, 40], [90, 120, 120, 44]].forEach(function(r){
+        ramos += raminho(r[0], r[1], r[2], r[3]);
+      });
+      return svg("0 0 200 170", '<g>' + ramos + '</g>' +
+        presente(58, 104, 42, 36) + presente(96, 116, 36, 30) +
+        listrada(38, 92, 9, "natal-l1") + listrada(150, 124, 8, "natal-l2"));
+    })();
+
+    /* A neve: floquinhos de neve miúdos e quase transparentes, caindo devagar
+       e girando de leve. Quem pediu menos movimento no aparelho não recebe. */
+    if(CONFIG.natal.neve && !semMovimento){
+      (function(){
+        const tela = document.createElement("canvas");
+        tela.className = "natal-neve";
+        tela.setAttribute("aria-hidden", "true");
+        document.body.appendChild(tela);
+        const ctx = tela.getContext("2d");
+        /* Os flocos são desenhados uma vez só (brancos) e carimbados em todos. O desenho é o da
+           referência: seis braços, cada um com três pares de raminhos. */
+        const T = 64, m = T / 2;
+        const desenharFloco = function(cor){
+          const c = document.createElement("canvas");
+          c.width = c.height = T;
+          const fc = c.getContext("2d");
+          fc.translate(m, m);
+          fc.strokeStyle = cor;
+          fc.lineCap = "round";
+          fc.lineWidth = 2.6;
+          /* Uma sombrinha quente bem leve, senão o branco some no fundo creme */
+          fc.shadowColor = "rgba(120,104,90,.35)";
+          fc.shadowBlur = 2;
+          const ramos = [[9, 7.5], [15, 6.5], [21, 4.5]];
+          for(let i = 0; i < 6; i++){
+            fc.save();
+            fc.rotate(i * Math.PI / 3);
+            fc.beginPath();
+            fc.moveTo(0, 0); fc.lineTo(0, -28);
+            ramos.forEach(function(r){
+              const dx = Math.sin(0.9) * r[1], dy = Math.cos(0.9) * r[1];
+              fc.moveTo(0, -r[0]); fc.lineTo(-dx, -r[0] - dy);
+              fc.moveTo(0, -r[0]); fc.lineTo(dx, -r[0] - dy);
+            });
+            fc.stroke();
+            fc.restore();
+          }
+          return c;
+        };
+        const sprites = ["#ffffff", "#fffdf9", "#fbf8f4"].map(desenharFloco);
+        let largura = 0, altura = 0, flocos = [];
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const novoFloco = function(noTopo){
+          return {
+            x: Math.random() * largura,
+            y: noTopo ? -16 : Math.random() * altura,
+            /* Tamanhos irregulares: a maioria pequena, alguns bem maiores */
+            r: 3.5 + Math.pow(Math.random(), 2.4) * 17,
+            vy: .2 + Math.random() * .35,
+            sprite: Math.floor(Math.random() * 3),
+            fase: Math.random() * Math.PI * 2,
+            balanco: .15 + Math.random() * .3,
+            giro: Math.random() * Math.PI,
+            vgiro: (Math.random() - .5) * .01,
+            alfa: .28 + Math.random() * .4
+          };
+        };
+        const medir = function(){
+          largura = window.innerWidth; altura = window.innerHeight;
+          tela.width = largura * dpr; tela.height = altura * dpr;
+          const total = Math.round(Math.min(48, Math.max(12, largura * altura / 26000)));
+          while(flocos.length < total) flocos.push(novoFloco(false));
+          flocos.length = total;
+        };
+        medir();
+        window.addEventListener("resize", medir);
+        let antes = performance.now();
+        const quadro = function(agora){
+          const passo = Math.min(3, (agora - antes) / 16.7);
+          antes = agora;
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          ctx.clearRect(0, 0, tela.width, tela.height);
+          for(let i = 0; i < flocos.length; i++){
+            const f = flocos[i];
+            f.fase += .012 * passo;
+            f.giro += f.vgiro * passo;
+            f.y += f.vy * passo;
+            f.x += Math.sin(f.fase) * f.balanco * passo;
+            if(f.y > altura + 16){ flocos[i] = novoFloco(true); continue; }
+            if(f.x < -16) f.x = largura + 16; else if(f.x > largura + 16) f.x = -16;
+            ctx.globalAlpha = f.alfa;
+            ctx.setTransform(dpr, 0, 0, dpr, f.x * dpr, f.y * dpr);
+            ctx.rotate(f.giro);
+            ctx.drawImage(sprites[f.sprite], -f.r, -f.r, f.r * 2, f.r * 2);
+          }
+          window.requestAnimationFrame(quadro);
+        };
+        window.requestAnimationFrame(quadro);
+      })();
+    }
+
+    /* Continua o galhinho de um enfeite pendurado (as meias) até as bordas
+       da seção: a ponta esquerda sobe até a linha de cima e a direita vai
+       até o fim da página. Refaz a conta quando a tela muda de tamanho. */
+    const ancorarGalho = function(secao, img, galho, soComputador){
+      const tela = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      tela.setAttribute("class", "natal-galho" + (soComputador ? " natal-solto--pc" : ""));
+      tela.setAttribute("aria-hidden", "true");
+      secao.insertBefore(tela, img);
+      const ponta = function(fracao){
+        /* A posição da ponta na tela já com a imagem girada */
+        const r = img.getBoundingClientRect(), base = secao.getBoundingClientRect();
+        const w = img.offsetWidth, h = img.offsetHeight;
+        const m = new DOMMatrixReadOnly(getComputedStyle(img).transform === "none" ? undefined : getComputedStyle(img).transform);
+        const px = fracao[0] * w - w / 2, py = fracao[1] * h - h / 2;
+        const p = m.transformPoint({ x: px, y: py });
+        return { x: r.left + r.width / 2 + p.x - base.left, y: r.top + r.height / 2 + p.y - base.top };
+      };
+      const desenhar = function(){
+        if(!img.offsetWidth) return;
+        const L = secao.clientWidth, A = secao.clientHeight;
+        tela.setAttribute("viewBox", "0 0 " + L + " " + A);
+        const e = ponta(galho.esquerda), d = ponta(galho.direita);
+        /* Esquerda: sobe em curva até a borda de cima. Direita: segue até a borda. */
+        const ladoEsq = "M" + e.x.toFixed(1) + " " + e.y.toFixed(1) +
+          " Q" + (e.x - 40).toFixed(1) + " " + (e.y * .45).toFixed(1) + " " + (e.x - 70).toFixed(1) + " -2";
+        const ladoDir = "M" + d.x.toFixed(1) + " " + d.y.toFixed(1) +
+          " Q" + ((d.x + L) / 2).toFixed(1) + " " + (d.y + 10).toFixed(1) + " " + (L + 2) + " " + (d.y - 6).toFixed(1);
+        tela.innerHTML = [ladoEsq, ladoDir].map(function(c){
+          return '<path d="' + c + '" stroke="#7a6550" stroke-width="3.2" fill="none" stroke-linecap="round"/>' +
+                 '<path d="' + c + '" stroke="#a48c72" stroke-width="1.1" fill="none" stroke-linecap="round" transform="translate(0 -.8)"/>';
+        }).join("");
+      };
+      if(img.complete) desenhar(); else img.addEventListener("load", desenhar);
+      window.addEventListener("resize", desenhar);
+      window.setTimeout(desenhar, 600);
+    };
+
+    /* O que depende das seções já montadas (Sobre e enfeites soltos) entra
+       logo depois que o resto da página termina de ser desenhado */
+    window.setTimeout(function(){
+      /* Sobre: moldura de bengala doce, laço xadrez em cima, raminho no canto
+         e a árvore com presentes saindo da lateral direita */
+      const visualSobre = $("sobre-visual");
+      if(visualSobre){
+        visualSobre.insertAdjacentHTML("beforeend",
+          '<span class="natal-moldura" aria-hidden="true"></span>' +
+          '<img class="natal-laco-foto" src="imagens/natal/laco-xadrez.webp" alt="" aria-hidden="true">' +
+          '<span class="natal-canto" aria-hidden="true">' + cantoSobre + '</span>');
+        $("sobre").insertAdjacentHTML("beforeend",
+          '<img class="natal-arvore" src="imagens/natal/arvore-presentes.webp" alt="" aria-hidden="true">');
+      }
+      /* A faixa vinho com laço na divisória antes do Contato */
+      const contato = $("contato");
+      if(contato) contato.insertAdjacentHTML("beforebegin",
+        '<div class="natal-faixa" aria-hidden="true"><span class="natal-faixa__fita"></span>' +
+        '<img class="natal-faixa__laco" src="imagens/natal/laco-faixa.webp" alt=""></div>');
+      /* Enfeites soltos: cada um vai para a seção indicada em CONFIG.natal.enfeites */
+      (CONFIG.natal.enfeites || []).forEach(function(e){
+        const secao = e.dentro ? document.querySelector("#" + e.secao + " " + e.dentro) : document.getElementById(e.secao);
+        if(!secao) return;
+        if(getComputedStyle(secao).position === "static") secao.style.position = "relative";
+        const img = document.createElement("img");
+        img.className = "natal-solto" + (e.soComputador ? " natal-solto--pc" : "");
+        img.src = e.arquivo;
+        img.alt = "";
+        img.setAttribute("aria-hidden", "true");
+        img.loading = "lazy";
+        img.setAttribute("style", e.estilo || "");
+        secao.appendChild(img);
+        if(e.galho) ancorarGalho(secao, img, e.galho, !!e.soComputador);
+      });
+    }, 0);
+  }
+
+  /* A tarja de cima, com a contagem regressiva (hoje, a do Natal). Ela só
+     aparece quando faltam poucos dias e some sozinha depois da data. */
   (function(){
     const bf = CONFIG.blackFriday;
     const barra = $("topo-barra");
     const agora = new Date();
-    const alvo = new Date(agora.getFullYear(), bf.mes - 1, bf.dia, 23, 59, 59);
-    const dentro = function(){
-      const resto = alvo - new Date();
-      return resto > 0 && resto <= bf.alcanceDias * 86400000;
-    };
-    if(!dentro()){
+    /* Em janeiro, o Natal que conta é o do ano anterior */
+    const anoAlvo = (bf.mes === 12 && agora.getMonth() === 0) ? agora.getFullYear() - 1 : agora.getFullYear();
+    const alvo = new Date(anoAlvo, bf.mes - 1, bf.dia, 0, 0, 0);
+    const resto = alvo - agora;
+    const contando = resto > 0 && resto <= bf.alcanceDias * 86400000;
+    /* Do dia do Natal até o fim da decoração, a tarja deseja boas festas */
+    const festa = !contando && resto <= 0 && bf.festa && natalAtivo;
+    if(!contando && !festa){
       barra.hidden = true;
       document.documentElement.style.setProperty("--altura-barra", "0px");
       return;
     }
-    const doisDigitos = function(n){ return (n < 10 ? "0" : "") + n; };
+    const rastreio = bf.rastreio || "cta_tarja_topo";
+    const link = '<a class="barra__link" href="#contato" data-rastrear="' + escapar(rastreio) + '">' + escapar(bf.link) + ' &rarr;</a>';
+    if(festa){
+      barra.innerHTML = '<div class="barra__trilho">' +
+        '<span class="barra__tag">' + escapar(bf.tag) + '</span>' +
+        '<span class="barra__conta">' + escapar(bf.festa) + '</span>' +
+        '<span class="barra__texto">' + escapar(bf.texto) + '</span>' + link + '</div>';
+      barra.hidden = false;
+      return;
+    }
     barra.innerHTML = '<div class="barra__trilho">' +
       '<span class="barra__tag">' + escapar(bf.tag) + '</span>' +
       '<span class="barra__conta">' + (bf.faltam ? escapar(bf.faltam) + " " : "") +
         '<b id="bf-dias"></b> <span id="bf-rotulo"></span> ' + escapar(bf.depois) + '</span>' +
-      '<span class="barra__texto">' + escapar(bf.texto) + '</span>' +
-      '<a class="barra__link" href="#contato" data-rastrear="cta_black_friday">' + escapar(bf.link) + ' &rarr;</a>' +
+      '<span class="barra__texto">' + escapar(bf.texto) + '</span>' + link +
       '</div>';
     barra.hidden = false;
+    /* Conta os dias de calendário até o dia 25 (à meia-noite vira o número) */
     const atualizar = function(){
-      let resto = Math.max(0, alvo - new Date());
-      const dias = Math.floor(resto / 86400000); resto -= dias * 86400000;
-      const horas = Math.floor(resto / 3600000); resto -= horas * 3600000;
-      const minutos = Math.floor(resto / 60000); resto -= minutos * 60000;
-      const segundos = Math.floor(resto / 1000);
+      const hoje = new Date();
+      const inicioHoje = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+      const dias = Math.max(0, Math.round((alvo - inicioHoje) / 86400000));
       $("bf-dias").textContent = dias;
-      $("bf-rotulo").textContent = bf.dias;
+      $("bf-rotulo").textContent = (T.barraDias ? T.barraDias(dias) : bf.dias);
     };
     atualizar();
-    window.setInterval(atualizar, 1000);
+    window.setInterval(atualizar, 60000);
   })();
 
   /* ---------- 2. Hero ---------- */
@@ -2971,7 +3596,11 @@ if(IDIOMA === "en"){
 
   const renderizarConteudoPorNicho = function(nichosPortfolio){
   $("nichos").innerHTML = nichosPortfolio.map(function(n, i){
-    return '<button type="button" class="nicho' + (n.cor === "verde" ? ' nicho--verde' : '') + '" data-indice="' + i + '"' +
+    /* A cor do nicho vem do painel (verde, destaque); o Natal ganha o clima
+       de Natal só enquanto a decoração estiver ligada */
+    const classeCor = n.cor === "verde" ? ' nicho--verde' : n.cor === "destaque" ? ' nicho--destaque' :
+      (natalAtivo && /^(natal|christmas)$/i.test(n.nome) ? ' nicho--natal' : '');
+    return '<button type="button" class="nicho' + classeCor + '" data-indice="' + i + '"' +
            ' aria-pressed="' + (i === 0 ? "true" : "false") + '">' + escapar(n.nome) + '</button>';
   }).join("");
 
@@ -3369,7 +3998,7 @@ if(IDIOMA === "en"){
             .filter(function(v){ return v.nicho_id === n.id; })
             .map(function(v){ return { marca: v.marca, conteudo: v.conteudo || "", capa: v.capa || "", link: v.link, gradiente: v.gradiente || "" }; })
         };
-      }).filter(function(n){ return n.videos.length > 0; });
+      }).filter(function(n, i){ return n.videos.length > 0 && nichosBrutos[i].visivel !== false; });
       if(nichosPortfolio.length) renderizarConteudoPorNicho(nichosPortfolio);
     }).catch(function(erro){
       console.error("Não foi possível carregar os vídeos do portfólio:", erro);
