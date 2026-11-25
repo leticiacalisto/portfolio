@@ -1468,10 +1468,10 @@ html.natal #portfolio::before{
    Tom sobre tom e com a moldura um pouco mais estreita que a do filme. */
 html.natal .foto-ugc{
   padding:17px 5px;
-  background-color:#963340;
+  background-color:#7e2433;
   background-image:
-    repeating-linear-gradient(90deg,rgba(45,4,12,.45) 0 4px,transparent 4px 8px),
-    repeating-linear-gradient(0deg,rgba(45,4,12,.45) 0 4px,transparent 4px 8px);
+    repeating-linear-gradient(90deg,rgba(28,2,10,.55) 0 4px,transparent 4px 8px),
+    repeating-linear-gradient(0deg,rgba(28,2,10,.55) 0 4px,transparent 4px 8px);
 }
 html.natal .marquise--fotos .foto-ugc::before,
 html.natal .marquise--fotos .foto-ugc::after{display:none;}
@@ -1559,7 +1559,8 @@ html.natal .marquise--logos .marquise__grupo li:hover::before{transform:translat
 .nicho--natal[aria-pressed="true"]::before{color:#f4ebe3;}
 
 @media (max-width:900px){
-  html.natal .sobre__grade{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);}
+  /* No celular a foto fica um pouco mais estreita, para a moldura não encostar no texto */
+  html.natal .sobre__grade{grid-template-columns:minmax(0,.86fr) minmax(0,1.1fr);column-gap:24px;}
   .natal-guirlanda{height:38px;background-size:184px 38px;}
   .natal-bola{top:calc(var(--altura-topo) + 10px);}
   .natal-bola--extra,.natal-bola--left{display:none;}
