@@ -24536,7 +24536,7 @@ ${botao}
 
   carregarBriefings().catch((erro) => console.error(erro));
   // Briefing novo chega com a página aberta: confere de tempos em tempos
-  setInterval(() => carregarBriefings().catch((erro) => console.error(erro)), 120000);
+  setInterval(() => { if (!document.hidden) carregarBriefings().catch((erro) => console.error(erro)); }, 120000);
 
   // ---------------------------------------------------------------
   // ROTEIROS (página pública /roteiro; tabela e funções em
@@ -24552,8 +24552,28 @@ ${botao}
   var roteirosCarregados = false; // o sino só olha os roteiros depois da 1ª leitura
   var URL_ROTEIRO = "https://www.leticiacalisto.com/roteiro/";
 
+  // Economia de tráfego: o conteúdo e o histórico dos roteiros pesam muito
+  // (vários MB somados). A conferência de tempos em tempos baixa só as
+  // colunas leves e busca completo apenas o roteiro que é novo ou mudou.
+  const COLUNAS_LEVES_ROTEIRO = "id,card_id,versao,status,comentarios,enviado_em,respondido_em,updated_at";
+  const assinaturaRoteiro = (r) => [r.versao, r.status, r.enviado_em, r.respondido_em, r.updated_at, JSON.stringify(r.comentarios || null)].join("|");
+  async function buscarRoteirosComEconomia() {
+    if (!roteirosCarregados) return Auth.sb.from("roteiros").select("*");
+    const leves = await Auth.sb.from("roteiros").select(COLUNAS_LEVES_ROTEIRO);
+    if (leves.error) return leves;
+    const porId = new Map(roteirosCache.map((r) => [r.id, r]));
+    const mudaram = (leves.data || []).filter((r) => !porId.has(r.id) || assinaturaRoteiro(porId.get(r.id)) !== assinaturaRoteiro(r)).map((r) => r.id);
+    let completos = [];
+    if (mudaram.length) {
+      const resposta = await Auth.sb.from("roteiros").select("*").in("id", mudaram);
+      if (resposta.error) return resposta;
+      completos = resposta.data || [];
+    }
+    const novos = new Map(completos.map((r) => [r.id, r]));
+    return { data: (leves.data || []).map((r) => novos.get(r.id) || porId.get(r.id)).filter(Boolean), error: null };
+  }
   async function carregarRoteiros() {
-    const { data, error } = await Auth.sb.from("roteiros").select("*");
+    const { data, error } = await buscarRoteirosComEconomia();
     if (error) {
       roteirosDisponivel = false;
       if (cardEmEdicaoObjeto) atualizarBlocoRoteiro(cardEmEdicaoObjeto);
@@ -24731,7 +24751,11 @@ ${botao}
 
   carregarRoteiros().catch((erro) => console.error(erro));
   // Resposta da marca com a página aberta: confere de tempos em tempos
-  setInterval(() => carregarRoteiros().catch((erro) => console.error(erro)), 60000);
+  // (só com a aba à vista: escondida não gasta tráfego; ao voltar, confere na hora)
+  setInterval(() => { if (!document.hidden) carregarRoteiros().catch((erro) => console.error(erro)); }, 60000);
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden && roteirosCarregados) carregarRoteiros().catch((erro) => console.error(erro));
+  });
 
   // ---------------------------------------------------------------
   // NOTIFICAÇÕES (sino no topo). Duas origens:
@@ -25383,6 +25407,7 @@ ${botao}
     if (dispositivoNotificaAtivo()) inscreverPush().then(renderizarDispositivosNotificacao);
     // novas respostas de formulário chegam com a página aberta: confere de tempos em tempos
     setInterval(async () => {
+      if (document.hidden) return; // aba escondida não gasta tráfego
       try {
         leadsCache = await buscarTudo("portfolio_leads");
         await converterLeadsEmOportunidades();
@@ -25399,7 +25424,19 @@ ${botao}
       if (atualizandoEventos) return;
       atualizandoEventos = true;
       try {
-        eventosCache = await buscarTudo("portfolio_events");
+        // Só as visitas novas desde a mais recente que já está aqui (a lista
+        // inteira tem milhares de linhas); sem nenhuma ainda, busca tudo.
+        const maisRecente = eventosCache.reduce((m, e) => (e.created_at > m ? e.created_at : m), "");
+        if (!maisRecente) {
+          eventosCache = await buscarTudo("portfolio_events");
+        } else {
+          const { data, error } = await Auth.sb.from("portfolio_events").select("*").gte("created_at", maisRecente).order("created_at", { ascending: false });
+          if (error) throw error;
+          if (data && data.length) {
+            const ja = new Set(eventosCache.map((e) => e.id));
+            eventosCache = data.filter((e) => !ja.has(e.id)).concat(eventosCache);
+          }
+        }
         renderizarPrincipal();
         renderizarPortfolio();
       } catch (erro) {
@@ -25407,7 +25444,7 @@ ${botao}
       }
       atualizandoEventos = false;
     }
-    setInterval(atualizarEventosPortfolio, 60000);
+    setInterval(() => { if (!document.hidden) atualizarEventosPortfolio(); }, 60000);
     document.addEventListener("visibilitychange", () => {
       if (!document.hidden) atualizarEventosPortfolio();
     });
