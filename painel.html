@@ -3349,6 +3349,19 @@
   .chip-nicho-pf.ativo{ background: var(--grafite); color: var(--branco); }
   .chip-nicho-pf.ativo b{ background: rgba(255,255,255,.2); color: var(--branco); }
   .chips-nicho-pf.em-busca .chip-nicho-pf{ opacity:.45; }
+  .chip-nicho-pf.oculto-pf{ opacity:.5; text-decoration:line-through; }
+  .btn-nichos-pf{ border:1px solid rgba(20,17,13,.15) !important; border-radius:10px; padding:9px 14px !important; }
+  .linha-nicho-pf{ display:flex; align-items:center; gap:8px; padding:7px 0; border-bottom:1px solid rgba(20,17,13,.08); }
+  .linha-nicho-pf.oculto-pf .nome-nicho-pf{ opacity:.45; text-decoration:line-through; }
+  .linha-nicho-pf .nome-nicho-pf{ flex:1; min-width:0; border:1px solid transparent; border-radius:8px; padding:7px 10px; font:inherit; font-size:.88rem; font-weight:600; background:transparent; }
+  .linha-nicho-pf .nome-nicho-pf:hover, .linha-nicho-pf .nome-nicho-pf:focus{ border-color:rgba(20,17,13,.18); background:#fff; outline:none; }
+  .linha-nicho-pf .qtd-nicho-pf{ font-size:.72rem; color:var(--texto-suave); white-space:nowrap; }
+  .linha-nicho-pf button{ border:1px solid rgba(20,17,13,.12); background:#fff; border-radius:8px; width:32px; height:32px; cursor:pointer; font-size:.9rem; line-height:1; color:var(--grafite); }
+  .linha-nicho-pf button:hover:not(:disabled){ background:#f3eee9; }
+  .linha-nicho-pf button:disabled{ opacity:.3; cursor:default; }
+  .linha-nicho-pf .apagar-nicho-pf:hover{ background:#fbe9e7; color:#a1281c; }
+  .novo-nicho-pf{ display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:16px; }
+  .novo-nicho-pf input[type=text]{ flex:1; min-width:180px; border:1px solid rgba(20,17,13,.18); border-radius:10px; padding:10px 12px; font:inherit; }
   .linha-video-pf{ background:#FAF8FD; border:none; border-radius:16px; padding:10px 16px 10px 12px; margin-bottom:8px; gap:14px; transition: background .15s ease; }
   .linha-video-pf:hover{ background:#F3EFFA; }
   .linha-video-pf .miniatura-video-pf{ position:relative; width:96px; height:54px; border-radius:10px; }
@@ -4467,6 +4480,7 @@
               <div><h2 style="margin-bottom:2px;">Todos os vídeos</h2></div>
               <div class="acoes-topo-quadro">
                 <button type="button" class="btn-status-portfolio sem-mudancas" id="btnStatusPortfolio" title="Sem alterações desde a última conferida">Portfólio em dia</button>
+                <button type="button" class="btn-cancelar-quadro btn-nichos-pf" id="btnGerenciarNichosPf" title="Criar, renomear, ordenar, ocultar e apagar nichos">⚙ Nichos</button>
                 <button type="button" class="btn-novo-card" id="btnNovoVideoPortfolio">+ Adicionar vídeo</button>
               </div>
             </div>
@@ -6045,6 +6059,24 @@
           <button type="submit" class="btn-salvar-quadro">Salvar</button>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL: NICHOS DO PORTFÓLIO ===================== -->
+<div class="overlay-modal" id="overlayModalNichosPf" hidden>
+  <div class="modal-quadro modal-quadro-grande">
+    <h3>⚙ Nichos do portfólio</h3>
+    <p class="texto-pequeno" style="margin:-8px 0 14px;">A ordem aqui é a ordem dos balões no site. Tudo é salvo na hora. Nicho oculto (ou sem nenhum vídeo visível) não aparece no site.</p>
+    <div id="listaNichosPf"></div>
+    <form class="novo-nicho-pf" id="formNovoNichoPf">
+      <input type="text" id="campoNovoNichoPf" placeholder="Nome do novo nicho" maxlength="60" autocomplete="off">
+      <label class="texto-pequeno"><input type="checkbox" id="campoNovoNichoPrimeiro" checked> primeiro da lista</label>
+      <button type="submit" class="btn-novo-card">+ Criar nicho</button>
+    </form>
+    <div class="acoes-modal-quadro">
+      <span style="flex-grow:1"></span>
+      <button type="button" class="btn-salvar-quadro" id="btnFecharNichosPf">Pronto</button>
     </div>
   </div>
 </div>
@@ -8198,7 +8230,7 @@
     container.innerHTML = portfolioNichosCache
       .map((n) => {
         const qtd = portfolioVideosCache.filter((v) => v.nicho_id === n.id).length;
-        return `<button type="button" class="chip-nicho-pf ${n.id === nichoSelecionadoPf && !emBusca ? "ativo" : ""}" draggable="true" title="Arrastar para reordenar" data-nicho-pf="${n.id}"><span>${esc(n.nome)}</span><b>${qtd}</b></button>`;
+        return `<button type="button" class="chip-nicho-pf ${n.id === nichoSelecionadoPf && !emBusca ? "ativo" : ""} ${n.visivel === false ? "oculto-pf" : ""}" draggable="true" title="Arrastar para reordenar" data-nicho-pf="${n.id}"><span>${esc(n.nome)}</span><b>${qtd}</b></button>`;
       })
       .join("");
     ligarDragNichosPf();
@@ -8267,6 +8299,136 @@
       alert("Não foi possível salvar a nova ordem dos nichos.");
       console.error(erro);
     }
+  }
+
+  // ---------------------------------------------------------------
+  // Gerenciar nichos: criar, renomear, ordenar (setas), ocultar e apagar.
+  // Grava direto em portfolio_nichos. "Ocultar" usa a coluna visivel
+  // (js/portfolio-nichos-visivel-setup.sql).
+  // ---------------------------------------------------------------
+  const overlayModalNichosPf = document.getElementById("overlayModalNichosPf");
+  function renderizarListaNichosPf() {
+    const lista = document.getElementById("listaNichosPf");
+    if (!lista) return;
+    const total = portfolioNichosCache.length;
+    lista.innerHTML = portfolioNichosCache.map((n, i) => {
+      const qtd = portfolioVideosCache.filter((v) => v.nicho_id === n.id).length;
+      const oculto = n.visivel === false;
+      return `<div class="linha-nicho-pf ${oculto ? "oculto-pf" : ""}" data-id="${n.id}">
+        <button type="button" data-acao="subir" title="Subir" ${i === 0 ? "disabled" : ""}>↑</button>
+        <button type="button" data-acao="descer" title="Descer" ${i === total - 1 ? "disabled" : ""}>↓</button>
+        <input type="text" class="nome-nicho-pf" value="${esc(n.nome)}" maxlength="60" title="Clique para renomear">
+        <span class="qtd-nicho-pf">${qtd} vídeo${qtd === 1 ? "" : "s"}</span>
+        <button type="button" data-acao="ocultar" title="${oculto ? "Mostrar no site" : "Ocultar do site"}">${oculto ? "🙈" : "👁"}</button>
+        <button type="button" data-acao="apagar" class="apagar-nicho-pf" title="Apagar nicho">🗑</button>
+      </div>`;
+    }).join("");
+  }
+  function depoisDeMudarNichosPf() {
+    portfolioNichosCache.sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0));
+    renderizarListaNichosPf();
+    renderizarFiltroNichoPf();
+    renderizarVideosPorNicho();
+    marcarPortfolioPendente();
+  }
+  async function gravarOrdemNichosPf() {
+    portfolioNichosCache.forEach((n, i) => { n.ordem = i; });
+    const resultados = await Promise.all(portfolioNichosCache.map((n, i) => Auth.sb.from("portfolio_nichos").update({ ordem: i }).eq("id", n.id)));
+    const falha = resultados.find((r) => r.error);
+    if (falha) throw falha.error;
+  }
+  async function abrirModalNichosPf() {
+    await recarregarVideosPortfolio();
+    renderizarListaNichosPf();
+    overlayModalNichosPf.hidden = false;
+  }
+  function fecharModalNichosPf() { overlayModalNichosPf.hidden = true; }
+  if (overlayModalNichosPf) {
+    document.getElementById("btnGerenciarNichosPf").addEventListener("click", abrirModalNichosPf);
+    document.getElementById("btnFecharNichosPf").addEventListener("click", fecharModalNichosPf);
+    overlayModalNichosPf.addEventListener("click", (evento) => { if (evento.target === overlayModalNichosPf) fecharModalNichosPf(); });
+
+    document.getElementById("listaNichosPf").addEventListener("click", async (evento) => {
+      const botao = evento.target.closest("[data-acao]");
+      if (!botao) return;
+      const id = botao.closest(".linha-nicho-pf").dataset.id;
+      const i = portfolioNichosCache.findIndex((n) => n.id === id);
+      const nicho = portfolioNichosCache[i];
+      if (!nicho) return;
+      const acao = botao.dataset.acao;
+      try {
+        if (acao === "subir" || acao === "descer") {
+          const j = acao === "subir" ? i - 1 : i + 1;
+          if (j < 0 || j >= portfolioNichosCache.length) return;
+          portfolioNichosCache.splice(j, 0, portfolioNichosCache.splice(i, 1)[0]);
+          renderizarListaNichosPf();
+          await gravarOrdemNichosPf();
+        } else if (acao === "ocultar") {
+          const visivel = nicho.visivel === false;
+          const { error } = await Auth.sb.from("portfolio_nichos").update({ visivel }).eq("id", id);
+          if (error) {
+            alert('Não deu para ocultar: falta a coluna "visivel" na tabela de nichos. Ela é criada pelo js/portfolio-nichos-visivel-setup.sql (uma vez só).');
+            console.error(error);
+            return;
+          }
+          nicho.visivel = visivel;
+        } else if (acao === "apagar") {
+          const qtd = portfolioVideosCache.filter((v) => v.nicho_id === id).length;
+          const aviso = qtd
+            ? `Apagar o nicho "${nicho.nome}"?\n\nOs ${qtd} vídeo${qtd === 1 ? "" : "s"} dele também ${qtd === 1 ? "será apagado" : "serão apagados"}, e não dá para desfazer. Se quiser só tirar do site, use o olhinho (ocultar).`
+            : `Apagar o nicho "${nicho.nome}"? Ele está vazio. Não dá para desfazer.`;
+          if (!confirm(aviso)) return;
+          const { error } = await Auth.sb.from("portfolio_nichos").delete().eq("id", id);
+          if (error) throw error;
+          portfolioNichosCache.splice(i, 1);
+          portfolioVideosCache = portfolioVideosCache.filter((v) => v.nicho_id !== id);
+          if (nichoSelecionadoPf === id) nichoSelecionadoPf = portfolioNichosCache[0] ? portfolioNichosCache[0].id : null;
+          await gravarOrdemNichosPf();
+        }
+        depoisDeMudarNichosPf();
+      } catch (erro) {
+        alert("Não foi possível salvar a mudança no nicho.");
+        console.error(erro);
+        await recarregarVideosPortfolio();
+        renderizarListaNichosPf();
+      }
+    });
+
+    // Renomear: grava quando sai do campo (ou aperta Enter)
+    document.getElementById("listaNichosPf").addEventListener("change", async (evento) => {
+      const campo = evento.target.closest(".nome-nicho-pf");
+      if (!campo) return;
+      const id = campo.closest(".linha-nicho-pf").dataset.id;
+      const nicho = portfolioNichosCache.find((n) => n.id === id);
+      const nome = campo.value.trim();
+      if (!nicho || !nome || nome === nicho.nome) { if (nicho) campo.value = nicho.nome; return; }
+      const { error } = await Auth.sb.from("portfolio_nichos").update({ nome }).eq("id", id);
+      if (error) { alert("Não foi possível renomear o nicho."); console.error(error); campo.value = nicho.nome; return; }
+      nicho.nome = nome;
+      depoisDeMudarNichosPf();
+    });
+    document.getElementById("listaNichosPf").addEventListener("keydown", (evento) => {
+      if (evento.key === "Enter" && evento.target.closest(".nome-nicho-pf")) evento.target.blur();
+    });
+
+    document.getElementById("formNovoNichoPf").addEventListener("submit", async (evento) => {
+      evento.preventDefault();
+      const campo = document.getElementById("campoNovoNichoPf");
+      const nome = campo.value.trim();
+      if (!nome) { campo.focus(); return; }
+      if (portfolioNichosCache.some((n) => normalizarTexto(n.nome) === normalizarTexto(nome))) {
+        alert(`Já existe um nicho chamado "${nome}".`);
+        return;
+      }
+      const primeiro = document.getElementById("campoNovoNichoPrimeiro").checked;
+      const { data, error } = await Auth.sb.from("portfolio_nichos").insert({ nome, ordem: primeiro ? -1 : portfolioNichosCache.length }).select().single();
+      if (error) { alert("Não foi possível criar o nicho."); console.error(error); return; }
+      if (primeiro) portfolioNichosCache.unshift(data); else portfolioNichosCache.push(data);
+      try { await gravarOrdemNichosPf(); } catch (erro) { console.error(erro); }
+      nichoSelecionadoPf = data.id;
+      campo.value = "";
+      depoisDeMudarNichosPf();
+    });
   }
 
   function tituloVideoPf(v) {
