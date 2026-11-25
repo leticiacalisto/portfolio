@@ -3973,6 +3973,33 @@ if(IDIOMA === "en"){
     });
   });
   aplicarLista();
+
+  /* No computador, os balões de nicho se dividem por igual entre as linhas
+     (em vez de encher a primeira e sobrar pouco na última): a fileira
+     estreita até o ponto em que ainda cabe no mesmo número de linhas. */
+  const equilibrarNichos = function(){
+    const caixa = $("nichos");
+    caixa.style.maxWidth = "";
+    caixa.style.marginInline = "";
+    if(window.matchMedia("(max-width: 900px)").matches) return;
+    const visiveis = Array.prototype.filter.call(caixa.querySelectorAll(".nicho"), function(b){ return b.offsetParent; });
+    if(visiveis.length < 2) return;
+    const linhas = function(){ return new Set(visiveis.map(function(b){ return b.offsetTop; })).size; };
+    const alvo = linhas();
+    if(alvo < 2) return;
+    let largura = caixa.clientWidth, minimo = largura / alvo;
+    /* Busca binária pela menor largura que mantém o mesmo número de linhas */
+    while(largura - minimo > 4){
+      const meio = (largura + minimo) / 2;
+      caixa.style.maxWidth = meio + "px";
+      if(linhas() > alvo) minimo = meio; else largura = meio;
+    }
+    caixa.style.maxWidth = Math.ceil(largura + 2) + "px";
+    caixa.style.marginInline = "auto";
+  };
+  equilibrarNichos();
+  window.addEventListener("resize", equilibrarNichos);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(equilibrarNichos);
   };
 
   (function(){
