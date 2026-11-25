@@ -6547,7 +6547,7 @@
 <div class="overlay-modal" id="overlayReajusteSaldo" hidden>
   <div class="modal-quadro">
     <h3>Reajustar saldo do Nubank PJ</h3>
-    <p class="texto-pequeno" style="margin:-8px 0 12px;">Digite o saldo que aparece no app do banco. A partir dessa data, o caixa acumulado passa a partir desse valor. Nada que você já lançou é apagado ou alterado.</p>
+    <p class="texto-pequeno" style="margin:-8px 0 12px;">Digite o saldo que aparece no app do banco. O painel guarda a diferença entre o banco e os lançamentos naquele dia. Se depois você lançar ou corrigir algo antigo, o caixa de todos os meses seguintes se atualiza. Nada que você já lançou é apagado ou alterado.</p>
     <div class="prop-limpa">
       <span class="rotulo-limpo">Data do saldo</span>
       <input type="date" id="rsData" class="input-limpo">
@@ -11913,21 +11913,25 @@
   const pilulaConta = (c) => `<span class="chip-card-quadro${c === CONTA_PADRAO ? "" : " chip-conta-outra"}">${esc(c || CONTA_PADRAO)}</span>`;
 
   // Caixa acumulado = saldo do Nubank PJ. Só entra o que foi pago/recebido nessa conta.
-  // Se existe um "reajuste" (saldo conferido no app do banco numa data), o saldo daquela data é a
-  // verdade e o painel soma só o que veio depois dela; antes dela vale a conta simples.
+  // O "reajuste" (saldo conferido no app do banco numa data) guarda só a DIFERENÇA entre o banco e
+  // a soma do painel naquele dia. Dali pra frente o caixa é: soma de todos os lançamentos + essa
+  // diferença. Assim, lançar ou corrigir algo antigo atualiza o caixa de todos os meses seguintes.
   const ancoraSaldo = () => {
     const a = cfgLer("fin_saldo_ancora", null);
-    return a && a.data && Number.isFinite(Number(a.saldo)) ? { data: a.data, saldo: Number(a.saldo) } : null;
+    if (!a || !a.data || !Number.isFinite(Number(a.saldo))) return null;
+    return { data: a.data, saldo: Number(a.saldo), ajuste: Number.isFinite(Number(a.ajuste)) && a.ajuste !== "" && a.ajuste != null ? Number(a.ajuste) : null };
   };
   function saldoNubankAte(fim, receitas, despesas, ignorarAncora) {
     const a = ignorarAncora ? null : ancoraSaldo();
-    const vale = (i) => i.pago && i.valor > 0 && i.data && i.data <= fim && ehNubank(i);
-    const ancorado = !!a && fim >= a.data;
-    const conta = (i) => !ancorado || i.data > a.data;
-    const entradas = receitas.filter((i) => vale(i) && conta(i));
-    const saidas = despesas.filter((i) => vale(i) && conta(i));
+    const valeAte = (ate) => (i) => i.pago && i.valor > 0 && i.data && i.data <= ate && ehNubank(i);
     const soma = (l) => l.reduce((s, i) => s + i.valor, 0);
-    return { saldo: (ancorado ? a.saldo : 0) + soma(entradas) - soma(saidas), entradas, saidas, ancora: ancorado ? a : null };
+    const somaAte = (ate) => soma(receitas.filter(valeAte(ate))) - soma(despesas.filter(valeAte(ate)));
+    const entradas = receitas.filter(valeAte(fim));
+    const saidas = despesas.filter(valeAte(fim));
+    const ancorado = !!a && fim >= a.data;
+    // reajuste antigo (sem a diferença gravada): calcula com os lançamentos de hoje
+    const ajuste = ancorado ? arredondar(a.ajuste != null ? a.ajuste : a.saldo - somaAte(a.data)) : 0;
+    return { saldo: soma(entradas) - soma(saidas) + ajuste, entradas, saidas, ajuste, ancora: ancorado ? a : null };
   }
 
   // Mês sem alíquota cadastrada usa a última informada antes dele (padrão 6%).
@@ -13600,7 +13604,9 @@
       alert("Informe a data e o saldo que aparece no app do Nubank PJ.");
       return;
     }
-    await cfgGravar("fin_saldo_ancora", { data, saldo: Number(saldo) });
+    const { rec, des } = dadosFluxoPeriodo();
+    const ajuste = arredondar(Number(saldo) - saldoNubankAte(data, rec, des, true).saldo);
+    await cfgGravar("fin_saldo_ancora", { data, saldo: Number(saldo), ajuste });
     overlayReajusteSaldo.hidden = true;
     await reajusteAplicado();
   });
@@ -13674,7 +13680,7 @@
       acumulado: {
         titulo: "Caixa acumulado",
         sub: caixaNubank.ancora
-          ? `Saldo conferido de ${formatarMoeda(caixaNubank.ancora.saldo)} em ${formatarDataBr(caixaNubank.ancora.data)} + o que entrou e saiu do Nubank PJ depois (saídas em negativo)`
+          ? `Tudo que entrou e saiu do Nubank PJ até o fim do período (saídas em negativo) + o reajuste de ${formatarMoeda(caixaNubank.ajuste)} conferido com o banco em ${formatarDataBr(caixaNubank.ancora.data)}`
           : "Entradas recebidas e saídas pagas na conta Nubank PJ até o fim do período (saídas em negativo)",
         itens: [...caixaNubank.entradas, ...caixaNubank.saidas],
         assinado: true,
