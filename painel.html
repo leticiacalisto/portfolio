@@ -3010,6 +3010,20 @@
   }
   .input-busca-tabela-marcas:focus{ outline:none; border-color: var(--texto-suave) !important; }
 
+  /* Afiliados: tabela no padrão de Marcas (sem cartões de números) */
+  .afi-resumo{ margin:0; font-size:.84rem; color: var(--texto-suave); }
+  .afi-busca{ width:220px; padding:8px 12px; }
+  .tabela-afiliados td.afi-marca{ font-weight:700; color: var(--grafite); }
+  .afi-celula{ display:inline-flex; align-items:center; gap:8px; max-width:100%; }
+  .afi-cupom{ font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size:.78rem; font-weight:700; letter-spacing:.03em; padding:3px 9px; border-radius:6px; background: var(--creme); color: var(--grafite); }
+  .afi-dominio{ color: var(--grafite); text-decoration:none; border-bottom:1px solid var(--borda); }
+  .afi-dominio:hover{ border-bottom-color: var(--texto-suave); }
+  .afi-copiar{ border:1.5px solid var(--borda); background: var(--branco); color: var(--texto-suave); border-radius:999px; padding:2px 9px; font-family:inherit; font-size:.7rem; font-weight:600; cursor:pointer; transition: all .15s ease; }
+  .afi-copiar:hover{ border-color: var(--texto-suave); color: var(--grafite); }
+  .afi-copiar.ok{ border-color: var(--verde-sucesso); color: var(--verde-sucesso); }
+  .afi-vazio{ color: var(--cinza-claro); }
+  .afi-obs{ white-space:normal; min-width:180px; color: var(--texto-suave); font-size:.82rem; }
+
   .popover-ferramenta-marcas{ width:300px; }
   .linha-filtro-marca{ display:flex; align-items:center; gap:6px; margin-bottom:6px; }
   .linha-filtro-marca select, .linha-filtro-marca input{ flex:1; min-width:0; }
@@ -5592,17 +5606,16 @@
     <section id="painel-cc-afiliados" class="painel-aba" hidden>
       <div class="painel-quadro-secao">
         <div class="topo-quadro">
-          <div>
-            <h2 style="margin-bottom:0;">Afiliados</h2>
-          </div>
+          <p class="afi-resumo" id="resumoAfiliados"></p>
           <div class="acoes-topo-quadro">
+            <input type="search" id="campoBuscaAfiliados" class="input-busca-tabela-marcas afi-busca" placeholder="Buscar marca, cupom..." autocomplete="off">
             <button type="button" class="btn-novo-card" id="btnNovoAfiliado">+ Novo afiliado</button>
           </div>
         </div>
         <div class="tabela-cheia-wrap">
-          <table class="tabela-contratos" id="tabelaAfiliados">
+          <table class="tabela-contratos tabela-afiliados" id="tabelaAfiliados">
             <thead>
-              <tr><th>Marca</th><th>Link de afiliado</th><th>Cupom</th><th>Observações</th></tr>
+              <tr><th>Marca</th><th>Cupom</th><th>Link de afiliado</th><th>Observações</th></tr>
             </thead>
             <tbody id="corpoTabelaAfiliados"></tbody>
           </table>
@@ -22820,13 +22833,23 @@ ${botao}
       } catch (erro) {}
     });
   });
-  // I / D / T / M / P / C / O / R / F abrem Início, Dashboard, Tarefas, Marcas, Produção, Campanhas, Oportunidades, Resultados e Fluxo de caixa (só fora de digitação)
-  const ATALHOS_PAGINAS = { i: "principal", d: "gp-dashboard", t: "gp-tarefas", m: "comercial-empresas", p: "gp-quadro", c: "crm-contratos", o: "comercial-oportunidades", r: "fin-resultados", f: "fin-fluxo-caixa" };
+  // Atalhos de página (só fora de digitação). Letra sozinha ou Shift+letra ("E" = Shift+E).
+  // H Início · D Dashboard · Shift+T Tarefas · P Produção · C Campanhas · R Resultados · F Fluxo de caixa ·
+  // Shift+D DRE da empresa · O Oportunidades · M Marcas · Q Modelos · E Prospecção · S Portfólio ·
+  // I Insights · Shift+E Calendário · T Transcrições · B Brainstorm · A Afiliados
+  const ATALHOS_PAGINAS = {
+    h: "principal", d: "gp-dashboard", T: "gp-tarefas", p: "gp-quadro", c: "crm-contratos",
+    r: "fin-resultados", f: "fin-fluxo-caixa", D: "@empresa.html",
+    o: "comercial-oportunidades", m: "comercial-empresas", q: "comercial-modelos", e: "comercial-disparos", s: "portfolio",
+    i: "cc-insights", E: "cc-criacao", t: "cc-roteiros", b: "cc-brainstorm", a: "cc-afiliados",
+  };
   document.addEventListener("keydown", (evento) => {
-    const aba = ATALHOS_PAGINAS[evento.key.toLowerCase()];
+    if (!evento.key || evento.key.length !== 1) return;
+    const letra = evento.key.toLowerCase();
+    const aba = ATALHOS_PAGINAS[evento.shiftKey ? letra.toUpperCase() : letra];
     if (!aba || evento.ctrlKey || evento.metaKey || evento.altKey) return;
     if ((evento.target.closest && evento.target.closest("input, textarea, select, [contenteditable]")) || document.querySelector(".overlay-modal:not([hidden])")) return;
-    const botao = document.querySelector(`.item-nav[data-tab="${aba}"]`);
+    const botao = aba.startsWith("@") ? document.querySelector(`.item-nav[data-link="${aba.slice(1)}"]`) : document.querySelector(`.item-nav[data-tab="${aba}"]`);
     if (!botao) return;
     evento.preventDefault();
     botao.click();
@@ -26588,18 +26611,34 @@ ${botao}
       return;
     }
     const ordenados = [...afiliadosCache].sort((a, b) => a.marca.localeCompare(b.marca, "pt-BR"));
-    corpo.innerHTML = ordenados
+    const busca = normalizarTexto((document.getElementById("campoBuscaAfiliados") || {}).value || "");
+    const visiveis = busca ? ordenados.filter((a) => normalizarTexto([a.marca, a.cupom, a.link, a.observacoes].join(" ")).includes(busca)) : ordenados;
+    const comCupom = afiliadosCache.filter((a) => a.cupom).length;
+    const comLink = afiliadosCache.filter((a) => a.link).length;
+    const resumo = document.getElementById("resumoAfiliados");
+    if (resumo) resumo.textContent = `${afiliadosCache.length} marca${afiliadosCache.length === 1 ? "" : "s"} · ${comCupom} com cupom · ${comLink} com link` + (busca ? ` · mostrando ${visiveis.length}` : "");
+    if (!visiveis.length) {
+      corpo.innerHTML = `<tr><td colspan="4" class="texto-vazio">Nenhum afiliado com "${esc(busca)}".</td></tr>`;
+      return;
+    }
+    const dominio = (url) => {
+      try { return new URL(url).hostname.replace(/^www\./, ""); } catch (e) { return url; }
+    };
+    const vazio = '<span class="afi-vazio">—</span>';
+    corpo.innerHTML = visiveis
       .map(
         (a) => `
       <tr data-id="${a.id}">
-        <td>${esc(a.marca)}</td>
-        <td>${a.link ? `<a href="${esc(a.link)}" target="_blank" rel="noopener">${esc(a.link)}</a>` : "—"}</td>
-        <td>${a.cupom ? esc(a.cupom) : "—"}</td>
-        <td>${a.observacoes ? esc(a.observacoes) : "—"}</td>
+        <td class="afi-marca">${esc(a.marca)}</td>
+        <td>${a.cupom ? `<span class="afi-celula"><span class="afi-cupom">${esc(a.cupom)}</span><button type="button" class="afi-copiar" data-afi-copiar="${esc(a.cupom)}">Copiar</button></span>` : vazio}</td>
+        <td>${a.link ? `<span class="afi-celula"><a class="afi-dominio" href="${esc(a.link)}" target="_blank" rel="noopener" title="${esc(a.link)}">${esc(dominio(a.link))} ↗</a><button type="button" class="afi-copiar" data-afi-copiar="${esc(a.link)}">Copiar link</button></span>` : vazio}</td>
+        <td class="afi-obs">${a.observacoes ? esc(a.observacoes) : vazio}</td>
       </tr>`
       )
       .join("");
   }
+  const campoBuscaAfiliados = document.getElementById("campoBuscaAfiliados");
+  if (campoBuscaAfiliados) campoBuscaAfiliados.addEventListener("input", renderizarAfiliados);
 
   const overlayAfiliado = document.getElementById("overlayAfiliado");
   let afiliadoEmEdicao = null;
@@ -26626,8 +26665,22 @@ ${botao}
   });
   const corpoTabelaAfiliados = document.getElementById("corpoTabelaAfiliados");
   if (corpoTabelaAfiliados) {
-    corpoTabelaAfiliados.addEventListener("click", (evento) => {
+    corpoTabelaAfiliados.addEventListener("click", async (evento) => {
       if (evento.target.closest("a")) return;
+      const copiar = evento.target.closest("[data-afi-copiar]");
+      if (copiar) {
+        const texto = copiar.dataset.afiCopiar;
+        const rotulo = copiar.textContent;
+        try {
+          await navigator.clipboard.writeText(texto);
+          copiar.textContent = "Copiado ✓";
+          copiar.classList.add("ok");
+          setTimeout(() => { copiar.textContent = rotulo; copiar.classList.remove("ok"); }, 1600);
+        } catch (e) {
+          window.prompt("Copie:", texto);
+        }
+        return;
+      }
       const linha = evento.target.closest("tr[data-id]");
       if (!linha) return;
       const a = afiliadosCache.find((x) => x.id === linha.dataset.id);
@@ -27919,8 +27972,10 @@ ${videos}`;
     const bs = window.brainstorm;
     const card = (p, tipo, i) => {
       if (fora.indexOf(p.id) !== -1) { escondidas++; return ""; }
+      // pauta que já foi pro Brainstorm sai do radar (mesmo se depois for pra lixeira de lá)
+      if (bs && bs.jaFoiSalva(p.id)) return "";
       const o = p.origem || {};
-      const salva = bs && bs.temPauta(p.id);
+      const salva = false;
       return '<div class="cartao-alerta ins-pauta ' + (tipo === "continuidade" ? "alerta-rosa" : "alerta-lilas") + '" style="--i:' + i + '">' +
         "<h3>" + (tipo === "continuidade" ? "Continuidade" : "Radar externo") + "</h3>" +
         '<div class="ins-origem"><span>' + esc(o.fonte) + (o.referencia ? " · " + esc(o.referencia) : "") + "</span>" + (o.performance ? '<span class="ins-perf">' + esc(o.performance) + "</span>" : "") + "</div>" +
@@ -28317,6 +28372,7 @@ ${videos}`;
   window.brainstorm = {
     carregar: () => carregar(),
     temPauta: (pautaId) => ideias.some((i) => i.pautaId === pautaId && !i.deletadaEm),
+    jaFoiSalva: (pautaId) => ideias.some((i) => i.pautaId === pautaId),
     async salvarPauta(p, tipo) {
       await carregar();
       const existente = ideias.find((i) => i.pautaId === p.id);
