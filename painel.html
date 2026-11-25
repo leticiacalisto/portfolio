@@ -22835,14 +22835,14 @@ ${botao}
     });
   });
   // Atalhos de página (só fora de digitação). Letra sozinha ou Shift+letra ("E" = Shift+E).
-  // H Início · D Dashboard · Shift+T Tarefas · P Produção · C Campanhas · R Resultados · F Fluxo de caixa ·
+  // H Início · D Dashboard · T Tarefas · P Produção · C Campanhas · R Resultados · F Fluxo de caixa ·
   // Shift+D DRE da empresa · O Oportunidades · M Marcas · Q Modelos · E Prospecção · S Portfólio ·
-  // I Insights · Shift+E Calendário · T Transcrições · B Brainstorm · A Afiliados
+  // I Insights · Shift+E Calendário · Shift+T Transcrições · B Brainstorm · A Afiliados
   const ATALHOS_PAGINAS = {
-    h: "principal", d: "gp-dashboard", T: "gp-tarefas", p: "gp-quadro", c: "crm-contratos",
+    h: "principal", d: "gp-dashboard", t: "gp-tarefas", p: "gp-quadro", c: "crm-contratos",
     r: "fin-resultados", f: "fin-fluxo-caixa", D: "@empresa.html",
     o: "comercial-oportunidades", m: "comercial-empresas", q: "comercial-modelos", e: "comercial-disparos", s: "portfolio",
-    i: "cc-insights", E: "cc-criacao", t: "cc-roteiros", b: "cc-brainstorm", a: "cc-afiliados",
+    i: "cc-insights", E: "cc-criacao", T: "cc-roteiros", b: "cc-brainstorm", a: "cc-afiliados",
   };
   document.addEventListener("keydown", (evento) => {
     if (!evento.key || evento.key.length !== 1) return;
