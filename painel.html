@@ -3216,15 +3216,27 @@
   #tabelaOportunidades th[data-ordem-op]:hover{ color:var(--grafite); }
   #tabelaOportunidades th.ordenado{ color:var(--grafite); }
   #tabelaOportunidades th[data-ordem-op]::after{ content:attr(data-seta); margin-left:5px; font-size:.9em; }
-  /* Lista de Oportunidades: filtros por nicho, e-mail e etapa */
-  .filtros-lista-op{ display:flex; align-items:center; flex-wrap:wrap; gap:8px 10px; margin:-6px 0 14px; }
-  .filtro-op{ display:inline-flex; align-items:center; gap:6px; border:1.5px solid var(--borda); background: var(--branco); border-radius:999px; padding:4px 6px 4px 12px; font-size:.76rem; font-weight:600; color: var(--texto-suave); }
-  .filtro-op.ativo{ border-color: var(--grafite); color: var(--grafite); }
-  .filtro-op select{ border:0; background:transparent; font-family:inherit; font-size:.78rem; font-weight:600; color: var(--grafite); padding:2px 4px; max-width:200px; cursor:pointer; }
-  .filtro-op select:focus{ outline:none; }
-  .btn-limpar-filtro-op{ border:0; background:none; font-family:inherit; font-size:.76rem; font-weight:600; color: var(--texto-suave); text-decoration:underline; cursor:pointer; padding:4px; }
+  /* Filtro de Oportunidades e do Histórico da Prospecção (balão do botão Filtrar) */
+  .grade-filtro-ferr{ display:grid; grid-template-columns:64px minmax(0,1fr); gap:8px 10px; align-items:center; margin-top:6px; }
+  .grade-filtro-ferr > span{ font-size:.76rem; font-weight:600; color: var(--texto-suave); }
+  .grade-filtro-ferr select, .grade-filtro-ferr input{ width:100%; min-width:0; }
+  .datas-filtro-ferr{ display:flex; align-items:center; gap:6px; }
+  .datas-filtro-ferr small{ color: var(--texto-suave); }
+  .atalhos-data-ferr{ display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+  .atalhos-data-ferr button{ border:1.5px solid var(--borda); background: var(--branco); border-radius:999px; padding:4px 10px; font-family:inherit; font-size:.74rem; font-weight:600; color: var(--texto-suave); cursor:pointer; }
+  .atalhos-data-ferr button:hover{ color: var(--grafite); border-color: var(--texto-suave); }
+  .atalhos-data-ferr button.ativo{ background: var(--grafite); border-color: var(--grafite); color: var(--branco); }
+  .btn-limpar-filtro-op{ border:0; background:none; font-family:inherit; font-size:.76rem; font-weight:600; color: var(--texto-suave); text-decoration:underline; cursor:pointer; padding:4px 0; margin-top:10px; }
   .btn-limpar-filtro-op:hover{ color: var(--grafite); }
-  .contagem-filtro-op{ margin-left:auto; font-size:.76rem; color: var(--texto-suave); }
+  .btn-limpar-filtro-op:disabled{ opacity:.4; cursor:default; text-decoration:none; }
+  /* Histórico da Prospecção: seleção para mandar um novo e-mail */
+  .prosp-col-sel{ width:40px; }
+  .prosp-tabela .td-sel-hist, .prosp-tabela .th-sel-hist{ text-align:center; padding-left:6px; padding-right:6px; }
+  .prosp-tabela .td-sel-hist input, .prosp-tabela .th-sel-hist input{ width:16px; height:16px; cursor:pointer; accent-color: var(--grafite); }
+  .prosp-tabela tr.selecionada-hist td{ background: var(--creme); }
+  .prosp-selecao-hist{ display:flex; align-items:center; flex-wrap:wrap; gap:10px 14px; padding:10px 14px; margin-bottom:10px; border-radius:12px; background: var(--creme); font-size:.86rem; }
+  .prosp-selecao-hist .btn-novo-card{ padding:7px 14px; font-size:.78rem; }
+  .prosp-selecao-hist .btn-limpar-filtro-op{ margin-top:0; }
   .chip-nicho-op{ display:inline-block; font-size:.74rem; font-weight:600; padding:3px 9px; border-radius:999px; background: var(--creme); color: var(--texto-suave); white-space:nowrap; }
   /* balão de Oportunidades escolhido como filtro */
   #cartoesOportunidades .cartao-fluxo.filtro-ativo{ box-shadow:0 0 0 1px rgba(20,17,13,.14), 0 6px 18px rgba(20,17,13,.07); }
@@ -5070,6 +5082,20 @@
               <button type="button" class="btn-alternador" data-vis-oportunidade="hoje">Follow-up hoje</button>
             </div>
           <div class="acoes-topo-quadro">
+            <div class="barra-ferramentas-tabela" id="barraFerramentasOp">
+              <div class="grupo-ferramentas-tabela">
+                <button type="button" class="btn-ferramenta-tabela" id="btnFiltrarOp" title="Filtrar">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16l-6 7.5V18l-4 2v-7.5Z"/></svg>
+                </button>
+                <button type="button" class="btn-ferramenta-tabela" id="btnOrdenarOp" title="Ordenar">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6v12"/><path d="M5 9l3-3 3 3"/><path d="M16 18V6"/><path d="M19 15l-3 3-3-3"/></svg>
+                </button>
+                <button type="button" class="btn-ferramenta-tabela" id="btnBuscarOp" title="Buscar">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg>
+                </button>
+                <input type="text" id="campoBuscaOp" class="input-busca-tabela-marcas" placeholder="Buscar..." autocomplete="off" hidden>
+              </div>
+            </div>
             <button type="button" class="btn-ferramenta-tabela" id="btnEtapasOportunidade" title="Etapas do funil" aria-label="Etapas do funil">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h7"/><circle cx="14" cy="6" r="2"/><path d="M18 6h2"/><path d="M4 12h2"/><circle cx="9" cy="12" r="2"/><path d="M13 12h7"/><path d="M4 18h10"/><circle cx="17" cy="18" r="2"/></svg>
             </button>
@@ -5077,13 +5103,6 @@
           </div>
         </div>
         <div class="quadro-wrap" id="quadroOportunidadesWrap"></div>
-        <div class="filtros-lista-op" id="filtrosListaOp" hidden>
-          <label class="filtro-op"><span>Nicho</span><select id="filtroOpNicho"></select></label>
-          <label class="filtro-op"><span>E-mail</span><select id="filtroOpEmail"><option value="">Todas</option><option value="com">Com e-mail</option><option value="sem">Sem e-mail</option></select></label>
-          <label class="filtro-op"><span>Etapa</span><select id="filtroOpEtapa"></select></label>
-          <button type="button" class="btn-limpar-filtro-op" id="btnLimparFiltrosOp" hidden>Limpar filtros</button>
-          <span class="contagem-filtro-op" id="contagemFiltrosOp"></span>
-        </div>
         <div class="tabela-scroll" id="listaOportunidadesWrap" hidden>
           <table class="tabela-contratos" id="tabelaOportunidades">
             <thead>
@@ -5091,6 +5110,7 @@
             </thead>
             <tbody id="corpoTabelaOportunidades"></tbody>
           </table>
+          <p class="contagem-tabela" id="contagemListaOp"></p>
         </div>
       </div>
     </section>
@@ -5247,12 +5267,30 @@
         <section class="prosp-bloco prosp-historico">
           <div class="prosp-historico-topo">
             <h3>Histórico</h3>
-            <input type="text" id="prospBuscaHistorico" class="input-limpo prosp-campo" placeholder="Buscar por e-mail ou marca" autocomplete="off">
+            <div class="barra-ferramentas-tabela" id="barraFerramentasHist">
+              <div class="grupo-ferramentas-tabela">
+                <button type="button" class="btn-ferramenta-tabela" id="btnFiltrarHist" title="Filtrar">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16l-6 7.5V18l-4 2v-7.5Z"/></svg>
+                </button>
+                <button type="button" class="btn-ferramenta-tabela" id="btnOrdenarHist" title="Ordenar">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6v12"/><path d="M5 9l3-3 3 3"/><path d="M16 18V6"/><path d="M19 15l-3 3-3-3"/></svg>
+                </button>
+                <button type="button" class="btn-ferramenta-tabela" id="btnBuscarHist" title="Buscar">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg>
+                </button>
+                <input type="text" id="prospBuscaHistorico" class="input-busca-tabela-marcas" placeholder="Marca ou e-mail..." autocomplete="off" hidden>
+              </div>
+            </div>
+          </div>
+          <div class="prosp-selecao-hist" id="prospSelecaoHist" hidden>
+            <span id="prospSelecaoHistTexto"></span>
+            <button type="button" class="btn-novo-card" id="prospBtnNovoEmailHist">Enviar novo e-mail para elas</button>
+            <button type="button" class="btn-limpar-filtro-op" id="prospBtnLimparSelHist">Limpar seleção</button>
           </div>
           <div class="tabela-scroll">
             <table class="tabela-contratos prosp-tabela">
-              <colgroup><col class="prosp-col-marca"><col><col class="prosp-col-quando"><col class="prosp-col-canal"><col class="prosp-col-situacao"></colgroup>
-              <thead><tr><th>Marca</th><th>Assunto</th><th>Quando</th><th>Por onde</th><th>Situação</th></tr></thead>
+              <colgroup><col class="prosp-col-sel"><col class="prosp-col-marca"><col><col class="prosp-col-quando"><col class="prosp-col-canal"><col class="prosp-col-situacao"></colgroup>
+              <thead><tr><th class="th-sel-hist"><input type="checkbox" id="prospSelTodosHist" title="Selecionar todas as que estão aparecendo" aria-label="Selecionar todas as que estão aparecendo"></th><th>Marca</th><th>Assunto</th><th>Quando</th><th>Por onde</th><th>Situação</th></tr></thead>
               <tbody id="prospCorpoHistorico"></tbody>
             </table>
           </div>
@@ -19563,8 +19601,9 @@
     if (visaoOportunidadeAtual === "kanban") {
       wrapKanban.hidden = false;
       wrapLista.hidden = true;
-      const barraFiltrosOp = document.getElementById("filtrosListaOp");
-      if (barraFiltrosOp) barraFiltrosOp.hidden = true;
+      const barraFerramentasOp = document.getElementById("barraFerramentasOp");
+      if (barraFerramentasOp) barraFerramentasOp.hidden = true;
+      fecharPopoverFerramentaTabela();
       renderizarKanbanOportunidades();
       return;
     }
@@ -19574,9 +19613,9 @@
 
     const daVisao = listaFiltradaOportunidades();
     const lista = ordenarListaOportunidades(aplicarFiltrosListaOp(daVisao));
-    renderizarFiltrosListaOp(daVisao, lista.length);
+    atualizarFerramentasOp(daVisao.length, lista.length);
     if (!lista.length) {
-      corpo.innerHTML = `<tr><td colspan="6" class="texto-vazio">${filtrosListaOpAtivos() ? "Nenhuma marca bate com esses filtros." : "Nada por aqui."}</td></tr>`;
+      corpo.innerHTML = `<tr><td colspan="6" class="texto-vazio">${filtrosListaOpAtivos() || buscaListaOp() ? "Nenhuma marca bate com esses filtros." : "Nada por aqui."}</td></tr>`;
       return;
     }
     corpo.innerHTML = lista
@@ -19611,8 +19650,67 @@
     valor: { valor: (o) => (o.valor_estimado != null ? Number(o.valor_estimado) : null), crescente: false },
     proximo: { valor: (o) => o.proximo_followup || null, crescente: true },
   };
-  // ---- Lista: filtros por nicho (segmento da marca), e-mail da marca e etapa do funil ----
-  var filtrosListaOp = { nicho: "", email: "", etapa: "" }; // var: a lista pode ser desenhada antes desta linha rodar
+  // ---- Balão das ferramentas de tabela (Filtrar/Ordenar) de Oportunidades e do Histórico ----
+  // Clicar de novo no mesmo botão fecha; clicar fora fecha.
+  function fecharPopoverFerramentaTabela() {
+    const existente = document.getElementById("popoverFerramentaTabela");
+    if (existente) existente.remove();
+  }
+  function abrirPopoverFerramentaTabela(ancoraEl, html, aoMontar) {
+    const existente = document.getElementById("popoverFerramentaTabela");
+    if (existente) {
+      const mesmo = existente._ancora === ancoraEl;
+      existente.remove();
+      if (mesmo) return null;
+    }
+    const pop = document.createElement("div");
+    pop.id = "popoverFerramentaTabela";
+    pop.className = "popover-etapa popover-ferramenta-marcas";
+    pop._ancora = ancoraEl;
+    pop.innerHTML = html;
+    document.body.appendChild(pop);
+    if (aoMontar) aoMontar(pop);
+    posicionarPopover(pop, ancoraEl);
+    return pop;
+  }
+  document.addEventListener("click", (evento) => {
+    const pop = document.getElementById("popoverFerramentaTabela");
+    if (!pop || !document.body.contains(evento.target)) return;
+    if (pop.contains(evento.target) || (pop._ancora && pop._ancora.contains(evento.target))) return;
+    pop.remove();
+  });
+  function htmlOrdenarFerramenta(campos, atual, crescente) {
+    return `
+      <span class="rotulo-limpo">Ordenar por</span>
+      <select class="input-limpo" data-ordem-campo>
+        ${campos.map((c) => `<option value="${c.valor}" ${c.valor === atual ? "selected" : ""}>${esc(c.rotulo)}</option>`).join("")}
+      </select>
+      <div class="linha-direcao-ordenacao">
+        <button type="button" class="btn-direcao-ordenacao${crescente ? " ativo" : ""}" data-direcao="asc">Crescente</button>
+        <button type="button" class="btn-direcao-ordenacao${!crescente ? " ativo" : ""}" data-direcao="desc">Decrescente</button>
+      </div>`;
+  }
+  function ligarBuscaFerramenta(btnId, campoId, aoMudar) {
+    const btn = document.getElementById(btnId);
+    const campo = document.getElementById(campoId);
+    if (!btn || !campo) return;
+    btn.addEventListener("click", () => {
+      campo.hidden = !campo.hidden;
+      if (!campo.hidden) campo.focus();
+      else if (campo.value) {
+        campo.value = "";
+        campo.dispatchEvent(new Event("input"));
+      }
+    });
+    campo.addEventListener("input", aoMudar);
+  }
+
+  // ---- Lista de Oportunidades: filtros (nicho da marca, e-mail da marca, etapa), busca e ordem ----
+  var estadoFerrOp; // criado na primeira vez (a lista pode ser desenhada antes desta linha rodar)
+  function ferrOp() {
+    if (!estadoFerrOp) estadoFerrOp = { nicho: "", email: "", etapa: "" };
+    return estadoFerrOp;
+  }
   function empresaDaOp(o) {
     return empresasCache.find((e) => e.id === o.empresa_id) || null;
   }
@@ -19625,11 +19723,17 @@
     return !!(e && (e.email_marketing || e.email || "").trim());
   }
   function filtrosListaOpAtivos() {
-    return !!(filtrosListaOp && (filtrosListaOp.nicho || filtrosListaOp.email || filtrosListaOp.etapa));
+    const f = ferrOp();
+    return !!(f.nicho || f.email || f.etapa);
+  }
+  function buscaListaOp() {
+    const campo = document.getElementById("campoBuscaOp");
+    return campo ? semAcentoOp(campo.value).trim() : "";
   }
   function aplicarFiltrosListaOp(lista) {
-    if (!filtrosListaOpAtivos()) return lista;
-    const f = filtrosListaOp;
+    const f = ferrOp();
+    const busca = buscaListaOp();
+    if (!filtrosListaOpAtivos() && !busca) return lista;
     return lista.filter((o) => {
       if (f.nicho) {
         const n = nichoDaOp(o);
@@ -19638,64 +19742,121 @@
       if (f.email === "com" && !opTemEmail(o)) return false;
       if (f.email === "sem" && opTemEmail(o)) return false;
       if (f.etapa && o.etapa_id !== f.etapa) return false;
+      if (busca) {
+        const e = empresaDaOp(o) || {};
+        const texto = semAcentoOp([e.nome, o.contato, nichoDaOp(o), e.email, e.email_marketing, o.servico].filter(Boolean).join(" "));
+        if (!texto.includes(busca)) return false;
+      }
       return true;
     });
   }
-  function renderizarFiltrosListaOp(daVisao, qtdFiltrada) {
-    const barra = document.getElementById("filtrosListaOp");
-    if (!barra) return;
-    barra.hidden = false;
-    const selNicho = document.getElementById("filtroOpNicho");
-    const selEmail = document.getElementById("filtroOpEmail");
-    const selEtapa = document.getElementById("filtroOpEtapa");
-    // nichos que existem nas oportunidades (com a contagem de cada um)
-    const contagemNicho = new Map();
+  // opções de nicho a partir de uma lista de marcas (com a contagem de cada um)
+  function opcoesNichoFerramenta(empresas, valorAtual) {
+    const contagem = new Map();
     let semNicho = 0;
-    oportunidadesCache.forEach((o) => {
-      const n = nichoDaOp(o);
+    empresas.forEach((e) => {
+      const n = e && e.segmento ? String(e.segmento).trim() : "";
       if (!n) { semNicho++; return; }
       const chave = semAcentoOp(n);
-      const atual = contagemNicho.get(chave);
-      contagemNicho.set(chave, { nome: atual ? atual.nome : n, qtd: (atual ? atual.qtd : 0) + 1 });
+      const atual = contagem.get(chave);
+      contagem.set(chave, { nome: atual ? atual.nome : n, qtd: (atual ? atual.qtd : 0) + 1 });
     });
-    if (filtrosListaOp.nicho && filtrosListaOp.nicho !== "__sem__" && !contagemNicho.has(semAcentoOp(filtrosListaOp.nicho))) filtrosListaOp.nicho = "";
-    const nichos = [...contagemNicho.values()].sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
-    selNicho.innerHTML =
+    const nichos = [...contagem.values()].sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+    const sel = (v) => (semAcentoOp(v) === semAcentoOp(valorAtual) ? " selected" : "");
+    return (
       `<option value="">Todos</option>` +
-      nichos.map((n) => `<option value="${esc(n.nome)}">${esc(n.nome)} (${n.qtd})</option>`).join("") +
-      (semNicho ? `<option value="__sem__">Sem nicho (${semNicho})</option>` : "");
-    selNicho.value = filtrosListaOp.nicho;
-    if (selNicho.value !== filtrosListaOp.nicho) {
-      const alvo = [...selNicho.options].find((op) => semAcentoOp(op.value) === semAcentoOp(filtrosListaOp.nicho));
-      selNicho.value = alvo ? alvo.value : "";
-    }
-    if (filtrosListaOp.etapa && !etapasOportunidadeCache.some((e) => e.id === filtrosListaOp.etapa)) filtrosListaOp.etapa = "";
-    selEtapa.innerHTML = `<option value="">Todas</option>` + etapasOportunidadeCache.map((e) => `<option value="${esc(e.id)}">${esc(e.nome)}</option>`).join("");
-    selEtapa.value = filtrosListaOp.etapa;
-    selEmail.value = filtrosListaOp.email;
-    selNicho.closest(".filtro-op").classList.toggle("ativo", !!filtrosListaOp.nicho);
-    selEmail.closest(".filtro-op").classList.toggle("ativo", !!filtrosListaOp.email);
-    selEtapa.closest(".filtro-op").classList.toggle("ativo", !!filtrosListaOp.etapa);
-    const ativos = filtrosListaOpAtivos();
-    document.getElementById("btnLimparFiltrosOp").hidden = !ativos;
-    const total = daVisao.length;
-    document.getElementById("contagemFiltrosOp").textContent = ativos
-      ? `${qtdFiltrada} de ${total} ${total === 1 ? "marca" : "marcas"}`
-      : `${total} ${total === 1 ? "marca" : "marcas"}`;
+      nichos.map((n) => `<option value="${esc(n.nome)}"${sel(n.nome)}>${esc(n.nome)} (${n.qtd})</option>`).join("") +
+      (semNicho ? `<option value="__sem__"${valorAtual === "__sem__" ? " selected" : ""}>Sem nicho (${semNicho})</option>` : "")
+    );
   }
-  [["filtroOpNicho", "nicho"], ["filtroOpEmail", "email"], ["filtroOpEtapa", "etapa"]].forEach(([id, campo]) => {
-    const sel = document.getElementById(id);
-    if (!sel) return;
-    sel.addEventListener("change", () => {
-      filtrosListaOp[campo] = sel.value;
-      renderizarOportunidades();
+  function abrirFiltroOp(ancora) {
+    const f = ferrOp();
+    const html = () => `
+      <span class="rotulo-limpo">Filtrar</span>
+      <div class="grade-filtro-ferr">
+        <span>Nicho</span>
+        <select class="input-limpo" data-filtro-op="nicho">${opcoesNichoFerramenta(oportunidadesCache.map(empresaDaOp), f.nicho)}</select>
+        <span>E-mail</span>
+        <select class="input-limpo" data-filtro-op="email">
+          <option value="">Todas</option>
+          <option value="com"${f.email === "com" ? " selected" : ""}>Com e-mail</option>
+          <option value="sem"${f.email === "sem" ? " selected" : ""}>Sem e-mail</option>
+        </select>
+        <span>Etapa</span>
+        <select class="input-limpo" data-filtro-op="etapa">
+          <option value="">Todas</option>
+          ${etapasOportunidadeCache.map((e) => `<option value="${esc(e.id)}"${e.id === f.etapa ? " selected" : ""}>${esc(e.nome)}</option>`).join("")}
+        </select>
+      </div>
+      <button type="button" class="btn-limpar-filtro-op" data-limpar-filtro-op ${filtrosListaOpAtivos() ? "" : "disabled"}>Limpar filtros</button>`;
+    abrirPopoverFerramentaTabela(ancora, html(), (pop) => {
+      pop.addEventListener("change", (ev) => {
+        const campo = ev.target.dataset.filtroOp;
+        if (!campo) return;
+        f[campo] = ev.target.value;
+        pop.querySelector("[data-limpar-filtro-op]").disabled = !filtrosListaOpAtivos();
+        renderizarOportunidades();
+      });
+      pop.addEventListener("click", (ev) => {
+        if (!ev.target.closest("[data-limpar-filtro-op]")) return;
+        f.nicho = f.email = f.etapa = "";
+        pop.innerHTML = html();
+        renderizarOportunidades();
+      });
     });
-  });
-  const btnLimparFiltrosOp = document.getElementById("btnLimparFiltrosOp");
-  if (btnLimparFiltrosOp) btnLimparFiltrosOp.addEventListener("click", () => {
-    filtrosListaOp = { nicho: "", email: "", etapa: "" };
-    renderizarOportunidades();
-  });
+  }
+  function abrirOrdenarOp(ancora) {
+    const campos = [
+      { valor: "", rotulo: "Mais recentes (padrão)" },
+      { valor: "empresa", rotulo: "Empresa" },
+      { valor: "nicho", rotulo: "Nicho" },
+      { valor: "contato", rotulo: "Contato" },
+      { valor: "etapa", rotulo: "Etapa" },
+      { valor: "valor", rotulo: "Valor" },
+      { valor: "proximo", rotulo: "Próximo contato" },
+    ];
+    abrirPopoverFerramentaTabela(ancora, htmlOrdenarFerramenta(campos, ordemListaOp.campo || "", ordemListaOp.crescente), (pop) => {
+      pop.querySelector("[data-ordem-campo]").addEventListener("change", (ev) => {
+        const campo = ev.target.value || null;
+        ordemListaOp = { campo, crescente: campo ? CAMPOS_ORDEM_OP[campo].crescente : true };
+        pop.querySelectorAll("[data-direcao]").forEach((b) => b.classList.toggle("ativo", (b.dataset.direcao === "asc") === ordemListaOp.crescente));
+        marcarCabecalhoOrdemOp();
+        renderizarOportunidades();
+      });
+      pop.addEventListener("click", (ev) => {
+        const botao = ev.target.closest("[data-direcao]");
+        if (!botao || !ordemListaOp.campo) return;
+        ordemListaOp.crescente = botao.dataset.direcao === "asc";
+        pop.querySelectorAll("[data-direcao]").forEach((b) => b.classList.toggle("ativo", b === botao));
+        marcarCabecalhoOrdemOp();
+        renderizarOportunidades();
+      });
+    });
+  }
+  function atualizarFerramentasOp(totalDaVisao, qtdMostrada) {
+    const barraOp = document.getElementById("barraFerramentasOp");
+    if (barraOp) barraOp.hidden = false;
+    const btnF = document.getElementById("btnFiltrarOp");
+    const btnO = document.getElementById("btnOrdenarOp");
+    const btnB = document.getElementById("btnBuscarOp");
+    if (btnF) btnF.classList.toggle("ativo-verde", filtrosListaOpAtivos());
+    if (btnO) btnO.classList.toggle("ativo-verde", !!(ordemListaOp && ordemListaOp.campo));
+    if (btnB) btnB.classList.toggle("ativo-verde", !!buscaListaOp());
+    const contagem = document.getElementById("contagemListaOp");
+    if (contagem) {
+      const recorte = filtrosListaOpAtivos() || !!buscaListaOp();
+      contagem.textContent = recorte
+        ? `${qtdMostrada} de ${totalDaVisao} ${totalDaVisao === 1 ? "marca" : "marcas"}`
+        : `${totalDaVisao} ${totalDaVisao === 1 ? "marca" : "marcas"}`;
+    }
+  }
+  (function ligarFerramentasOp() {
+    const btnF = document.getElementById("btnFiltrarOp");
+    const btnO = document.getElementById("btnOrdenarOp");
+    if (btnF) btnF.addEventListener("click", () => abrirFiltroOp(btnF));
+    if (btnO) btnO.addEventListener("click", () => abrirOrdenarOp(btnO));
+    ligarBuscaFerramenta("btnBuscarOp", "campoBuscaOp", () => renderizarOportunidades());
+  })();
 
   function ordenarListaOportunidades(lista) {
     const cfg = ordemListaOp && CAMPOS_ORDEM_OP ? CAMPOS_ORDEM_OP[ordemListaOp.campo] : null;
@@ -21296,19 +21457,276 @@ ${botao}
     overlay.hidden = false;
   }
 
+  // ---- Histórico: filtros (data, nicho, situação, assunto), ordem e seleção de marcas ----
+  var estadoFerrHist; // criado na primeira vez (o histórico pode ser desenhado antes desta linha rodar)
+  var historicoVisivelProsp = [];
+  function ferrHist() {
+    if (!estadoFerrHist) estadoFerrHist = { de: "", ate: "", nicho: "", situacao: "", assunto: "", ordem: "quando", crescente: false, selecao: new Set() };
+    return estadoFerrHist;
+  }
+  function filtrosHistProspAtivos() {
+    const f = ferrHist();
+    return !!(f.de || f.ate || f.nicho || f.situacao || f.assunto);
+  }
+  function assuntoDoEnvio(v, porDisparo) {
+    const d = (porDisparo && porDisparo.get(v.disparo_id)) || {};
+    return String(v.assunto || d.assunto || v.passo || "").trim();
+  }
+  function passaFiltrosHistProsp(v, porDisparo) {
+    const f = ferrHist();
+    if (!filtrosHistProspAtivos()) return true;
+    const dia = diaLocalDe(v.enviado_em || v.created_at);
+    if (f.de && (!dia || dia < f.de)) return false;
+    if (f.ate && (!dia || dia > f.ate)) return false;
+    if (f.nicho) {
+      const e = empresasCache.find((x) => x.id === v.empresa_id);
+      const n = e && e.segmento ? String(e.segmento).trim() : "";
+      if (f.nicho === "__sem__" ? n : semAcentoOp(n) !== semAcentoOp(f.nicho)) return false;
+    }
+    if (f.situacao && v.status !== f.situacao) return false;
+    if (f.assunto && assuntoDoEnvio(v, porDisparo) !== f.assunto) return false;
+    return true;
+  }
+  function ordenarHistoricoProsp(lista, porDisparo) {
+    const f = ferrHist();
+    const sinal = f.crescente ? 1 : -1;
+    const quando = (v) => String(v.enviado_em || v.created_at || "");
+    const valor = {
+      quando,
+      marca: (v) => semAcentoOp(prospEmpresaNome(v.empresa_id)),
+      assunto: (v) => semAcentoOp(assuntoDoEnvio(v, porDisparo)),
+      situacao: (v) => v.status || "",
+    }[f.ordem] || quando;
+    return lista.sort((a, b) => {
+      const r = String(valor(a)).localeCompare(String(valor(b)), "pt-BR") * sinal;
+      return r || quando(b).localeCompare(quando(a));
+    });
+  }
+  function prospPodeSelecionarHist(empresa) {
+    return !!(empresa && !empresa.optout && emailDeDisparo(empresa));
+  }
+  function atualizarFerramentasHistProsp(busca) {
+    const f = ferrHist();
+    const btnF = document.getElementById("btnFiltrarHist");
+    const btnO = document.getElementById("btnOrdenarHist");
+    const btnB = document.getElementById("btnBuscarHist");
+    if (btnF) btnF.classList.toggle("ativo-verde", filtrosHistProspAtivos());
+    if (btnO) btnO.classList.toggle("ativo-verde", f.ordem !== "quando" || f.crescente);
+    if (btnB) btnB.classList.toggle("ativo-verde", !!busca);
+  }
+  function atualizarSelecaoHistProsp() {
+    const f = ferrHist();
+    // tira da seleção marca que sumiu ou ficou sem e-mail
+    [...f.selecao].forEach((id) => {
+      if (!prospPodeSelecionarHist(empresasCache.find((e) => e.id === id))) f.selecao.delete(id);
+    });
+    const n = f.selecao.size;
+    const barraSel = document.getElementById("prospSelecaoHist");
+    if (barraSel) barraSel.hidden = !n;
+    const texto = document.getElementById("prospSelecaoHistTexto");
+    if (texto) texto.innerHTML = `<b>${n}</b> ${n === 1 ? "marca selecionada" : "marcas selecionadas"}`;
+    const todos = document.getElementById("prospSelTodosHist");
+    if (todos) {
+      const elegiveis = [...new Set(historicoVisivelProsp.map((v) => v.empresa_id))].filter((id) => prospPodeSelecionarHist(empresasCache.find((e) => e.id === id)));
+      const marcadas = elegiveis.filter((id) => f.selecao.has(id)).length;
+      todos.disabled = !elegiveis.length;
+      todos.checked = !!elegiveis.length && marcadas === elegiveis.length;
+      todos.indeterminate = marcadas > 0 && marcadas < elegiveis.length;
+    }
+  }
+  function abrirFiltroHistProsp(ancora) {
+    const f = ferrHist();
+    const porDisparo = new Map(disparosCache.map((d) => [d.id, d]));
+    const envios = enviosCache.filter((v) => v.status !== "agendado");
+    const nomeStatus = { enviado: "Enviado", respondeu: "Respondeu", erro: "Erro", optout: "Descadastrou", pulado: "Pulado" };
+    const idsMarcas = [...new Set(envios.map((v) => v.empresa_id))];
+    const empresas = idsMarcas.map((id) => empresasCache.find((e) => e.id === id)).filter(Boolean);
+    const assuntos = [...new Set(envios.map((v) => assuntoDoEnvio(v, porDisparo)).filter(Boolean))].sort((a, b) => a.localeCompare(b, "pt-BR"));
+    const situacoes = [...new Set(envios.map((v) => v.status).filter(Boolean))];
+    const diaAtras = (n) => diaLocalDe(Date.now() - n * 86400000);
+    const atalhos = [
+      { rotulo: "Hoje", dia: diaAtras(0) },
+      { rotulo: "Ontem", dia: diaAtras(1) },
+      { rotulo: "Há 2 dias", dia: diaAtras(2) },
+      { rotulo: "Há 3 dias", dia: diaAtras(3) },
+      { rotulo: "Há 7 dias", dia: diaAtras(7) },
+    ];
+    const html = () => `
+      <span class="rotulo-limpo">Filtrar</span>
+      <div class="atalhos-data-ferr">
+        ${atalhos.map((a) => `<button type="button" data-dia-hist="${a.dia}" class="${f.de === a.dia && f.ate === a.dia ? "ativo" : ""}">${a.rotulo}</button>`).join("")}
+      </div>
+      <div class="grade-filtro-ferr">
+        <span>Data</span>
+        <div class="datas-filtro-ferr">
+          <input type="date" class="input-limpo" data-filtro-hist="de" value="${esc(f.de)}" aria-label="De">
+          <small>até</small>
+          <input type="date" class="input-limpo" data-filtro-hist="ate" value="${esc(f.ate)}" aria-label="Até">
+        </div>
+        <span>Nicho</span>
+        <select class="input-limpo" data-filtro-hist="nicho">${opcoesNichoFerramenta(empresas, f.nicho)}</select>
+        <span>Situação</span>
+        <select class="input-limpo" data-filtro-hist="situacao">
+          <option value="">Todas</option>
+          ${situacoes.map((st) => `<option value="${esc(st)}"${st === f.situacao ? " selected" : ""}>${esc(nomeStatus[st] || st)}</option>`).join("")}
+        </select>
+        <span>Assunto</span>
+        <select class="input-limpo" data-filtro-hist="assunto">
+          <option value="">Todos</option>
+          ${assuntos.map((a) => `<option value="${esc(a)}"${a === f.assunto ? " selected" : ""}>${esc(a)}</option>`).join("")}
+        </select>
+      </div>
+      <button type="button" class="btn-limpar-filtro-op" data-limpar-filtro-hist ${filtrosHistProspAtivos() ? "" : "disabled"}>Limpar filtros</button>`;
+    abrirPopoverFerramentaTabela(ancora, html(), (pop) => {
+      pop.style.width = "min(380px, calc(100vw - 16px))";
+      const redesenhar = () => {
+        pop.innerHTML = html();
+        renderizarHistoricoProspeccao();
+      };
+      pop.addEventListener("change", (ev) => {
+        const campo = ev.target.dataset.filtroHist;
+        if (!campo) return;
+        f[campo] = ev.target.value;
+        redesenhar();
+      });
+      pop.addEventListener("click", (ev) => {
+        const atalho = ev.target.closest("[data-dia-hist]");
+        if (atalho) {
+          const dia = atalho.dataset.diaHist;
+          const jaEra = f.de === dia && f.ate === dia;
+          f.de = f.ate = jaEra ? "" : dia;
+          redesenhar();
+          return;
+        }
+        if (ev.target.closest("[data-limpar-filtro-hist]")) {
+          f.de = f.ate = f.nicho = f.situacao = f.assunto = "";
+          redesenhar();
+        }
+      });
+    });
+  }
+  function abrirOrdenarHistProsp(ancora) {
+    const f = ferrHist();
+    const campos = [
+      { valor: "quando", rotulo: "Quando" },
+      { valor: "marca", rotulo: "Marca" },
+      { valor: "assunto", rotulo: "Assunto" },
+      { valor: "situacao", rotulo: "Situação" },
+    ];
+    abrirPopoverFerramentaTabela(ancora, htmlOrdenarFerramenta(campos, f.ordem, f.crescente), (pop) => {
+      pop.querySelector("[data-ordem-campo]").addEventListener("change", (ev) => {
+        f.ordem = ev.target.value;
+        f.crescente = f.ordem !== "quando"; // data: mais recente primeiro; texto: de A a Z
+        pop.querySelectorAll("[data-direcao]").forEach((b) => b.classList.toggle("ativo", (b.dataset.direcao === "asc") === f.crescente));
+        renderizarHistoricoProspeccao();
+      });
+      pop.addEventListener("click", (ev) => {
+        const botao = ev.target.closest("[data-direcao]");
+        if (!botao) return;
+        f.crescente = botao.dataset.direcao === "asc";
+        pop.querySelectorAll("[data-direcao]").forEach((b) => b.classList.toggle("ativo", b === botao));
+        renderizarHistoricoProspeccao();
+      });
+    });
+  }
+  // Leva as marcas escolhidas no histórico para a seleção da Prospecção e deixa o
+  // destino em "Só as marcas que eu selecionei": é só escrever o e-mail e disparar.
+  async function prospNovoEmailParaSelecaoHist() {
+    const f = ferrHist();
+    const ids = [...f.selecao].filter((id) => prospPodeSelecionarHist(empresasCache.find((e) => e.id === id)));
+    if (!ids.length) return;
+    if (!prospColunaSelecionada()) {
+      alert("Falta rodar js/prospeccao-setup.sql no Supabase para usar a seleção de marcas.");
+      return;
+    }
+    const alvo = new Set(ids);
+    const outras = empresasCache.filter((e) => e.selecionada && !alvo.has(e.id)).map((e) => e.id);
+    if (outras.length) {
+      const trocar = await prospPerguntar(
+        `Você já tinha <b>${formatarNumero(outras.length)}</b> ${outras.length === 1 ? "outra marca selecionada" : "outras marcas selecionadas"} na aba Marcas.`,
+        `Para este envio, elas saem da seleção e ficam só as <b>${formatarNumero(ids.length)}</b> que você marcou no histórico.`,
+        "Trocar a seleção"
+      );
+      if (!trocar) return;
+      await definirSelecaoMarcas(outras, false);
+    }
+    const faltam = ids.filter((id) => !(empresasCache.find((e) => e.id === id) || {}).selecionada);
+    if (faltam.length) await definirSelecaoMarcas(faltam, true);
+    f.selecao.clear();
+    renderizarProspeccao();
+    const destino = document.getElementById("prospDestino");
+    if (destino && [...destino.options].some((o) => o.value === "selecionadas")) {
+      destino.value = "selecionadas";
+      destino.dispatchEvent(new Event("change"));
+    }
+    const grade = document.getElementById("prospGrade");
+    if (grade) grade.scrollIntoView({ behavior: "smooth", block: "start" });
+    const assunto = document.getElementById("prospAssunto");
+    if (assunto) setTimeout(() => assunto.focus({ preventScroll: true }), 400);
+  }
+  (function ligarFerramentasHistProsp() {
+    const btnF = document.getElementById("btnFiltrarHist");
+    const btnO = document.getElementById("btnOrdenarHist");
+    if (btnF) btnF.addEventListener("click", () => abrirFiltroHistProsp(btnF));
+    if (btnO) btnO.addEventListener("click", () => abrirOrdenarHistProsp(btnO));
+    ligarBuscaFerramenta("btnBuscarHist", "prospBuscaHistorico", () => {});
+    const corpo = document.getElementById("prospCorpoHistorico");
+    if (corpo) corpo.addEventListener("change", (ev) => {
+      const caixa = ev.target.closest("[data-sel-hist]");
+      if (!caixa) return;
+      const id = caixa.dataset.selHist;
+      if (caixa.checked) ferrHist().selecao.add(id);
+      else ferrHist().selecao.delete(id);
+      // a mesma marca pode aparecer em mais de uma linha: todas acompanham
+      corpo.querySelectorAll("[data-sel-hist]").forEach((c) => {
+        if (c.dataset.selHist !== id) return;
+        c.checked = caixa.checked;
+        c.closest("tr").classList.toggle("selecionada-hist", caixa.checked);
+      });
+      atualizarSelecaoHistProsp();
+    });
+    const todos = document.getElementById("prospSelTodosHist");
+    if (todos) todos.addEventListener("change", () => {
+      const f = ferrHist();
+      const elegiveis = [...new Set(historicoVisivelProsp.map((v) => v.empresa_id))].filter((id) => prospPodeSelecionarHist(empresasCache.find((e) => e.id === id)));
+      const marcar = todos.checked;
+      elegiveis.forEach((id) => (marcar ? f.selecao.add(id) : f.selecao.delete(id)));
+      renderizarHistoricoProspeccao();
+    });
+    const btnNovo = document.getElementById("prospBtnNovoEmailHist");
+    if (btnNovo) btnNovo.addEventListener("click", comFila("prosp-novo-email-hist", prospNovoEmailParaSelecaoHist));
+    const btnLimpar = document.getElementById("prospBtnLimparSelHist");
+    if (btnLimpar) btnLimpar.addEventListener("click", () => {
+      ferrHist().selecao.clear();
+      renderizarHistoricoProspeccao();
+    });
+  })();
+
   function renderizarHistoricoProspeccao() {
     const corpo = document.getElementById("prospCorpoHistorico");
     const busca = semAcentoOp(document.getElementById("prospBuscaHistorico").value);
     const porDisparo = new Map(disparosCache.map((d) => [d.id, d]));
     const nomeStatus = { agendado: "Na fila", enviado: "Enviado", respondeu: "Respondeu", erro: "Erro", optout: "Descadastrou", pulado: "Pulado" };
-    const lista = enviosCache
-      .filter((v) => v.status !== "agendado")
-      .filter((v) => !busca || semAcentoOp(v.email + " " + prospEmpresaNome(v.empresa_id)).includes(busca))
-      .sort((a, b) => String(b.enviado_em || b.created_at).localeCompare(String(a.enviado_em || a.created_at)));
+    const todosEnvios = enviosCache.filter((v) => v.status !== "agendado");
+    const lista = ordenarHistoricoProsp(
+      todosEnvios
+        .filter((v) => !busca || semAcentoOp(v.email + " " + prospEmpresaNome(v.empresa_id)).includes(busca))
+        .filter((v) => passaFiltrosHistProsp(v, porDisparo)),
+      porDisparo
+    );
     const mostrar = lista.slice(0, 300);
-    document.getElementById("prospContagemHistorico").textContent = lista.length > mostrar.length ? `Mostrando ${mostrar.length} de ${lista.length}. Use a busca para achar os outros.` : lista.length ? `${lista.length} envio(s)` : "";
+    const recorte = !!busca || filtrosHistProspAtivos();
+    document.getElementById("prospContagemHistorico").textContent =
+      lista.length > mostrar.length
+        ? `Mostrando ${mostrar.length} de ${lista.length}. Use o filtro ou a busca para achar os outros.`
+        : lista.length
+          ? recorte ? `${lista.length} de ${todosEnvios.length} envio(s)` : `${lista.length} envio(s)`
+          : "";
+    atualizarFerramentasHistProsp(busca);
+    historicoVisivelProsp = mostrar;
     if (!mostrar.length) {
-      corpo.innerHTML = `<tr><td colspan="5" class="texto-vazio">${busca ? "Nada encontrado com essa busca." : "Nenhum e-mail saiu ainda."}</td></tr>`;
+      corpo.innerHTML = `<tr><td colspan="6" class="texto-vazio">${recorte ? "Nada encontrado com esse filtro ou busca." : "Nenhum e-mail saiu ainda."}</td></tr>`;
+      atualizarSelecaoHistProsp();
       return;
     }
     corpo.innerHTML = mostrar
@@ -21323,7 +21741,11 @@ ${botao}
           opcoes.map((o) => `<option value="${esc(o)}"${o === v.status ? " selected" : ""}>${esc(nomeStatus[o] || o)}</option>`).join("") +
           `</select>` +
           (v.erro && (v.status === "erro" || v.status === "pulado") ? `<small class="prosp-erro">${esc(v.erro)}</small>` : "");
-        return `<tr class="prosp-linha-envio" data-prosp-ver="${v.id}" title="Clique para ver o e-mail">
+        const empresaEnvio = empresasCache.find((e) => e.id === v.empresa_id);
+        const podeSel = prospPodeSelecionarHist(empresaEnvio);
+        const marcada = podeSel && ferrHist().selecao.has(v.empresa_id);
+        return `<tr class="prosp-linha-envio${marcada ? " selecionada-hist" : ""}" data-prosp-ver="${v.id}" title="Clique para ver o e-mail">
+          <td class="td-sel-hist"><input type="checkbox" data-sel-hist="${esc(v.empresa_id || "")}" ${marcada ? "checked" : ""} ${podeSel ? "" : "disabled"} title="${podeSel ? "Selecionar esta marca" : empresaEnvio && empresaEnvio.optout ? "Pediu para sair" : "Sem e-mail cadastrado"}" aria-label="Selecionar"></td>
           <td><b style="font-weight:600">${esc(prospEmpresaNome(v.empresa_id))}</b></td>
           <td>${esc(v.assunto || d.assunto || v.passo || "")}</td>
           <td>${quando ? formatarDataBr(diaLocalDe(quando)) : ""}</td>
@@ -21335,10 +21757,11 @@ ${botao}
     // clicar em qualquer parte da linha abre o e-mail (menos na situação)
     corpo.querySelectorAll("tr[data-prosp-ver]").forEach((linha) =>
       linha.addEventListener("click", (ev) => {
-        if (ev.target.closest("button, a, select")) return;
+        if (ev.target.closest("button, a, select, input, .td-sel-hist")) return;
         prospVerEnvio(linha.dataset.prospVer);
       })
     );
+    atualizarSelecaoHistProsp();
     corpo.querySelectorAll("[data-situacao-envio]").forEach((seletor) =>
       seletor.addEventListener(
         "change",
